@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DMInputSystem</name>
+    </assembly>
+    <members>
+        <member name="F:DMInputSystem.Device.Name">
+            <summary>
+            设备名称
+            </summary>
+        </member>
+        <member name="F:DMInputSystem.Device.Number">
+            <summary>
+            设备编号
+            </summary>
+        </member>
+        <member name="F:DMInputSystem.Device.Enabled">
+            <summary>
+            是否可用
+            </summary>
+        </member>
+        <member name="T:DMInputSystem.DMInput">
+            <summary>
+            封装Input类
+            </summary>
+        </member>
+        <member name="T:DMInputSystem.DMInputManager">
+            <summary>
+            虚拟轴和键位管理
+            </summary>
+        </member>
+        <member name="T:DMInputSystem.JoystickType">
+            <summary>
+            摇杆类型
+            </summary>
+        </member>
+        <member name="T:DMInputSystem.JoystickManager">
+            <summary>
+            摇杆管理类
+            </summary>
+        </member>
+        <member name="M:DMInputSystem.JoystickManager.Refresh">
+            <summary>
+            刷新摇杆列表
+            </summary>
+        </member>
+        <member name="M:DMInputSystem.JoystickManager.Get(System.String,System.Boolean)">
+            <summary>
+            获取摇杆
+            </summary>
+            <param name="name">摇杆名称</param>
+            <param name="refresh">是否刷新设备列表</param>
+            <returns></returns>
+        </member>
+        <member name="M:DMInputSystem.JoystickManager.Get(System.Int32,System.Boolean)">
+            <summary>
+            获取摇杆
+            </summary>
+            <param name="index">摇杆编号</param>
+            <param name="refresh">是否刷新设备列表</param>
+            <returns></returns>
+        </member>
+        <member name="M:DMInputSystem.JoystickManager.Get(DMInputSystem.JoystickType,System.Int32,System.Boolean)">
+            <summary>
+            获取摇杆
+            </summary>
+            <param name="type">摇杆类型</param>
+            <param name="index">同种类型摇杆编号</param>
+            <param name="refresh">是否刷新设备列表</param>
+            <returns></returns>
+        </member>
+        <member name="M:DMInputSystem.Joystick.GetJoystickButton(System.Int32)">
+            <summary>
+            GetJoystickButton
+            </summary>
+            <param name="i">范围：0-19</param>
+            <returns></returns>
+        </member>
+        <member name="M:DMInputSystem.Joystick.GetJoystickButtonDown(System.Int32)">
+            <summary>
+            GetJoystickButtonDown
+            </summary>
+            <param name="i">范围：0-19</param>
+            <returns></returns>
+        </member>
+        <member name="M:DMInputSystem.Joystick.GetJoystickButtonUp(System.Int32)">
+            <summary>
+            GetJoystickButtonUp
+            </summary>
+            <param name="i">范围：0-19</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

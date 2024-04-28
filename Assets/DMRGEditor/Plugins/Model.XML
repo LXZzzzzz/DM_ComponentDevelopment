@@ -1,0 +1,1189 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Model</name>
+    </assembly>
+    <members>
+        <member name="T:DM.Entity.ObjBase">
+            <summary>
+            实体基类
+            </summary>
+        </member>
+        <member name="P:DM.Entity.BObject.CampId">
+            <summary>
+            所属阵营Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.BObject.GroupId">
+            <summary>
+            所属分组Id
+            </summary>
+        </member>
+        <member name="F:DM.Entity.BObject.Info">
+            <summary>
+            基本信息
+            </summary>
+        </member>
+        <member name="F:DM.Entity.BObject.Transform">
+            <summary>
+            Tranform
+            </summary>
+        </member>
+        <member name="F:DM.Entity.BObject.AIFlow">
+            <summary>
+            AI流程
+            </summary>
+        </member>
+        <member name="F:DM.Entity.BObject.AITrigger">
+            <summary>
+            AI流程触发
+            </summary>
+        </member>
+        <member name="F:DM.Entity.BObject.MarkProperties">
+            <summary>
+            组件特殊标识属性
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Camp.Name">
+            <summary>
+            阵营名称
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Camp.Description">
+            <summary>
+            阵营描述
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Camp.Groups">
+            <summary>
+            阵营分组列表
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComFlow.FlowState">
+            <summary>
+            当前流程状态
+            </summary>
+        </member>
+        <member name="F:DM.Entity.ComFlow.FlowStateChangeEvent">
+            <summary>
+            流程状态改变事件(结束)
+            </summary>
+        </member>
+        <member name="F:DM.Entity.ComFlow.AIFlowStateChangeEvent">
+            <summary>
+            流程状态改变事件(流程管理 自己Id+流程组)
+            </summary>
+        </member>
+        <member name="P:DM.Entity.FlowEvent.Name">
+            <summary>
+            流程事件名
+            </summary>
+        </member>
+        <member name="P:DM.Entity.FlowEvent.BObject">
+            <summary>
+            组件单元
+            </summary>
+        </member>
+        <member name="P:DM.Entity.FlowEvent.StateId">
+            <summary>
+            逻辑状态条件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.FlowEvent.FlowId">
+            <summary>
+            流程状态条件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.FlowEvent.DelayTime">
+            <summary>
+            延迟时间
+            </summary>
+        </member>
+        <member name="P:DM.Entity.FlowEvent.Affect1">
+            <summary>
+            影响
+            </summary>
+        </member>
+        <member name="P:DM.Entity.FlowEvent.Finished">
+            <summary>
+            执行完成
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TimeTrigger.IsOn">
+            <summary>
+            延时启动
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TimeTrigger.DelayTime">
+            <summary>
+            延长时间
+            </summary>
+        </member>
+        <member name="F:DM.Entity.ComStateTrigger.IsOn">
+            <summary>
+            组件条件启动
+            </summary>
+        </member>
+        <member name="F:DM.Entity.ComStateTrigger.BObject">
+            <summary>
+            组件
+            </summary>
+        </member>
+        <member name="F:DM.Entity.ComStateTrigger.LogicState">
+            <summary>
+            自身逻辑状态
+            </summary>
+        </member>
+        <member name="F:DM.Entity.AffectTrigger.IsOn">
+            <summary>
+            影响启动
+            </summary>
+        </member>
+        <member name="F:DM.Entity.AffectTrigger.Affects">
+            <summary>
+            影响列表
+            </summary>
+        </member>
+        <member name="F:DM.Entity.AffectTrigger.TriggerTypes">
+            <summary>
+            打包触发类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.AffectTrigger.AffectTypes">
+            <summary>
+            打包效果类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriTrigger.IsShow">
+            <summary>
+            是否显示
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriTrigger.IsOn">
+            <summary>
+            启动
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriTrigger.TriRanger">
+            <summary>
+            触发范围
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriTrigger.Triggers">
+            <summary>
+            影响
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriTrigger.TriggerTypes">
+            <summary>
+            打包触发类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriTrigger.AffectTypes">
+            <summary>
+            打包效果类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.AffectItem.AffectType">
+            <summary>
+            影响名
+            </summary>
+        </member>
+        <member name="F:DM.Entity.AffectItem.FlowId">
+            <summary>
+            自身的流程Id
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriItem.LogicState">
+            <summary>
+            自身逻辑状态
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriItem.TriType">
+            <summary>
+            触发类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriItem.AffectType">
+            <summary>
+            效果类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriItem.FlowId">
+            <summary>
+            流程Id
+            </summary>
+        </member>
+        <member name="F:DM.Entity.TriItem.AffectRange">
+            <summary>
+            效果范围
+            </summary>
+        </member>
+        <member name="T:DM.Entity.AffectTriggerItem">
+            <summary>
+            打包结构
+            </summary>
+        </member>
+        <member name="P:DM.Entity.CommInputGroup.GroupName">
+            <summary>
+            输入接口名称
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputGroup.IsOn">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputGroup.CreateType">
+            <summary>
+            创建类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputGroup.ProtocolType">
+            <summary>
+            协议类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputGroup.SocketIP">
+            <summary>
+            TCP(UDP)类型IP
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputGroup.SocketPort">
+            <summary>
+            TCP(UDP)类型Port
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputGroup.HttpUrl">
+            <summary>
+            HTTP类型Url
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputGroup.Param">
+            <summary>
+            其他参数
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputGroup.ItemList">
+            <summary>
+            输入接口列表
+            </summary>
+        </member>
+        <member name="P:DM.Entity.CommOutputGroup.GroupName">
+            <summary>
+            输入接口名称
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommOutputGroup.IsOn">
+            <summary>
+            是否启用
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommOutputGroup.CreateType">
+            <summary>
+            创建类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommOutputGroup.ProtocolType">
+            <summary>
+            协议类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommOutputGroup.SocketIP">
+            <summary>
+            TCP(UDP)类型IP
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommOutputGroup.SocketPort">
+            <summary>
+            TCP(UDP)类型Port
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommOutputGroup.HttpUrl">
+            <summary>
+            HTTP类型Url
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommOutputGroup.Param">
+            <summary>
+            其他参数
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommOutputGroup.ItemList">
+            <summary>
+            输出接口列表
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputItem.ConditionType">
+            <summary>
+            条件类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.CommInputItem.KeyWord">
+            <summary>
+            关键字
+            </summary>
+        </member>
+        <member name="P:DM.Entity.CommInputItem.Affect1">
+            <summary>
+            触发事件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.CommOutputItem.CampId">
+            <summary>
+            阵营Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.CommOutputItem.GroupId">
+            <summary>
+            分组Id
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:DM.Entity.CommOutputItem.BObjectId" -->
+        <member name="P:DM.Entity.CommOutputItem.IsFlowState">
+            <summary>
+            是否是流程状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.CommOutputItem.State">
+            <summary>
+            条件状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.CommOutputItem.Data">
+            <summary>
+            数据
+            </summary>
+        </member>
+        <member name="T:DM.Entity.DynamicGroup">
+            <summary>
+            动态属性集合
+            </summary>
+        </member>
+        <member name="T:DM.Entity.EnumDescription">
+            <summary>
+            枚举描述
+            </summary>
+        </member>
+        <member name="F:DM.Entity.EnumDescription.Enum">
+            <summary>
+            枚举类型
+            </summary>
+        </member>
+        <member name="F:DM.Entity.EnumDescription.Description">
+            <summary>
+            枚举描述信息
+            </summary>
+        </member>
+        <member name="T:DM.Entity.PropertyType">
+            <summary>
+            动态属性类型
+            </summary>
+        </member>
+        <member name="T:DM.Entity.DynamicProperty">
+            <summary>
+            动态属性基类
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DynamicProperty.Name">
+            <summary>
+            显示名称
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DynamicProperty.Type">
+            <summary>
+            属性类型
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DynamicProperty.Description">
+            <summary>
+            属性描述
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DynamicProperty.Alignment">
+            <summary>
+            对齐方式
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DynamicProperty.Group">
+            <summary>
+            分组
+            </summary>
+        </member>
+        <member name="F:DM.Entity.Environment.WindDir">
+            <summary>
+            风向
+            </summary>
+        </member>
+        <member name="F:DM.Entity.Environment.WindForce">
+            <summary>
+            风力
+            </summary>
+        </member>
+        <member name="F:DM.Entity.Environment.StripeSolution">
+            <summary>
+            开启条纹解决方案
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Group.Name">
+            <summary>
+            分组名称
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Group.Description">
+            <summary>
+            分组描述
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Group.CampId">
+            <summary>
+            所属阵营Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Group.IsShow">
+            <summary>
+            是否显示
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Group.Foldout">
+            <summary>
+            UI面板的折叠状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Group.Tags">
+            <summary>
+            分组标签
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Group.BObjects">
+            <summary>
+            组件列表
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIPath.MoveType">
+            <summary>
+            寻路模式
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIPath.MovePath">
+            <summary>
+            运动方式
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIPath.Speed">
+            <summary>
+            运动速度
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIPath.AnimState">
+            <summary>
+            动画状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIPath.OnFinished">
+            <summary>
+            结束回调事件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIPath.Paths">
+            <summary>
+            路径点
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIPath.Target">
+            <summary>
+            目标组件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIPath.RelativePoint">
+            <summary>
+            组件位置
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIRefresh.MoveType">
+            <summary>
+            模式
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIRefresh.MinDeltaTime">
+            <summary>
+            最小间隔时间
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIRefresh.MaxDeltaTime">
+            <summary>
+            最大间隔时间
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIRefresh.BObjectList">
+            <summary>
+            随机物体
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProAIRefresh.PathList">
+            <summary>
+            路径点
+            </summary>
+        </member>
+        <member name="P:DM.Entity.RefreshBObject.Menu">
+            <summary>
+            一级菜单
+            </summary>
+        </member>
+        <member name="P:DM.Entity.RefreshBObject.SubMenu">
+            <summary>
+            二级菜单
+            </summary>
+        </member>
+        <member name="P:DM.Entity.RefreshBObject.BObject">
+            <summary>
+            BObject
+            </summary>
+        </member>
+        <member name="P:DM.Entity.RefreshBObject.State">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.RefreshBObject.Event">
+            <summary>
+            执行事件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.Version">
+            <summary>
+            版本
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.AnimStatus">
+            <summary>
+            姿态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.SkinStatus">
+            <summary>
+            皮肤
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.LogicState">
+            <summary>
+            逻辑状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.Tags">
+            <summary>
+            标签
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.Layouts">
+            <summary>
+            放置类型
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComInfo.ResourcePath">
+            <summary>
+            资源路径(图片和模型)
+            </summary>
+        </member>
+        <member name="F:DM.Entity.ComInfo.LogicStateChangeEvent">
+            <summary>
+            状态改变事件
+            </summary>
+        </member>
+        <member name="T:DM.Entity.ProBase">
+            <summary>
+            组件特殊标识基类
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.GridSize">
+            <summary>
+            网格尺寸
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.MaxGridCount">
+            <summary>
+            最大网格数量
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.IgnitT">
+            <summary>
+            引燃温度
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.Interval">
+            <summary>
+            扩散引燃间隔
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.LimitT">
+            <summary>
+            限制最高温度
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.TUpSpeed">
+            <summary>
+            上升阶段温度变化速率
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.TDownSpeed">
+            <summary>
+            下降阶段温度变化速率
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.DPSHp">
+            <summary>
+            生命值削减
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.DPSWater">
+            <summary>
+            水滴降温
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.TreeHp">
+            <summary>
+            树Hp
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.GrassHp">
+            <summary>
+            草Hp
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProFire.FirePoints">
+            <summary>
+            初始火源点
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MLogItem.BObject">
+            <summary>
+            组件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MLogItem.IsAnd">
+            <summary>
+            状态和操作关系
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MLogItem.Status">
+            <summary>
+            组件状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MLogItem.OperMethod">
+            <summary>
+            组件操作
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MLogItem.OperCount">
+            <summary>
+            组件操作次数
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MLogItem.Message">
+            <summary>
+            Log消息
+            </summary>
+        </member>
+        <member name="F:DM.Entity.ProProperty.Properties">
+            <summary>
+            组件动态属性
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ButtonInputStrProperty.InputValue">
+            <summary>
+            输入文本
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ButtonInputStrProperty.ButtonName">
+            <summary>
+            按钮名称
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ButtonInputStrProperty.ButtonEvent">
+            <summary>
+            按钮事件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.InputIntProperty.Value">
+            <summary>
+            Int属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.InputIntUnitProperty.Value">
+            <summary>
+            Int属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.InputIntUnitLimitProperty.Value">
+            <summary>
+            Int属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.InputFloatProperty.Value">
+            <summary>
+            Float属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.InputFloatUnitProperty.Value">
+            <summary>
+            Float属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.InputFloatUnitLimitProperty.Value">
+            <summary>
+            Int属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.InputStringProperty.Value">
+            <summary>
+            String属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ToggleProperty.Value">
+            <summary>
+            bool属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ToggleGroupProperty.Groups">
+            <summary>
+            Toogle数组
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ToggleGroupProperty.Selected">
+            <summary>
+            Toggle.IsOn=true
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ToggleGroupProperty.Multiple">
+            <summary>
+            是否可多选
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DropDownProperty.Context">
+            <summary>
+            DropDown列表
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DropDownProperty.Selected">
+            <summary>
+            DropDown所选值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DropDownSceneBObjectsProperty.BObjectName">
+            <summary>
+            关联组件名
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DropDownSceneBObjectsProperty.Value">
+            <summary>
+            关联组件Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DropDownSceneSelectProperty.BObjectName">
+            <summary>
+            关联组件名
+            </summary>
+        </member>
+        <member name="P:DM.Entity.DropDownSceneSelectProperty.Value">
+            <summary>
+            关联组件Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.SliderProperty.Value">
+            <summary>
+            Slider属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.SliderProperty.Max">
+            <summary>
+            Slider最大值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.SliderProperty.Min">
+            <summary>
+            Slider最小值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.IntSliderProperty.Value">
+            <summary>
+            Slider属性值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.IntSliderProperty.Max">
+            <summary>
+            Slider最大值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.IntSliderProperty.Min">
+            <summary>
+            Slider最小值
+            </summary>
+        </member>
+        <member name="P:DM.Entity.PanelProperty.Properties">
+            <summary>
+            Panel内属性
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProTriggerEvent.MessageInOn">
+            <summary>
+            开启消息触发
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProTriggerEvent.MessageEnter">
+            <summary>
+            进入消息
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProTriggerEvent.MessageExit">
+            <summary>
+            离开消息
+            </summary>
+        </member>
+        <member name="P:DM.Entity.TriggerEvent.CampId">
+            <summary>
+            阵营Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.TriggerEvent.BObjectId">
+            <summary>
+            组件Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.TriggerEvent.State">
+            <summary>
+            满足状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.TriggerEvent.FlowState">
+            <summary>
+            触发器物体流程状态改变
+            </summary>
+        </member>
+        <member name="P:DM.Entity.TriggerEvent.EventCampId">
+            <summary>
+            触发阵营
+            </summary>
+        </member>
+        <member name="P:DM.Entity.TriggerEvent.EventBObjectId">
+            <summary>
+            触发组件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.TriggerEvent.Event">
+            <summary>
+            触发事件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.TriggerEvent.EventFlowState">
+            <summary>
+            事件物体流程状态改变
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndItem.CampId">
+            <summary>
+            阵营Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndItem.GroupId">
+            <summary>
+            分组Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndItem.BObjectId">
+            <summary>
+            组件单位Id
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndItem.IsFlowState">
+            <summary>
+            是否是流程状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndItem.State">
+            <summary>
+            完成状态
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndItem.IsOn">
+            <summary>
+            是否开启
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndItem.IsAnd">
+            <summary>
+            是否为且的关系
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndItem.IsFinished">
+            <summary>
+            是否满足完成条件
+            </summary>
+        </member>
+        <member name="F:DM.Entity.EndItem.EndStateChangeEvent">
+            <summary>
+            状态改变事件
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndGroup.GroupName">
+            <summary>
+            分组名称
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndGroup.IsOn">
+            <summary>
+            是否开启
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndGroup.IsAnd">
+            <summary>
+            是否为且的关系
+            </summary>
+        </member>
+        <member name="P:DM.Entity.EndGroup.IsFinished">
+            <summary>
+            是否满足完成条件
+            </summary>
+        </member>
+        <member name="F:DM.Entity.EndGroup.EndGroupStateChangeEvent">
+            <summary>
+            分组状态改变事件
+            </summary>
+        </member>
+        <member name="F:DM.Entity.EndManager.CallBack">
+            <summary>
+            结束触发回调
+            </summary>
+        </member>
+        <member name="F:DM.Entity.EndManager.EndGroupList">
+            <summary>
+            结束触发分组列表
+            </summary>
+        </member>
+        <member name="F:DM.Entity.EndManager.TimeEnd">
+            <summary>
+            是否启用时间结束
+            </summary>
+        </member>
+        <member name="F:DM.Entity.EndManager.EndTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ProExam.Exams">
+            <summary>
+            考核项列表
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ExamItem.Name">
+            <summary>
+            条目名称
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ExamItem.Weight">
+            <summary>
+            权重
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ExamItem.Description">
+            <summary>
+            条目描述
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ExamItem.IsAuto">
+            <summary>
+            是否自动
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MapData.ListCamp">
+            <summary>
+            阵营列表
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MapData.EndManager">
+            <summary>
+            结束管理器
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MapData.FlowObjectPool">
+            <summary>
+            流程对象池
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MapData.Environment">
+            <summary>
+            环境管理器
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MapData.RouteMgr">
+            <summary>
+            航路点和航线管理器
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MapData.SchemeMgr">
+            <summary>
+            方案(预案)管理器
+            </summary>
+        </member>
+        <member name="P:DM.Entity.MapData.CommMgr">
+            <summary>
+            通信接口管理器
+            </summary>
+        </member>
+        <member name="M:DM.Entity.MapData.LoadEndEventSystem(System.Action{System.String,System.String})">
+            <summary>
+            加载事件系统
+            </summary>
+            <param name="endCallBack">结束回调事件</param>
+        </member>
+        <member name="P:DM.Entity.ComTransform.PosX">
+            <summary>
+            PositionX
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComTransform.PosY">
+            <summary>
+            PositionY
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComTransform.PosZ">
+            <summary>
+            PositionZ
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComTransform.RotX">
+            <summary>
+            RotationX
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComTransform.RotY">
+            <summary>
+            RotationY
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComTransform.RotZ">
+            <summary>
+            RotationZ
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComTransform.ScaleX">
+            <summary>
+            ScaleX
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComTransform.ScaleY">
+            <summary>
+            ScaleY
+            </summary>
+        </member>
+        <member name="P:DM.Entity.ComTransform.ScaleZ">
+            <summary>
+            ScaleZ
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Mission.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Mission.Abstract">
+            <summary>
+            摘要
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Mission.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Mission.Picture">
+            <summary>
+            图片
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Mission.Terrain">
+            <summary>
+            地形
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Mission.Weather">
+            <summary>
+            天气
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Mission.Version">
+            <summary>
+            组件库版本号
+            </summary>
+        </member>
+        <member name="P:DM.Entity.Mission.MapData">
+            <summary>
+            地图数据信息
+            </summary>
+        </member>
+        <member name="F:DM.Entity.DMVector3.Event">
+            <summary>
+            节点事件
+            </summary>
+        </member>
+        <member name="F:DM.Entity.DMVector2.Event">
+            <summary>
+            节点事件
+            </summary>
+        </member>
+        <member name="M:DM.Entity.PackReflectionEntity`1.EntityToString(`0)">
+            <summary>
+            将实体类通过反射组装成字符串
+            </summary>
+            <param name="t">实体类</param>
+            <returns>组装的字符串</returns>
+        </member>
+        <member name="M:DM.Entity.PackReflectionEntity`1.StringToEntity(System.String)">
+            <summary>
+            将反射得到字符串转换为对象
+            </summary>
+            <param name="str">反射得到的字符串</param>
+            <returns>实体类</returns>
+        </member>
+        <member name="M:DM.Entity.PackReflectionEntity`1.GetObject(System.Reflection.PropertyInfo,System.String)">
+            <summary>
+            转换值的类型
+            </summary>
+            <param name="p"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.Entity.PackReflectionEntity.EntityToString``1(``0)">
+            <summary>
+            将实体类通过反射组装成字符串
+            </summary>
+            <param name="t">实体类</param>
+            <returns>组装的字符串</returns>
+        </member>
+        <member name="M:DM.Entity.PackReflectionEntity.StringToEntity``1(System.String)">
+            <summary>
+            将反射得到字符串转换为对象
+            </summary>
+            <param name="str">反射得到的字符串</param>
+            <returns>实体类</returns>
+        </member>
+        <member name="M:DM.Entity.PackReflectionEntity.GetObject(System.Reflection.PropertyInfo,System.String)">
+            <summary>
+            转换值的类型
+            </summary>
+            <param name="p"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

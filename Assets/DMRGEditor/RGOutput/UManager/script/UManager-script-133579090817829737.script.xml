@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<RGDataConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <MainClass>UIManagerMain</MainClass>
+  <RGScripts>
+    <RGScript>
+      <SubPath>UiManager/UiPrefab/UIBarChart</SubPath>
+      <ClassName>UiManager.UILineChartTest</ClassName>
+      <RGFields>
+        <RGField>
+          <Name>isReflex</Name>
+          <Type>System.Boolean</Type>
+          <Value>True</Value>
+        </RGField>
+        <RGField>
+          <Name>IsShow</Name>
+          <Type>System.Boolean</Type>
+          <Value>False</Value>
+        </RGField>
+      </RGFields>
+    </RGScript>
+  </RGScripts>
+</RGDataConfig>

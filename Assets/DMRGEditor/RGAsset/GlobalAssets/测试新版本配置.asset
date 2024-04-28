@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f98ccb98f4a9dce41be31f29a2acf402, type: 3}
+  m_Name: "\u6211\u7684\u914D\u7F6E 1"
+  m_EditorClassIdentifier: 
+  AssetName: "\u6D4B\u8BD5\u65B0\u7248\u672C\u914D\u7F6E"
+  IsCreateTag: 1
+  IsCreateScript: 1
+  IsCreateModel: 1
+  IsCompressModel: 0
+  OutputPaths:
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/RGOutput
+  ReferencePaths:
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\DMIFS.dll
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\DMInputSystem.dll
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\Model.dll
+  - E:/VSProjects/testVSClassLibrary/ToolsLibrary/bin/Debug/ToolsLibrary.dll
+  AutoCreateNum: 1
+  HideCams: 1
+  IsCompressTerrain: 0
+  RootPath: 
+  TerrainOutputPaths:
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/RGOutput
+  TerrainReferencePaths:
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\DMIFS.dll
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\DMInputSystem.dll
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\Model.dll
+  IsDebug: 1

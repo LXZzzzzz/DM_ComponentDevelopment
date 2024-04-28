@@ -1,0 +1,1486 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DMIFS</name>
+    </assembly>
+    <members>
+        <member name="F:DM.IFS.DMKeyCode.Key">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKeyCode.Value">
+            <summary>
+            值[-1,1]
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKeyCode.Device">
+            <summary>
+            设备
+            </summary>
+        </member>
+        <member name="T:DM.IFS.RoleModeUI">
+            <summary>
+            角色模式UI,弃用
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleModeUI.RoleMode">
+            <summary>
+            角色模式
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleModeUI.UIMode">
+            <summary>
+            UI模式
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleModeUI.PCUIPath">
+            <summary>
+            PCUI相对路径
+            </summary>
+        </member>
+        <member name="T:DM.IFS.SceneInfo">
+            <summary>
+            场景信息
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.MisName">
+            <summary>
+            任务名
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.MisDescription">
+            <summary>
+            任务描述
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.OperatorName">
+            <summary>
+            操作者名字
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.OperatorId">
+            <summary>
+            操作者Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.MisXMLPath">
+            <summary>
+            任务XML配置路径
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.PicMap">
+            <summary>
+            地形地图
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.PicBObjects">
+            <summary>
+            组件图片
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.Device">
+            <summary>
+            当前客户端设备
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.ClientInfos">
+            <summary>
+            所有客户端信息
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SceneInfo.Mission">
+            <summary>
+            当前任务
+            </summary>
+        </member>
+        <member name="F:DM.IFS.Client.UID">
+            <summary>
+            用户ID
+            </summary>
+        </member>
+        <member name="F:DM.IFS.Client.Name">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="F:DM.IFS.Client.Remark">
+            <summary>
+            用户签名
+            </summary>
+        </member>
+        <member name="F:DM.IFS.Client.RoleId">
+            <summary>
+            占用角色Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.Client.RoleMode">
+            <summary>
+            角色模式
+            </summary>
+        </member>
+        <member name="F:DM.IFS.Client.IsRunning">
+            <summary>
+            运行模式
+            </summary>
+        </member>
+        <member name="F:DM.IFS.Client.IsConnect">
+            <summary>
+            连接状态
+            </summary>
+        </member>
+        <member name="T:DM.IFS.OutCallInfo">
+            <summary>
+            外部调用信息
+            </summary>
+        </member>
+        <member name="T:DM.IFS.OutCallOper">
+            <summary>
+            外部调用操作
+            </summary>
+        </member>
+        <member name="T:DM.IFS.OCOperItem">
+            <summary>
+            基本单元
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OCOperItem.Name">
+            <summary>
+            名称:唯一
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OCOperItem.Type">
+            <summary>
+            类型
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OCOperItem.OnChanged">
+            <summary>
+            事件
+            </summary>
+        </member>
+        <member name="T:DM.IFS.OCOperType">
+            <summary>
+            事件类型
+            </summary>
+        </member>
+        <member name="T:DM.IFS.DMItemBase">
+            <summary>
+            Knapsack Operation
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMItemBase.OnDataChanged">
+            <summary>
+            数据同步事件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMItemBase.IdInner">
+            <summary>
+            Id:内部使用
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMItemBase.SourceId">
+            <summary>
+            所属组件Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMItemBase.Id">
+            <summary>
+            Id 
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMItemBase.Status">
+            <summary>
+            状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMItemBase.Type">
+            <summary>
+            类型  
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMItemBase.UIOffset">
+            <summary>
+            UI偏移量
+            </summary>
+        </member>
+        <member name="T:DM.IFS.DMKnapsackItem">
+            <summary>
+            模型手动添加道具脚本
+            </summary>
+            <summary>
+            内部处理
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.Description">
+            <summary>
+            描述
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.Picture">
+            <summary>
+            道具图标
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.KnapType">
+            <summary>
+            操作类型(UI相关操作：左手(遥控器，控制器，操作仪器)，右手(使用物品))
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.Count">
+            <summary>
+            使用次数
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.CDTime">
+            <summary>
+            使用冷却时间
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.IsApplySourceOnly">
+            <summary>
+            是否只作用于来源组件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.TargetType">
+            <summary>
+            目标操作项类型
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMKnapsackItem.Distance">
+            <summary>
+            作用距离(可以超过UI的默认值)
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMKnapsackItem.KnapStatus">
+            <summary>
+            物品状态(内部使用)
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMKnapsackItem.KnapCount">
+            <summary>
+            可使用次数(内部使用)
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMKnapsackItem.IsCooling">
+            <summary>
+            是否冷却中
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMKnapsackItem.Usable">
+            <summary>
+            是否可用
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMKnapsackItem.Data">
+            <summary>
+            同步数据
+            </summary>
+        </member>
+        <member name="M:DM.IFS.DMKnapsackItem.Update">
+            <summary>
+            操作项冷却
+            </summary>
+        </member>
+        <member name="M:DM.IFS.DMKnapsackItem.GetRemainCD">
+            <summary>
+            获取剩余冷却时间
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:DM.IFS.DMOperationItem">
+             <summary>
+            AddComponentMenu:OperItem中的数据打包不能还原
+             </summary>
+            <summary>
+            内部处理
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.OperItems">
+            <summary>
+            内容事件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.OperType">
+            <summary>
+            操作类型: Toggle,Slider,Button
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.OperTime">
+            <summary>
+            操作时间
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.CDTime">
+            <summary>
+            冷却时间
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.OperatorAnim">
+            <summary>
+            操作者动画
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.OperatorBeginPos">
+            <summary>
+            操作者初始位置
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.ReturnKnapsackId">
+            <summary>
+            操作返回道具
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.OperDistance">
+            <summary>
+            操作距离
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.PreCondition">
+            <summary>
+            前置条件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.ComponentStatus">
+            <summary>
+            条件：组件状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.OperatorMode">
+            <summary>
+            条件：操作者模式
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DMOperationItem.OperatorSkill">
+            <summary>
+            条件：操作者技能
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMOperationItem.OperStatus">
+            <summary>
+            操作项当前状态(内部使用)
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMOperationItem.OperCount">
+            <summary>
+            累计执行次数
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMOperationItem.IsCooling">
+            <summary>
+            是否冷却中
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMOperationItem.IsOpering">
+            <summary>
+            是否在操作过程中
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMOperationItem.Usable">
+            <summary>
+            是否可用
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMOperationItem.Data">
+            <summary>
+            同步数据
+            </summary>
+        </member>
+        <member name="M:DM.IFS.DMOperationItem.Update">
+            <summary>
+            操作项冷却
+            </summary>
+        </member>
+        <member name="T:DM.IFS.DMOperationSynchtor">
+            <summary>
+            操作项和背包同步器
+            </summary>
+        </member>
+        <member name="M:DM.IFS.DMOperationSynchtor.Initial(System.Boolean)">
+            <summary>
+            初始化同步器
+            </summary>
+            <param name="isMain">是否为主机</param>
+        </member>
+        <member name="M:DM.IFS.DMOperationSynchtor.SubRecOperData(DM.IFS.MainSystemType,System.String)">
+            <summary>
+            从机同步操作项数据
+            </summary>
+            <param name="type">OpersStatus or KnapsStatus</param>
+            <param name="data"></param>
+        </member>
+        <member name="T:DM.IFS.KnapsackItem">
+            <summary>
+            背包物品项
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Dir">
+            <summary>
+            组件中的位置
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Id">
+            <summary>
+             操作项Id XML.Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Name">
+            <summary>
+            道具名
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Description">
+            <summary>
+            道具描述
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Picture">
+            <summary>
+            道具图标Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Status">
+            <summary>
+            道具状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Type">
+            <summary>
+            道具类型
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.UIOffset">
+            <summary>
+            UI偏移量
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.KnapType">
+            <summary>
+            操作类型
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Count">
+            <summary>
+            使用次数
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.CDTime">
+            <summary>
+            使用冷却时间
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.IsApplySourceOnly">
+            <summary>
+            是否只作用于来源组件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.TargetType">
+            <summary>
+            目标组件类型
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Distance">
+            <summary>
+            作用距离
+            </summary>
+        </member>
+        <member name="F:DM.IFS.KnapsackItem.Usable">
+            <summary>
+            是否可用
+            </summary>
+        </member>
+        <member name="T:DM.IFS.KnapType">
+            <summary>
+            道具类型
+            </summary>
+        </member>
+        <member name="T:DM.IFS.OperationItem">
+            <summary>
+            操作项
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.Dir">
+            <summary>
+            组件中的位置
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.Id">
+            <summary>
+            操作项Id 
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.Status">
+            <summary>
+            操作项状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.Type">
+            <summary>
+            操作项类型  
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.UIOffset">
+            <summary>
+            UI偏移量
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.OperItems">
+            <summary>
+            内容事件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.OperType">
+            <summary>
+            操作类型: Toggle,Slider,Button
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.OperTime">
+            <summary>
+            操作时间
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.CDTime">
+            <summary>
+            冷却时间
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.OperatorAnim">
+            <summary>
+            操作者动画
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.OperatorBeginPos">
+            <summary>
+            操作者初始位置
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.ReturnKnapsackId">
+            <summary>
+            操作返回道具
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.OperDistance">
+            <summary>
+            操作距离
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.PreCondition">
+            <summary>
+            前置条件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.ComponentStatus">
+            <summary>
+            条件：组件状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.OperatorMode">
+            <summary>
+            条件：操作者模式
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.OperatorSkill">
+            <summary>
+            条件：操作者技能
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperationItem.Usable">
+            <summary>
+            是否可用
+            </summary>
+        </member>
+        <member name="T:DM.IFS.PreCondition">
+            <summary>
+            前置条件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.PreCondition.Id">
+            <summary>
+            前置条件：操作项Id 组件名_xml.id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.PreCondition.Status">
+            <summary>
+            前置条件：操作项状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.PreCondition.OperCount">
+            <summary>
+            前置条件：操作执行次数
+            </summary>
+        </member>
+        <member name="T:DM.IFS.OperItem">
+            <summary>
+            内容事件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperItem.Status">
+            <summary>
+            当前状态(触发事件)
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperItem.Text">
+            <summary>
+            提示内容
+            </summary>
+        </member>
+        <member name="F:DM.IFS.OperItem.NewStatus">
+            <summary>
+            事件参数
+            </summary>
+        </member>
+        <member name="T:DM.IFS.OperType">
+            <summary>
+            操作项操作类型
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IContainer.ExternalView">
+            <summary>
+            切换外视图
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IContainer.InternalView">
+            <summary>
+            切换内视图
+            </summary>
+        </member>
+        <member name="T:DM.IFS.SimuEvent">
+            <summary>
+            模式事件
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SimuEvent.EventId">
+            <summary>
+            事件Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.SimuEvent.Param">
+            <summary>
+            事件参数
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Id">
+            <summary>
+            DialogId:不是默认值的对话信息添加到管理列表中
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Show">
+            <summary>
+            管理列表中指定对话框是否显示
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Position">
+            <summary>
+            位置
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Size">
+            <summary>
+            尺寸
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Type">
+            <summary>
+            方式
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Mode">
+            <summary>
+            模式
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Time">
+            <summary>
+            存在时间，-1为一直存在
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Color">
+            <summary>
+            文本颜色
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.FontSize">
+            <summary>
+            字体大小
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Context">
+            <summary>
+            显示内容
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.TypicalDuration">
+            <summary>
+            打字机时间
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.ShowArrow">
+            <summary>
+            显示箭头
+            </summary>
+        </member>
+        <member name="F:DM.IFS.DialogRole.Fitter">
+            <summary>
+            自适应文字内容
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleMission.Id">
+            <summary>
+            任务Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleMission.Name">
+            <summary>
+            任务名
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleMission.Description">
+            <summary>
+            任务描述
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleMission.Finished">
+            <summary>
+            是否完成
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleMission.Operations">
+            <summary>
+            完成条件:操作项
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleMission.Knapsacks">
+            <summary>
+            完成条件:物品项
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleMission.PreMissions">
+            <summary>
+            激活前置任务状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.RoleMission.PreBObjects">
+            <summary>
+            激活前置组件状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.PreMis.MissionId">
+            <summary>
+            任务Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.PreMis.Finished">
+            <summary>
+            任务状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.PreBObject.BObjectName">
+            <summary>
+            组件名(用户不能取到组件Id,注意任务场景组件的命名)
+            </summary>
+        </member>
+        <member name="F:DM.IFS.PreBObject.Status">
+            <summary>
+            组件状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisOper.ShowText">
+            <summary>
+            显示文本
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisOper.BObjectName">
+            <summary>
+            组件名
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisOper.OperId">
+            <summary>
+            操作项Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisOper.Status">
+            <summary>
+            操作项状态
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisOper.OperCount">
+            <summary>
+            操作次数
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisKnap.ShowText">
+            <summary>
+            显示文本
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisKnap.BObjectName">
+            <summary>
+            组件名
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisKnap.KnapId">
+            <summary>
+            物品Id
+            </summary>
+        </member>
+        <member name="F:DM.IFS.MisKnap.Status">
+            <summary>
+            物品状态
+            </summary>
+        </member>
+        <member name="M:DM.IFS.EncryptHelper.DesEncrypt(System.String,System.String)">
+            <summary>
+            DES加密字符串
+            </summary>
+            <param name="pToEncrypt">待加密的字符串</param>
+            <param name="sKey">加密密钥,要求为8位</param>
+            <returns>加密成功返回加密后的字符串，失败返回源串</returns>
+        </member>
+        <member name="M:DM.IFS.EncryptHelper.DesDecrypt(System.String,System.String)">
+            <summary>
+            DES解密字符串
+            </summary>
+            <param name="pToDecrypt">待解密的字符串</param>
+            <param name="sKey">解密密钥,要求为8位,和加密密钥相同</param>
+            <returns>解密成功返回解密后的字符串，失败返源串</returns>
+        </member>
+        <member name="T:DM.IFS.LonLatHelper">
+            <summary>
+            经纬度转换
+            </summary>
+        </member>
+        <member name="M:DM.IFS.LonLatHelper.DisLat(System.Double,System.Double)">
+            <summary>
+            获取指定点的X坐标
+            </summary>
+            <param name="lat1">参考点纬度</param>
+            <param name="lat2">指定点纬度</param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.IFS.LonLatHelper.DisLon(System.Double,System.Double,System.Double)">
+            <summary>
+            获取指定点的Z坐标
+            </summary>
+            <param name="lon1">参考点经度</param>
+            <param name="lon2">指定点经度</param>
+            <param name="lat">指定点纬度</param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.IFS.LonLatHelper.GetLatByDis(System.Double,System.Double)">
+            <summary>
+            获取指定点的纬度
+            </summary>
+            <param name="lat1">参考点纬度</param>
+            <param name="dis">指定点在Z方向上的偏移量</param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.IFS.LonLatHelper.GetLonByDis(System.Double,System.Double,System.Double)">
+            <summary>
+            获取指定点的经度
+            </summary>
+            <param name="lon1">参考点经度</param>
+            <param name="dis">指定点在X方向上的偏移量</param>
+            <param name="lat">指定点纬度</param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.IFS.LonLatHelper.ToNormal(System.String)">
+            <summary>
+            度分秒格式转度格式
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.IFS.LonLatHelper.ToDegree(System.Double)">
+            <summary>
+            度格式转度分秒格式
+            </summary>
+            <param name="deg"></param>
+            <returns></returns>
+        </member>
+        <member name="P:DM.IFS.ComEventArgs.SourceId">
+            <summary>
+            源组件Id
+            </summary>
+        </member>
+        <member name="P:DM.IFS.ComEventArgs.SendType">
+            <summary>
+            发送类型
+            </summary>
+        </member>
+        <member name="P:DM.IFS.ComEventArgs.TargetId">
+            <summary>
+            目标组件Id
+            </summary>
+        </member>
+        <member name="P:DM.IFS.ComEventArgs.TargetInterface">
+            <summary>
+            目标组件接口
+            </summary>
+        </member>
+        <member name="P:DM.IFS.ComEventArgs.TargetMethod">
+            <summary>
+            目标组件函数
+            </summary>
+        </member>
+        <member name="P:DM.IFS.ComEventArgs.ArgsCount">
+            <summary>
+            函数参数个数
+            </summary>
+        </member>
+        <member name="P:DM.IFS.ComEventArgs.EventType">
+            <summary>
+            事件类型
+            </summary>
+        </member>
+        <member name="P:DM.IFS.ComEventArgs.Params">
+            <summary>
+            参数
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMAttribute.Index">
+            <summary>
+            执行顺序
+            </summary>
+        </member>
+        <member name="P:DM.IFS.DMAttribute.Method">
+            <summary>
+            执行方法
+            </summary>
+        </member>
+        <member name="T:DM.IFS.AddScriptInEditorModeAttribute">
+            <summary>
+            编辑器模式加载Monobehaviour脚本
+            </summary>
+        </member>
+        <member name="M:DM.IFS.AddScriptInEditorModeAttribute.#ctor(System.String,System.Int32)">
+            <summary>
+            transform.Find
+            </summary>
+            <param name="childPath">子物体路径</param>
+            <param name="index">执行顺序</param>
+        </member>
+        <member name="T:DM.IFS.AddScriptInRunModeAttribute">
+            <summary>
+            运行模式加载Monobehaviour脚本
+            </summary>
+        </member>
+        <member name="M:DM.IFS.AddScriptInRunModeAttribute.#ctor(System.String,System.Int32)">
+            <summary>
+            transform.Find
+            </summary>
+            <param name="childPath">子物体路径</param>
+            <param name="index">执行顺序</param>
+        </member>
+        <member name="T:DM.IFS.AttachedModelAttribute">
+            <summary>
+            附着在模型上的脚本(脚本需内置进工程中,模型上的脚本只用作记录参数信息)
+            </summary>
+        </member>
+        <member name="T:DM.IFS.EditorModeInitializedAttribute">
+            <summary>
+            编辑模式初始化
+            </summary>
+        </member>
+        <member name="T:DM.IFS.RunModeInitializedAttribute">
+            <summary>
+            运行模式初始化
+            </summary>
+        </member>
+        <member name="T:DM.IFS.CatchErrorAttribute">
+            <summary>
+            捕获异常
+            </summary>
+        </member>
+        <member name="T:DM.IFS.IEditorRec">
+            <summary>
+            接收消息
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IEditorRec.ReceiveEditorOperationMes(UnityEngine.GameObject,System.Int32,System.String)">
+            <summary>
+            接收来自操作或数据的事件消息
+            </summary>
+        </member>
+        <member name="T:DM.IFS.IEditorSend">
+            <summary>
+            发送消息
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IEditorSend.SendEditorOperation(System.String,System.Int32,System.String)">
+            <summary>
+            编辑模式事件
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IEditorSend.SendEditorSystem(System.Int32,System.String)">
+            <summary>
+            系统消息
+            </summary>
+            <param name="eventType">EditorSystemType事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="T:DM.IFS.SendType">
+            <summary>
+            消息发送类型
+            </summary>
+        </member>
+        <member name="T:DM.IFS.MainSystemType">
+            <summary>
+            系统消息类型
+            枚举命名规则1.Mes结尾为发送给主机和所有从机；
+            2.Event结尾为发送给主机，消息只处理不转发；3.Status结尾为发送给所有从机
+            4.Current结尾只发送给当前客户端的回调，不转发
+            </summary>
+        </member>
+        <member name="T:DM.IFS.ExtensionForCommon">
+            <summary>
+            Monobehaviour扩展
+            </summary>
+        </member>
+        <member name="M:DM.IFS.ExtensionForCommon.SetMeshRender(UnityEngine.Transform,System.Boolean)">
+            <summary>
+            显示/隐藏Mesh
+            </summary>
+            <param name="show"></param>
+        </member>
+        <member name="M:DM.IFS.ExtensionForCommon.HGetScript(UnityEngine.GameObject,System.String,System.Boolean)">
+            <summary>
+            获取指定名字的脚本
+            </summary>
+            <param name="obj">物体</param>
+            <param name="script">脚本名字</param>
+            <param name="includeInactive">是否包含未激活子物体</param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.IFS.ExtensionForCommon.HGetScripts(UnityEngine.GameObject,System.String)">
+            <summary>
+            获取指定名字的脚本集合
+            </summary>
+            <param name="obj">物体</param>
+            <param name="script">脚本名字</param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.IFS.ExtensionForCommon.HGetField(UnityEngine.MonoBehaviour,System.String)">
+            <summary>
+            GetField
+            </summary>
+            <param name="mono"></param>
+            <param name="field"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DM.IFS.ExtensionForCommon.HSetField(UnityEngine.MonoBehaviour,System.String,System.Object)">
+            <summary>
+            SetField
+            </summary>
+            <param name="mono"></param>
+            <param name="field"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:DM.IFS.ExtensionForCommon.HSetMethod(UnityEngine.MonoBehaviour,System.String,System.Object[])">
+            <summary>
+            SetMethod
+            </summary>
+            <param name="mono"></param>
+            <param name="method"></param>
+            <param name="objs"></param>
+        </member>
+        <member name="T:DM.IFS.IControl">
+            <summary>
+            接口函数格式规范
+            1.MethodXX(int eventType,string param)
+            2.MethodXX(GameObject sender,int eventType,string param)
+            </summary>
+        </member>
+        <member name="T:DM.IFS.DevType">
+            <summary>
+            设备类型
+            </summary>
+        </member>
+        <member name="T:DM.IFS.IMessageRec">
+            <summary>
+            接收消息
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMessageRec.ReceiveKeyCodeMes(System.Int32,System.String)">
+            <summary>
+            主机客户端接收从机发来的按键消息
+            </summary>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="M:DM.IFS.IMessageRec.ReceiveStatusMes(System.Int32,System.String)">
+            <summary>
+            从机接收主机客户端发来的状态消息
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMessageRec.ReceiveOperationMes(UnityEngine.GameObject,System.Int32,System.String)">
+            <summary>
+            主机客户端接收系统发来的逻辑事件消息
+            </summary>   
+            <param name="senderObj">Sender</param>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="M:DM.IFS.IMessageRec.SubReceiveOperationMes(UnityEngine.GameObject,System.Int32,System.String)">
+            <summary>
+            从机接收主机客户端发来的事件消息
+            </summary>
+            <param name="senderObj">Sender</param>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="T:DM.IFS.IMesRec">
+            <summary>
+            接收消息
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMesRec.RecMessage(DM.IFS.SendType,UnityEngine.GameObject,System.Int32,System.String)">
+            <summary>
+            消息接收
+            </summary>
+            <param name="type">发送类型</param>
+            <param name="senderObj">GameObject</param>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="T:DM.IFS.IMessageSend">
+            <summary>
+            发送消息
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMessageSend.SendKeyCode(System.Int32,System.String)">
+            <summary>
+            从机发给主机客户端，同步按键操作
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMessageSend.SendKeyCode(System.String,System.Int32,System.String)">
+            <summary>
+            从机发给主机客户端，同步按键操作
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMessageSend.SendStatus(System.Int32,System.String)">
+            <summary>
+            主机客户端发给其他从机,同步自身状态
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMessageSend.SendOperation(System.String,System.Int32,System.String)">
+            <summary>
+            主机客户端，组件之间转发事件
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMessageSend.SendOperationToSub(System.String,System.Int32,System.String)">
+            <summary>
+            转发事件，主机客户端只发给targetId客户端的targetId组件
+            </summary>
+        </member>
+        <member name="M:DM.IFS.IMessageSend.SendSystem(System.Int32,System.String)">
+            <summary>
+            系统消息
+            </summary>
+            <param name="eventType">SystemEnum事件枚举</param>
+            <param name="paras">参数</param>
+        </member>
+        <member name="M:DM.IFS.IMessageSend.SendSystem(System.String,System.Int32,System.String)">
+            <summary>
+            系统消息
+            </summary>
+            <param name="targetId">目标Id</param>
+            <param name="eventType">SystemEnum事件枚举</param>
+            <param name="paras">参数</param>
+        </member>
+        <member name="T:DM.IFS.ParamHelper">
+            <summary>
+            参数扩展
+            </summary>
+        </member>
+        <member name="M:DM.IFS.StringHelper.Clear">
+            <summary>
+            0.builder=new StringBuilder()
+            1.builder.Remove(0,builder.Length)
+            2.builder.Replace(builder.ToString(),"")
+            3.builder.Length=0  效率最高
+            </summary>
+        </member>
+        <member name="M:ILoadAssembly.MainEnter(UnityEngine.GameObject)">
+            <summary>
+            入口函数
+            </summary>
+            <param name="resModel">组件模型资源</param>
+        </member>
+        <member name="P:DMonoBehaviour.allBObjects">
+            <summary>
+            场景中所有组件
+            </summary>
+        </member>
+        <member name="P:DMonoBehaviour.operItems">
+            <summary>
+            组件所有操作项
+            </summary>
+        </member>
+        <member name="P:DMonoBehaviour.knapItems">
+            <summary>
+            组件所有物品项
+            </summary>
+        </member>
+        <member name="P:DMonoBehaviour.root">
+            <summary>
+            基准偏移量
+            </summary>
+        </member>
+        <member name="F:SendManager.BObjectId">
+            <summary>
+            组件Id
+            </summary>
+        </member>
+        <member name="F:SendManager.EditorEvent">
+            <summary>
+            编辑模式事件
+            </summary>
+        </member>
+        <member name="F:SendManager.RunEvent">
+            <summary>
+            运行模式事件
+            </summary>
+        </member>
+        <member name="F:SendManager.DebugMode">
+            <summary>
+            调试模式：From ScriptManager
+            </summary>
+        </member>
+        <member name="M:SendManager.SendToTarget(System.Boolean,DM.IFS.SendType,System.String,System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            发送消息给目标物体
+            </summary>
+        </member>
+        <member name="M:SendManager.SendToSelf(System.Boolean,DM.IFS.SendType,System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            发送消息给自身
+            </summary>
+        </member>
+        <member name="M:SendManager.SendToSystem(System.Boolean,DM.IFS.SendType,System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            发送消息给系统
+            </summary>
+        </member>
+        <member name="M:SendManager.RunKeyCode(System.Int32,System.String)">
+             <summary>
+            运行模式：从机发给主机客户端，同步按键操作
+             </summary>
+        </member>
+        <member name="M:SendManager.RunKeyCode(System.String,System.Int32,System.String)">
+            <summary>
+            运行模式：从机发给主机客户端，同步按键操作
+            </summary>
+        </member>
+        <member name="M:SendManager.RunStatus(System.Int32,System.String)">
+            <summary>
+            运行模式：主机客户端发给其他从机,同步自身状态
+            </summary>
+        </member>
+        <member name="M:SendManager.RunOperation(System.String,System.Int32,System.String)">
+            <summary>
+            运行模式：主机客户端，组件之间转发事件
+            </summary>
+        </member>
+        <member name="M:SendManager.RunOperationToSub(System.String,System.String,System.Int32,System.String)">
+            <summary>
+            运行模式：转发事件，主机客户端只发给targetId客户端的targetId组件
+            </summary>
+        </member>
+        <member name="M:SendManager.RunGetComponent(System.String,System.String,System.Int32)">
+            <summary>
+            根据Id获取系统中的组件
+            </summary>
+        </member>
+        <member name="M:SendManager.RunSystem(System.Int32,System.String)">
+            <summary>
+            运行模式：系统消息
+            </summary>
+            <param name="eventType">SystemEnum事件枚举</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="M:SendManager.RunSend(DM.IFS.SendType,System.String,System.Int32,System.String)">
+            <summary>
+            运行模式消息发送
+            </summary>
+            <param name="st">发送类型</param>
+            <param name="targetId">目标组件Id</param>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="M:SendManager.EditorOperation(System.String,System.Int32,System.String)">
+            <summary>
+            编辑模式：主机客户端，组件之间转发事件
+            </summary>
+        </member>
+        <member name="M:SendManager.EditorSystem(System.Int32,System.String)">
+            <summary>
+            编辑模式：系统消息
+            </summary>
+        </member>
+        <member name="M:SendManager.Log(System.String)">
+            <summary>
+            调试模式:Debug.Log
+            </summary>
+            <param name="message">消息</param>
+        </member>
+        <member name="M:SendManager.LogWarning(System.String)">
+            <summary>
+            调试模式：Debug.LogWarning
+            </summary>
+            <param name="message">消息</param>
+        </member>
+        <member name="M:SendManager.LogError(System.String)">
+            <summary>
+            调试模式：Debug.LogError
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="F:ScriptManager.BObjectId">
+            <summary>
+            组件Id
+            </summary>
+        </member>
+        <member name="F:ScriptManager.AnimStatus">
+            <summary>
+            姿态
+            </summary>
+        </member>
+        <member name="F:ScriptManager.SkinStatus">
+            <summary>
+            皮肤
+            </summary>
+        </member>
+        <member name="P:ScriptManager.CurStatus">
+            <summary>
+            逻辑状态
+            </summary>
+        </member>
+        <member name="F:ScriptManager.Location">
+            <summary>
+            定位物体
+            </summary>
+        </member>
+        <member name="F:ScriptManager.Properties">
+            <summary>
+            组件动态属性
+            </summary>
+        </member>
+        <member name="F:ScriptManager.StatusEnums">
+            <summary>
+            逻辑状态枚举
+            </summary>
+        </member>
+        <member name="F:ScriptManager.AnimStatusEnums">
+            <summary>
+            姿态枚举
+            </summary>
+        </member>
+        <member name="F:ScriptManager.SkinStatusEnums">
+            <summary>
+            皮肤枚举
+            </summary>
+        </member>
+        <member name="F:ScriptManager.EventEnums">
+            <summary>
+            运行模式事件枚举
+            </summary>
+        </member>
+        <member name="F:ScriptManager.EditorEventEnums">
+            <summary>
+            编辑模式事件枚举
+            </summary>
+        </member>
+        <member name="F:ScriptManager.UIEnums">
+            <summary>
+            角色模式UI
+            </summary>
+        </member>
+        <member name="F:ScriptManager.RelativePoints">
+            <summary>
+            寻路组件目标点  Todo Remove
+            </summary>
+        </member>
+        <member name="F:ScriptManager.IsRoomCreator">
+            <summary>
+            是否为房间创建者
+            </summary>
+        </member>
+        <member name="M:ScriptManager.EditorModeInitialized">
+            <summary>
+            编辑模式初始化
+            </summary>
+        </member>
+        <member name="M:ScriptManager.RunModeInitialized(System.Boolean,DM.IFS.SceneInfo)">
+            <summary>
+            运行模式初始化
+            </summary>
+        </member>
+        <member name="M:ScriptManager.AnimStatusChanged(System.Int32)">
+            <summary>
+            姿态改变事件
+            </summary>
+            <param name="anim">姿态</param>
+        </member>
+        <member name="M:ScriptManager.SkinStatusChanged(System.Int32)">
+            <summary>
+            皮肤改变事件
+            </summary>
+            <param name="skin"></param>
+        </member>
+        <member name="M:ScriptManager.CurStatusChanged(System.Int32)">
+            <summary>
+            逻辑状态改变事件
+            </summary>
+            <param name="status">逻辑状态</param>
+        </member>
+        <member name="M:ScriptManager.PropertiesChanged(DM.Entity.DynamicProperty[])">
+            <summary>
+            组件动态属性改变事件
+            </summary>
+            <param name="pros">动态属性</param>
+        </member>
+        <member name="M:ScriptManager.RecKeyCodeMes(System.Int32,System.String)">
+            <summary>
+            主机客户端接收从机发来的按键消息
+            </summary>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="M:ScriptManager.RecStatusMes(System.Int32,System.String)">
+            <summary>
+             从机接收主机客户端发来的状态消息
+            </summary>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="M:ScriptManager.RecOperationMes(UnityEngine.GameObject,System.Int32,System.String)">
+            <summary>
+            主机客户端接收系统发来的逻辑事件消息
+            </summary>   
+            <param name="sender">Sender</param>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="M:ScriptManager.RecEditorOperationMes(UnityEngine.GameObject,System.Int32,System.String)">
+            <summary>
+             接收来自操作或数据的事件消息
+            </summary>
+            <param name="sender">Sender</param>
+            <param name="eventType">事件类型</param>
+            <param name="param">参数</param>
+        </member>
+        <member name="M:ScriptManager.SynchtorRec(System.Int32,System.String)">
+            <summary>
+            操作项同步器
+            </summary>
+            <param name="eventType">操作项Or物品项</param>
+            <param name="param">同步内容</param>
+        </member>
+    </members>
+</doc>
