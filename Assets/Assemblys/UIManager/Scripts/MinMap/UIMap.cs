@@ -7,6 +7,7 @@ using UiManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using PathPoint = ToolsLibrary.PathPart.PathPoint;
+using Vectrosity;
 
 public enum OperatorState
 {
@@ -16,18 +17,24 @@ public enum OperatorState
 
 public class UIMap : BasePanel, IPointerClickHandler
 {
-    public Transform iconCellParent;
-    public IconCellBase airIconPrefab,pointIconPrefab;
+    [SerializeField] private RectTransform mapView;
+    [SerializeField] private Transform iconCellParent;
+    [SerializeField] private IconCellBase airIconPrefab, pointIconPrefab;
 
+    private Vector2 uiCameraSize;
     private List<BObjectModel> allObjModels;
     private OperatorState currentState;
-    private Dictionary<string, IconCellBase> allIconCells; //存储地图上的所有点
     private EquipBase currentChooseEquip;
+    private Dictionary<string, IconCellBase> allIconCells; //存储地图上的所有点
+    private Dictionary<string, VectorLine> equipPathLines; //装备ID：路径线
+    private Dictionary<string, List<Vector2>> equipPathDatas; //装备id：路径点
 
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
         //在场景中初始化装备图标、任务图标、地域图标（有共性，都包含自身属性和附加点属性，可以抽象一个类，每个类型在自己具体类中，实现具体逻辑）
+        equipPathLines = new Dictionary<string, VectorLine>();
+        equipPathDatas = new Dictionary<string, List<Vector2>>();
         allObjModels = new List<BObjectModel>();
         for (int i = 0; i < ((BObjectModel[])userData).Length; i++)
         {
@@ -49,19 +56,23 @@ public class UIMap : BasePanel, IPointerClickHandler
     }
 
     public BObjectModel[] sceneAllObjs;
+
     private void Start()
     {
+        equipPathLines = new Dictionary<string, VectorLine>();
+        equipPathDatas = new Dictionary<string, List<Vector2>>();
         allObjModels = new List<BObjectModel>();
-
+        uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
+        Debug.Log("uiCameraSize：" + uiCameraSize);
         for (int i = 0; i < sceneAllObjs.Length; i++)
         {
             var item = sceneAllObjs[i];
-            item.BObject = new BObject(){Info = new ComInfo(){Name = item.name}};
+            item.BObject = new BObject() { Info = new ComInfo() { Name = item.name } };
             item.BObject.Id = ((i + 1) * 11111111).ToString();
             item.GetComponent<EquipBase>().BObjectId = item.BObject.Id;
             allObjModels.Add(item);
         }
-        
+
         allIconCells = new Dictionary<string, IconCellBase>();
         for (int i = 0; i < allObjModels.Count; i++)
         {
@@ -74,10 +85,26 @@ public class UIMap : BasePanel, IPointerClickHandler
         }
     }
 
+    private void InitLineByObjId(string objId)
+    {
+        equipPathDatas.Add(objId, new List<Vector2>() { uiPos2LinePos(allIconCells[objId].transform.position) });
+        var itemLine = new VectorLine("Line" + objId, equipPathDatas[objId], 5, LineType.Continuous);
+#if UNITY_EDITOR
+        itemLine.SetCanvas(GetComponentInParent<Canvas>());
+#else
+        itemLine.SetCanvas(UIManager.Instance.CurrentCanvans);
+#endif
+        itemLine.rectTransform.SetParent(iconCellParent);
+        itemLine.rectTransform.localPosition = Vector3.zero;
+        itemLine.rectTransform.localScale = Vector3.one;
+        itemLine.active = true;
+        equipPathLines.Add(objId, itemLine);
+    }
+
     //该段逻辑是点击了地图上任意图标的回调，包含两部分：1.点击装备图表 2.点击非装备图标(包含系统实体、本地实体)
     private void OnChooseObj(string objId)
     {
-        IconCellBase targetIconCell=null;
+        IconCellBase targetIconCell = null;
         foreach (var iconCell in allIconCells)
         {
             if (string.Equals(iconCell.Key, objId))
@@ -104,16 +131,24 @@ public class UIMap : BasePanel, IPointerClickHandler
                 var airObj = itemObj.BObject.Info.Tags.Find(x => x.Id == 3);
 #endif
                     //证明选中的是可移动装备
-                    currentState = OperatorState.SetPathPoint;
                     currentChooseEquip = airObj.gameObject.GetComponent<EquipBase>();
-                    Debug.Log("选中的是"+airObj.name);
-                    //打开线段的显示，设置该装备的最后一个目标点为线段起始点
+
+                    //获取选中装备的路径轨迹线，进行操作
+                    if (!equipPathLines.ContainsKey(currentChooseEquip.BObjectId))
+                        InitLineByObjId(currentChooseEquip.BObjectId);
+                    //给数据末尾添加一个随鼠标移动的点
+                    int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
+                    Vector2 lastPoint = equipPathDatas[currentChooseEquip.BObjectId][itemCount];
+                    equipPathDatas[currentChooseEquip.BObjectId].Add(lastPoint);
+                    equipPathLines[currentChooseEquip.BObjectId].Draw();
+
+                    currentState = OperatorState.SetPathPoint;
                 }
 
                 if (targetIconCell is PointIconCell)
                 {
                     //选中的是标点
-                    Debug.Log("选中的标点是"+targetIconCell.belongToId+"的点；"+"名字是："+targetIconCell.name);
+                    Debug.Log("选中的标点是" + targetIconCell.belongToId + "的点；" + "名字是：" + targetIconCell.name);
                     Debug.Log($"经过了{targetIconCell.allViaPointIds.Count}个点");
                 }
 
@@ -154,6 +189,9 @@ public class UIMap : BasePanel, IPointerClickHandler
             creatPathPoint(string.IsNullOrEmpty(attachedObjectId) ? pointData.pointId : attachedObjectId, pointData);
             isWaitCreat = false;
             attachedObjectId = String.Empty;
+            //数据上加完点后，把点插入到线段倒数第二个位置
+            int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
+            equipPathDatas[currentChooseEquip.BObjectId].Insert(itemCount, uiPos2LinePos(pointData.currentPoint));
         }
     }
 
@@ -182,25 +220,35 @@ public class UIMap : BasePanel, IPointerClickHandler
         if (Input.GetMouseButtonDown(1) && currentState == OperatorState.SetPathPoint)
         {
             currentState = OperatorState.Click;
-            //取消线段的显示
+            //取消线段跟随鼠标
+            int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
+            equipPathDatas[currentChooseEquip.BObjectId].RemoveAt(itemCount);
+            equipPathLines[currentChooseEquip.BObjectId].Draw();
+            currentChooseEquip = null;
         }
 
         if (currentState == OperatorState.SetPathPoint)
         {
             //实时设置鼠标位置为线段终点，并刷新线段显示
+            int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
+            equipPathDatas[currentChooseEquip.BObjectId][itemCount] = uiPos2LinePos((Vector2)Input.mousePosition);
+            equipPathLines[currentChooseEquip.BObjectId].Draw();
         }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         //todo:这里需要检测点击区域是否在地图内部
-        if (eventData.button== PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Left)
         {
+            Vector2 point = uiPos2LinePos(eventData.position) + new Vector2(mapView.sizeDelta.x / 2, mapView.sizeDelta.y / 2);
+            if (point.x < 0 || point.y < 0 || point.x > mapView.sizeDelta.x || point.y > mapView.sizeDelta.y) return;
+
             OnChooseObj(eventData.position);
         }
     }
 
-    #region 2D、3D之间的位置转换 //todo:2D、3D之间的位置转换逻辑后续需要补充
+    #region 数据转换 //todo:2D、3D之间的位置转换逻辑后续需要补充
 
     private Vector2 worldPos2UiPos(Vector3 pos)
     {
@@ -210,6 +258,17 @@ public class UIMap : BasePanel, IPointerClickHandler
     private Vector3 uiPos2WorldPos(Vector2 pos)
     {
         return Vector3.zero;
+    }
+
+    /// <summary>
+    /// ui点转换为线段相对点
+    /// </summary>
+    /// <returns></returns>
+    private Vector2 uiPos2LinePos(Vector2 pos)
+    {
+        Vector2 point = new Vector2(uiCameraSize.x * pos.x / Screen.width, uiCameraSize.y * pos.y / Screen.height) -
+            new Vector2(uiCameraSize.x / 2, uiCameraSize.y / 2);
+        return point;
     }
 
     #endregion

@@ -1039,6 +1039,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsShow: 0
+  mapView: {fileID: 341107360}
   iconCellParent: {fileID: 1061557974}
   airIconPrefab: {fileID: 861454334}
   pointIconPrefab: {fileID: 1326174357}
@@ -2076,7 +2077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

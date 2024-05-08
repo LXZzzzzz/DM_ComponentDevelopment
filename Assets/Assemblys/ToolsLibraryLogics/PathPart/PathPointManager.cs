@@ -29,7 +29,7 @@ namespace ToolsLibrary.PathPart
         {
             PathPoint item = new PathPoint()
             {
-                pointId = pointId, belongTo = targetEquip.BObjectId, PreviousPointId = targetEquip.lastPointId, 
+                pointId = pointId, belongToEquipId = targetEquip.BObjectId, PreviousPointId = targetEquip.lastPointId, 
                 currentPoint = currentPointPos, tasks = new List<TaskBase>(), NextPointId = null
             };
             allPathPoints.Add(item);
