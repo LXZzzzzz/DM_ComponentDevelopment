@@ -28,6 +28,7 @@ namespace UiManager
             FindChildControl<Dropdown>();
             FindChildControl<ScrollRect>();
             IsShow = false;
+            Init();
         }
 
         private void WindowAni()
@@ -82,6 +83,11 @@ namespace UiManager
                     controlDic.Add(objName, new List<UIBehaviour>() { controls[i] });
                 }
             }
+        }
+
+        public virtual void Init()
+        {
+            
         }
 
         public virtual void ShowMe(object userData)

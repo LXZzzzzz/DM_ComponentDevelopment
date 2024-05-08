@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c273b499a08c234388d3c55bea2a556, type: 3}
-  m_Name: "\u672A\u547D\u540D"
+  m_Name: Commander
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: 6943796a153e69745b53e7f685332919, type: 3}
-  AssetName: PersonTest
-  Description: "\u6D4B\u8BD52\uFF0C\u7528\u6765\u6D4B\u8BD5\u4E0D\u540CTag\u4F1A\u4E0D\u4F1A\u51FA\u73B0IO\u9519\u8BEF"
-  Prefab: {fileID: 4694926550772493993, guid: 0a9984c939a79704cbdc6d9f6f8ce589, type: 3}
+  AssetName: "\u6307\u6325\u5B98\u89D2\u8272"
+  Description: "\u6307\u6325\u5B98\u89D2\u8272\u7EC4\u4EF6"
+  Prefab: {fileID: 852962914917373184, guid: d357c86a34ff1be40812dd298706db6f, type: 3}
   Size: 0
   listComponent:
   - BuiltIn: 1
@@ -277,21 +277,21 @@ MonoBehaviour:
     Id: 2006
     IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C5"
-  IsCreateTag: 1
+  IsCreateTag: 0
   IsCreateScript: 1
   IsCreateModel: 0
   IsCompressModel: 0
-  isAssignMain: 0
-  MainCalss: PersonTestMain
+  isAssignMain: 1
+  MainCalss: CommanderMain
   OtherScriptPaths:
-  - E:/UnityProjects/Work/ComponentDevelopment/Assets/Assemblys/PersonTest/Scripts
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/Assemblys/Commander/Scripts
   OutputPaths:
   - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/RGOutput
   - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/DM2.1.6/DM2.1.6D/DM_Data/LibRes/ComTemp/\u89D2\u8272/\u6211\u7684\u89D2\u8272"
   ReferencePaths:
-  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins/DMIFS.dll
-  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins/DMInputSystem.dll
-  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins/Model.dll
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\DMIFS.dll
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\DMInputSystem.dll
+  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins\Model.dll
+  - E:/VSProjects/testVSClassLibrary/ToolsLibrary/bin/Debug/ToolsLibrary.dll
   - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/BundleLib/UnityEngine.dll"
-  - E:/UnityProjects/Work/testDM2022/Assets/DMRGEditor/Plugins/ToolsLibrary.dll
   BatchAddRefsPath: 

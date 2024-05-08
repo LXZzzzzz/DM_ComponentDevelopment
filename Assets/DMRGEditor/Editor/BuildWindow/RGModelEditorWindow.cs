@@ -144,17 +144,26 @@ namespace DM.RGEditor
                 }
                 if (SirenixEditorGUI.ToolbarButton(new GUIContent("全部生成")))
                 {
-                    string signal = DateTime.Now.ToFileTime().ToString();
-                    for (int i = 0; i < MenuTree.MenuItems.Count; i++)
+                    bool userConfirmed = EditorUtility.DisplayDialog(
+                        "二次确认",
+                        "是否确认全部生成组件?",
+                        "确认",
+                        "取消"
+                    );
+                    if (userConfirmed)
                     {
-                        ModelAssetTemplate asset = (ModelAssetTemplate)MenuTree.MenuItems[i].Value;
-                        if (asset.OutputPaths.Length <= 0)
-                            Debug.LogError(asset.AssetName + "输出路径不能为空！");
-                        else
-                            BundleFromRGModelAsset(asset,signal);
+                        string signal = DateTime.Now.ToFileTime().ToString();
+                        for (int i = 0; i < MenuTree.MenuItems.Count; i++)
+                        {
+                            ModelAssetTemplate asset = (ModelAssetTemplate)MenuTree.MenuItems[i].Value;
+                            if (asset.OutputPaths.Length <= 0)
+                                Debug.LogError(asset.AssetName + "输出路径不能为空！");
+                            else
+                                BundleFromRGModelAsset(asset,signal);
+                        }
+                        Debug.Log("全部组件生成完成[" + signal + "]");
+                        ShowNotification(new GUIContent("全部组件生成完成[" + signal + "]"));
                     }
-                    Debug.Log("全部组件生成完成[" + signal + "]");
-                    ShowNotification(new GUIContent("全部组件生成完成[" + signal + "]"));
                 }
             }
             SirenixEditorGUI.EndHorizontalToolbar();
