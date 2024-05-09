@@ -19,7 +19,8 @@ namespace ToolsLibrary.PathPart
             this.targetEquip = targetEquip;
             currentPointPos = pointPos;
             addPointCb = callBack;
-            allPathPoints ??= new List<PathPoint>();
+            if (allPathPoints == null)
+                allPathPoints = new List<PathPoint>();
             //todo:向主机申请一个点ID
 
             creatAPoint(testID++.ToString());

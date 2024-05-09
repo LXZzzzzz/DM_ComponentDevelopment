@@ -15,7 +15,7 @@ namespace UiManager
         //通过里氏转换原则，存储所有UI控件
         private Dictionary<string, List<UIBehaviour>> controlDic;
         protected UIType myUIType = UIType.View;
-        public bool IsShow;
+        [HideInInspector]public bool IsShow;
         private void Awake()
         {
             controlDic = new Dictionary<string, List<UIBehaviour>>();

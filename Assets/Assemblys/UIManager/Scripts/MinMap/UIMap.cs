@@ -20,6 +20,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     [SerializeField] private RectTransform mapView;
     [SerializeField] private Transform iconCellParent;
     [SerializeField] private IconCellBase airIconPrefab, pointIconPrefab;
+    [SerializeField] private Material mat;
 
     private Vector2 uiCameraSize;
     private List<BObjectModel> allObjModels;
@@ -59,6 +60,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     private void Start()
     {
+#if UNITY_EDITOR
         equipPathLines = new Dictionary<string, VectorLine>();
         equipPathDatas = new Dictionary<string, List<Vector2>>();
         allObjModels = new List<BObjectModel>();
@@ -83,12 +85,13 @@ public class UIMap : BasePanel, IPointerClickHandler
             itemCell.Init(allObjModels[i].BObject.Id, OnChooseObj);
             allIconCells.Add(allObjModels[i].BObject.Id, itemCell);
         }
+#endif
     }
 
     private void InitLineByObjId(string objId)
     {
         equipPathDatas.Add(objId, new List<Vector2>() { uiPos2LinePos(allIconCells[objId].transform.position) });
-        var itemLine = new VectorLine("Line" + objId, equipPathDatas[objId], 5, LineType.Continuous);
+        var itemLine = new VectorLine("Line" + objId, equipPathDatas[objId], 10, LineType.Continuous);
 #if UNITY_EDITOR
         itemLine.SetCanvas(GetComponentInParent<Canvas>());
 #else
@@ -98,6 +101,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         itemLine.rectTransform.localPosition = Vector3.zero;
         itemLine.rectTransform.localScale = Vector3.one;
         itemLine.active = true;
+        itemLine.material = mat;
         equipPathLines.Add(objId, itemLine);
     }
 
@@ -122,13 +126,12 @@ public class UIMap : BasePanel, IPointerClickHandler
 
                 if (targetIconCell is AirIconCell)
                 {
-#if UNITY_EDITOR
                     var itemObj = allObjModels.Find(x => string.Equals(targetIconCell.belongToId, x.BObject.Id));
+#if UNITY_EDITOR
                     var airObj = itemObj.gameObject.tag == "Plane" ? itemObj : null;
 #else
-                BObjectModel itemObj = allObjModels.Find(x => string.Equals(targetIconCell.belongToId, x.BObject.Id));
-                //todo:这里的Id==3只是测试逻辑，最后要通过组件的实际Id对这里进行修改
-                var airObj = itemObj.BObject.Info.Tags.Find(x => x.Id == 3);
+                    //todo:这里的Id==3只是测试逻辑，最后要通过组件的实际Id对这里进行修改
+                    var airObj = itemObj.BObject.Info.Tags.Find(x => x.Id == 3) != null ? itemObj : null;
 #endif
                     //证明选中的是可移动装备
                     currentChooseEquip = airObj.gameObject.GetComponent<EquipBase>();
@@ -267,7 +270,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     private Vector2 uiPos2LinePos(Vector2 pos)
     {
         Vector2 point = new Vector2(uiCameraSize.x * pos.x / Screen.width, uiCameraSize.y * pos.y / Screen.height) -
-            new Vector2(uiCameraSize.x / 2, uiCameraSize.y / 2);
+                        new Vector2(uiCameraSize.x / 2, uiCameraSize.y / 2);
         return point;
     }
 

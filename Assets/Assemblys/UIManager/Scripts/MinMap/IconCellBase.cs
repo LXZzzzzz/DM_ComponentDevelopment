@@ -29,14 +29,15 @@ public abstract class IconCellBase : MonoBehaviour, IPointerClickHandler
         //鼠标点击后，告诉对方我的类型
         chooseCb?.Invoke(_belongToId);
     }
+
     public void AddAttachedPoint(string pointId)
     {
-        _allViaPointIds ??= new List<string>();
+        if (_allViaPointIds == null)
+            _allViaPointIds = new List<string>();
         _allViaPointIds.Add(pointId);
     }
 
     public void RefreshView()
     {
-        
     }
 }
