@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using ToolsLibrary.PathPart;
 using UnityEngine;
 
-public class TestAirEquip : EquipBase
+public class NewBehaviourScript : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

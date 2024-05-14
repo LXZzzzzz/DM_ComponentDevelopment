@@ -14,7 +14,7 @@ public class UIBarChartController : BasePanel
 {
     // private BarChart barChart;
     private Component barChartReflex;
-    public Material mat;
+    private Material mat;
     public bool isUseReflex=true;
 
 

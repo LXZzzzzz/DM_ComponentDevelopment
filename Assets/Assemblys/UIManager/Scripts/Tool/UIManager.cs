@@ -89,6 +89,9 @@ namespace UiManager
                 case UIName.UIConfirmation:
                     itemUI = Instantiate((main as UIManagerMain).UIConfirmation, CurrentCanvans.transform);
                     break;
+                case UIName.UIMap:
+                    itemUI = Instantiate((main as UIManagerMain).UIMap, CurrentCanvans.transform);
+                    break;
                 default:
                     break;
             }
@@ -131,6 +134,7 @@ namespace UiManager
         UIIconShow,
         UICursorShow,
         UIBarChart,
-        UIConfirmation
+        UIConfirmation,
+        UIMap
     }
 }

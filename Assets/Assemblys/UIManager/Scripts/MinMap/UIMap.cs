@@ -1,34 +1,49 @@
 using System;
 using System.Collections.Generic;
 using DM.Core.Map;
-using DM.Entity;
+using ToolsLibrary;
 using ToolsLibrary.PathPart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using PathPoint = ToolsLibrary.PathPart.PathPoint;
 using Vectrosity;
+using EventType = ToolsLibrary.EventType;
 
 public enum OperatorState
 {
     Click,
-    SetPathPoint
+    SetPathPoint,
+    NoPlanningRoute //不规划路径模式
 }
 
 public class UIMap : BasePanel, IPointerClickHandler
 {
-    [SerializeField] private RectTransform mapView;
-    [SerializeField] private Transform iconCellParent;
-    [SerializeField] private IconCellBase airIconPrefab, pointIconPrefab;
+    private RectTransform mapView;
+    private Transform iconCellParent;
+    private IconCellBase airIconPrefab, pointIconPrefab;
     [SerializeField] private Material mat;
 
     private Vector2 uiCameraSize;
-    private List<BObjectModel> allObjModels;
+    private List<EquipBase> allObjModels;
     private OperatorState currentState;
     private EquipBase currentChooseEquip;
     private Dictionary<string, IconCellBase> allIconCells; //存储地图上的所有点
     private Dictionary<string, VectorLine> equipPathLines; //装备ID：路径线
     private Dictionary<string, List<Vector2>> equipPathDatas; //装备id：路径点
+    private float mapBL;
+
+    public override void Init()
+    {
+        base.Init();
+        mapView = transform.Find("maxMap/map").GetComponent<RectTransform>();
+        iconCellParent = transform.Find("maxMap/objects").GetComponent<RectTransform>();
+        airIconPrefab = transform.Find("prefabs/airCell").GetComponent<AirIconCell>();
+        pointIconPrefab = transform.Find("prefabs/pointCell").GetComponent<PointIconCell>();
+        //todo:后续要改成实际地图比例
+        ////当前测试地图长宽是100，地图数据转换比例是
+        mapBL = 100 / mapView.sizeDelta.x;
+    }
 
     public override void ShowMe(object userData)
     {
@@ -36,42 +51,41 @@ public class UIMap : BasePanel, IPointerClickHandler
         //在场景中初始化装备图标、任务图标、地域图标（有共性，都包含自身属性和附加点属性，可以抽象一个类，每个类型在自己具体类中，实现具体逻辑）
         equipPathLines = new Dictionary<string, VectorLine>();
         equipPathDatas = new Dictionary<string, List<Vector2>>();
-        allObjModels = new List<BObjectModel>();
-        for (int i = 0; i < ((BObjectModel[])userData).Length; i++)
-        {
-            allObjModels.Add(((BObjectModel[])userData)[i]);
-        }
+        allObjModels = (List<EquipBase>)userData;
 
         allIconCells = new Dictionary<string, IconCellBase>();
         for (int i = 0; i < allObjModels.Count; i++)
         {
+            if (allObjModels[i].GetComponent<EquipBase>() == null) continue;
             var itemCell = Instantiate(airIconPrefab, iconCellParent);
             itemCell.gameObject.SetActive(true);
             //传入这个组件的基本信息，和选择后的回调
             itemCell.transform.position = worldPos2UiPos(allObjModels[i].gameObject.transform.position);
-            itemCell.Init(allObjModels[i].BObject.Id, OnChooseObj);
-            allIconCells.Add(allObjModels[i].BObject.Id, itemCell);
+            (itemCell as AirIconCell).Init(allObjModels[i], allObjModels[i].BObjectId, OnChooseObj, worldPos2UiPos);
+            allIconCells.Add(allObjModels[i].BObjectId, itemCell);
         }
 
-        currentState = OperatorState.Click;
+        uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
+        Debug.LogError("uiCameraSize：" + uiCameraSize);
+        currentState = OperatorState.NoPlanningRoute;
     }
 
-    public BObjectModel[] sceneAllObjs;
+    private EquipBase[] sceneAllObjs;
 
     private void Start()
     {
 #if UNITY_EDITOR
+        mapBL = 100f / mapView.sizeDelta.x;
         equipPathLines = new Dictionary<string, VectorLine>();
         equipPathDatas = new Dictionary<string, List<Vector2>>();
-        allObjModels = new List<BObjectModel>();
+        allObjModels = new List<EquipBase>();
         uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
         Debug.Log("uiCameraSize：" + uiCameraSize);
-        for (int i = 0; i < sceneAllObjs.Length; i++)
+        sceneAllObjs = GameObject.FindObjectsOfType<EquipBase>();
+        for (int i = 0; i < sceneAllObjs?.Length; i++)
         {
             var item = sceneAllObjs[i];
-            item.BObject = new BObject() { Info = new ComInfo() { Name = item.name } };
-            item.BObject.Id = ((i + 1) * 11111111).ToString();
-            item.GetComponent<EquipBase>().BObjectId = item.BObject.Id;
+            item.BObjectId = ((i + 1) * 11111111).ToString();
             allObjModels.Add(item);
         }
 
@@ -82,9 +96,11 @@ public class UIMap : BasePanel, IPointerClickHandler
             itemCell.gameObject.SetActive(true);
             //传入这个组件的基本信息，和选择后的回调
             itemCell.transform.position = worldPos2UiPos(allObjModels[i].gameObject.transform.position);
-            itemCell.Init(allObjModels[i].BObject.Id, OnChooseObj);
-            allIconCells.Add(allObjModels[i].BObject.Id, itemCell);
+            (itemCell as AirIconCell).Init(allObjModels[i], allObjModels[i].BObjectId, OnChooseObj, worldPos2UiPos);
+            allIconCells.Add(allObjModels[i].BObjectId, itemCell);
         }
+
+        currentState = OperatorState.NoPlanningRoute;
 #endif
     }
 
@@ -101,6 +117,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         itemLine.rectTransform.localPosition = Vector3.zero;
         itemLine.rectTransform.localScale = Vector3.one;
         itemLine.active = true;
+        itemLine.color = Color.cyan;
         itemLine.material = mat;
         equipPathLines.Add(objId, itemLine);
     }
@@ -126,16 +143,16 @@ public class UIMap : BasePanel, IPointerClickHandler
 
                 if (targetIconCell is AirIconCell)
                 {
-                    var itemObj = allObjModels.Find(x => string.Equals(targetIconCell.belongToId, x.BObject.Id));
+                    var itemObj = allObjModels.Find(x => string.Equals(targetIconCell.belongToId, x.BObjectId));
 #if UNITY_EDITOR
                     var airObj = itemObj.gameObject.tag == "Plane" ? itemObj : null;
 #else
                     //todo:这里的Id==3只是测试逻辑，最后要通过组件的实际Id对这里进行修改
-                    var airObj = itemObj.BObject.Info.Tags.Find(x => x.Id == 3) != null ? itemObj : null;
+                    // var airObj = itemObj.BObject.Info.Tags.Find(x => x.Id == 3) != null ? itemObj : null;
 #endif
                     //证明选中的是可移动装备
-                    currentChooseEquip = airObj.gameObject.GetComponent<EquipBase>();
-
+                    currentChooseEquip = itemObj.gameObject.GetComponent<EquipBase>();
+                    currentChooseEquip.BObjectId = currentChooseEquip.GetComponent<BObjectModel>().BObject.Id;
                     //获取选中装备的路径轨迹线，进行操作
                     if (!equipPathLines.ContainsKey(currentChooseEquip.BObjectId))
                         InitLineByObjId(currentChooseEquip.BObjectId);
@@ -151,8 +168,12 @@ public class UIMap : BasePanel, IPointerClickHandler
                 if (targetIconCell is PointIconCell)
                 {
                     //选中的是标点
+#if UNITY_EDITOR
                     Debug.Log("选中的标点是" + targetIconCell.belongToId + "的点；" + "名字是：" + targetIconCell.name);
-                    Debug.Log($"经过了{targetIconCell.allViaPointIds.Count}个点");
+                    Debug.Log($"经过了{targetIconCell.allViaPointIds?.Count}个点");
+#else
+                    sender.LogError("选中的标点是" + targetIconCell.belongToId + "的点；" + "名字是：" + targetIconCell.name);
+#endif
                 }
 
                 break;
@@ -167,13 +188,18 @@ public class UIMap : BasePanel, IPointerClickHandler
                 //添加一个点（具体逻辑交给他去处理，我只关注应用层的逻辑处理）
                 PathPointManager.Instance.AddPoint(currentChooseEquip, toBeCreatPoint, AddPointSuccess);
                 break;
+            case OperatorState.NoPlanningRoute:
+#if !UNITY_EDITOR
+                sender.LogError("选中了一个对象"+targetIconCell.belongToId);
+#endif
+                EventManager.Instance.EventTrigger(EventType.ChooseEquip, targetIconCell.belongToId);
+                break;
         }
     }
 
     //点击地图返回标点位置
     private void OnChooseObj(Vector2 mapPoint)
     {
-        if (currentState == OperatorState.Click) return;
         if (isWaitCreat) return;
         isWaitCreat = true;
         attachedObjectId = String.Empty;
@@ -241,26 +267,35 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //todo:这里需要检测点击区域是否在地图内部
-        if (eventData.button == PointerEventData.InputButton.Left)
+        //这里是检测点击区域是否在地图内部
+        Vector2 point = uiPos2LinePos(eventData.position) + new Vector2(mapView.sizeDelta.x / 2, mapView.sizeDelta.y / 2);
+        if (point.x < 0 || point.y < 0 || point.x > mapView.sizeDelta.x || point.y > mapView.sizeDelta.y) return;
+        if (currentState == OperatorState.Click && eventData.button == PointerEventData.InputButton.Left)
         {
-            Vector2 point = uiPos2LinePos(eventData.position) + new Vector2(mapView.sizeDelta.x / 2, mapView.sizeDelta.y / 2);
-            if (point.x < 0 || point.y < 0 || point.x > mapView.sizeDelta.x || point.y > mapView.sizeDelta.y) return;
-
             OnChooseObj(eventData.position);
+        }
+
+        if (currentState == OperatorState.NoPlanningRoute && eventData.button == PointerEventData.InputButton.Right)
+        {
+            //在非规划模式下点击右键
+#if !UNITY_EDITOR
+            sender.LogError("选择了一个目标点"+eventData.position);
+#endif
+            EventManager.Instance.EventTrigger(EventType.MoveToTarget, uiPos2WorldPos(eventData.position));
         }
     }
 
     #region 数据转换 //todo:2D、3D之间的位置转换逻辑后续需要补充
 
+
     private Vector2 worldPos2UiPos(Vector3 pos)
     {
-        return pos;
+        return new Vector2(pos.x / mapBL - mapView.sizeDelta.x / 2, pos.z / mapBL - mapView.sizeDelta.y / 2);
     }
 
     private Vector3 uiPos2WorldPos(Vector2 pos)
     {
-        return Vector3.zero;
+        return new Vector3((pos.x - uiCameraSize.x / 2 + mapView.sizeDelta.x / 2) * mapBL, 0, (pos.y - uiCameraSize.y / 2 + mapView.sizeDelta.y / 2) * mapBL);
     }
 
     /// <summary>

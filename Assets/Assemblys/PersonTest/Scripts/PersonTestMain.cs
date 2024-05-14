@@ -217,9 +217,9 @@ public class PersonTestMain : ScriptManager, IControl, IContainer, IMesRec
         tpc.Init(transform, offset, (Properties[6] as InputFloatProperty).Value, false);
 
         yield return 1;
-        EventManager.Instance.EventTrigger(ToolsLibrary.EventType.ShowUI, "IconShow");
+        EventManager.Instance.EventTrigger<string,object>(ToolsLibrary.EventType.ShowUI, "IconShow",null);
         if (MyDataInfo.isPlayBack)
-            EventManager.Instance.EventTrigger(ToolsLibrary.EventType.ShowUI, "CursorShow");
+            EventManager.Instance.EventTrigger<string,object>(ToolsLibrary.EventType.ShowUI, "CursorShow",null);
     }
     public void DeActive(DevType type, bool playback)
     {

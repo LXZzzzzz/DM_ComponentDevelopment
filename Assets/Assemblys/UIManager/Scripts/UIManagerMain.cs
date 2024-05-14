@@ -13,6 +13,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UICursorShow UICursorShow;
     public UIBarChartController UIBarChartController;
     public UIConfirmation UIConfirmation;
+    public UIMap UIMap;
 
     private UIItem_IconShow itemIcon;
 
@@ -45,7 +46,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         base.RunModeInitialized(isMain, info);
         Debug.LogError("运行脚本RunModeInitialized进入");
         Debug.LogError("UI系统打印：" + EventManager.Instance);
-        EventManager.Instance.AddEventListener<string>(ToolsLibrary.EventType.ShowUI, OnShowUI);
+        EventManager.Instance.AddEventListener<string,object>(ToolsLibrary.EventType.ShowUI, OnShowUI);
         //todo:给这里改成UIManager初始化，并把go放到我节点下，并把自己传给他。把uimanager放到ToolsLibrary中，这样其他部分代码就可以直接通过单例拿到UI进行操作
         gameObject.AddComponent<UIManager>();
         //其他UI预制体脚本也需要在这里进行挂载
@@ -54,7 +55,7 @@ public class UIManagerMain : ScriptManager, IMesRec
 
     private void OnDestroy()
     {
-        EventManager.Instance.RemoveEventListener<string>(ToolsLibrary.EventType.ShowUI, OnShowUI);
+        EventManager.Instance.RemoveEventListener<string,object>(ToolsLibrary.EventType.ShowUI, OnShowUI);
         UIManager.Instance.ClearUI();
     }
 
@@ -64,7 +65,8 @@ public class UIManagerMain : ScriptManager, IMesRec
         UICursorShow = transform.Find("UiPrefab/UICursorShow").gameObject.AddComponent<UICursorShow>();
         UIBarChartController = transform.Find("UiPrefab/UIBarChart").gameObject.GetComponent<UIBarChartController>();
         UIConfirmation = transform.Find("UiPrefab/UIConfirmation").gameObject.GetComponent<UIConfirmation>();
-        testGet();
+        UIMap = transform.Find("UiPrefab/UIMinMap").gameObject.GetComponent<UIMap>();
+
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();
     }
@@ -85,31 +87,25 @@ public class UIManagerMain : ScriptManager, IMesRec
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            OnShowUI("BarChart");
-        }
-    }
-
-    private void OnShowUI(string uiName)
+    private void OnShowUI(string uiName,object dataInfo = null)
     {
         switch (uiName)
         {
             case "IconShow":
-
                 UIManager.Instance.ShowPanel<UIIconShow>(UIName.UIIconShow, new DMonoBehaviour[] { itemIcon });
                 break;
             case "CursorShow":
 
-                UIManager.Instance.ShowPanel<UICursorShow>(UIName.UICursorShow, null);
+                UIManager.Instance.ShowPanel<UICursorShow>(UIName.UICursorShow, dataInfo);
                 break;
             case "BarChart":
-                UIManager.Instance.ShowPanel<UIBarChartController>(UIName.UIBarChart, null);
+                UIManager.Instance.ShowPanel<UIBarChartController>(UIName.UIBarChart, dataInfo);
                 break;
             case "Confirmation":
-                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, null);
+                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, dataInfo);
+                break;
+            case "MinMap":
+                UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, dataInfo);
                 break;
             default:
                 break;
@@ -118,28 +114,30 @@ public class UIManagerMain : ScriptManager, IMesRec
 
     public void RecMessage(SendType type, GameObject senderObj, int eventType, string param)
     {
-        if (type == SendType.SubToMain&&MyDataInfo.isHost)
+        if (type == SendType.SubToMain && MyDataInfo.isHost)
         {
-            sender.RunSend(SendType.MainToAll,BObjectId,eventType,param);
+            sender.RunSend(SendType.MainToAll, BObjectId, eventType, param);
         }
 
-        if (type==SendType.MainToAll)
+        if (type == SendType.MainToAll)
         {
             switch (eventType)
             {
                 case 666:
                     string[] data = param.Split('_');
-                    if(data[0]==MyDataInfo.leadId)
+                    if (data[0] == MyDataInfo.leadId)
                     {
-                        UIManager.Instance.GetUIPanel<UIIconShow>(UIName.UIIconShow).ReceiveOperate(666,data[1]);
+                        UIManager.Instance.GetUIPanel<UIIconShow>(UIName.UIIconShow).ReceiveOperate(666, data[1]);
                     }
+
                     break;
                 case 888:
                 case 999:
-                    if (param==MyDataInfo.leadId)
+                    if (param == MyDataInfo.leadId)
                     {
-                        UIManager.Instance.GetUIPanel<UIIconShow>(UIName.UIIconShow).ReceiveOperate(eventType,"");
+                        UIManager.Instance.GetUIPanel<UIIconShow>(UIName.UIIconShow).ReceiveOperate(eventType, "");
                     }
+
                     break;
             }
         }
