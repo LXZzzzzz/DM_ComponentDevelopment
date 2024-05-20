@@ -8,8 +8,10 @@ namespace UiManager
     public class UIManager : MonoSingleTon<UIManager>
     {
         public Canvas CurrentCanvans;
+
         //public Camera UICamera;
         public Dictionary<string, List<BasePanel>> panelDic;
+
         private void Start()
         {
             //DontDestroyOnLoad(this);
@@ -17,6 +19,7 @@ namespace UiManager
             CurrentCanvans = GetComponentInChildren<Canvas>();
             //UICamera = GetComponentInChildren<Camera>();
         }
+
         /// <summary>
         /// 创建UI
         /// </summary>
@@ -44,6 +47,7 @@ namespace UiManager
                 panelDic[panelName.ToString()].Add(panel);
             }
         }
+
         /// <summary>
         /// 删除UI
         /// </summary>
@@ -60,7 +64,7 @@ namespace UiManager
             }
         }
 
-        public T GetUIPanel<T>(UIName panelName) where T: BasePanel
+        public T GetUIPanel<T>(UIName panelName) where T : BasePanel
         {
             if (panelDic.ContainsKey(panelName.ToString()))
             {
@@ -92,6 +96,9 @@ namespace UiManager
                 case UIName.UIMap:
                     itemUI = Instantiate((main as UIManagerMain).UIMap, CurrentCanvans.transform);
                     break;
+                case UIName.UICommanderFirstLevel:
+                    itemUI = Instantiate((main as UIManagerMain).UICommanderFirstLevel, CurrentCanvans.transform);
+                    break;
                 default:
                     break;
             }
@@ -109,7 +116,7 @@ namespace UiManager
 
         public void ClearUI()
         {
-            if(panelDic==null) return;
+            if (panelDic == null) return;
             foreach (var item in panelDic)
             {
                 for (int i = 0; i < item.Value.Count; i++)
@@ -118,6 +125,7 @@ namespace UiManager
                         item.Value[i].HideMe();
                 }
             }
+
             foreach (var item in panelDic)
             {
                 for (int i = 0; i < item.Value.Count; i++)
@@ -125,6 +133,7 @@ namespace UiManager
                     Destroy(item.Value[i].gameObject);
                 }
             }
+
             panelDic.Clear();
         }
     }
@@ -135,6 +144,7 @@ namespace UiManager
         UICursorShow,
         UIBarChart,
         UIConfirmation,
-        UIMap
+        UIMap,
+        UICommanderFirstLevel
     }
 }

@@ -118,12 +118,6 @@ MonoBehaviour:
     SubTags: []
   listTags:
   - BuiltIn: 1
-    Id: 1
-    IsOn: 0
-    Name: "\u7EC4\u4EF6\u5217\u8868\u663E\u793A"
-    SubFoldOut: 1
-    SubTags: []
-  - BuiltIn: 1
     Id: 3
     IsOn: 0
     Name: "\u8F7D\u5177"
@@ -133,44 +127,6 @@ MonoBehaviour:
       IsModify: 0
       IsOn: 0
       SubName: "\u901A\u7528"
-    - Id: 1
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u533B\u7597\u6551\u63F4"
-    - Id: 2
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u7D22\u964D\u6551\u63F4"
-    - Id: 3
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u540A\u6876\u6551\u63F4"
-  - BuiltIn: 1
-    Id: 4
-    IsOn: 0
-    Name: "\u89E6\u53D1\u5668"
-    SubFoldOut: 1
-    SubTags: []
-  - BuiltIn: 1
-    Id: 5
-    IsOn: 0
-    Name: AI
-    SubFoldOut: 1
-    SubTags:
-    - Id: 0
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u4F24\u5458"
-    - Id: 1
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u8D27\u8F66"
-  - BuiltIn: 1
-    Id: 7
-    IsOn: 0
-    Name: "\u7535\u7EBF\u6746"
-    SubFoldOut: 1
-    SubTags: []
   - BuiltIn: 1
     Id: 8
     IsOn: 1
@@ -191,48 +147,16 @@ MonoBehaviour:
       SubName: "Custom\u89D2\u8272"
     - Id: 3
       IsModify: 0
-      IsOn: 0
+      IsOn: 1
       SubName: "\u6D4B\u8BD5\u89D2\u8272"
     - Id: 4
       IsModify: 0
-      IsOn: 1
+      IsOn: 0
       SubName: "\u6D4B\u8BD5\u89D2\u82722"
   - BuiltIn: 1
     Id: 9
     IsOn: 0
-    Name: "\u5730\u56FE\u663E\u793A"
-    SubFoldOut: 1
-    SubTags:
-    - Id: 0
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u9ED8\u8BA4\u89D2\u8272\u5730\u56FE\u663E\u793A"
-    - Id: 1
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u8F7D\u5177\u5730\u56FE\u663E\u793A"
-  - BuiltIn: 1
-    Id: 11
-    IsOn: 0
-    Name: "\u6807\u8BC6"
-    SubFoldOut: 1
-    SubTags:
-    - Id: 0
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u7EA2\u8272"
-    - Id: 1
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u767D\u8272"
-    - Id: 2
-      IsModify: 0
-      IsOn: 0
-      SubName: "\u84DD\u8272"
-  - BuiltIn: 1
-    Id: 14
-    IsOn: 0
-    Name: "\u706B\u6E90\u7BA1\u7406\u5668"
+    Name: "\u88C5\u5907\u6A21\u677F"
     SubFoldOut: 1
     SubTags: []
   listTriggers:
@@ -277,14 +201,14 @@ MonoBehaviour:
     Id: 2006
     IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C5"
-  IsCreateTag: 0
+  IsCreateTag: 1
   IsCreateScript: 1
-  IsCreateModel: 0
+  IsCreateModel: 1
   IsCompressModel: 0
   isAssignMain: 1
   MainCalss: CommanderMain
   OtherScriptPaths:
-  - E:/UnityProjects/Work/ComponentDevelopment/Assets/Assemblys/Commander/Scripts
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/Assemblys/HuabeiRescue/Commander/Scripts
   OutputPaths:
   - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/RGOutput
   - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/DM2.1.6/DM2.1.6D/DM_Data/LibRes/ComTemp/\u89D2\u8272/\u6211\u7684\u89D2\u8272"

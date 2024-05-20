@@ -14,6 +14,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIBarChartController UIBarChartController;
     public UIConfirmation UIConfirmation;
     public UIMap UIMap;
+    public UICommanderFirstLevel UICommanderFirstLevel;
 
     private UIItem_IconShow itemIcon;
 
@@ -44,9 +45,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public override void RunModeInitialized(bool isMain, SceneInfo info)
     {
         base.RunModeInitialized(isMain, info);
-        Debug.LogError("运行脚本RunModeInitialized进入");
-        Debug.LogError("UI系统打印：" + EventManager.Instance);
-        EventManager.Instance.AddEventListener<string,object>(ToolsLibrary.EventType.ShowUI, OnShowUI);
+        EventManager.Instance.AddEventListener<string,object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
         //todo:给这里改成UIManager初始化，并把go放到我节点下，并把自己传给他。把uimanager放到ToolsLibrary中，这样其他部分代码就可以直接通过单例拿到UI进行操作
         gameObject.AddComponent<UIManager>();
         //其他UI预制体脚本也需要在这里进行挂载
@@ -55,7 +54,7 @@ public class UIManagerMain : ScriptManager, IMesRec
 
     private void OnDestroy()
     {
-        EventManager.Instance.RemoveEventListener<string,object>(ToolsLibrary.EventType.ShowUI, OnShowUI);
+        EventManager.Instance.RemoveEventListener<string,object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
         UIManager.Instance.ClearUI();
     }
 
@@ -66,7 +65,8 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIBarChartController = transform.Find("UiPrefab/UIBarChart").gameObject.GetComponent<UIBarChartController>();
         UIConfirmation = transform.Find("UiPrefab/UIConfirmation").gameObject.GetComponent<UIConfirmation>();
         UIMap = transform.Find("UiPrefab/UIMinMap").gameObject.GetComponent<UIMap>();
-
+        UICommanderFirstLevel = transform.Find("UiPrefab/UICommanderFirstLevel").gameObject.GetComponent<UICommanderFirstLevel>();
+        
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();
     }
@@ -106,6 +106,9 @@ public class UIManagerMain : ScriptManager, IMesRec
                 break;
             case "MinMap":
                 UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, dataInfo);
+                break;
+            case "CommanderFirstLevel":
+                UIManager.Instance.ShowPanel<UICommanderFirstLevel>(UIName.UICommanderFirstLevel, dataInfo);
                 break;
             default:
                 break;
