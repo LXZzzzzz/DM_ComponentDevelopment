@@ -1,9 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using ToolsLibrary;
 using UnityEngine;
+using System.IO;
+using System.Windows.Forms;  //Editor\Data\MonoBleedingEdge\lib\mono\2.0-api
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
 namespace ToolsLibrary.ProgrammePart_Logic
 {
@@ -19,6 +20,25 @@ namespace ToolsLibrary.ProgrammePart_Logic
             currentData.AllEquipDatas = new List<AEquipData>();
             currentData.CommanderControlList = new Dictionary<string, List<string>>();
             serialNumberId = 0;
+        }
+
+        public ProgrammeData LoadProgramme()
+        {
+            if (FileOperator.LoadData(out ProgrammeData data))
+            {
+                currentData = data;
+                return currentData;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public void SaveProgramme()
+        {
+            if (currentData != null)
+                FileOperator.SaveData(currentData);
         }
 
         public string AddEquip(string templateId, Vector3 initPos)
@@ -50,6 +70,69 @@ namespace ToolsLibrary.ProgrammePart_Logic
             string deStr = AESUtils.Decrypt(dataStr);
             currentData = JsonConvert.DeserializeObject<ProgrammeData>(deStr);
             return currentData;
+        }
+    }
+
+
+    public class FileOperator
+    {
+        private static string lastPath;
+
+        public static void SaveData<T>(T data)
+        {
+            if (string.IsNullOrEmpty(lastPath))
+                lastPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+
+            SaveData(data, lastPath);
+        }
+
+        public static bool LoadData<T>(out T outData)
+        {
+            if (string.IsNullOrEmpty(lastPath))
+                lastPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+
+            outData = LoadData<T>(lastPath);
+
+            return outData != null;
+        }
+
+        private static void SaveData<T>(T data, string folderPath)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "JSON Files (*.json)|*.json",
+                DefaultExt = "json",
+                AddExtension = true,
+                FileName = "NewFile", // 可以提供一个默认文件名
+                InitialDirectory = folderPath
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+                lastPath = filePath;
+                string jsonData = JsonConvert.SerializeObject(data);
+                File.WriteAllText(filePath, jsonData);
+            }
+        }
+
+        private static T LoadData<T>(string folderPath)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "JSON Files (*.json)|*.json",
+                InitialDirectory = folderPath
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                lastPath = filePath;
+                string jsonData = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<T>(jsonData);
+            }
+
+            return default(T);
         }
     }
 }

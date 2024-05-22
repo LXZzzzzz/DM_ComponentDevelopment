@@ -1,13 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using DM.IFS;
 using ToolsLibrary;
 using ToolsLibrary.ProgrammePart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.UI;
-using EventType = Enums.EventType;
+using Button = UnityEngine.UI.Button;
 
 public class UITopMenuView : BasePanel
 {
@@ -39,11 +36,11 @@ public class UITopMenuView : BasePanel
     {
         ProgrammeDataManager.Instance.CreatProgramme("测试默认方案");
         Debug.LogError("新建了方案");
-
     }
 
     private void save()
     {
+        ProgrammeDataManager.Instance.SaveProgramme();
     }
 
     private void saveAs()
@@ -52,6 +49,16 @@ public class UITopMenuView : BasePanel
 
     private void load()
     {
+        var data = ProgrammeDataManager.Instance.LoadProgramme();
+
+        if (data != null)
+        {
+            EventManager.Instance.EventTrigger(Enums.EventType.LoadProgrammeDataSuc.ToString(), data);
+        }
+        else
+        {
+            Debug.LogError("所选文件解析失败");
+        }
     }
 
     private void release()
@@ -61,12 +68,10 @@ public class UITopMenuView : BasePanel
 
         for (int i = 0; i < allBObjects.Length; i++)
         {
-            if (allBObjects[i].BObject.Id==MyDataInfo.leadId)
+            if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
             {
-                sender.LogError(allBObjects[i].gameObject.name);
-                break;
+                sender.RunSend(SendType.MainToAll, allBObjects[i].BObject.Id, (int)Enums.MessageID.SendProgramme, packedData);
             }
         }
-        sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendProgramme, packedData);
     }
 }

@@ -9,6 +9,7 @@ namespace Enums
         SwitchCreatModel, //切换为创建模式
         CreatEquipEntity, //创建飞机实体
         CreatEquipCorrespondingIcon, //创建飞机对应的图标
+        LoadProgrammeDataSuc,//读取方案成功通知场景响应
     }
 
     public enum MessageID

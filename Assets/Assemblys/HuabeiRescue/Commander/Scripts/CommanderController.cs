@@ -15,6 +15,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
+        EventManager.Instance.AddEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), Receive_ProgrammeData);
     }
 
     public void Terminate()
@@ -22,6 +23,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.RemoveEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.RemoveEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
+        EventManager.Instance.RemoveEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), Receive_ProgrammeData);
     }
 
     private void OnChangeCurrentEquip(string equipId)
@@ -44,8 +46,6 @@ public class CommanderController : DMonoBehaviour
             if (string.Equals(templateId, allBObjects[i].BObject.Id))
             {
                 var templateEquip = allBObjects[i].GetComponentInChildren<EquipBase>();
-                sender.LogError("要创建的对象：" + templateEquip);
-                sender.LogError("父物体：" + root);
                 var temporaryEquip = Instantiate(templateEquip, root);
                 temporaryEquip.BObjectId = myId;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
@@ -70,6 +70,15 @@ public class CommanderController : DMonoBehaviour
         for (int i = 0; i < programmeData.AllEquipDatas.Count; i++)
         {
             OnCreatEquipEntity(programmeData.AllEquipDatas[i].templateId, programmeData.AllEquipDatas[i].myId);
+        }
+
+        EventManager.Instance.EventTrigger<object>(Enums.EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);
+    }
+    private void Receive_ProgrammeData(ProgrammeData data)
+    {
+        for (int i = 0; i < data.AllEquipDatas.Count; i++)
+        {
+            OnCreatEquipEntity(data.AllEquipDatas[i].templateId, data.AllEquipDatas[i].myId);
         }
 
         EventManager.Instance.EventTrigger<object>(Enums.EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);

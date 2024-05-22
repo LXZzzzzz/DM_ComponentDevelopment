@@ -26,6 +26,8 @@ public class UICommanderView : BasePanel
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
+        int level = (int)userData;
+        GetControl<Toggle>("tog_EquipTypeView").interactable = level == 1;
         showView();
         EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
     }

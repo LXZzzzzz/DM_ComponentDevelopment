@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: "\u672A\u547D\u540D"
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: 6943796a153e69745b53e7f685332919, type: 3}
-  AssetName: UIManager
-  Description: UIManagerUIManagerUIManager
-  Prefab: {fileID: 3854588140712801424, guid: 13861a70b510f7e448a80feca267c02e, type: 3}
+  AssetName: "\u6307\u6325\u5B98\u89D2\u8272\u4E8C\u7EA7"
+  Description: 2222222222222
+  Prefab: {fileID: 852962914917373184, guid: d357c86a34ff1be40812dd298706db6f, type: 3}
   Size: 0
   listComponent:
   - BuiltIn: 1
@@ -46,7 +46,7 @@ MonoBehaviour:
   listLayoutTerrain:
   - BuiltIn: 1
     Id: 1
-    IsOn: 0
+    IsOn: 1
     Name: "\u9646\u5730"
     SubFoldOut: 1
     SubTags:
@@ -64,7 +64,7 @@ MonoBehaviour:
       SubName: "\u77F3\u5934"
   - BuiltIn: 1
     Id: 2
-    IsOn: 0
+    IsOn: 1
     Name: "\u6C34\u9762"
     SubFoldOut: 1
     SubTags:
@@ -129,7 +129,7 @@ MonoBehaviour:
       SubName: "\u901A\u7528"
   - BuiltIn: 1
     Id: 8
-    IsOn: 0
+    IsOn: 1
     Name: "\u89D2\u8272"
     SubFoldOut: 1
     SubTags:
@@ -153,9 +153,9 @@ MonoBehaviour:
       IsModify: 0
       IsOn: 0
       SubName: "\u6D4B\u8BD5\u89D2\u82722"
-    - Id: 5
+    - Id: 10
       IsModify: 0
-      IsOn: 0
+      IsOn: 1
       SubName: "\u6307\u6325\u5B98\u89D2\u8272"
   - BuiltIn: 1
     Id: 9
@@ -163,6 +163,16 @@ MonoBehaviour:
     Name: "\u88C5\u5907\u6A21\u677F"
     SubFoldOut: 1
     SubTags: []
+  - BuiltIn: 1
+    Id: 1010
+    IsOn: 0
+    Name: "\u534E\u5317\u6551\u63F4"
+    SubFoldOut: 1
+    SubTags:
+    - Id: 0
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u65B0\u5EFA\u5B50\u6807\u7B7E"
   listTriggers:
   - BuiltIn: 0
     Id: 1000
@@ -205,24 +215,22 @@ MonoBehaviour:
     Id: 2006
     IsOn: 0
     Name: "\u89E6\u53D1\u5668\u6548\u679C5"
-  IsCreateTag: 1
+  IsCreateTag: 0
   IsCreateScript: 1
-  IsCreateModel: 1
+  IsCreateModel: 0
   IsCompressModel: 0
   isAssignMain: 1
-  MainCalss: UIManagerMain
+  MainCalss: CommanderMain222
   OtherScriptPaths:
-  - E:/UnityProjects/Work/ComponentDevelopment/Assets/Assemblys/UIManager/Scripts
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/Assemblys/HuabeiRescue/Commander/Scripts
   - E:/UnityProjects/Work/ComponentDevelopment/Assets/Assemblys/PublicLogics
   OutputPaths:
   - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/RGOutput
-  - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/DM2.1.6/DM2.1.6D/DM_Data/LibRes/ComTemp/\u89E6\u53D1/UI\u7CFB\u7EDF"
+  - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/DM2.1.6/DM2.1.6D/DM_Data/LibRes/ComTemp/\u89D2\u8272/\u6211\u7684\u89D2\u8272"
   ReferencePaths:
   - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins\DMIFS.dll
   - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins\DMInputSystem.dll
   - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins\Model.dll
   - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins\ToolsLibrary.dll
   - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/BundleLib/UnityEngine.dll"
-  - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/BundleLib/UnityEngine.UI.dll"
-  - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins/Vectrosity.dll
   BatchAddRefsPath: 

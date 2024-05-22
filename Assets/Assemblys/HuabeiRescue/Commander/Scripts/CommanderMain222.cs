@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using DM.Entity;
@@ -9,7 +8,7 @@ using ToolsLibrary.EquipPart;
 using UnityEngine;
 using EventType = Enums.EventType;
 
-public class CommanderMain : ScriptManager, IControl, IMesRec
+public class CommanderMain222 : ScriptManager, IControl, IMesRec
 {
     private List<EnumDescription> commanderLevel;
     private CommanderController _commanderController;
@@ -26,7 +25,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         minMapSJY.Add(new EnumDescription(2, "蓝方"));
         Properties = new DynamicProperty[]
         {
-            new InputFloatProperty("指挥官等级临时", 1),
+            new InputFloatProperty("指挥官等级临时", 2),
             new DropDownProperty("指挥官等级", commanderLevel, 0),
             new InputStringProperty("任务名", ""),
             new DropDownSceneSelectProperty("关联环境组件"),
@@ -41,7 +40,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     {
         base.EditorModeInitialized();
         sender.DebugMode = true;
-        sender.LogError("进入编辑模式"+(Properties[0] as InputFloatProperty).Value);
+        sender.LogError("进入编辑模式" + (Properties[0] as InputFloatProperty).Value);
     }
 
     public override void RunModeInitialized(bool isRoomCreator, SceneInfo info)
