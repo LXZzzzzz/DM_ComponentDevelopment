@@ -8,16 +8,33 @@ namespace UiManager
     public class UIManager : MonoSingleTon<UIManager>
     {
         public Canvas CurrentCanvans;
+        private Canvas popUp;
+        private Canvas upper;
+        private Canvas middle;
 
         //public Camera UICamera;
         public Dictionary<string, List<BasePanel>> panelDic;
+
+        private Dictionary<UIName, BasePanel.UIType> uiPanelWhereLayer;
 
         private void Start()
         {
             //DontDestroyOnLoad(this);
             panelDic = new Dictionary<string, List<BasePanel>>();
+            uiPanelWhereLayer = new Dictionary<UIName, BasePanel.UIType>();
             CurrentCanvans = GetComponentInChildren<Canvas>();
             //UICamera = GetComponentInChildren<Camera>();
+            popUp = transform.Find("Canvas_Popup").GetComponent<Canvas>();
+            upper = transform.Find("Canvas_Upper").GetComponent<Canvas>();
+            middle = transform.Find("Canvas_Middle").GetComponent<Canvas>();
+            SetPanelLayer();
+        }
+
+        //设置特殊UI对应层级
+        private void SetPanelLayer()
+        {
+            uiPanelWhereLayer.Add(UIName.UIConfirmation, BasePanel.UIType.popUp);
+            uiPanelWhereLayer.Add(UIName.UITopMenuView, BasePanel.UIType.upper);
         }
 
         /// <summary>
@@ -79,31 +96,48 @@ namespace UiManager
         {
             //在UI预制体库里找到制定UI，实例化一个放到制定Canvas下
             BasePanel itemUI = null;
+            Transform canvansTran = null;
+            if (!uiPanelWhereLayer.ContainsKey(uiName))
+                canvansTran = middle.transform;
+            else
+            {
+                switch (uiPanelWhereLayer[uiName])
+                {
+                    case BasePanel.UIType.upper:
+                        canvansTran = upper.transform;
+                        break;
+                    case BasePanel.UIType.popUp:
+                        canvansTran = popUp.transform;
+                        break;
+                }
+            }
+
             switch (uiName)
             {
                 case UIName.UIIconShow:
-                    itemUI = Instantiate((main as UIManagerMain).UIIconShow, CurrentCanvans.transform);
+                    itemUI = Instantiate((main as UIManagerMain).UIIconShow, canvansTran);
                     break;
                 case UIName.UICursorShow:
-                    itemUI = Instantiate((main as UIManagerMain).UICursorShow, CurrentCanvans.transform);
+                    itemUI = Instantiate((main as UIManagerMain).UICursorShow, canvansTran);
                     break;
                 case UIName.UIBarChart:
-                    itemUI = Instantiate((main as UIManagerMain).UIBarChartController, CurrentCanvans.transform);
+                    itemUI = Instantiate((main as UIManagerMain).UIBarChartController, canvansTran);
                     break;
                 case UIName.UIConfirmation:
-                    itemUI = Instantiate((main as UIManagerMain).UIConfirmation, CurrentCanvans.transform);
+                    itemUI = Instantiate((main as UIManagerMain).UIConfirmation, canvansTran);
                     break;
                 case UIName.UIMap:
-                    itemUI = Instantiate((main as UIManagerMain).UIMap, CurrentCanvans.transform);
+                    itemUI = Instantiate((main as UIManagerMain).UIMap, canvansTran);
                     break;
-                case UIName.UICommanderFirstLevel:
-                    itemUI = Instantiate((main as UIManagerMain).UICommanderFirstLevel, CurrentCanvans.transform);
+                case UIName.UICommanderView:
+                    itemUI = Instantiate((main as UIManagerMain).uiCommanderView, canvansTran);
                     break;
-                default:
+                case UIName.UITopMenuView:
+                    itemUI = Instantiate((main as UIManagerMain).UITopMenuView, canvansTran);
                     break;
             }
 
-            itemUI?.gameObject.SetActive(true);
+            itemUI.gameObject.SetActive(true);
             itemUI.GetComponent<RectTransform>().anchoredPosition3D = Vector3.zero;
             itemUI.transform.localScale = Vector3.one;
             RectTransform goRT = itemUI.GetComponent<RectTransform>();
@@ -145,6 +179,7 @@ namespace UiManager
         UIBarChart,
         UIConfirmation,
         UIMap,
-        UICommanderFirstLevel
+        UICommanderView,
+        UITopMenuView
     }
 }

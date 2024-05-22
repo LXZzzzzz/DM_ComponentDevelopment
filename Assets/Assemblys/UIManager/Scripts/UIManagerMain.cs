@@ -14,7 +14,8 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIBarChartController UIBarChartController;
     public UIConfirmation UIConfirmation;
     public UIMap UIMap;
-    public UICommanderFirstLevel UICommanderFirstLevel;
+    public UICommanderView uiCommanderView;
+    public UITopMenuView UITopMenuView;
 
     private UIItem_IconShow itemIcon;
 
@@ -45,7 +46,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public override void RunModeInitialized(bool isMain, SceneInfo info)
     {
         base.RunModeInitialized(isMain, info);
-        EventManager.Instance.AddEventListener<string,object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
+        EventManager.Instance.AddEventListener<string, object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
         //todo:给这里改成UIManager初始化，并把go放到我节点下，并把自己传给他。把uimanager放到ToolsLibrary中，这样其他部分代码就可以直接通过单例拿到UI进行操作
         gameObject.AddComponent<UIManager>();
         //其他UI预制体脚本也需要在这里进行挂载
@@ -54,7 +55,7 @@ public class UIManagerMain : ScriptManager, IMesRec
 
     private void OnDestroy()
     {
-        EventManager.Instance.RemoveEventListener<string,object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
+        EventManager.Instance.RemoveEventListener<string, object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
         UIManager.Instance.ClearUI();
     }
 
@@ -65,8 +66,9 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIBarChartController = transform.Find("UiPrefab/UIBarChart").gameObject.GetComponent<UIBarChartController>();
         UIConfirmation = transform.Find("UiPrefab/UIConfirmation").gameObject.GetComponent<UIConfirmation>();
         UIMap = transform.Find("UiPrefab/UIMinMap").gameObject.GetComponent<UIMap>();
-        UICommanderFirstLevel = transform.Find("UiPrefab/UICommanderFirstLevel").gameObject.GetComponent<UICommanderFirstLevel>();
-        
+        uiCommanderView = transform.Find("UiPrefab/UICommanderView").gameObject.GetComponent<UICommanderView>();
+        UITopMenuView = transform.Find("UiPrefab/UITopMenuView").gameObject.GetComponent<UITopMenuView>();
+
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();
     }
@@ -87,7 +89,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         }
     }
 
-    private void OnShowUI(string uiName,object dataInfo = null)
+    private void OnShowUI(string uiName, object dataInfo = null)
     {
         switch (uiName)
         {
@@ -107,8 +109,11 @@ public class UIManagerMain : ScriptManager, IMesRec
             case "MinMap":
                 UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, dataInfo);
                 break;
-            case "CommanderFirstLevel":
-                UIManager.Instance.ShowPanel<UICommanderFirstLevel>(UIName.UICommanderFirstLevel, dataInfo);
+            case "CommanderView":
+                UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, dataInfo);
+                break;
+            case "TopMenuView":
+                UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, dataInfo);
                 break;
             default:
                 break;

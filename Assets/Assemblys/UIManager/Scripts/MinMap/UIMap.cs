@@ -13,7 +13,7 @@ public enum OperatorState
     PlanningPath
 }
 
-public class UIMap : BasePanel,IPointerClickHandler
+public class UIMap : BasePanel, IPointerClickHandler
 {
     [HideInInspector] public RectTransform mapView;
     [HideInInspector] public Transform iconCellParent;
@@ -54,19 +54,19 @@ public class UIMap : BasePanel,IPointerClickHandler
         SwitchMapLogic(OperatorState.Normal);
 
         uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
-        EventManager.Instance.AddEventListener<string>(EventType.SwitchCreatModel.ToString(),ToCreatModel);
+        EventManager.Instance.AddEventListener<object>(EventType.SwitchCreatModel.ToString(), ToCreatModel);
     }
 
     public override void HideMe()
     {
         base.HideMe();
         currentMapLogic?.OnExit();
-        EventManager.Instance.RemoveEventListener<string>(EventType.SwitchCreatModel.ToString(),ToCreatModel);
+        EventManager.Instance.RemoveEventListener<object>(EventType.SwitchCreatModel.ToString(), ToCreatModel);
     }
 
-    private void ToCreatModel(string creatId)
+    private void ToCreatModel(object info)
     {
-        SwitchMapLogic(OperatorState.CreatAndEditor,creatId);
+        SwitchMapLogic(OperatorState.CreatAndEditor, info);
     }
 
     public void SwitchMapLogic(OperatorState targetState, object data = null)
@@ -84,6 +84,7 @@ public class UIMap : BasePanel,IPointerClickHandler
                 if (isCreat) mapLogics.Add(OperatorState.CreatAndEditor, new MapOperate_CreatAndEditor(this));
                 break;
         }
+
         mapLogics[targetState].setCanvanceSize(uiCameraSize);
 
         currentMapLogic?.OnExit();
@@ -95,6 +96,7 @@ public class UIMap : BasePanel,IPointerClickHandler
 
     private void Start()
     {
+        return;
 #if UNITY_EDITOR
         mapBL = 100f / mapView.sizeDelta.x;
         allObjModels = new List<EquipBase>();
@@ -107,10 +109,11 @@ public class UIMap : BasePanel,IPointerClickHandler
             item.BObjectId = ((i + 1) * 11111111).ToString();
             allObjModels.Add(item);
         }
+
         allIconCells = new Dictionary<string, IconCellBase>();
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
-        
-        SwitchMapLogic(OperatorState.CreatAndEditor,allObjModels);
+
+        SwitchMapLogic(OperatorState.CreatAndEditor, allObjModels);
 #endif
     }
 
@@ -153,7 +156,7 @@ public class UIMap : BasePanel,IPointerClickHandler
     }
 
     /// <summary>
-    /// ui点转换为线段相对点
+    /// 鼠标位置转UI点
     /// </summary>
     /// <returns></returns>
     public Vector2 mousePos2UI(Vector2 pos)

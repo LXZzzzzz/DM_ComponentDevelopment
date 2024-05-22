@@ -12,6 +12,12 @@ namespace UiManager
     public class UIConfirmation : BasePanel
     {
         private bool isSync;
+        public override void Init()
+        {
+            base.Init();
+            _myUIType = UIType.popUp;
+        }
+
         public override void ShowMe(object userData)
         {
             base.ShowMe(userData);

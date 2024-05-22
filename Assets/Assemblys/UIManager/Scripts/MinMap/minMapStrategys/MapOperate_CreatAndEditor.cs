@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using EventType = Enums.EventType;
 
@@ -51,8 +52,10 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
 
     public override void OnLeftClickMap(Vector2 pos)
     {
+        //这里先去数据管理器里申请创建，然后将数据ID传给创建者
+        string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, uiPos2WorldPos(pos));
         //通知主角在场景对应位置创建实体
-        EventManager.Instance.EventTrigger(EventType.CreatEquipEntity.ToString(), creatTargetTemplate, uiPos2WorldPos(pos));
+        EventManager.Instance.EventTrigger(EventType.CreatEquipEntity.ToString(), creatTargetTemplate, equipId);
     }
 
     public override void OnRightClickMap(Vector2 pos)

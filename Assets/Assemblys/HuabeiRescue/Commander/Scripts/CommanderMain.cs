@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DM.Entity;
 using DM.IFS;
+using Enums;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
@@ -25,6 +26,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         minMapSJY.Add(new EnumDescription(2, "蓝方"));
         Properties = new DynamicProperty[]
         {
+            new InputFloatProperty("指挥官等级临时", 1),
             new DropDownProperty("指挥官等级", commanderLevel, 0),
             new InputStringProperty("任务名", ""),
             new DropDownSceneSelectProperty("关联环境组件"),
@@ -39,22 +41,28 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     {
         base.EditorModeInitialized();
         sender.DebugMode = true;
-        sender.LogError("进入编辑模式");
+        sender.LogError("进入编辑模式"+(Properties[0] as InputFloatProperty).Value);
     }
 
     public override void RunModeInitialized(bool isRoomCreator, SceneInfo info)
     {
         base.RunModeInitialized(isRoomCreator, info);
-        sender.LogError("进入运行模式");
+        sender.LogError("进入运行模式:" + (Properties[0] as InputFloatProperty).Value);
         _commanderController = gameObject.AddComponent<CommanderController>();
         isMain = isRoomCreator;
+    }
+
+    public override void PropertiesChanged(DynamicProperty[] pros)
+    {
+        base.PropertiesChanged(pros);
+        // sender.LogError($"{name}:修改了属性:"+(pros[0] as InputIntProperty).Selected.Enum);
     }
 
     public void Active(DevType type, bool playback)
     {
         //打开控制相机
         //根据自己的角色等级，告知UI展示谁
-        sender.LogError($"{name}:以我为主角运行");
+        sender.LogError($"{name}:以我为主角运行:" + (Properties[0] as InputFloatProperty).Value);
         MyDataInfo.isHost = isMain;
         MyDataInfo.leadId = BObjectId;
         MyDataInfo.isPlayBack = playback;
@@ -73,10 +81,13 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         cameraObject.AddComponent<Camera>();
 
         yield return 1;
-        EventManager.Instance.EventTrigger<string,object>(EventType.ShowUI.ToString(), "IconShow",null);
-        EventManager.Instance.EventTrigger<string,object>(EventType.ShowUI.ToString(), "CommanderFirstLevel",null);
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "IconShow", null);
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "MinMap", null);
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", null);
+        int myLevel = (int)(Properties[0] as InputFloatProperty).Value;
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "TopMenuView", myLevel);
         if (MyDataInfo.isPlayBack)
-            EventManager.Instance.EventTrigger<string,object>(EventType.ShowUI.ToString(), "CursorShow",null);
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
 
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
     }
@@ -87,36 +98,41 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
 
     private void OnDestroy()
     {
-        _commanderController.Terminate();
+        _commanderController?.Terminate();
         _commanderController = null;
+        for (int i = 0; i < MyDataInfo.sceneAllEquips?.Count; i++)
+        {
+            Destroy(MyDataInfo.sceneAllEquips[i].gameObject);
+        }
+
+        MyDataInfo.sceneAllEquips?.Clear();
+        if (cameraObject != null)
+            Destroy(cameraObject.gameObject);
     }
 
     private GameObject cameraObject;
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            EventManager.Instance.EventTrigger<string,object>(EventType.ShowUI.ToString(), "MinMap",MyDataInfo.sceneAllEquips);
-        }
-    }
 
     public void RecMessage(SendType type, GameObject senderObj, int eventType, string param)
     {
         if (type == SendType.SubToMain)
             sender.RunSend(SendType.MainToAll, senderObj.GetComponent<CommanderMain>().BObjectId, eventType, param);
 
+        if (type == SendType.MainToAll)
+        {
+            sender.LogError("收到法相全部消息");
+        }
+
         switch ((MessageID)eventType)
         {
+            case MessageID.SendProgramme:
+                int myLevel = (int)(Properties[0] as InputFloatProperty).Value;
+                sender.LogError(myLevel != 1 ? "我需要接收场景装备数据" : "我就是数据编辑者");
+                if (myLevel != 1)
+                    _commanderController.Receive_ProgrammeData(param);
+                break;
             case MessageID.MoveToTarget:
-                _commanderController.MoveEquipToTarget(param);
+                _commanderController.Receive_MoveEquipToTarget(param);
                 break;
         }
-    }
-
-
-    public enum MessageID
-    {
-        MoveToTarget
     }
 }

@@ -2,11 +2,12 @@ using System;
 using DM.Core.Map;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UICommanderFirstLevel : BasePanel
+public class UICommanderView : BasePanel
 {
     private RectTransform equipTypeParent;
     private RectTransform equipParent;
@@ -26,13 +27,13 @@ public class UICommanderFirstLevel : BasePanel
     {
         base.ShowMe(userData);
         showView();
-        EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(),OnAddEquipView);
+        EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
     }
 
     public override void HideMe()
     {
         base.HideMe();
-        EventManager.Instance.RemoveEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(),OnAddEquipView);
+        EventManager.Instance.RemoveEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
     }
 
     private void showView()
@@ -64,8 +65,7 @@ public class UICommanderFirstLevel : BasePanel
 
         if (chooseObject != null)
         {
-            UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap,null);
-            EventManager.Instance.EventTrigger(Enums.EventType.SwitchCreatModel.ToString(),chooseObject.BObject.Id);
+            EventManager.Instance.EventTrigger<object>(Enums.EventType.SwitchCreatModel.ToString(), chooseObject.BObject.Id);
         }
     }
 

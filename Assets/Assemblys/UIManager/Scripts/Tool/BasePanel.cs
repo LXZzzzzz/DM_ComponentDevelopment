@@ -7,15 +7,20 @@ namespace UiManager
 {
     public abstract class BasePanel : DMonoBehaviour
     {
-        protected enum UIType
+        public enum UIType
         {
-            View,
-            Window
+            popUp,
+            upper,
+            middle
         }
+
         //通过里氏转换原则，存储所有UI控件
         private Dictionary<string, List<UIBehaviour>> controlDic;
-        protected UIType myUIType = UIType.View;
-        [HideInInspector]public bool IsShow;
+        protected UIType _myUIType = UIType.middle;
+        [HideInInspector] public bool IsShow;
+
+        public UIType myUIType => _myUIType;
+
         private void Awake()
         {
             controlDic = new Dictionary<string, List<UIBehaviour>>();
@@ -33,18 +38,19 @@ namespace UiManager
 
         private void WindowAni()
         {
-            switch (myUIType)
-            {
-                case UIType.View:
-                    break;
-                case UIType.Window:
-                    //transform.GetChild(0).GetComponent<RectTransform>().localScale = Vector2.zero;
-                    // transform.GetChild(0).GetComponent<RectTransform>().DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack);
-                    break;
-                default:
-                    break;
-            }
+            // switch (myUIType)
+            // {
+            //     case UIType.View:
+            //         break;
+            //     case UIType.Window:
+            //         //transform.GetChild(0).GetComponent<RectTransform>().localScale = Vector2.zero;
+            //         // transform.GetChild(0).GetComponent<RectTransform>().DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack);
+            //         break;
+            //     default:
+            //         break;
+            // }
         }
+
         /// <summary>
         /// 获取对应名字的控件
         /// </summary>
@@ -61,8 +67,10 @@ namespace UiManager
                     }
                 }
             }
+
             return null;
         }
+
         /// <summary>
         /// 找到panel下所有指定类型的控件
         /// </summary>
@@ -87,7 +95,6 @@ namespace UiManager
 
         public virtual void Init()
         {
-            
         }
 
         public virtual void ShowMe(object userData)
@@ -100,7 +107,7 @@ namespace UiManager
         {
             UIManager.Instance.HidePanel(uiName.ToString());
         }
-        
+
         public virtual void HideMe()
         {
             IsShow = false;

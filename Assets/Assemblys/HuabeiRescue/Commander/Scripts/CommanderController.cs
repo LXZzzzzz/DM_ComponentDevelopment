@@ -2,27 +2,26 @@ using System.Collections.Generic;
 using DM.IFS;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using EventType = Enums.EventType;
 
 public class CommanderController : DMonoBehaviour
 {
     private EquipBase currentChooseEquip;
-    private Dictionary<string, int> EquipTemp_EntityNums;
 
     public void Init()
     {
-        EquipTemp_EntityNums = new Dictionary<string, int>();
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
-        EventManager.Instance.AddEventListener<string,Vector3>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
+        EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
     }
 
     public void Terminate()
     {
         EventManager.Instance.RemoveEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.RemoveEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
-        EventManager.Instance.RemoveEventListener<string,Vector3>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
+        EventManager.Instance.RemoveEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
     }
 
     private void OnChangeCurrentEquip(string equipId)
@@ -35,37 +34,45 @@ public class CommanderController : DMonoBehaviour
     {
         sender.LogError("收到了指定移动目标的数据" + pos);
         if (currentChooseEquip == null) return;
-        sender.RunSend(SendType.SubToMain, main.BObjectId, (int)CommanderMain.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos));
+        sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos));
     }
 
-    private void OnCreatEquipEntity(string templateId,Vector3 creatPos)
+    private void OnCreatEquipEntity(string templateId, string myId)
     {
-        if (!EquipTemp_EntityNums.ContainsKey(templateId))
-            EquipTemp_EntityNums.Add(templateId,1);
-        
-        //找到模板装备，执行拷贝逻辑
         for (int i = 0; i < allBObjects.Length; i++)
         {
-            if (string.Equals(templateId,allBObjects[i].BObject.Id))
+            if (string.Equals(templateId, allBObjects[i].BObject.Id))
             {
                 var templateEquip = allBObjects[i].GetComponentInChildren<EquipBase>();
-                sender.LogError("要创建的对象："+templateEquip);
-                sender.LogError("父物体："+root);
+                sender.LogError("要创建的对象：" + templateEquip);
+                sender.LogError("父物体：" + root);
                 var temporaryEquip = Instantiate(templateEquip, root);
-                temporaryEquip.transform.position = creatPos;
-                temporaryEquip.BObjectId = templateId + EquipTemp_EntityNums[templateId];
+                temporaryEquip.BObjectId = myId;
+                var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
+                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y, dataPos.z);
                 EventManager.Instance.EventTrigger(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
-                EquipTemp_EntityNums[templateId]++;
                 break;
             }
         }
     }
 
-    public void MoveEquipToTarget(string data)
+    public void Receive_MoveEquipToTarget(string data)
     {
         MsgReceive_Move(data, out string equipId, out Vector3 targetPos);
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).MoveToTarget(targetPos);
+    }
+
+    public void Receive_ProgrammeData(string data)
+    {
+        var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
+        Debug.LogError(programmeData);
+        for (int i = 0; i < programmeData.AllEquipDatas.Count; i++)
+        {
+            OnCreatEquipEntity(programmeData.AllEquipDatas[i].templateId, programmeData.AllEquipDatas[i].myId);
+        }
+
+        EventManager.Instance.EventTrigger<object>(Enums.EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);
     }
 
     #region 数据转换（消息的打包和解析）
