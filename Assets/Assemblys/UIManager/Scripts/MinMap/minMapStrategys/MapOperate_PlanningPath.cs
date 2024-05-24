@@ -76,7 +76,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
                 //选中的是标点
 #if UNITY_EDITOR
                 Debug.Log("选中的标点是" + clickIcon.belongToId + "的点；" + "名字是：" + clickIcon.name);
-                Debug.Log($"经过了{clickIcon.allViaPointIds?.Count}个点");
+                Debug.Log($"经过了{(clickIcon as PointIconCell).allViaPointIds?.Count}个点");
 #else
                     mainLogic.sender.LogError("选中的标点是" + clickIcon.belongToId + "的点；" + "名字是：" + clickIcon.name);
 #endif
@@ -173,7 +173,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         }
 
         //给已存在的点附加
-        mainLogic.allIconCells[belongToPointCellId].AddAttachedPoint(pointData.pointId);
+        (mainLogic.allIconCells[belongToPointCellId] as PointIconCell).AddAttachedPoint(pointData.pointId);
         mainLogic.allIconCells[belongToPointCellId].RefreshView();
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DM.Core.Map;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using UiManager;
 using UnityEngine;
 using EventType=Enums.EventType;
 
@@ -28,7 +29,7 @@ public class MapOperate_Normal : MapOperateLogicBase
             //选中的是标点
 #if UNITY_EDITOR
             Debug.Log("选中的标点是" + targetIconCell.belongToId + "的点；" + "名字是：" + targetIconCell.name);
-            Debug.Log($"经过了{targetIconCell.allViaPointIds?.Count}个点");
+            Debug.Log($"经过了{(targetIconCell as PointIconCell).allViaPointIds?.Count}个点");
 #else
                     mainLogic.sender.LogError("选中的标点是" + targetIconCell.belongToId + "的点；" + "名字是：" + targetIconCell.name);
 #endif
@@ -38,7 +39,12 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     public override void OnRightClickIcon(IconCellBase clickIcon)
     {
-        //todo：打开指令集页面
+        //打开指令集页面
+        if (clickIcon is AirIconCell)
+        {
+           EquipBase itemEquip =MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, clickIcon.belongToId));
+           // UIManager.Instance.ShowPanel<>();
+        }
     }
 
     public override void OnUpdate()

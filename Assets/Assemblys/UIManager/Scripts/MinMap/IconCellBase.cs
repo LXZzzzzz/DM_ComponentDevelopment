@@ -10,14 +10,9 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler
     private string _belongToId;
 
     private UnityAction<string> chooseCb;
-
-    //记录所有经过我的点
-    private List<string> _allViaPointIds;
-
+    
     public string belongToId => _belongToId;
-
-    public List<string> allViaPointIds => _allViaPointIds;
-
+    
 
     public void Init(string belongToId, UnityAction<string> chooseCb)
     {
@@ -30,13 +25,6 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler
     {
         //鼠标点击后，告诉对方我的类型
         chooseCb?.Invoke(_belongToId);
-    }
-
-    public void AddAttachedPoint(string pointId)
-    {
-        if (_allViaPointIds == null)
-            _allViaPointIds = new List<string>();
-        _allViaPointIds.Add(pointId);
     }
 
     public void RefreshView()

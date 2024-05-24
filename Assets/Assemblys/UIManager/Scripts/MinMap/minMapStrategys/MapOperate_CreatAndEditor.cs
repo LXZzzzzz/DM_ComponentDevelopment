@@ -12,7 +12,22 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
 
     public override void OnEnter(object initData)
     {
-        if (initData is string)
+        if (initData == null)
+        {
+            //场景初始化逻辑,走完切回默认模式
+            for (int i = 0; i < mainLogic.allBObjects.Length; i++)
+            {
+                //找到场景中所有资源，显示到地图上
+                var tagItem = mainLogic.allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+                if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1) != null)
+                {
+                    creatZiYuanCell(mainLogic.allBObjects[i].BObject.Id, mainLogic.allBObjects[i].gameObject.transform.position);
+                }
+            }
+
+            mainLogic.SwitchMapLogic(OperatorState.Normal);
+        }
+        else if (initData is string)
         {
             //todo：打开时刻跟随鼠标显示的模板对象
             creatTargetTemplate = (string)initData;
@@ -70,14 +85,24 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         EventManager.Instance.RemoveEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
     }
 
-    public void creatAirCell(EquipBase equip)
+    private void creatAirCell(EquipBase equip)
     {
         var itemCell = Object.Instantiate(mainLogic.airIconPrefab, mainLogic.iconCellParent);
         itemCell.gameObject.SetActive(true);
         //传入这个组件的基本信息，和选择后的回调
-        itemCell.transform.position = worldPos2UiPos(equip.gameObject.transform.position);
+        itemCell.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(equip.gameObject.transform.position);
         (itemCell as AirIconCell).Init(equip, equip.BObjectId, mainLogic.OnChooseObj, worldPos2UiPos);
         mainLogic.allIconCells.Add(equip.BObjectId, itemCell);
+    }
+
+    private void creatZiYuanCell(string entityId, Vector3 pos)
+    {
+        var itemCell = Object.Instantiate(mainLogic.ziYuanIconPrefab, mainLogic.iconCellParent);
+        itemCell.gameObject.SetActive(true);
+        //传入这个组件的基本信息，和选择后的回调
+        itemCell.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(pos);
+        (itemCell as ZiYuanIconCell).Init(entityId, mainLogic.OnChooseObj);
+        mainLogic.allIconCells.Add(entityId, itemCell);
     }
 
     public MapOperate_CreatAndEditor(UIMap mainLogic) : base(mainLogic)

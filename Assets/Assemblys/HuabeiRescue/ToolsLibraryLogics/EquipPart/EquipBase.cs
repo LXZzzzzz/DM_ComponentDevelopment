@@ -14,6 +14,8 @@ namespace ToolsLibrary.EquipPart_Logic
         //记录最后一个路径点Id
         [HideInInspector] public string lastPointId;
 
+        [HideInInspector] public List<SkillData> mySkills;
+
         private Vector3 targetPos; // 目标对象的 Transform 组件
         private float speed = 5.0f; // 移动速度
         private float threshold = 0.1f; // 到达目标的距离阈值
@@ -26,9 +28,11 @@ namespace ToolsLibrary.EquipPart_Logic
         {
             //初始化飞机基本属性
             _isArrive = false;
-
+            mySkills = new List<SkillData>();
         }
 
+        public abstract void OnSelectSkill(SkillType st);
+        
         public void MoveToTarget(Vector3 targetPos)
         {
             _isArrive = false;

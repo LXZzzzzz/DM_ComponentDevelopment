@@ -8,7 +8,8 @@ public class AirIconCell : IconCellBase
     private EquipBase equipGo;
     private RectTransform iconShow;
     private Func<Vector3, Vector2> worldPosMapPosFunc;
-    public void Init(EquipBase equipGo,string belongToId, UnityAction<string> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc)
+
+    public void Init(EquipBase equipGo, string belongToId, UnityAction<string> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc)
     {
         base.Init(belongToId, chooseCb);
         this.equipGo = equipGo;
@@ -18,6 +19,7 @@ public class AirIconCell : IconCellBase
 
     private void Update()
     {
-        iconShow.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(equipGo.transform.position);
+        if (equipGo != null)
+            iconShow.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(equipGo.transform.position);
     }
 }

@@ -195,7 +195,7 @@ namespace OldLogic
                         //选中的是标点
 #if UNITY_EDITOR
                         Debug.Log("选中的标点是" + targetIconCell.belongToId + "的点；" + "名字是：" + targetIconCell.name);
-                        Debug.Log($"经过了{targetIconCell.allViaPointIds?.Count}个点");
+                        Debug.Log($"经过了{(targetIconCell as PointIconCell).allViaPointIds?.Count}个点");
 #else
                     sender.LogError("选中的标点是" + targetIconCell.belongToId + "的点；" + "名字是：" + targetIconCell.name);
 #endif
@@ -265,7 +265,7 @@ namespace OldLogic
             }
 
             //给已存在的点附加
-            allIconCells[belongToPointCellId].AddAttachedPoint(pointData.pointId);
+            (allIconCells[belongToPointCellId] as PointIconCell).AddAttachedPoint(pointData.pointId);
             allIconCells[belongToPointCellId].RefreshView();
         }
 

@@ -17,7 +17,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 {
     [HideInInspector] public RectTransform mapView;
     [HideInInspector] public Transform iconCellParent;
-    [HideInInspector] public IconCellBase airIconPrefab, pointIconPrefab;
+    [HideInInspector] public IconCellBase airIconPrefab, pointIconPrefab, ziYuanIconPrefab;
 
     private Vector2 uiCameraSize;
     public List<EquipBase> allObjModels;
@@ -34,6 +34,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         iconCellParent = transform.Find("maxMap/objects").GetComponent<RectTransform>();
         airIconPrefab = transform.Find("prefabs/airCell").GetComponent<AirIconCell>();
         pointIconPrefab = transform.Find("prefabs/pointCell").GetComponent<PointIconCell>();
+        ziYuanIconPrefab = transform.Find("prefabs/ziyuanCell").GetComponent<ZiYuanIconCell>();
 
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
         allObjModels = new List<EquipBase>();
@@ -51,7 +52,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         //当一级点击创建某个装备时，切换为创建模式，并传过来要创建对象的ID
         //当一级发布方案后，把自己状态切换为普通，二级收到消息后切换为创建，创建完立刻切回普通
 
-        SwitchMapLogic(OperatorState.Normal);
+        SwitchMapLogic(OperatorState.CreatAndEditor);
 
         uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
         EventManager.Instance.AddEventListener<object>(EventType.SwitchCreatModel.ToString(), ToCreatModel);
