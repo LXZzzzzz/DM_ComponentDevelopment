@@ -8,4 +8,9 @@ public class TestEquip : EquipBase
         BObjectId = myid;
         Debug.LogError("测试组件装备正常挂载继承Mono的脚本"+myid);
     }
+
+    public override void OnSelectSkill(SkillType st)
+    {
+        throw new System.NotImplementedException();
+    }
 }

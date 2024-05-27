@@ -5,6 +5,7 @@ using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UiManager;
 using UnityEngine;
+using UnityEngine.Events;
 using EventType=Enums.EventType;
 
 public class MapOperate_Normal : MapOperateLogicBase
@@ -35,6 +36,18 @@ public class MapOperate_Normal : MapOperateLogicBase
 #endif
         }
 
+        if (targetIconCell is ZiYuanIconCell)
+        {
+            for (int i = 0; i < mainLogic.allBObjects.Length; i++)
+            {
+                if (string.Equals(mainLogic.allBObjects[i].BObject.Id,targetIconCell.belongToId))
+                {
+                    EventManager.Instance.EventTrigger(EventType.MapChooseIcon.ToString(),mainLogic.allBObjects[i]);
+                    break;
+                }
+            }
+        }
+
     }
 
     public override void OnRightClickIcon(IconCellBase clickIcon)
@@ -42,8 +55,12 @@ public class MapOperate_Normal : MapOperateLogicBase
         //打开指令集页面
         if (clickIcon is AirIconCell)
         {
-           EquipBase itemEquip =MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, clickIcon.belongToId));
-           // UIManager.Instance.ShowPanel<>();
+           var itemEquip =MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, clickIcon.belongToId));
+           RightClickShowInfo info = new RightClickShowInfo()
+           {
+               PointPos = clickIcon.GetComponent<RectTransform>().anchoredPosition,ShowSkillDatas = itemEquip.mySkills, OnTriggerCallBack = itemEquip.OnSelectSkill
+           };
+           UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
         }
     }
 
@@ -70,4 +87,11 @@ public class MapOperate_Normal : MapOperateLogicBase
     public MapOperate_Normal(UIMap mainLogic) : base(mainLogic)
     {
     }
+}
+
+public struct RightClickShowInfo
+{
+    public Vector2 PointPos;
+    public List<SkillData> ShowSkillDatas;
+    public UnityAction<SkillType> OnTriggerCallBack;
 }

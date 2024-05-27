@@ -119,7 +119,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     }
 
     //该段逻辑是点击了地图上任意图标的回调，包含两部分：1.点击装备图表 2.点击非装备图标(包含系统实体、本地实体)
-    public void OnChooseObj(string objId)
+    public void OnChooseObj(string objId,PointerEventData.InputButton button)
     {
         IconCellBase targetIconCell = null;
         foreach (var iconCell in allIconCells)
@@ -132,7 +132,16 @@ public class UIMap : BasePanel, IPointerClickHandler
         }
 
         if (targetIconCell == null) return;
-        currentMapLogic?.OnLeftClickIcon(targetIconCell);
+
+        switch (button)
+        { 
+            case PointerEventData.InputButton.Left:
+                currentMapLogic?.OnLeftClickIcon(targetIconCell);
+                break;
+            case PointerEventData.InputButton.Right:
+                currentMapLogic?.OnRightClickIcon(targetIconCell);
+                break;
+        }
     }
 
     private void Update()

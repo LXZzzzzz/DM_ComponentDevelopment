@@ -148,7 +148,7 @@ namespace OldLogic
         }
 
         //该段逻辑是点击了地图上任意图标的回调，包含两部分：1.点击装备图表 2.点击非装备图标(包含系统实体、本地实体)
-        private void OnChooseObj(string objId)
+        private void OnChooseObj(string objId,PointerEventData.InputButton button)
         {
             IconCellBase targetIconCell = null;
             foreach (var iconCell in allIconCells)

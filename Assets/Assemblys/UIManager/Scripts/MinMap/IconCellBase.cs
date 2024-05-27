@@ -9,12 +9,12 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler
     //关联组件ID(组件ID，或者自己生成的点id)
     private string _belongToId;
 
-    private UnityAction<string> chooseCb;
+    private UnityAction<string,PointerEventData.InputButton> chooseCb;
     
     public string belongToId => _belongToId;
     
 
-    public void Init(string belongToId, UnityAction<string> chooseCb)
+    public void Init(string belongToId, UnityAction<string,PointerEventData.InputButton> chooseCb)
     {
         gameObject.name = belongToId;
         _belongToId = belongToId;
@@ -24,7 +24,7 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         //鼠标点击后，告诉对方我的类型
-        chooseCb?.Invoke(_belongToId);
+        chooseCb?.Invoke(_belongToId,eventData.button);
     }
 
     public void RefreshView()

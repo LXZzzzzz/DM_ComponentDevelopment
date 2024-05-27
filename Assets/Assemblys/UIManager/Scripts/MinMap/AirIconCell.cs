@@ -2,6 +2,7 @@ using System;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class AirIconCell : IconCellBase
 {
@@ -9,7 +10,7 @@ public class AirIconCell : IconCellBase
     private RectTransform iconShow;
     private Func<Vector3, Vector2> worldPosMapPosFunc;
 
-    public void Init(EquipBase equipGo, string belongToId, UnityAction<string> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc)
+    public void Init(EquipBase equipGo, string belongToId, UnityAction<string,PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc)
     {
         base.Init(belongToId, chooseCb);
         this.equipGo = equipGo;

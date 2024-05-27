@@ -1,8 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using ToolsLibrary.EquipPart_Logic;
+using ToolsLibrary;
+using ToolsLibrary.EquipPart;
 using UnityEngine;
+using EventType = Enums.EventType;
 
 public class HelicopterController : EquipBase, IWaterIntaking
 {
@@ -20,13 +19,20 @@ public class HelicopterController : EquipBase, IWaterIntaking
         {
             case SkillType.WaterIntaking:
                 //这里需要打开取水UI界面，并把自己以接口形式传过去
-
+                EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", this);
                 break;
         }
     }
 
-    public void WaterIntaking(Vector3 pos, float range, float amount)
+    public void WaterIntaking(Vector3 pos, float range, float amount, bool isExecuteImmediately)
     {
+        Debug.LogError("取水技能参数回传"+pos+amount);
+        if (!isExecuteImmediately)
+        {
+            //把参数传给主角，将参数传给所有客户端，统一执行
+            EventManager.Instance.EventTrigger(EventType.SendWaterInfoToControler.ToString(), MsgSend_Water(BObjectId, pos, amount));
+            return;
+        }
         //判断自己是否处于取水地的范围内，不在的话调move机动到目的地，然后，执行取水逻辑
         if (Vector3.Distance(transform.position, pos) > range)
         {
@@ -36,6 +42,11 @@ public class HelicopterController : EquipBase, IWaterIntaking
 
     public float CheckCapacity()
     {
+        Debug.LogError("检查数量");
         return 10;
+    }
+    private string MsgSend_Water(string id,Vector3 pos, float amount)
+    {
+        return string.Format($"{pos.x}_{pos.y}_{pos.z}_{amount}_{id}");
     }
 }

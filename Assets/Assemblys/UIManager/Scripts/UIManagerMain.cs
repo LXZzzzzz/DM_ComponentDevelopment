@@ -16,6 +16,8 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIMap UIMap;
     public UICommanderView uiCommanderView;
     public UITopMenuView UITopMenuView;
+    public UIRightClickMenuView UIRightClickMenuView;
+    public UIAttributeView UIAttributeView;
 
     private UIItem_IconShow itemIcon;
 
@@ -68,6 +70,9 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIMap = transform.Find("UiPrefab/UIMinMap").gameObject.GetComponent<UIMap>();
         uiCommanderView = transform.Find("UiPrefab/UICommanderView").gameObject.GetComponent<UICommanderView>();
         UITopMenuView = transform.Find("UiPrefab/UITopMenuView").gameObject.GetComponent<UITopMenuView>();
+        UIRightClickMenuView = transform.Find("UiPrefab/UIRightClickMenuView").gameObject.GetComponent<UIRightClickMenuView>();
+        UIAttributeView = transform.Find("UiPrefab/UIAttributeView").gameObject.GetComponent<UIAttributeView>();
+        Debug.LogError("查看组件是否获取到"+UIAttributeView.name);
 
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();
@@ -97,7 +102,6 @@ public class UIManagerMain : ScriptManager, IMesRec
                 UIManager.Instance.ShowPanel<UIIconShow>(UIName.UIIconShow, new DMonoBehaviour[] { itemIcon });
                 break;
             case "CursorShow":
-
                 UIManager.Instance.ShowPanel<UICursorShow>(UIName.UICursorShow, dataInfo);
                 break;
             case "BarChart":
@@ -114,6 +118,12 @@ public class UIManagerMain : ScriptManager, IMesRec
                 break;
             case "TopMenuView":
                 UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, dataInfo);
+                break;
+            case "RightClickMenuView":
+                UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, dataInfo);
+                break;
+            case "AttributeView":
+                UIManager.Instance.ShowPanel<UIAttributeView>(UIName.UIAttributeView, dataInfo);
                 break;
             default:
                 break;

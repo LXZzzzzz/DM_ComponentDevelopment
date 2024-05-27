@@ -35,6 +35,8 @@ namespace UiManager
         {
             uiPanelWhereLayer.Add(UIName.UIConfirmation, BasePanel.UIType.popUp);
             uiPanelWhereLayer.Add(UIName.UITopMenuView, BasePanel.UIType.upper);
+            uiPanelWhereLayer.Add(UIName.UIRightClickMenuView, BasePanel.UIType.upper);
+            uiPanelWhereLayer.Add(UIName.UIAttributeView, BasePanel.UIType.upper);
         }
 
         /// <summary>
@@ -135,6 +137,12 @@ namespace UiManager
                 case UIName.UITopMenuView:
                     itemUI = Instantiate((main as UIManagerMain).UITopMenuView, canvansTran);
                     break;
+                case UIName.UIRightClickMenuView:
+                    itemUI = Instantiate((main as UIManagerMain).UIRightClickMenuView, canvansTran);
+                    break;
+                case UIName.UIAttributeView:
+                    itemUI = Instantiate((main as UIManagerMain).UIAttributeView, canvansTran);
+                    break;
             }
 
             itemUI.gameObject.SetActive(true);
@@ -180,6 +188,8 @@ namespace UiManager
         UIConfirmation,
         UIMap,
         UICommanderView,
-        UITopMenuView
+        UITopMenuView,
+        UIRightClickMenuView,
+        UIAttributeView
     }
 }

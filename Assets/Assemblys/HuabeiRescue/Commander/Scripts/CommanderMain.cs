@@ -41,7 +41,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     {
         base.EditorModeInitialized();
         sender.DebugMode = true;
-        sender.LogError("进入编辑模式"+(Properties[0] as InputFloatProperty).Value);
+        sender.LogError("进入编辑模式" + (Properties[0] as InputFloatProperty).Value);
     }
 
     public override void RunModeInitialized(bool isRoomCreator, SceneInfo info)
@@ -128,6 +128,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.MoveToTarget:
                 _commanderController.Receive_MoveEquipToTarget(param);
+                break;
+            case MessageID.TriggerWaterIntaking:
+                _commanderController.Receive_TriggerWaterIntaking(param);
                 break;
         }
     }

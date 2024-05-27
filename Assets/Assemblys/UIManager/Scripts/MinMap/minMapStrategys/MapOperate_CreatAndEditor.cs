@@ -12,6 +12,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
 
     public override void OnEnter(object initData)
     {
+        EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
         if (initData == null)
         {
             //场景初始化逻辑,走完切回默认模式
@@ -42,13 +43,11 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
                 creatAirCell(allObjModels[i]);
             }
 #if UNITY_EDITOR
-            mainLogic.SwitchMapLogic(OperatorState.PlanningPath);
+            mainLogic.SwitchMapLogic(OperatorState.Normal);
 #else
             mainLogic.SwitchMapLogic(OperatorState.Normal);
 #endif
         }
-
-        EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
     }
 
     public override void OnLeftClickIcon(IconCellBase clickIcon)

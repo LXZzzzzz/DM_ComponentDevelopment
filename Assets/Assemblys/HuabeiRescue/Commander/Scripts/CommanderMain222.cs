@@ -128,6 +128,9 @@ public class CommanderMain222 : ScriptManager, IControl, IMesRec
             case MessageID.MoveToTarget:
                 _commanderController.Receive_MoveEquipToTarget(param);
                 break;
+            case MessageID.TriggerWaterIntaking:
+                _commanderController.Receive_TriggerWaterIntaking(param);
+                break;
         }
     }
 }
