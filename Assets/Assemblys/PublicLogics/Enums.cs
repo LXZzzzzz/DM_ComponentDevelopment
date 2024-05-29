@@ -12,6 +12,8 @@ namespace Enums
         LoadProgrammeDataSuc, //读取方案成功通知场景响应
         MapChooseIcon, //地图上选择icon后通知出去（主要代表选择资源：取水点、补给点。。。）
         SendWaterInfoToControler, //向指挥角色发送取水技能数据
+        AddCommanderForZiYuan,//为资源添加控制者
+        InitZiYuanBeUsed,//初始化资源可被谁使用
     }
 
     public enum MessageID

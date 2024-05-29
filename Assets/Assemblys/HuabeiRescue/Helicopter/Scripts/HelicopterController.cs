@@ -26,7 +26,7 @@ public class HelicopterController : EquipBase, IWaterIntaking
 
     public void WaterIntaking(Vector3 pos, float range, float amount, bool isExecuteImmediately)
     {
-        Debug.LogError("取水技能参数回传"+pos+amount);
+        Debug.LogError("取水技能参数回传"+isExecuteImmediately);
         if (!isExecuteImmediately)
         {
             //把参数传给主角，将参数传给所有客户端，统一执行

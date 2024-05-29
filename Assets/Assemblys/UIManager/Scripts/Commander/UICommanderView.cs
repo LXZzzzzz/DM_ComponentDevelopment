@@ -7,6 +7,7 @@ using ToolsLibrary.ProgrammePart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.UI;
+using EquipBase = ToolsLibrary.EquipPart.EquipBase;
 
 public class UICommanderView : BasePanel
 {
@@ -21,6 +22,7 @@ public class UICommanderView : BasePanel
 
     private int level;
     private Dictionary<string, string> allCommanderIds; //存储所有指挥端Id和 对应的名称
+    private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
 
 
     public override void Init()
@@ -36,6 +38,7 @@ public class UICommanderView : BasePanel
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
 
         allCommanderIds = new Dictionary<string, string>();
+        allZiYuanCells = new List<ZiYuanCell>();
     }
 
     public override void ShowMe(object userData)
@@ -43,14 +46,18 @@ public class UICommanderView : BasePanel
         base.ShowMe(userData);
         level = (int)userData;
         GetControl<Toggle>("tog_EquipTypeView").interactable = level == 1;
+#if !UNITY_EDITOR
         showView();
+#endif
         EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
+        EventManager.Instance.AddEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
     }
 
     public override void HideMe()
     {
         base.HideMe();
         EventManager.Instance.RemoveEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
+        EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
     }
 
     private void showView()
@@ -71,7 +78,7 @@ public class UICommanderView : BasePanel
                     allCommanderIds.Add(itemObj.BObject.Id, itemObj.BObject.Info.Name);
                 }
             }
-            
+
             //获取场景中标识了模板的对象，展示出来
             for (int i = 0; i < allBObjects.Length; i++)
             {
@@ -94,17 +101,20 @@ public class UICommanderView : BasePanel
             {
                 var itemObj = allBObjects[i];
                 var itemCell = Instantiate(zycPrefab, ziYuanParent);
-                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id,new List<string>());
+                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChangeZiYuanBelongTo);
                 itemCell.gameObject.SetActive(true);
+                allZiYuanCells.Add(itemCell);
             }
+
             //任务列表展示
             if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 4) != null)
             {
                 //任务与资源逻辑应该是一样的
                 var itemObj = allBObjects[i];
                 var itemCell = Instantiate(zycPrefab, ziYuanParent);
-                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id,new List<string>());
+                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChangeZiYuanBelongTo);
                 itemCell.gameObject.SetActive(true);
+                allZiYuanCells.Add(itemCell);
             }
         }
     }
@@ -140,9 +150,19 @@ public class UICommanderView : BasePanel
         itemCell.gameObject.SetActive(true);
     }
 
+    private void OnInitZiYuanBeUsed(ZiYuanBase data)
+    {
+        allZiYuanCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId))?.ShowComCtrls(data.beUsedCommanderIds);
+    }
+
     private void OnChangeEquipBelongTo(string equipId, string commanderId)
     {
         //修改数据中的信息
         ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = commanderId;
+    }
+
+    private bool OnChangeZiYuanBelongTo(string ziYuanId, string commanderId, bool addOrRemove)
+    {
+        return ProgrammeDataManager.Instance.ChangeZiYuanData(ziYuanId, commanderId, addOrRemove);
     }
 }

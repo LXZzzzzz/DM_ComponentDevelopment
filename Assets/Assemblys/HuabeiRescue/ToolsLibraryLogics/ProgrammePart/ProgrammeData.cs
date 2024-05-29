@@ -13,6 +13,12 @@ namespace ToolsLibrary.ProgrammePart_Logic
 
         //每个指挥端所控算子列表
         public Dictionary<string, List<string>> CommanderControlList;
+        
+        //每个资源组件都可被哪些指挥端所用
+        public Dictionary<string, List<string>> ZiYuanControlledList;
+        
+        //每个任务都可被哪些指挥端所见
+        public Dictionary<string, List<string>> TaskControlledList;
     }
 
 //

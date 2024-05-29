@@ -68,6 +68,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
     {
         //这里先去数据管理器里申请创建，然后将数据ID传给创建者
         string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, uiPos2WorldPos(pos));
+        ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = MyDataInfo.leadId;
         //通知主角在场景对应位置创建实体
         EventManager.Instance.EventTrigger(EventType.CreatEquipEntity.ToString(), creatTargetTemplate, equipId);
     }

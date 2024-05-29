@@ -36,6 +36,7 @@ public class UITopMenuView : BasePanel
     {
         ProgrammeDataManager.Instance.CreatProgramme("测试默认方案");
         Debug.LogError("新建了方案");
+        //todo：新建方案后，要对场景中的元素清空
     }
 
     private void save()

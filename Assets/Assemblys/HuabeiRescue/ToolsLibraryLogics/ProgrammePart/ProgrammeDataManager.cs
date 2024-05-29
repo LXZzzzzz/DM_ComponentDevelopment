@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 using System.IO;
-using System.Windows.Forms;  //Editor\Data\MonoBleedingEdge\lib\mono\2.0-api
+using System.Windows.Forms; //Editor\Data\MonoBleedingEdge\lib\mono\2.0-api
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
@@ -19,6 +19,8 @@ namespace ToolsLibrary.ProgrammePart_Logic
             currentData.programmeName = name;
             currentData.AllEquipDatas = new List<AEquipData>();
             currentData.CommanderControlList = new Dictionary<string, List<string>>();
+            currentData.ZiYuanControlledList = new Dictionary<string, List<string>>();
+            currentData.TaskControlledList = new Dictionary<string, List<string>>();
             serialNumberId = 0;
         }
 
@@ -55,6 +57,45 @@ namespace ToolsLibrary.ProgrammePart_Logic
             AEquipData itemData = currentData.AllEquipDatas.Find(x => string.Equals(x.myId, targetId));
 
             return itemData;
+        }
+
+        public bool ChangeZiYuanData(string ziYuanId, string commanderId, bool isAdd)
+        {
+            if (!currentData.ZiYuanControlledList.ContainsKey(ziYuanId))
+                currentData.ZiYuanControlledList.Add(ziYuanId, new List<string>());
+            if (isAdd)
+            {
+                if (currentData.ZiYuanControlledList[ziYuanId].Find(x => string.Equals(x, commanderId)) == null)
+                    currentData.ZiYuanControlledList[ziYuanId].Add(commanderId);
+                else return false;
+            }
+            else
+            {
+                int removeIndex = -1;
+                for (int i = 0; i < currentData.ZiYuanControlledList[ziYuanId].Count; i++)
+                {
+                    if (string.Equals(commanderId, currentData.ZiYuanControlledList[ziYuanId][i]))
+                    {
+                        removeIndex = i;
+                        break;
+                    }
+                }
+
+                if (removeIndex != -1)
+                    currentData.ZiYuanControlledList[ziYuanId].RemoveAt(removeIndex);
+                else return false;
+            }
+
+            return true;
+        }
+
+
+        public List<string> GetZiYuanData(string ziYuanId)
+        {
+            if (currentData.ZiYuanControlledList.ContainsKey(ziYuanId))
+                return currentData.ZiYuanControlledList[ziYuanId];
+            else
+                return null;
         }
 
         public string PackedData()

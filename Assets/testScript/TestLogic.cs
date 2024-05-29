@@ -30,6 +30,7 @@ public class TestLogic : MonoBehaviour
             UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, null);
             EventManager.Instance.EventTrigger<object>(Enums.EventType.SwitchCreatModel.ToString(), allEquip);
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
+            UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
         }
     }
 }

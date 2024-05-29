@@ -35,7 +35,7 @@ public class EquipCell : DMonoBehaviour
 
     private void dropDownInit()
     {
-        string controllerId = ProgrammeDataManager.Instance.GetEquipDataById(equip.BObjectId).controllerId;
+        string controllerId = equip.BeLongToCommanderId;
         if (string.IsNullOrEmpty(controllerId))
             changeCtrl.value = 0;
         else

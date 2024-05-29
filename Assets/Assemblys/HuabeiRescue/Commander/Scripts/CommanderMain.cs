@@ -127,9 +127,11 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                     _commanderController.Receive_ProgrammeData(param);
                 break;
             case MessageID.MoveToTarget:
+                sender.LogError("收到了移动的指令"+type);
                 _commanderController.Receive_MoveEquipToTarget(param);
                 break;
             case MessageID.TriggerWaterIntaking:
+                sender.LogError("收到了取水的指令"+type);
                 _commanderController.Receive_TriggerWaterIntaking(param);
                 break;
         }

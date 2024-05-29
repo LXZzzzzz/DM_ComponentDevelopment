@@ -6,6 +6,7 @@ using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using EquipBase = ToolsLibrary.EquipPart.EquipBase;
 using EventType = Enums.EventType;
+using IWaterIntaking = ToolsLibrary.EquipPart.IWaterIntaking;
 
 public class CommanderController : DMonoBehaviour
 {
@@ -13,6 +14,7 @@ public class CommanderController : DMonoBehaviour
 
     public void Init()
     {
+        sender.LogError("指挥端组件ID：" + main.BObjectId);
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
@@ -31,15 +33,23 @@ public class CommanderController : DMonoBehaviour
 
     private void OnChangeCurrentEquip(string equipId)
     {
-        sender.LogError("收到了选择控制对象的数据" + equipId);
-        currentChooseEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
+        var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
+        if (string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
+        {
+            sender.LogError("收到了选择控制对象的数据" + equipId);
+            currentChooseEquip = itemEquip;
+        }
+        else
+        {
+            sender.LogError("该对象不属于我");
+        }
     }
 
     private void OnChangeTarget(Vector3 pos)
     {
-        sender.LogError("收到了指定移动目标的数据" + pos);
         if (currentChooseEquip == null) return;
         sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos));
+        sender.LogError("收到了指定移动目标的数据" + pos);
     }
 
     private void OnCreatEquipEntity(string templateId, string myId)
@@ -52,6 +62,7 @@ public class CommanderController : DMonoBehaviour
                 var temporaryEquip = Instantiate(templateEquip, root);
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init();
+                temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
                 temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y, dataPos.z);
                 EventManager.Instance.EventTrigger(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
@@ -66,6 +77,15 @@ public class CommanderController : DMonoBehaviour
         for (int i = 0; i < data.AllEquipDatas.Count; i++)
         {
             OnCreatEquipEntity(data.AllEquipDatas[i].templateId, data.AllEquipDatas[i].myId);
+        }
+
+        //找到所有的资源，通过ID找到数据中的对应数据，
+        for (int i = 0; i < allBObjects.Length; i++)
+        {
+            ZiYuanBase itemZy = allBObjects[i].GetComponent<ZiYuanBase>();
+            if (itemZy == null) continue;
+            itemZy.SetBeUsedComs(data.ZiYuanControlledList.ContainsKey(itemZy.main.BObjectId) ? data.ZiYuanControlledList[itemZy.main.BObjectId] : null);
+            EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
 
         EventManager.Instance.EventTrigger<object>(EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);
@@ -88,13 +108,7 @@ public class CommanderController : DMonoBehaviour
     public void Receive_ProgrammeData(string data)
     {
         var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
-        Debug.LogError(programmeData);
-        for (int i = 0; i < programmeData.AllEquipDatas.Count; i++)
-        {
-            OnCreatEquipEntity(programmeData.AllEquipDatas[i].templateId, programmeData.AllEquipDatas[i].myId);
-        }
-
-        EventManager.Instance.EventTrigger<object>(EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);
+        OnLoadProgrammeDataSuc(programmeData);
     }
 
     public void Receive_TriggerWaterIntaking(string data)
