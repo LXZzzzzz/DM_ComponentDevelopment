@@ -37,15 +37,20 @@ public class UIAttributeView : BasePanel
     {
         if (!isReceiveMapInfo || bom == null) return;
 
-        bom.GetComponent<ZiYuanBase>().beUsedCommanderIds?.ForEach(x => sender.LogError("控制人"+x));
-        var isMeControl = bom.GetComponent<ZiYuanBase>().beUsedCommanderIds?.Find(x => string.Equals(x, MyDataInfo.leadId));
+        var coms = bom.GetComponent<ZiYuanBase>().beUsedCommanderIds;
+        var isMeControl = coms?.Find(x => string.Equals(x, MyDataInfo.leadId));
 
-        if (isMeControl == null)
+        if (MyDataInfo.MyLevel != 1)
         {
-            sender.LogError("选择的取水点不可为我所用");
-            watersPos=Vector3.zero;
-            return;
+            if (isMeControl == null)
+            {
+                sender.LogError("选择的取水点不可为我所用");
+                watersPos = Vector3.zero;
+                return;
+            }
         }
+        //这里的目的是：当资源归属人为空，那就交给一级指挥官控制
+        else if (coms != null && coms.Count != 0) return;
 
         //todo:后期加上类型保护
         watersName.text = bom.BObject.Info.Name;
@@ -59,6 +64,7 @@ public class UIAttributeView : BasePanel
             sender.LogError("取水参数错误");
             return;
         }
+
         isReceiveMapInfo = false;
         float itemWaterAmount = int.Parse(waterAmount.text);
         if (operateObj.CheckCapacity() > itemWaterAmount)

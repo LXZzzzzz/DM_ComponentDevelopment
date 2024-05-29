@@ -42,14 +42,6 @@ public class MapOperate_Normal : MapOperateLogicBase
             {
                 if (string.Equals(mainLogic.allBObjects[i].BObject.Id,targetIconCell.belongToId))
                 {
-                    if(mainLogic.allBObjects[i].GetComponent<ZiYuanBase>()!=null)
-                    {
-                        mainLogic.sender.LogError(mainLogic.allBObjects[i].GetComponent<ZiYuanBase>().name);
-                        for (int j = 0; j < mainLogic.allBObjects[i].GetComponent<ZiYuanBase>().beUsedCommanderIds?.Count; j++)
-                        {
-                            mainLogic.sender.LogError(mainLogic.allBObjects[i].GetComponent<ZiYuanBase>().beUsedCommanderIds[j]);
-                        }
-                    }
                     EventManager.Instance.EventTrigger(EventType.MapChooseIcon.ToString(),mainLogic.allBObjects[i]);
                     break;
                 }

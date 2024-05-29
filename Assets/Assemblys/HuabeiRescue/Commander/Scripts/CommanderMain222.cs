@@ -114,7 +114,10 @@ public class CommanderMain222 : ScriptManager, IControl, IMesRec
     public void RecMessage(SendType type, GameObject senderObj, int eventType, string param)
     {
         if (type == SendType.SubToMain)
+        {
             sender.RunSend(SendType.MainToAll, senderObj.GetComponent<ScriptManager>().BObjectId, eventType, param);
+            return;
+        }
 
         switch ((MessageID)eventType)
         {
