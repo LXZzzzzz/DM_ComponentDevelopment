@@ -5,6 +5,7 @@ using UiManager;
 using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
+using EventType = Enums.EventType;
 
 public class UITopMenuView : BasePanel
 {
@@ -24,7 +25,7 @@ public class UITopMenuView : BasePanel
         base.ShowMe(userData);
         int mainLevel = (int)userData;
         GetControl<Toggle>("Tog_Fazd").isOn = false;
-        GetControl<Toggle>("Tog_Fazd").interactable = mainLevel == 1;
+        GetControl<Toggle>("Tog_Fazd").transform.parent.gameObject.SetActive(mainLevel == 1);
     }
 
     public override void HideMe()
@@ -34,9 +35,15 @@ public class UITopMenuView : BasePanel
 
     private void newBuild()
     {
-        ProgrammeDataManager.Instance.CreatProgramme("测试默认方案");
-        Debug.LogError("新建了方案");
+        UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, null);
+        EventManager.Instance.AddEventListener<string>(EventType.ConfirmationCbSure.ToString(), runNewScheme);
         //todo：新建方案后，要对场景中的元素清空
+    }
+
+    private void runNewScheme(string schemeName)
+    {
+        EventManager.Instance.RemoveEventListener<string>(EventType.ConfirmationCbSure.ToString(), runNewScheme);
+        ProgrammeDataManager.Instance.CreatProgramme(schemeName);
     }
 
     private void save()

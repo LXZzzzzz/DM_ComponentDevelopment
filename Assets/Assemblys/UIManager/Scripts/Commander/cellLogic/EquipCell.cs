@@ -57,5 +57,6 @@ public class EquipCell : DMonoBehaviour
     private void OnChange(int select)
     {
         changeCallBack(equip.BObjectId, dropDownSupplementInfo[select]);
+        equip.BeLongToCommanderId = dropDownSupplementInfo[select];
     }
 }

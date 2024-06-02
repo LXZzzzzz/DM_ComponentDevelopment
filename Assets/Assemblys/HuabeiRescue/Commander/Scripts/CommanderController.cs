@@ -34,10 +34,12 @@ public class CommanderController : DMonoBehaviour
     private void OnChangeCurrentEquip(string equipId)
     {
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
+        sender.LogError(itemEquip.BeLongToCommanderId+":"+MyDataInfo.leadId);
         if (string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
         {
-            sender.LogError("收到了选择控制对象的数据" + equipId);
+            if (currentChooseEquip != null) currentChooseEquip.isChooseMe = false;
             currentChooseEquip = itemEquip;
+            currentChooseEquip.isChooseMe = true;
         }
         else
         {

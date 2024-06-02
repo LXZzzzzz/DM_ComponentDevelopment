@@ -45,7 +45,7 @@ public class UICommanderView : BasePanel
     {
         base.ShowMe(userData);
         level = (int)userData;
-        GetControl<Toggle>("tog_EquipTypeView").interactable = level == 1;
+        GetControl<Button>("openEquipTypeView").interactable = level == 1;
 #if !UNITY_EDITOR
         showView();
 #endif

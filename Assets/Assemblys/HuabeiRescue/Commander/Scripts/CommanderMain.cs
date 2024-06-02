@@ -50,6 +50,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         sender.LogError("进入运行模式:" + (Properties[0] as InputFloatProperty).Value);
         _commanderController = gameObject.AddComponent<CommanderController>();
         isMain = isRoomCreator;
+        for (int i = 0; i < info.ClientInfos.Count; i++)
+        {
+            sender.LogError(info.ClientInfos[i].Name+":"+info.ClientInfos[i].RoleId);
+        }
     }
 
     public override void PropertiesChanged(DynamicProperty[] pros)

@@ -14,6 +14,7 @@ namespace Enums
         SendWaterInfoToControler, //向指挥角色发送取水技能数据
         AddCommanderForZiYuan,//为资源添加控制者
         InitZiYuanBeUsed,//初始化资源可被谁使用
+        ConfirmationCbSure,//确认窗口返回确认消息
     }
 
     public enum MessageID

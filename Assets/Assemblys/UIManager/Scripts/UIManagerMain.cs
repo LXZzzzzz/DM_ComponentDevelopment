@@ -49,7 +49,6 @@ public class UIManagerMain : ScriptManager, IMesRec
     {
         base.RunModeInitialized(isMain, info);
         EventManager.Instance.AddEventListener<string, object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
-        //todo:给这里改成UIManager初始化，并把go放到我节点下，并把自己传给他。把uimanager放到ToolsLibrary中，这样其他部分代码就可以直接通过单例拿到UI进行操作
         gameObject.AddComponent<UIManager>();
         //其他UI预制体脚本也需要在这里进行挂载
         uiprefabAddLogic();
