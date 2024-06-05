@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ZiYuanDeCell : DraggingFunction
+public class ZiYuanCell : DraggingFunction
 {
     public void Init(string pointName,string entityId, Func<string, string, bool, bool> changeDataCallBack)
     {

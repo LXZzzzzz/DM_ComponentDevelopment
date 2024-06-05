@@ -19,14 +19,14 @@ public class UICommanderView : BasePanel
     private EquipTypeCell etcPrefab;
     private EquipCell ecPrefab;
     private CommanderCell ccPrefab;
-    private ZiYuanDeCell zycPrefab;
+    private ZiYuanCell zycPrefab;
     private TaskCell taskPrefab;
 
     private MyCommanderView myCommanderInfoShow;
 
     private int level;
     private Dictionary<string, string> allCommanderIds; //存储所有指挥端Id和 对应的名称
-    private List<ZiYuanDeCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
+    private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
 
 
@@ -40,14 +40,14 @@ public class UICommanderView : BasePanel
         commanderParent = GetControl<ScrollRect>("CommandersView").content;
         ccPrefab = GetComponentInChildren<CommanderCell>(true);
         ziYuanParent = GetControl<ScrollRect>("ZiYuanView").content;
-        zycPrefab = GetComponentInChildren<ZiYuanDeCell>(true);
+        zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
         taskParent = GetControl<ScrollRect>("TaskListView").content;
         taskPrefab = GetComponentInChildren<TaskCell>(true);
 
         myCommanderInfoShow = GetComponentInChildren<MyCommanderView>(true);
 
         allCommanderIds = new Dictionary<string, string>();
-        allZiYuanCells = new List<ZiYuanDeCell>();
+        allZiYuanCells = new List<ZiYuanCell>();
         allTaskCells = new List<TaskCell>();
     }
 
