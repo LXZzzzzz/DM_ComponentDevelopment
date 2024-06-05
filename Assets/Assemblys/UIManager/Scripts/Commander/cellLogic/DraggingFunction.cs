@@ -8,9 +8,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using EventType = Enums.EventType;
 
-public class ZiYuanCell : DMonoBehaviour, IDragHandler
+public class DraggingFunction : DMonoBehaviour, IDragHandler
 {
-    private Text showName;
     private string _myEntityId;
     private Func<string, string, bool, bool> changeDataCallBack;
     private RectTransform comShowParent;
@@ -20,16 +19,14 @@ public class ZiYuanCell : DMonoBehaviour, IDragHandler
 
     public string myEntityId => _myEntityId;
 
-    public void Init(string pointName, string entityId, Func<string, string, bool, bool> changeDataCallBack)
+    public void Init(string entityId, Func<string, string, bool, bool> changeDataCallBack)
     {
         //显示名称，存储对应实体ID，界面显示自己都可被哪些人使用
         isAddEvent = true;
-        showName = GetComponentInChildren<Text>(true);
         comShowParent = GetComponentInChildren<ScrollRect>(true).content;
         commanderShowCell = GetComponentInChildren<ZiYuan_ComanderCell>(true);
 
 
-        showName.text = pointName;
         _myEntityId = entityId;
         this.changeDataCallBack = changeDataCallBack;
         allcoms = new List<ZiYuan_ComanderCell>();
@@ -42,6 +39,7 @@ public class ZiYuanCell : DMonoBehaviour, IDragHandler
         {
             ChangeCommanders(allcoms[i].comId, false);
         }
+
         for (int i = 0; i < canBeUseCommanders?.Count; i++)
         {
             ChangeCommanders(canBeUseCommanders[i], true);
@@ -63,6 +61,7 @@ public class ZiYuanCell : DMonoBehaviour, IDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (MyDataInfo.gameState == GameState.GameStart) return;
         //注册事件
         if (isAddEvent)
         {

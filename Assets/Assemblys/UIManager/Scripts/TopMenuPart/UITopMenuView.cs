@@ -18,6 +18,8 @@ public class UITopMenuView : BasePanel
         GetControl<Button>("btn_SaveAs").onClick.AddListener(saveAs);
         GetControl<Button>("btn_Load").onClick.AddListener(load);
         GetControl<Button>("btn_Release").onClick.AddListener(release);
+        GetControl<Button>("btn_StandAlone").onClick.AddListener(standAlone);
+        GetControl<Button>("btn_Online").onClick.AddListener(onLine);
     }
 
     public override void ShowMe(object userData)
@@ -71,15 +73,38 @@ public class UITopMenuView : BasePanel
 
     private void release()
     {
-        //随便写一组数据，走一下这个逻辑
         string packedData = ProgrammeDataManager.Instance.PackedData();
 
-        for (int i = 0; i < allBObjects.Length; i++)
+        for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
         {
-            if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
-            {
-                sender.RunSend(SendType.MainToAll, allBObjects[i].BObject.Id, (int)Enums.MessageID.SendProgramme, packedData);
-            }
+            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendProgramme, packedData);
+        }
+
+        // for (int i = 0; i < allBObjects.Length; i++)
+        // {
+        //     if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
+        //     {
+        //         sender.RunSend(SendType.MainToAll, allBObjects[i].BObject.Id, (int)Enums.MessageID.SendProgramme, packedData);
+        //     }
+        // }
+    }
+
+    private void standAlone()
+    {
+        sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendGameStart, "");
+    }
+
+    private void onLine()
+    {
+        if (MyDataInfo.gameState != GameState.Preparation)
+        {
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, "请先发布方案，再通知游戏开始");
+            return;
+        }
+
+        for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+        {
+            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStart, "");
         }
     }
 }

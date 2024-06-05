@@ -158,25 +158,31 @@ MonoBehaviour:
       IsOn: 1
       SubName: "\u6307\u6325\u5B98\u89D2\u8272"
   - BuiltIn: 1
-    Id: 9
-    IsOn: 0
-    Name: "\u88C5\u5907\u6A21\u677F"
-    SubFoldOut: 1
-    SubTags: []
-  - BuiltIn: 1
     Id: 1010
     IsOn: 0
     Name: "\u534E\u5317\u6551\u63F4"
     SubFoldOut: 1
     SubTags:
-    - Id: 0
+    - Id: 1
       IsModify: 0
       IsOn: 0
-      SubName: "\u65B0\u5EFA\u5B50\u6807\u7B7E"
+      SubName: "\u53D6\u6C34\u70B9"
+    - Id: 2
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u8865\u7ED9\u70B9"
+    - Id: 3
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u4EFB\u52A1\u70B9"
+    - Id: 4
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u88C5\u5907\u6A21\u677F"
   listTriggers:
   - BuiltIn: 0
     Id: 1000
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u89E6\u53D1"
   - BuiltIn: 0
     Id: 1001
@@ -184,36 +190,36 @@ MonoBehaviour:
     Name: "\u78B0\u649E\u89E6\u53D1"
   - BuiltIn: 0
     Id: 1002
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u89E6\u53D11"
   - BuiltIn: 0
     Id: 1003
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u89E6\u53D12"
   listAffects:
   - BuiltIn: 0
     Id: 2001
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C"
   - BuiltIn: 0
     Id: 2002
-    IsOn: 0
+    IsOn: 1
     Name: "\u78B0\u649E\u6548\u679C"
   - BuiltIn: 0
     Id: 2003
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C2"
   - BuiltIn: 0
     Id: 2004
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C3"
   - BuiltIn: 0
     Id: 2005
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C4"
   - BuiltIn: 0
     Id: 2006
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C5"
   IsCreateTag: 0
   IsCreateScript: 1

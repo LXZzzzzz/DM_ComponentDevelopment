@@ -158,12 +158,6 @@ MonoBehaviour:
       IsOn: 0
       SubName: "\u6307\u6325\u5B98\u89D2\u8272"
   - BuiltIn: 1
-    Id: 9
-    IsOn: 0
-    Name: "\u88C5\u5907\u6A21\u677F"
-    SubFoldOut: 1
-    SubTags: []
-  - BuiltIn: 1
     Id: 1010
     IsOn: 1
     Name: "\u534E\u5317\u6551\u63F4"
@@ -185,10 +179,14 @@ MonoBehaviour:
       IsModify: 0
       IsOn: 0
       SubName: "\u88C5\u5907\u6A21\u677F"
+    - Id: 5
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u5176\u4ED6\u7EC4\u4EF6"
   listTriggers:
   - BuiltIn: 0
     Id: 1000
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u89E6\u53D1"
   - BuiltIn: 0
     Id: 1001
@@ -196,40 +194,40 @@ MonoBehaviour:
     Name: "\u78B0\u649E\u89E6\u53D1"
   - BuiltIn: 0
     Id: 1002
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u89E6\u53D11"
   - BuiltIn: 0
     Id: 1003
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u89E6\u53D12"
   listAffects:
   - BuiltIn: 0
     Id: 2001
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C"
   - BuiltIn: 0
     Id: 2002
-    IsOn: 0
+    IsOn: 1
     Name: "\u78B0\u649E\u6548\u679C"
   - BuiltIn: 0
     Id: 2003
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C2"
   - BuiltIn: 0
     Id: 2004
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C3"
   - BuiltIn: 0
     Id: 2005
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C4"
   - BuiltIn: 0
     Id: 2006
-    IsOn: 0
+    IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C5"
-  IsCreateTag: 0
+  IsCreateTag: 1
   IsCreateScript: 1
-  IsCreateModel: 0
+  IsCreateModel: 1
   IsCompressModel: 0
   isAssignMain: 1
   MainCalss: WaterPointMain

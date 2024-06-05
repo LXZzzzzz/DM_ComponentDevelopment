@@ -153,16 +153,32 @@ MonoBehaviour:
       IsModify: 0
       IsOn: 0
       SubName: "\u6D4B\u8BD5\u89D2\u82722"
-    - Id: 5
+    - Id: 10
       IsModify: 0
       IsOn: 1
       SubName: "\u6307\u6325\u5B98\u89D2\u8272"
   - BuiltIn: 1
-    Id: 9
+    Id: 1010
     IsOn: 0
-    Name: "\u88C5\u5907\u6A21\u677F"
+    Name: "\u534E\u5317\u6551\u63F4"
     SubFoldOut: 1
-    SubTags: []
+    SubTags:
+    - Id: 1
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u53D6\u6C34\u70B9"
+    - Id: 2
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u8865\u7ED9\u70B9"
+    - Id: 3
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u4EFB\u52A1\u70B9"
+    - Id: 4
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u88C5\u5907\u6A21\u677F"
   listTriggers:
   - BuiltIn: 0
     Id: 1000

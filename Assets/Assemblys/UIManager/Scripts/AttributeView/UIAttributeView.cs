@@ -22,6 +22,7 @@ public class UIAttributeView : BasePanel
         watersName = GetControl<Text>("text_waters");
         GetControl<Button>("btn_chooseWaters").onClick.AddListener(() => isReceiveMapInfo = true);
         GetControl<Button>("btn_sure").onClick.AddListener(OnSendSkillParameter);
+        GetControl<Button>("btn_close").onClick.AddListener(() => Close(UIName.UIAttributeView));
     }
 
     public override void ShowMe(object userData)
@@ -39,18 +40,18 @@ public class UIAttributeView : BasePanel
 
         var coms = bom.GetComponent<ZiYuanBase>().beUsedCommanderIds;
         var isMeControl = coms?.Find(x => string.Equals(x, MyDataInfo.leadId));
+        sender.LogError(bom.name + "我的级别：" + MyDataInfo.MyLevel);
 
-        if (MyDataInfo.MyLevel != 1)
+        if (isMeControl == null)
         {
-            if (isMeControl == null)
+            //这里的目的是：当资源归属人为空，那就交给一级指挥官控制
+            if (MyDataInfo.MyLevel != 1 || coms != null && coms.Count != 0)
             {
                 sender.LogError("选择的取水点不可为我所用");
                 watersPos = Vector3.zero;
                 return;
             }
         }
-        //这里的目的是：当资源归属人为空，那就交给一级指挥官控制
-        else if (coms != null && coms.Count != 0) return;
 
         //todo:后期加上类型保护
         watersName.text = bom.BObject.Info.Name;

@@ -50,9 +50,13 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         sender.LogError("进入运行模式:" + (Properties[0] as InputFloatProperty).Value);
         _commanderController = gameObject.AddComponent<CommanderController>();
         isMain = isRoomCreator;
+        MyDataInfo.playerInfos = new List<ClientInfo>();
         for (int i = 0; i < info.ClientInfos.Count; i++)
         {
-            sender.LogError(info.ClientInfos[i].Name+":"+info.ClientInfos[i].RoleId);
+            MyDataInfo.playerInfos.Add(new ClientInfo()
+            {
+                PlayerName = info.ClientInfos[i].Name, RoleId = info.ClientInfos[i].RoleId, UID = info.ClientInfos[i].UID
+            });
         }
     }
 
@@ -81,11 +85,11 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         cameraObject = new GameObject("Main Camera");
         cameraObject.transform.parent = transform.parent;
         cameraObject.tag = "MainCamera";
-        cameraObject.transform.position = transform.position;
+        cameraObject.transform.position = transform.position+Vector3.up*10;
         cameraObject.AddComponent<Camera>();
 
         yield return 1;
-        int myLevel = (int)(Properties[0] as InputFloatProperty).Value;
+        int myLevel = MyDataInfo.MyLevel = (int)(Properties[0] as InputFloatProperty).Value;
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "IconShow", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "MinMap", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
@@ -130,15 +134,20 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 if (MyDataInfo.leadId != BObjectId) break;
                 int myLevel = (int)(Properties[0] as InputFloatProperty).Value;
                 sender.LogError(myLevel != 1 ? "我需要接收场景装备数据" : "我就是数据编辑者");
+                MyDataInfo.gameState = GameState.Preparation;
                 if (myLevel != 1)
                     _commanderController.Receive_ProgrammeData(param);
                 break;
+            case MessageID.SendGameStart:
+                if (MyDataInfo.leadId != BObjectId) break;
+                MyDataInfo.gameState = GameState.GameStart;
+                break;
             case MessageID.MoveToTarget:
-                sender.LogError("收到了移动的指令"+type);
+                sender.LogError("收到了移动的指令" + type);
                 _commanderController.Receive_MoveEquipToTarget(param);
                 break;
             case MessageID.TriggerWaterIntaking:
-                sender.LogError("收到了取水的指令"+type);
+                sender.LogError("收到了取水的指令" + type);
                 _commanderController.Receive_TriggerWaterIntaking(param);
                 break;
         }

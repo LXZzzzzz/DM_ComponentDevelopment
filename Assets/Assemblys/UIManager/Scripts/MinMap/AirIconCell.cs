@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 using UnityEngine.Events;
@@ -32,5 +33,15 @@ public class AirIconCell : IconCellBase
             checkTimer = Time.time + 1;
             showChooseState.SetActive(equipGo.isChooseMe);
         }
+    }
+
+    protected override IconInfoData GetBasicInfo()
+    {
+        IconInfoData data = new IconInfoData()
+        {
+            entityName = equipGo.name, entityInfo = "飞机飞机", beUseCommanders = new List<string> { equipGo.BeLongToCommanderId }
+        };
+
+        return data;
     }
 }

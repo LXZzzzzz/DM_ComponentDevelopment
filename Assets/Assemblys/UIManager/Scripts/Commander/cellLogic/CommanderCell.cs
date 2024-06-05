@@ -9,14 +9,17 @@ using EventType = Enums.EventType;
 
 public class CommanderCell : DMonoBehaviour, IDropHandler
 {
-    private Text showName;
+    private Text zuJianName;
+    private Text playerName;
     private string myId;
 
     public void Init(string Namestr, string myId, UnityAction<string> callBack)
     {
-        if (showName == null)
-            showName = GetComponentInChildren<Text>();
-        showName.text = Namestr;
+        if (zuJianName == null) zuJianName = transform.Find("text_AssemblyName").GetComponent<Text>();
+        if (playerName == null) playerName = transform.Find("text_ClientName").GetComponent<Text>();
+        zuJianName.text = Namestr;
+        if (MyDataInfo.playerInfos != null)
+            playerName.text = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, myId)).PlayerName;
         this.myId = myId;
         GetComponentInChildren<Button>().onClick.AddListener(() => callBack(this.myId));
     }

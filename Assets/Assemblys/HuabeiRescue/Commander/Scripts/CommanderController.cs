@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using DM.IFS;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
 using UnityEngine;
-using EquipBase = ToolsLibrary.EquipPart.EquipBase;
 using EventType = Enums.EventType;
 using IWaterIntaking = ToolsLibrary.EquipPart.IWaterIntaking;
 
@@ -15,11 +13,13 @@ public class CommanderController : DMonoBehaviour
     public void Init()
     {
         sender.LogError("指挥端组件ID：" + main.BObjectId);
+        MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.AddEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
         EventManager.Instance.AddEventListener<string>(EventType.SendWaterInfoToControler.ToString(), OnSendWaterIntaking);
+        EventManager.Instance.AddEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
     }
 
     public void Terminate()
@@ -29,12 +29,26 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.RemoveEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
         EventManager.Instance.RemoveEventListener<string>(EventType.SendWaterInfoToControler.ToString(), OnSendWaterIntaking);
+        EventManager.Instance.RemoveEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
+    }
+
+    private DMCameraControl.DMCameraViewMove cvm;
+    private DMCameraControl.DMouseOrbit mo;
+
+    private void OnCameraSwith(bool isMove)
+    {
+        if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
+        if (cvm == null) cvm = Camera.main.gameObject.AddComponent<DMCameraControl.DMCameraViewMove>();
+
+        cvm.enabled = isMove;
+        mo.enabled = isMove;
     }
 
     private void OnChangeCurrentEquip(string equipId)
     {
+        if (MyDataInfo.gameState != GameState.GameStart) return;
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
-        sender.LogError(itemEquip.BeLongToCommanderId+":"+MyDataInfo.leadId);
+        sender.LogError(itemEquip.BeLongToCommanderId + ":" + MyDataInfo.leadId);
         if (string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
         {
             if (currentChooseEquip != null) currentChooseEquip.isChooseMe = false;
@@ -49,7 +63,7 @@ public class CommanderController : DMonoBehaviour
 
     private void OnChangeTarget(Vector3 pos)
     {
-        if (currentChooseEquip == null) return;
+        if (MyDataInfo.gameState != GameState.GameStart || currentChooseEquip == null) return;
         sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos));
         sender.LogError("收到了指定移动目标的数据" + pos);
     }

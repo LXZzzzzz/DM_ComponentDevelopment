@@ -4,6 +4,7 @@ using ToolsLibrary.EquipPart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using EventType = Enums.EventType;
 
 public enum OperatorState
@@ -35,6 +36,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         airIconPrefab = transform.Find("prefabs/airCell").GetComponent<AirIconCell>();
         pointIconPrefab = transform.Find("prefabs/pointCell").GetComponent<PointIconCell>();
         ziYuanIconPrefab = transform.Find("prefabs/ziyuanCell").GetComponent<ZiYuanIconCell>();
+        GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
 
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
         allObjModels = new List<EquipBase>();
@@ -67,6 +69,12 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     private void ToCreatModel(object info)
     {
+        if (MyDataInfo.gameState == GameState.GameStart)
+        {
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, "游戏进行阶段，不允许对场景资源进行调整");
+            return;
+        }
+
         SwitchMapLogic(OperatorState.CreatAndEditor, info);
     }
 
@@ -91,6 +99,12 @@ public class UIMap : BasePanel, IPointerClickHandler
         currentMapLogic?.OnExit();
         currentMapLogic = mapLogics[targetState];
         currentMapLogic?.OnEnter(data);
+    }
+
+    private void OnCloseMap(bool isShowMap)
+    {
+        //点击了切换三维地图或二维地图
+        EventManager.Instance.EventTrigger(EventType.CameraSwitch.ToString(),!isShowMap);
     }
 
     private EquipBase[] sceneAllObjs;
@@ -119,7 +133,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     }
 
     //该段逻辑是点击了地图上任意图标的回调，包含两部分：1.点击装备图表 2.点击非装备图标(包含系统实体、本地实体)
-    public void OnChooseObj(string objId,PointerEventData.InputButton button)
+    public void OnChooseObj(string objId, PointerEventData.InputButton button)
     {
         IconCellBase targetIconCell = null;
         foreach (var iconCell in allIconCells)
@@ -134,7 +148,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         if (targetIconCell == null) return;
 
         switch (button)
-        { 
+        {
             case PointerEventData.InputButton.Left:
                 currentMapLogic?.OnLeftClickIcon(targetIconCell);
                 break;
@@ -147,6 +161,10 @@ public class UIMap : BasePanel, IPointerClickHandler
     private void Update()
     {
         currentMapLogic?.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation,"测试一下提示的确认操作");
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)

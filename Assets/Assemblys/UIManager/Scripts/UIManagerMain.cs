@@ -18,6 +18,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UITopMenuView UITopMenuView;
     public UIRightClickMenuView UIRightClickMenuView;
     public UIAttributeView UIAttributeView;
+    public UIHangShowInfo UIHangShowInfo;
 
     private UIItem_IconShow itemIcon;
 
@@ -71,7 +72,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         UITopMenuView = transform.Find("UiPrefab/UITopMenuView").gameObject.GetComponent<UITopMenuView>();
         UIRightClickMenuView = transform.Find("UiPrefab/UIRightClickMenuView").gameObject.GetComponent<UIRightClickMenuView>();
         UIAttributeView = transform.Find("UiPrefab/UIAttributeView").gameObject.GetComponent<UIAttributeView>();
-        Debug.LogError("查看组件是否获取到"+UIAttributeView.name);
+        UIHangShowInfo = transform.Find("UiPrefab/UIHangShowInfo").gameObject.GetComponent<UIHangShowInfo>();
 
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();

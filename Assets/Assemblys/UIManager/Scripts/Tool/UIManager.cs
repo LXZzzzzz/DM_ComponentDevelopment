@@ -37,6 +37,7 @@ namespace UiManager
             uiPanelWhereLayer.Add(UIName.UITopMenuView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIRightClickMenuView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIAttributeView, BasePanel.UIType.upper);
+            uiPanelWhereLayer.Add(UIName.UIHangShowInfo, BasePanel.UIType.popUp);
         }
 
         /// <summary>
@@ -143,6 +144,9 @@ namespace UiManager
                 case UIName.UIAttributeView:
                     itemUI = Instantiate((main as UIManagerMain).UIAttributeView, canvansTran);
                     break;
+                case UIName.UIHangShowInfo:
+                    itemUI = Instantiate((main as UIManagerMain).UIHangShowInfo, canvansTran);
+                    break;
             }
 
             itemUI.gameObject.SetActive(true);
@@ -190,6 +194,7 @@ namespace UiManager
         UICommanderView,
         UITopMenuView,
         UIRightClickMenuView,
-        UIAttributeView
+        UIAttributeView,
+        UIHangShowInfo
     }
 }

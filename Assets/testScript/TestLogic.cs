@@ -21,6 +21,8 @@ public class TestLogic : MonoBehaviour
         }
 
         MyDataInfo.sceneAllEquips = allEquip;
+
+        EventManager.Instance.AddEventListener<bool>(Enums.EventType.CameraSwitch.ToString(), testaaa);
     }
 
     void Update()
@@ -32,5 +34,17 @@ public class TestLogic : MonoBehaviour
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
             UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
         }
+    }
+
+    private DMCameraControl.DMouseOrbit mo;
+    private DMCameraControl.DMCameraViewMove cvm;
+
+    private void testaaa(bool isMove)
+    {
+        if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
+        if (cvm == null) cvm = Camera.main.gameObject.AddComponent<DMCameraControl.DMCameraViewMove>();
+
+        cvm.enabled = isMove;
+        mo.enabled = isMove;
     }
 }

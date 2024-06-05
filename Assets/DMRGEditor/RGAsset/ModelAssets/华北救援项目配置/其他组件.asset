@@ -1,0 +1,245 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c273b499a08c234388d3c55bea2a556, type: 3}
+  m_Name: OtherSubAssembly
+  m_EditorClassIdentifier: 
+  Icon: {fileID: 21300000, guid: bdf6d3dd58d048a4fa576f884cae98e1, type: 3}
+  AssetName: "\u5176\u4ED6\u7EC4\u4EF6"
+  Description: 
+  Prefab: {fileID: 7053935246794837707, guid: b3174ed8b203d66498d22351e2674472, type: 3}
+  Size: 0
+  listComponent:
+  - BuiltIn: 1
+    Id: 2049
+    IsOn: 0
+    Name: "\u76F4\u5347\u673A\u4E0A"
+    SubFoldOut: 1
+    SubTags: []
+  - BuiltIn: 1
+    Id: 2050
+    IsOn: 0
+    Name: "\u822A\u6BCD\u7532\u677F\u4E0A"
+    SubFoldOut: 1
+    SubTags: []
+  listContainer:
+  - BuiltIn: 1
+    Id: 1025
+    IsOn: 0
+    Name: "\u76F4\u5347\u673A"
+    SubFoldOut: 1
+    SubTags: []
+  - BuiltIn: 1
+    Id: 1026
+    IsOn: 0
+    Name: "\u822A\u6BCD"
+    SubFoldOut: 1
+    SubTags: []
+  listLayoutTerrain:
+  - BuiltIn: 1
+    Id: 1
+    IsOn: 1
+    Name: "\u9646\u5730"
+    SubFoldOut: 1
+    SubTags:
+    - Id: 0
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u571F\u5730"
+    - Id: 1
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u6C34\u6CE5"
+    - Id: 2
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u77F3\u5934"
+  - BuiltIn: 1
+    Id: 2
+    IsOn: 1
+    Name: "\u6C34\u9762"
+    SubFoldOut: 1
+    SubTags:
+    - Id: 0
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u6C34\u9762"
+  - BuiltIn: 1
+    Id: 3
+    IsOn: 0
+    Name: "\u6D77\u6D0B"
+    SubFoldOut: 1
+    SubTags: []
+  - BuiltIn: 1
+    Id: 4
+    IsOn: 0
+    Name: "\u5E73\u539F"
+    SubFoldOut: 1
+    SubTags: []
+  - BuiltIn: 1
+    Id: 5
+    IsOn: 0
+    Name: "\u6E56\u6CCA"
+    SubFoldOut: 1
+    SubTags: []
+  listLayoutContainer:
+  - BuiltIn: 1
+    Id: 1025
+    IsOn: 0
+    Name: "\u76F4\u5347\u673A"
+    SubFoldOut: 1
+    SubTags: []
+  - BuiltIn: 1
+    Id: 1026
+    IsOn: 0
+    Name: "\u822A\u6BCD"
+    SubFoldOut: 1
+    SubTags: []
+  listLayoutComponent:
+  - BuiltIn: 1
+    Id: 2049
+    IsOn: 0
+    Name: "\u76F4\u5347\u673A\u4E0A"
+    SubFoldOut: 1
+    SubTags: []
+  - BuiltIn: 1
+    Id: 2050
+    IsOn: 0
+    Name: "\u822A\u6BCD\u7532\u677F\u4E0A"
+    SubFoldOut: 1
+    SubTags: []
+  listTags:
+  - BuiltIn: 1
+    Id: 3
+    IsOn: 0
+    Name: "\u8F7D\u5177"
+    SubFoldOut: 1
+    SubTags:
+    - Id: 0
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u901A\u7528"
+  - BuiltIn: 1
+    Id: 8
+    IsOn: 0
+    Name: "\u89D2\u8272"
+    SubFoldOut: 1
+    SubTags:
+    - Id: 0
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u9ED8\u8BA4\u89D2\u8272"
+    - Id: 1
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u7279\u6B8A\u7AEF"
+    - Id: 2
+      IsModify: 0
+      IsOn: 0
+      SubName: "Custom\u89D2\u8272"
+    - Id: 3
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u6D4B\u8BD5\u89D2\u8272"
+    - Id: 4
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u6D4B\u8BD5\u89D2\u82722"
+    - Id: 10
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u6307\u6325\u5B98\u89D2\u8272"
+  - BuiltIn: 1
+    Id: 1010
+    IsOn: 1
+    Name: "\u534E\u5317\u6551\u63F4"
+    SubFoldOut: 1
+    SubTags:
+    - Id: 1
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u53D6\u6C34\u70B9"
+    - Id: 2
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u8865\u7ED9\u70B9"
+    - Id: 3
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u4EFB\u52A1\u70B9"
+    - Id: 4
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u88C5\u5907\u6A21\u677F"
+    - Id: 5
+      IsModify: 0
+      IsOn: 1
+      SubName: "\u5176\u4ED6\u7EC4\u4EF6"
+  listTriggers:
+  - BuiltIn: 0
+    Id: 1000
+    IsOn: 1
+    Name: "\u89E6\u53D1\u5668\u89E6\u53D1"
+  - BuiltIn: 0
+    Id: 1001
+    IsOn: 0
+    Name: "\u78B0\u649E\u89E6\u53D1"
+  - BuiltIn: 0
+    Id: 1002
+    IsOn: 1
+    Name: "\u89E6\u53D1\u5668\u89E6\u53D11"
+  - BuiltIn: 0
+    Id: 1003
+    IsOn: 1
+    Name: "\u89E6\u53D1\u5668\u89E6\u53D12"
+  listAffects:
+  - BuiltIn: 0
+    Id: 2001
+    IsOn: 1
+    Name: "\u89E6\u53D1\u5668\u6548\u679C"
+  - BuiltIn: 0
+    Id: 2002
+    IsOn: 1
+    Name: "\u78B0\u649E\u6548\u679C"
+  - BuiltIn: 0
+    Id: 2003
+    IsOn: 1
+    Name: "\u89E6\u53D1\u5668\u6548\u679C2"
+  - BuiltIn: 0
+    Id: 2004
+    IsOn: 1
+    Name: "\u89E6\u53D1\u5668\u6548\u679C3"
+  - BuiltIn: 0
+    Id: 2005
+    IsOn: 1
+    Name: "\u89E6\u53D1\u5668\u6548\u679C4"
+  - BuiltIn: 0
+    Id: 2006
+    IsOn: 1
+    Name: "\u89E6\u53D1\u5668\u6548\u679C5"
+  IsCreateTag: 0
+  IsCreateScript: 1
+  IsCreateModel: 0
+  IsCompressModel: 0
+  isAssignMain: 1
+  MainCalss: OtherSubAssemblyMain
+  OtherScriptPaths:
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/Assemblys/HuabeiRescue/OtherOnlyShowAssembly/Script
+  OutputPaths:
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/RGOutput
+  - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/DM2.1.6/DM2.1.6D/DM_Data/LibRes/ComTemp/\u73AF\u5883/\u8D44\u6E90"
+  ReferencePaths:
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins\DMIFS.dll
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins\DMInputSystem.dll
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins\Model.dll
+  - "D:/DM\u5E73\u53F0\u5F00\u53D1\u8D44\u6599/BundleLib/UnityEngine.dll"
+  - E:/UnityProjects/Work/ComponentDevelopment/Assets/DMRGEditor/Plugins/ToolsLibrary.dll
+  BatchAddRefsPath: 

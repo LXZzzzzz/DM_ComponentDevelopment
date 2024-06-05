@@ -20,7 +20,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
             {
                 //找到场景中所有资源，显示到地图上
                 var tagItem = mainLogic.allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-                if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1) != null)
+                if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
                 {
                     creatZiYuanCell(mainLogic.allBObjects[i].BObject.Id, mainLogic.allBObjects[i].gameObject.transform.position);
                 }

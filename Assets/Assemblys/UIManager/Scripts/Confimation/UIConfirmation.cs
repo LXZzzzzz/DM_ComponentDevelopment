@@ -35,6 +35,8 @@ namespace UiManager
             btns = transform.Find("View/btns").gameObject;
         }
 
+        
+        //todo：后期这里要改成传过来委托，不能通过事件传递，造成逻辑复杂了
         public override void ShowMe(object userData)
         {
             base.ShowMe(userData);

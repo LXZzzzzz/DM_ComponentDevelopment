@@ -20,5 +20,9 @@ public class PointIconCell : IconCellBase
             _allViaPointIds = new List<string>();
         _allViaPointIds.Add(pointId);
     }
-    
+
+    protected override IconInfoData GetBasicInfo()
+    {
+        return null;
+    }
 }
