@@ -35,7 +35,7 @@ using UnityEditor;
             cLight.type = (LightType)EditorGUILayout.EnumPopup(Space(2) + "Type", cLight.type);
             EditorGUILayout.Space();
             #region Spot Directional Point
-            if (cLight.type != LightType.Area)
+            if (cLight.type != LightType.Rectangle)
             {
                 if (cLight.type == LightType.Spot)
                 {
@@ -99,7 +99,7 @@ using UnityEditor;
             }
             #endregion
             #region Area
-            if (cLight.type == LightType.Area)
+            if (cLight.type == LightType.Rectangle)
             {
                 EditorGUI.BeginDisabledGroup(true);
                 cLight.range = 7.053368f;

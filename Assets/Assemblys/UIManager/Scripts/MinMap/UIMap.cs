@@ -161,10 +161,6 @@ public class UIMap : BasePanel, IPointerClickHandler
     private void Update()
     {
         currentMapLogic?.OnUpdate();
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation,"测试一下提示的确认操作");
-        }
     }
 
     public void OnPointerClick(PointerEventData eventData)

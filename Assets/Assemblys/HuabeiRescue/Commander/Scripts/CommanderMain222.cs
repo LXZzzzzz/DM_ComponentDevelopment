@@ -81,11 +81,13 @@ public class CommanderMain222 : ScriptManager, IControl, IMesRec
     {
         yield return 1;
 
-        cameraObject = new GameObject("Main Camera");
-        cameraObject.transform.parent = transform.parent;
-        cameraObject.tag = "MainCamera";
-        cameraObject.transform.position = transform.position+Vector3.up*10;
-        cameraObject.AddComponent<Camera>();
+        // cameraObject = new GameObject("Main Camera");
+        // cameraObject.transform.parent = transform.parent;
+        // cameraObject.tag = "MainCamera";
+        // cameraObject.transform.position = transform.position+Vector3.up*10;
+        // cameraObject.AddComponent<Camera>();
+        cameraObject = GetComponentInChildren<Camera>(true).gameObject;
+        cameraObject?.gameObject.SetActive(true);
 
         yield return 1;
         int myLevel = MyDataInfo.MyLevel = (int)(Properties[0] as InputFloatProperty).Value;
@@ -113,8 +115,7 @@ public class CommanderMain222 : ScriptManager, IControl, IMesRec
         }
 
         MyDataInfo.sceneAllEquips?.Clear();
-        if (cameraObject != null)
-            Destroy(cameraObject.gameObject);
+        cameraObject?.SetActive(false);
     }
 
     private GameObject cameraObject;

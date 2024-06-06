@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIHangShowInfo : BasePanel, IPointerExitHandler
+public class UIHangShowInfo : BasePanel
 {
     private Text showName, showInfo;
     private Transform comParent;
@@ -58,10 +58,5 @@ public class UIHangShowInfo : BasePanel, IPointerExitHandler
         {
             Destroy(comParent.GetChild(i).gameObject);
         }
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        Close(UIName.UIHangShowInfo);
     }
 }

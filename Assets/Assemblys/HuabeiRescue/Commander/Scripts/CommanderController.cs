@@ -74,13 +74,13 @@ public class CommanderController : DMonoBehaviour
         {
             if (string.Equals(templateId, allBObjects[i].BObject.Id))
             {
-                var templateEquip = allBObjects[i].GetComponentInChildren<EquipBase>();
-                var temporaryEquip = Instantiate(templateEquip, root);
+                var templateEquip = allBObjects[i].GetComponentInChildren<EquipBase>(true);
+                var temporaryEquip = Instantiate(templateEquip, MyDataInfo.SceneGoParent);
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init();
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
-                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y, dataPos.z);
+                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 20, dataPos.z);
                 EventManager.Instance.EventTrigger(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
                 break;

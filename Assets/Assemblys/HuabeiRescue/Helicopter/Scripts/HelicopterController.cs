@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
@@ -5,13 +7,18 @@ using EventType = Enums.EventType;
 
 public class HelicopterController : EquipBase, IWaterIntaking
 {
+    private bool isWaitArrive;
+
     public override void Init()
     {
         base.Init();
         //初始化飞机的基本属性
         mySkills.Add(new SkillData() { SkillType = SkillType.WaterIntaking, skillName = "取水" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.WaterIntaking, skillName = "投水" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.WaterIntaking, skillName = "盘旋" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.WaterIntaking, skillName = "补给" });
 
-        Debug.LogError("测试找自己的层" + gameObject.layer);
+        isWaitArrive = false;
     }
 
     public override void OnSelectSkill(SkillType st)
@@ -39,8 +46,10 @@ public class HelicopterController : EquipBase, IWaterIntaking
         //判断自己是否处于取水地的范围内，不在的话调move机动到目的地，然后，执行取水逻辑
         if (Vector3.Distance(transform.position, pos) > range)
         {
+            isWaitArrive = true;
             MoveToTarget(pos);
         }
+        else quWater();
     }
 
     public float CheckCapacity()
@@ -48,6 +57,31 @@ public class HelicopterController : EquipBase, IWaterIntaking
         Debug.LogError("检查数量");
         return 10;
     }
+
+
+    private void LateUpdate()
+    {
+        if (isWaitArrive && isArrive)
+        {
+            isWaitArrive = false;
+            StartCoroutine(quWater());
+        }
+    }
+
+    IEnumerator quWater()
+    {
+        float endTime = Time.time + 3;
+        Transform waterSphere = transform.GetChild(1);
+        while (true)
+        {
+            waterSphere.Translate(Vector3.up*.8f);
+            if (waterSphere.localPosition.y >= 0) waterSphere.localPosition = Vector3.up * -20;
+            yield return 1;
+            if (Time.time > endTime) break;
+        }
+        waterSphere.localPosition=Vector3.zero;
+    }
+
 
     private string MsgSend_Water(string id, Vector3 pos, float amount)
     {

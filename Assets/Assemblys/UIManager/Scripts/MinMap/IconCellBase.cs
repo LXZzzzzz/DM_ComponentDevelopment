@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPointerEnterHandler
+public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     //关联组件ID(组件ID，或者自己生成的点id)
     private string _belongToId;
@@ -42,6 +42,11 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
             data.pointPos = GetComponent<RectTransform>().anchoredPosition;
             UIManager.Instance.ShowPanel<UIHangShowInfo>(UIName.UIHangShowInfo, data);
         }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        UIManager.Instance.HidePanel(UIName.UIHangShowInfo.ToString());
     }
 }
 
