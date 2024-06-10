@@ -15,9 +15,11 @@ public class DraggingFunction : DMonoBehaviour, IDragHandler
     private RectTransform comShowParent;
     private ZiYuan_ComanderCell commanderShowCell;
     private bool isInit;
-    private List<ZiYuan_ComanderCell> allcoms;
+    private List<ZiYuan_ComanderCell> _allcoms;
 
     public string myEntityId => _myEntityId;
+
+    public List<ZiYuan_ComanderCell> allcoms => _allcoms;
 
     public void Init(string entityId, Func<string, string, bool, bool> changeDataCallBack)
     {
@@ -29,7 +31,7 @@ public class DraggingFunction : DMonoBehaviour, IDragHandler
 
         _myEntityId = entityId;
         this.changeDataCallBack = changeDataCallBack;
-        allcoms = new List<ZiYuan_ComanderCell>();
+        _allcoms = new List<ZiYuan_ComanderCell>();
     }
 
     public void ShowComCtrls(List<string> canBeUseCommanders)

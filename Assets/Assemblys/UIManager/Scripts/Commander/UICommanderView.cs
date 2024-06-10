@@ -26,6 +26,7 @@ public class UICommanderView : BasePanel
 
     private int level;
     private Dictionary<string, string> allCommanderIds; //存储所有指挥端Id和 对应的名称
+    private List<EquipCell> allEquipCells;//存储所有装备cell
     private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
 
@@ -47,6 +48,7 @@ public class UICommanderView : BasePanel
         myCommanderInfoShow = GetComponentInChildren<MyCommanderView>(true);
 
         allCommanderIds = new Dictionary<string, string>();
+        allEquipCells = new List<EquipCell>();
         allZiYuanCells = new List<ZiYuanCell>();
         allTaskCells = new List<TaskCell>();
     }
@@ -76,7 +78,7 @@ public class UICommanderView : BasePanel
         //获取子指挥官,一级指挥端才需要显示，只显示别人
         if (level == 1)
         {
-            allCommanderIds.Add(MyDataInfo.leadId, "自己");
+            allCommanderIds.Add(MyDataInfo.leadId, "一级指挥官");
             for (int i = 0; i < allBObjects.Length; i++)
             {
                 //找到了主角,并且不是自己，就要展示
@@ -154,6 +156,45 @@ public class UICommanderView : BasePanel
     //todo：点击指挥端页签，回调，这里要展示当前分配给这个指挥端的所有相关内容
     private void OnChooseCommander(string id)
     {
+        //todo:这里要在ClientInfo结构中添加一个玩家身份
+        var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
+        int level = 1;
+        if (level == 1)
+        {
+            for (int i = 0; i < allEquipCells.Count; i++)
+            {
+                allEquipCells[i].gameObject.SetActive(true);
+            }
+
+            for (int i = 0; i < allZiYuanCells.Count; i++)
+            {
+                allZiYuanCells[i].gameObject.SetActive(true);
+            }
+
+            for (int i = 0; i < allTaskCells.Count; i++)
+            {
+                allTaskCells[i].gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < allEquipCells.Count; i++)
+            {
+                allEquipCells[i].gameObject.SetActive(string.Equals(allEquipCells[i].equipBeUseCommander,id));
+            }
+
+            for (int i = 0; i < allZiYuanCells.Count; i++)
+            {
+                bool isShow=allZiYuanCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                allZiYuanCells[i].gameObject.SetActive(isShow);
+            }
+
+            for (int i = 0; i < allTaskCells.Count; i++)
+            {
+                bool isShow=allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                allTaskCells[i].gameObject.SetActive(isShow);
+            }
+        }
     }
 
     private void OnAddEquipView(EquipBase equip)
@@ -162,6 +203,7 @@ public class UICommanderView : BasePanel
         var itemCell = Instantiate(ecPrefab, equipParent);
         itemCell.Init(itemObj, allCommanderIds, OnChangeEquipBelongTo);
         itemCell.gameObject.SetActive(true);
+        allEquipCells.Add(itemCell);
     }
 
     private void OnInitZiYuanBeUsed(ZiYuanBase data)

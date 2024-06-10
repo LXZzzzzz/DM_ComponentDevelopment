@@ -10,16 +10,17 @@ public class EquipCell : DMonoBehaviour
 {
     private Text showName;
     private Dropdown changeCtrl;
-    private EquipBase equip;
+    private EquipBase _equip;
     private UnityAction<string, string> changeCallBack;
     private Dictionary<int, string> dropDownSupplementInfo;
+    public string equipBeUseCommander => _equip.BeLongToCommanderId;
 
     public void Init(EquipBase equip, Dictionary<string, string> allCommanderInfos, UnityAction<string, string> changeCb)
     {
         showName = GetComponentInChildren<Text>();
         changeCtrl = GetComponentInChildren<Dropdown>();
         changeCallBack = changeCb;
-        this.equip = equip;
+        this._equip = equip;
 
         showName.text = equip.name;
         changeCtrl.options = new List<Dropdown.OptionData>();
@@ -35,7 +36,7 @@ public class EquipCell : DMonoBehaviour
 
     private void dropDownInit()
     {
-        string controllerId = equip.BeLongToCommanderId;
+        string controllerId = _equip.BeLongToCommanderId;
         if (string.IsNullOrEmpty(controllerId))
             changeCtrl.value = 0;
         else
@@ -56,7 +57,7 @@ public class EquipCell : DMonoBehaviour
 
     private void OnChange(int select)
     {
-        changeCallBack(equip.BObjectId, dropDownSupplementInfo[select]);
-        equip.BeLongToCommanderId = dropDownSupplementInfo[select];
+        changeCallBack(_equip.BObjectId, dropDownSupplementInfo[select]);
+        _equip.BeLongToCommanderId = dropDownSupplementInfo[select];
     }
 }
