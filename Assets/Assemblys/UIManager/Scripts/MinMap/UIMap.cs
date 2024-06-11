@@ -44,7 +44,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
         //todo:后续要改成实际地图比例
         ////当前测试地图长宽是100，地图数据转换比例是
-        mapBL = 100 / mapView.sizeDelta.x;
+        mapBL = 3900f / mapView.sizeDelta.x;
     }
 
     public override void ShowMe(object userData)
@@ -113,7 +113,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     {
         return;
 #if UNITY_EDITOR
-        mapBL = 100f / mapView.sizeDelta.x;
+        mapBL = 3600f / mapView.sizeDelta.x;
         allObjModels = new List<EquipBase>();
         uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
         Debug.Log("uiCameraSize：" + uiCameraSize);
@@ -216,12 +216,12 @@ public abstract class MapOperateLogicBase
 
     protected Vector2 worldPos2UiPos(Vector3 pos)
     {
-        return new Vector2(pos.x / mainLogic.mapBL - mainLogic.mapView.sizeDelta.x / 2, pos.z / mainLogic.mapBL - mainLogic.mapView.sizeDelta.y / 2);
+        return new Vector2(pos.x / mainLogic.mapBL/* - mainLogic.mapView.sizeDelta.x / 2*/, pos.z / mainLogic.mapBL /*- mainLogic.mapView.sizeDelta.y / 2*/);
     }
 
     protected Vector3 uiPos2WorldPos(Vector2 pos)
     {
-        return new Vector3((pos.x - canvanceSize.x / 2 + mainLogic.mapView.sizeDelta.x / 2) * mainLogic.mapBL, 0,
-            (pos.y - canvanceSize.y / 2 + mainLogic.mapView.sizeDelta.y / 2) * mainLogic.mapBL);
+        return new Vector3((pos.x - canvanceSize.x / 2 /*+ mainLogic.mapView.sizeDelta.x / 2*/) * mainLogic.mapBL, 0,
+            (pos.y - canvanceSize.y / 2 /*+ mainLogic.mapView.sizeDelta.y / 2*/) * mainLogic.mapBL);
     }
 }

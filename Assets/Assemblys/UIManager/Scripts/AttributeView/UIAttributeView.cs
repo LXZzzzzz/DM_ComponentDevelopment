@@ -14,12 +14,15 @@ public class UIAttributeView : BasePanel
     private IWaterIntaking operateObj;
     private Vector3 watersPos;
     private bool isReceiveMapInfo;
+    private GameObject watersSkillView, equipInfoView;
 
     public override void Init()
     {
         base.Init();
         waterAmount = GetControl<InputField>("input_waterAmount");
         watersName = GetControl<Text>("text_waters");
+        watersSkillView = transform.Find("Skill_WaterIntaking/skillWatersInfoView").gameObject;
+        equipInfoView = transform.Find("Skill_WaterIntaking/equipInfoView").gameObject;
         GetControl<Button>("btn_chooseWaters").onClick.AddListener(() => isReceiveMapInfo = true);
         GetControl<Button>("btn_sure").onClick.AddListener(OnSendSkillParameter);
         GetControl<Button>("btn_close").onClick.AddListener(() => Close(UIName.UIAttributeView));
@@ -28,9 +31,19 @@ public class UIAttributeView : BasePanel
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
-        operateObj = (IWaterIntaking)userData;
-        isReceiveMapInfo = false;
-        EventManager.Instance.AddEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
+        if (userData is IWaterIntaking)
+        {
+            watersSkillView.SetActive(true);
+            equipInfoView.SetActive(false);
+            operateObj = (IWaterIntaking)userData;
+            isReceiveMapInfo = false;
+            EventManager.Instance.AddEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
+        }
+        else
+        {
+            watersSkillView.SetActive(false);
+            equipInfoView.SetActive(true);
+        }
     }
 
 

@@ -9,10 +9,13 @@ using EventType = Enums.EventType;
 
 public class UITopMenuView : BasePanel
 {
+    private Text ProgrammName;
+
     public override void Init()
     {
         base.Init();
         _myUIType = UIType.upper;
+        ProgrammName = GetControl<Text>("text_PName");
         GetControl<Button>("btn_NewBuild").onClick.AddListener(newBuild);
         GetControl<Button>("btn_Save").onClick.AddListener(save);
         GetControl<Button>("btn_SaveAs").onClick.AddListener(saveAs);
@@ -28,11 +31,18 @@ public class UITopMenuView : BasePanel
         int mainLevel = (int)userData;
         GetControl<Toggle>("Tog_Fazd").isOn = false;
         GetControl<Toggle>("Tog_Fazd").transform.parent.gameObject.SetActive(mainLevel == 1);
+        EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
     }
 
     public override void HideMe()
     {
         base.HideMe();
+        EventManager.Instance.RemoveEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
+    }
+
+    private void ShowName(string pName)
+    {
+        ProgrammName.text = pName;
     }
 
     private void newBuild()
@@ -46,6 +56,7 @@ public class UITopMenuView : BasePanel
     {
         EventManager.Instance.RemoveEventListener<string>(EventType.ConfirmationCbSure.ToString(), runNewScheme);
         ProgrammeDataManager.Instance.CreatProgramme(schemeName);
+        ShowName(schemeName);
     }
 
     private void save()

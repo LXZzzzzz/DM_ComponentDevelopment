@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
+using ToolsLibrary;
 using ToolsLibrary.EquipPart;
-using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -10,14 +9,17 @@ public class EquipCell : DMonoBehaviour
 {
     private Text showName;
     private Dropdown changeCtrl;
+    private GameObject chooseImg;
     private EquipBase equip;
     private UnityAction<string, string> changeCallBack;
     private Dictionary<int, string> dropDownSupplementInfo;
+    private float checkTimer;
 
     public void Init(EquipBase equip, Dictionary<string, string> allCommanderInfos, UnityAction<string, string> changeCb)
     {
         showName = GetComponentInChildren<Text>();
         changeCtrl = GetComponentInChildren<Dropdown>();
+        chooseImg = transform.Find("ChooseImg").gameObject;
         changeCallBack = changeCb;
         this.equip = equip;
 
@@ -31,6 +33,8 @@ public class EquipCell : DMonoBehaviour
             dropDownSupplementInfo.Add(changeCtrl.options.Count - 1, info.Key);
         }
         dropDownInit();
+        checkTimer = Time.time;
+        GetComponent<Button>().onClick.AddListener(()=> EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), equip.BObjectId));
     }
 
     private void dropDownInit()
@@ -58,5 +62,14 @@ public class EquipCell : DMonoBehaviour
     {
         changeCallBack(equip.BObjectId, dropDownSupplementInfo[select]);
         equip.BeLongToCommanderId = dropDownSupplementInfo[select];
+    }
+
+    private void Update()
+    {
+        if (Time.time > checkTimer)
+        {
+            checkTimer = Time.time + 1/25f;
+            chooseImg.SetActive(equip.isChooseMe);
+        }
     }
 }

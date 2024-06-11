@@ -46,14 +46,15 @@ public class CommanderController : DMonoBehaviour
 
     private void OnChangeCurrentEquip(string equipId)
     {
-        if (MyDataInfo.gameState != GameState.GameStart) return;
+        // if (MyDataInfo.gameState != GameState.GameStart) return;
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
         sender.LogError(itemEquip.BeLongToCommanderId + ":" + MyDataInfo.leadId);
-        if (string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
+        if (MyDataInfo.gameState == GameState.FirstLevelCommanderEditor || string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
         {
             if (currentChooseEquip != null) currentChooseEquip.isChooseMe = false;
             currentChooseEquip = itemEquip;
             currentChooseEquip.isChooseMe = true;
+            EventManager.Instance.EventTrigger(EventType.ShowUI.ToString(),"AttributeView",100);
         }
         else
         {
@@ -76,6 +77,8 @@ public class CommanderController : DMonoBehaviour
             {
                 var templateEquip = allBObjects[i].GetComponentInChildren<EquipBase>(true);
                 var temporaryEquip = Instantiate(templateEquip, MyDataInfo.SceneGoParent);
+                temporaryEquip.name = allBObjects[i].BObject.Info.Name + Random.Range(1000, 9000);
+                sender.LogError("路径"+allBObjects[i].BObject.Info.ResourcePath);
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init();
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
@@ -105,6 +108,7 @@ public class CommanderController : DMonoBehaviour
         }
 
         EventManager.Instance.EventTrigger<object>(EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);
+        EventManager.Instance.EventTrigger<string>(EventType.ShowProgrammeName.ToString(),data.programmeName);
     }
 
     private void OnSendWaterIntaking(string data)

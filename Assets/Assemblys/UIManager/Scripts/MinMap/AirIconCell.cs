@@ -30,7 +30,7 @@ public class AirIconCell : IconCellBase
 
         if (Time.time > checkTimer)
         {
-            checkTimer = Time.time + 1;
+            checkTimer = Time.time + 1/25f;
             showChooseState.SetActive(equipGo.isChooseMe);
         }
     }

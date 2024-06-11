@@ -13,4 +13,6 @@ public class ZiYuanCell : DraggingFunction
         transform.Find("Text_name").GetComponent<Text>().text = pointName;
         transform.Find("Text_describe").GetComponent<Text>().text = pointName;
     }
+    
+    
 }

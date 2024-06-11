@@ -57,6 +57,7 @@ namespace 导教端_WRJ
             doc.Close();
             writer.Close();
             Debug.LogError("生成PDF");
+            //sender.RunSend(SendType.System,null,(int)MainSystemType.UI,"")
         }
         private void HelicopterFormat(PdfPTable table, MonoBehaviour mono,bool isFirstReport=true)
         {
