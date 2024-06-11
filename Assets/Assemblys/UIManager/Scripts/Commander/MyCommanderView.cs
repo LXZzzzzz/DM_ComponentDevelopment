@@ -16,7 +16,17 @@ public class MyCommanderView : DMonoBehaviour, IDropHandler
     {
         if (playerName == null) playerName = GetComponentInChildren<Text>();
         if (MyDataInfo.playerInfos != null)
-            playerName.text = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, myId)).PlayerName;
+        {
+            for (int i = 0; i < allBObjects.Length; i++)
+            {
+                if (string.Equals(allBObjects[i].BObject.Id, myId))
+                {
+                    playerName.text = allBObjects[i].BObject.Info.Name;
+                    break;
+                }
+            }
+        }
+
         this.myId = myId;
         GetComponentInChildren<Button>().onClick.AddListener(() => callBack(this.myId));
     }

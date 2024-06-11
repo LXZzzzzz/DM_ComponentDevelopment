@@ -22,6 +22,8 @@ public class ZiYuanIconCell : IconCellBase
                 break;
             }
         }
+
+        transform.GetChild(8).gameObject.SetActive(true);
     }
 
     private void changeIcon(ZiYuanType type)

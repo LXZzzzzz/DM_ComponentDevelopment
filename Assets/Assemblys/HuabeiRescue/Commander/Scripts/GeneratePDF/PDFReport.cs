@@ -4,6 +4,7 @@ using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ToolsLibrary;
 using UnityEngine;
 
 namespace 导教端_WRJ
@@ -22,11 +23,11 @@ namespace 导教端_WRJ
             fontTitle = new iTextSharp.text.Font(font, 24);
             fontSub = new iTextSharp.text.Font(font, 15, iTextSharp.text.Font.BOLD);
             fontTextBold = new iTextSharp.text.Font(font, 12, iTextSharp.text.Font.BOLD);
-            fontText = new iTextSharp.text.Font(font, 14);
+            fontText = new iTextSharp.text.Font(font, 12);
             fontcellB = new iTextSharp.text.Font(font, 12, iTextSharp.text.Font.BOLD);
             fontNull = new iTextSharp.text.Font(font, 5);
         }
-        public void CreateReport(string reportId,string reportName,string userName,string userId,bool isFormat1=true)
+        public void CreateReport(string reportId,string reportName,string userName,string userId,List<string> infos,bool isFormat1=true)
         {
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
@@ -48,17 +49,29 @@ namespace 导教端_WRJ
             date.Alignment = Rectangle.ALIGN_CENTER;
             doc.Add(date); doc.Add(nullString);
 
-            PdfPTable table = new PdfPTable(4);
+            PdfPTable table = new PdfPTable(1);
             table.TotalWidth = 480;//表格总宽度
             table.LockedWidth = true;//锁定宽度
             table.SetWidths(new int[] { 450, 450, 450, 450 });
 
+            enterFormat(table,infos);
+            
             doc.Add(table); doc.Add(nullString);
             doc.Close();
             writer.Close();
             Debug.LogError("生成PDF");
             //sender.RunSend(SendType.System,null,(int)MainSystemType.UI,"")
         }
+
+
+        private void enterFormat(PdfPTable table,List<string> infos)
+        {
+            for (int i = 0; i < infos.Count; i++)
+            {
+                table.AddCell(new PdfPCell(new Phrase(infos[i], fontText)));
+            }
+        }
+        
         private void HelicopterFormat(PdfPTable table, MonoBehaviour mono,bool isFirstReport=true)
         {
             table.AddCell(MyCell(mono.name+"性能数据", 4, 1));

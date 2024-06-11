@@ -26,7 +26,7 @@ public class UICommanderView : BasePanel
 
     private int level;
     private Dictionary<string, string> allCommanderIds; //存储所有指挥端Id和 对应的名称
-    private List<EquipCell> allEquipCells;//存储所有装备cell
+    private List<EquipCell> allEquipCells; //存储所有装备cell
     private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
 
@@ -153,13 +153,10 @@ public class UICommanderView : BasePanel
         }
     }
 
-    //todo：点击指挥端页签，回调，这里要展示当前分配给这个指挥端的所有相关内容
     private void OnChooseCommander(string id)
     {
-        //todo:这里要在ClientInfo结构中添加一个玩家身份
         var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
-        int level = 1;
-        if (level == 1)
+        if (currentCommander.ClientLevel == 1)
         {
             for (int i = 0; i < allEquipCells.Count; i++)
             {
@@ -180,18 +177,18 @@ public class UICommanderView : BasePanel
         {
             for (int i = 0; i < allEquipCells.Count; i++)
             {
-                allEquipCells[i].gameObject.SetActive(string.Equals(allEquipCells[i].equipBeUseCommander,id));
+                allEquipCells[i].gameObject.SetActive(string.Equals(allEquipCells[i].equipBeUseCommander, id));
             }
 
             for (int i = 0; i < allZiYuanCells.Count; i++)
             {
-                bool isShow=allZiYuanCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                bool isShow = allZiYuanCells[i].allcoms.Find(x => string.Equals(x.comId, id));
                 allZiYuanCells[i].gameObject.SetActive(isShow);
             }
 
             for (int i = 0; i < allTaskCells.Count; i++)
             {
-                bool isShow=allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                bool isShow = allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
                 allTaskCells[i].gameObject.SetActive(isShow);
             }
         }
@@ -204,12 +201,34 @@ public class UICommanderView : BasePanel
         itemCell.Init(itemObj, allCommanderIds, OnChangeEquipBelongTo);
         itemCell.gameObject.SetActive(true);
         allEquipCells.Add(itemCell);
+        if (MyDataInfo.MyLevel != 1)
+        {
+            itemCell.gameObject.SetActive(string.Equals(equip.BeLongToCommanderId, MyDataInfo.leadId));
+        }
     }
 
     private void OnInitZiYuanBeUsed(ZiYuanBase data)
     {
-        allZiYuanCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId))?.ShowComCtrls(data.beUsedCommanderIds);
-        allTaskCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId))?.ShowComCtrls(data.beUsedCommanderIds);
+        var itemZiyuan = allZiYuanCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId));
+        itemZiyuan?.ShowComCtrls(data.beUsedCommanderIds);
+        var itemTask = allTaskCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId));
+        itemTask?.ShowComCtrls(data.beUsedCommanderIds);
+
+
+        if (MyDataInfo.MyLevel != 1)
+        {
+            if (itemZiyuan != null)
+            {
+                bool isShow = itemZiyuan.allcoms.Find(x => string.Equals(x.comId, MyDataInfo.leadId));
+                itemZiyuan.gameObject.SetActive(isShow);
+            }
+
+            if (itemTask!=null)
+            {
+                bool isShow = itemTask.allcoms.Find(x => string.Equals(x.comId, MyDataInfo.leadId));
+                itemTask.gameObject.SetActive(isShow);
+            }
+        }
     }
 
     private void OnChangeEquipBelongTo(string equipId, string commanderId)

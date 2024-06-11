@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using Vectrosity;
+using UiManager;
 
 public class AirIconCell : IconCellBase
 {
@@ -32,17 +34,17 @@ public class AirIconCell : IconCellBase
         routePoints = new List<Vector2>();
         routePoints.Add(Vector2.zero);
         routePoints.Add(Vector2.zero);
-        VectorLine itemLine = new VectorLine("Line" + equipGo.BObjectId, routePoints, 10, LineType.Continuous);
+        currentMoveRoute = new VectorLine("Line" + equipGo.BObjectId, routePoints, 5, LineType.Continuous);
 #if UNITY_EDITOR
-        itemLine.SetCanvas(gameObject.GetComponentInParent<Canvas>());
+        currentMoveRoute.SetCanvas(gameObject.GetComponentInParent<Canvas>());
 #else
-        itemLine.SetCanvas(UIManager.Instance.CurrentCanvans);
+        currentMoveRoute.SetCanvas(UIManager.Instance.CurrentCanvans);
 #endif
-        itemLine.rectTransform.SetParent(transform);
-        itemLine.rectTransform.localPosition = Vector3.zero;
-        itemLine.rectTransform.localScale = Vector3.one;
-        itemLine.active = true;
-        itemLine.color = Color.cyan;
+        currentMoveRoute.rectTransform.SetParent(transform.parent);
+        currentMoveRoute.rectTransform.localPosition = Vector3.zero;
+        currentMoveRoute.rectTransform.localScale = Vector3.one;
+        currentMoveRoute.active = true;
+        currentMoveRoute.color = Color.cyan;
     }
 
     private void Update()
@@ -68,15 +70,19 @@ public class AirIconCell : IconCellBase
 
     private void selectChange(bool isSelect)
     {
-        if (isSelect) routePoints[0] = meRect.anchoredPosition;
+        if (isSelect && routePoints != null)
+        {
+            routePoints[0] = meRect.anchoredPosition;
+            routePoints[1] = equipGo.TargetPos == Vector3.zero ? meRect.anchoredPosition : worldPosMapPosFunc(equipGo.TargetPos);
+            currentMoveRoute.Draw();
+        }
+
         if (isLastSelect == isSelect) return;
         isLastSelect = isSelect;
         showChooseState.SetActive(isSelect);
-        if (isSelect)
+        if (isSelect && MyDataInfo.gameState == GameState.GameStart)
         {
             currentMoveRoute.active = true;
-            //todo:这里要在equipBase中给目标点增加一个属性
-            // routePoints[1]=equipGo.
         }
         else
         {

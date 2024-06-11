@@ -1,18 +1,30 @@
+using System;
+using System.Collections.Generic;
 using DM.IFS;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
 using UnityEngine;
+using 导教端_WRJ;
 using EventType = Enums.EventType;
 using IWaterIntaking = ToolsLibrary.EquipPart.IWaterIntaking;
+using Random = UnityEngine.Random;
 
 public class CommanderController : DMonoBehaviour
 {
     private EquipBase currentChooseEquip;
 
+    private PDFReport _pdfReport;
+    private List<string> clientOperatorInfos;
+
+    private bool isMe;
+
     public void Init()
     {
         sender.LogError("指挥端组件ID：" + main.BObjectId);
+        isMe = true;
+        _pdfReport = new PDFReport();
+        clientOperatorInfos = new List<string>();
         MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
@@ -48,13 +60,12 @@ public class CommanderController : DMonoBehaviour
     {
         // if (MyDataInfo.gameState != GameState.GameStart) return;
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
-        sender.LogError(itemEquip.BeLongToCommanderId + ":" + MyDataInfo.leadId);
         if (MyDataInfo.gameState == GameState.FirstLevelCommanderEditor || string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
         {
             if (currentChooseEquip != null) currentChooseEquip.isChooseMe = false;
             currentChooseEquip = itemEquip;
             currentChooseEquip.isChooseMe = true;
-            EventManager.Instance.EventTrigger(EventType.ShowUI.ToString(),"AttributeView",100);
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(),"AttributeView",100);
         }
         else
         {
@@ -66,7 +77,6 @@ public class CommanderController : DMonoBehaviour
     {
         if (MyDataInfo.gameState != GameState.GameStart || currentChooseEquip == null) return;
         sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos));
-        sender.LogError("收到了指定移动目标的数据" + pos);
     }
 
     private void OnCreatEquipEntity(string templateId, string myId)
@@ -77,8 +87,7 @@ public class CommanderController : DMonoBehaviour
             {
                 var templateEquip = allBObjects[i].GetComponentInChildren<EquipBase>(true);
                 var temporaryEquip = Instantiate(templateEquip, MyDataInfo.SceneGoParent);
-                temporaryEquip.name = allBObjects[i].BObject.Info.Name + Random.Range(1000, 9000);
-                sender.LogError("路径"+allBObjects[i].BObject.Info.ResourcePath);
+                temporaryEquip.name = allBObjects[i].BObject.Info.Name +$"_000{MyDataInfo.sceneAllEquips.Count+1}";
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init();
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
@@ -97,16 +106,14 @@ public class CommanderController : DMonoBehaviour
         {
             OnCreatEquipEntity(data.AllEquipDatas[i].templateId, data.AllEquipDatas[i].myId);
         }
-
         //找到所有的资源，通过ID找到数据中的对应数据，
-        for (int i = 0; i < allBObjects.Length; i++)
+        for (int i = 0; i < allBObjects?.Length; i++)
         {
             ZiYuanBase itemZy = allBObjects[i].GetComponent<ZiYuanBase>();
             if (itemZy == null) continue;
             itemZy.SetBeUsedComs(data.ZiYuanControlledList.ContainsKey(itemZy.main.BObjectId) ? data.ZiYuanControlledList[itemZy.main.BObjectId] : null);
             EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
-
         EventManager.Instance.EventTrigger<object>(EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);
         EventManager.Instance.EventTrigger<string>(EventType.ShowProgrammeName.ToString(),data.programmeName);
     }
@@ -116,6 +123,15 @@ public class CommanderController : DMonoBehaviour
         sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.TriggerWaterIntaking, data);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q)&& MyDataInfo.MyLevel==1&& isMe)
+        {
+            sender.LogError("游戏结束，生成PDF");
+            var player = MyDataInfo.playerInfos.Find(x => string.Equals(x.UID, MyDataInfo.leadId));
+            _pdfReport.CreateReport(player.UID,"一级指挥端",player.PlayerName,player.RoleId,clientOperatorInfos);
+        }
+    }
 
     #region 处理接收的消息
 
@@ -123,6 +139,10 @@ public class CommanderController : DMonoBehaviour
     {
         MsgReceive_Move(data, out string equipId, out Vector3 targetPos);
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).MoveToTarget(targetPos);
+        var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
+        string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
+        if(clientOperatorInfos!=null)
+            clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了机动指令，目标点为{targetPos}");
     }
 
     public void Receive_ProgrammeData(string data)
@@ -135,6 +155,13 @@ public class CommanderController : DMonoBehaviour
     {
         MsgReceive_Water(data, out string id, out Vector3 pos, out float amount);
         (MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id)) as IWaterIntaking).WaterIntaking(pos, 10, amount, true);
+
+
+        var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id));
+        string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
+        sender.LogError($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了取水指令，取水目标点为{pos}");
+        if(clientOperatorInfos!=null)
+            clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了取水指令，取水目标点为{pos}");
     }
 
     #endregion

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using ToolsLibrary;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -31,11 +32,13 @@ public class ZiYuan_ComanderCell : DMonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (MyDataInfo.gameState == GameState.GameStart) return;
         removeBtn.gameObject.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (MyDataInfo.gameState == GameState.GameStart) return;
         removeBtn.gameObject.SetActive(false);
     }
 }

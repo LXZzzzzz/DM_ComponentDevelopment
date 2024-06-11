@@ -53,9 +53,21 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.playerInfos = new List<ClientInfo>();
         for (int i = 0; i < info.ClientInfos.Count; i++)
         {
+            int clientLevel = -1;
+            for (int j = 0; j < allBObjects.Length; j++)
+            {
+                var itemMain = allBObjects[j].GetComponent<ScriptManager>();
+                if (itemMain != null&& string.Equals(itemMain.BObjectId,info.ClientInfos[i].RoleId))
+                {
+                    clientLevel = (int)(itemMain.Properties[0] as InputFloatProperty).Value;
+                    break;
+                }
+            }
+
+            sender.LogError( info.ClientInfos[i].Name+"等级：" + clientLevel);
             MyDataInfo.playerInfos.Add(new ClientInfo()
             {
-                PlayerName = info.ClientInfos[i].Name, RoleId = info.ClientInfos[i].RoleId, UID = info.ClientInfos[i].UID
+                PlayerName = info.ClientInfos[i].Name, RoleId = info.ClientInfos[i].RoleId, UID = info.ClientInfos[i].UID, ClientLevel = clientLevel
             });
         }
     }
