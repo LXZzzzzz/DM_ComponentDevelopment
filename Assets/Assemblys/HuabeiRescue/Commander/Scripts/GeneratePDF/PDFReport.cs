@@ -13,7 +13,7 @@ namespace 导教端_WRJ
     {
         public string dirPath;
         public string reportPath;
-        iTextSharp.text.Font fontTitle, fontSub, fontTextBold, fontText, fontcellB, fontNull;
+        iTextSharp.text.Font fontTitle, fontSub, fontTextBold, fontText, fontTable, fontcellB, fontNull;
 
         public PDFReport()
         {
@@ -23,8 +23,9 @@ namespace 导教端_WRJ
             fontTitle = new iTextSharp.text.Font(font, 24);
             fontSub = new iTextSharp.text.Font(font, 15, iTextSharp.text.Font.BOLD);
             fontTextBold = new iTextSharp.text.Font(font, 12, iTextSharp.text.Font.BOLD);
-            fontText = new iTextSharp.text.Font(font, 12);
+            fontText = new iTextSharp.text.Font(font, 14);
             fontcellB = new iTextSharp.text.Font(font, 12, iTextSharp.text.Font.BOLD);
+            fontTable = new iTextSharp.text.Font(font, 10);
             fontNull = new iTextSharp.text.Font(font, 5);
         }
         public void CreateReport(string reportId,string reportName,string userName,string userId,List<string> infos,bool isFormat1=true)
@@ -52,7 +53,7 @@ namespace 导教端_WRJ
             PdfPTable table = new PdfPTable(1);
             table.TotalWidth = 480;//表格总宽度
             table.LockedWidth = true;//锁定宽度
-            table.SetWidths(new int[] { 450, 450, 450, 450 });
+            table.SetWidths(new int[] { 450 });
 
             enterFormat(table,infos);
             
@@ -68,7 +69,7 @@ namespace 导教端_WRJ
         {
             for (int i = 0; i < infos.Count; i++)
             {
-                table.AddCell(new PdfPCell(new Phrase(infos[i], fontText)));
+                table.AddCell(new PdfPCell(new Phrase(infos[i], fontTable)));
             }
         }
         

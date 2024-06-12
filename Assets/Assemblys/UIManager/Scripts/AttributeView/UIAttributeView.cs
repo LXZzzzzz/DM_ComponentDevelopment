@@ -39,7 +39,12 @@ public class UIAttributeView : BasePanel
             isReceiveMapInfo = false;
             EventManager.Instance.AddEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
         }
-        else
+        else if(userData is int)
+        {
+            watersSkillView.SetActive(false);
+            equipInfoView.SetActive(true);
+        }
+        else if (userData is ZiYuanBase)
         {
             watersSkillView.SetActive(false);
             equipInfoView.SetActive(true);
@@ -55,6 +60,13 @@ public class UIAttributeView : BasePanel
         var isMeControl = coms?.Find(x => string.Equals(x, MyDataInfo.leadId));
         sender.LogError(bom.name + "我的级别：" + MyDataInfo.MyLevel);
 
+        if (bom.GetComponent<ZiYuanBase>().ZiYuanType != ZiYuanType.Waters)
+        {
+            sender.LogError("当前选择并不是取水点");
+            watersPos = Vector3.zero;
+            return;
+        }
+        
         if (isMeControl == null)
         {
             //这里的目的是：当资源归属人为空，那就交给一级指挥官控制
@@ -66,7 +78,6 @@ public class UIAttributeView : BasePanel
             }
         }
 
-        //todo:后期加上类型保护
         watersName.text = bom.BObject.Info.Name;
         watersPos = bom.gameObject.transform.position;
     }

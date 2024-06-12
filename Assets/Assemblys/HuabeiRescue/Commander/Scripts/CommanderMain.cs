@@ -57,14 +57,14 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             for (int j = 0; j < allBObjects.Length; j++)
             {
                 var itemMain = allBObjects[j].GetComponent<ScriptManager>();
-                if (itemMain != null&& string.Equals(itemMain.BObjectId,info.ClientInfos[i].RoleId))
+                if (itemMain != null && string.Equals(itemMain.BObjectId, info.ClientInfos[i].RoleId))
                 {
                     clientLevel = (int)(itemMain.Properties[0] as InputFloatProperty).Value;
                     break;
                 }
             }
 
-            sender.LogError( info.ClientInfos[i].Name+"等级：" + clientLevel);
+            sender.LogError(info.ClientInfos[i].Name + "等级：" + clientLevel);
             MyDataInfo.playerInfos.Add(new ClientInfo()
             {
                 PlayerName = info.ClientInfos[i].Name, RoleId = info.ClientInfos[i].RoleId, UID = info.ClientInfos[i].UID, ClientLevel = clientLevel
@@ -78,6 +78,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         // sender.LogError($"{name}:修改了属性:"+(pros[0] as InputIntProperty).Selected.Enum);
     }
 
+    private Vector2 mapSizeData;
+
     public void Active(DevType type, bool playback)
     {
         //打开控制相机
@@ -88,6 +90,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.isPlayBack = playback;
         MyDataInfo.SceneGoParent = transform.Find("AllGoParent");
         MyDataInfo.SceneGoParent.position = Vector3.zero;
+        float mapLength = float.Parse(GameObject.Find("DMLonLat").HGetScript("DMLonLat").HGetField("TerLength").ToString());
+        float mapWidth = float.Parse(GameObject.Find("DMLonLat").HGetScript("DMLonLat").HGetField("TerWidth").ToString());
+        mapSizeData = new Vector2(mapLength, mapWidth);
         _commanderController.Init();
         StartCoroutine(InitMain());
     }
@@ -107,7 +112,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         yield return 1;
         int myLevel = MyDataInfo.MyLevel = (int)(Properties[0] as InputFloatProperty).Value;
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "IconShow", null);
-        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "MinMap", null);
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "MinMap", mapSizeData);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "TopMenuView", myLevel);
         if (MyDataInfo.isPlayBack)

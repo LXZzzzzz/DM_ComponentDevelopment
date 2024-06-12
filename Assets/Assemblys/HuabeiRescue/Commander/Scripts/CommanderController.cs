@@ -13,6 +13,7 @@ using Random = UnityEngine.Random;
 public class CommanderController : DMonoBehaviour
 {
     private EquipBase currentChooseEquip;
+    private ZiYuanBase currentChooseZiYuan;
 
     private PDFReport _pdfReport;
     private List<string> clientOperatorInfos;
@@ -27,33 +28,60 @@ public class CommanderController : DMonoBehaviour
         clientOperatorInfos = new List<string>();
         MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
+        EventManager.Instance.AddEventListener<string>(EventType.ChooseZiyuan.ToString(), OnChangeCurrentZiyuan);
         EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.AddEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
         EventManager.Instance.AddEventListener<string>(EventType.SendWaterInfoToControler.ToString(), OnSendWaterIntaking);
         EventManager.Instance.AddEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
+        EventManager.Instance.AddEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
     }
 
     public void Terminate()
     {
         EventManager.Instance.RemoveEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
+        EventManager.Instance.RemoveEventListener<string>(EventType.ChooseZiyuan.ToString(), OnChangeCurrentZiyuan);
         EventManager.Instance.RemoveEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.RemoveEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.RemoveEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
         EventManager.Instance.RemoveEventListener<string>(EventType.SendWaterInfoToControler.ToString(), OnSendWaterIntaking);
         EventManager.Instance.RemoveEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
+        EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
     }
 
     private DMCameraControl.DMCameraViewMove cvm;
     private DMCameraControl.DMouseOrbit mo;
+    private DMCameraControl.ThirdCameraControl tc;
 
     private void OnCameraSwith(bool isMove)
     {
-        if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
         if (cvm == null) cvm = Camera.main.gameObject.AddComponent<DMCameraControl.DMCameraViewMove>();
-
+        if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
+        if (tc == null) tc = Camera.main.gameObject.AddComponent<DMCameraControl.ThirdCameraControl>();
         cvm.enabled = isMove;
         mo.enabled = isMove;
+    }
+
+    private void OnCameraContral(int type, Transform target)
+    {
+        if (cvm == null) cvm = Camera.main.gameObject.AddComponent<DMCameraControl.DMCameraViewMove>();
+        if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
+        if (tc == null) tc = Camera.main.gameObject.AddComponent<DMCameraControl.ThirdCameraControl>();
+        switch (type)
+        {
+            case 1:
+                cvm.enabled = true;
+                mo.enabled = true;
+                tc.enabled = false;
+                Camera.main.transform.position = target.position - target.forward * 10 + target.up * 5;
+                break;
+            case 2:
+                cvm.enabled = false;
+                mo.enabled = false;
+                tc.enabled = true;
+                tc.Target = target.gameObject;
+                break;
+        }
     }
 
     private void OnChangeCurrentEquip(string equipId)
@@ -65,11 +93,28 @@ public class CommanderController : DMonoBehaviour
             if (currentChooseEquip != null) currentChooseEquip.isChooseMe = false;
             currentChooseEquip = itemEquip;
             currentChooseEquip.isChooseMe = true;
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(),"AttributeView",100);
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", 100);
         }
         else
         {
             sender.LogError("该对象不属于我");
+        }
+    }
+
+    private void OnChangeCurrentZiyuan(string ziyuanId)
+    {
+        for (int i = 0; i < allBObjects.Length; i++)
+        {
+            if (string.Equals(ziyuanId, allBObjects[i].BObject.Id))
+            {
+                var itemZy = allBObjects[i].GetComponent<ZiYuanBase>();
+                if (itemZy == null) return;
+                if (currentChooseZiYuan != null) itemZy.isChooseMe = false;
+                currentChooseZiYuan = itemZy;
+                currentChooseZiYuan.isChooseMe = true;
+                EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", currentChooseZiYuan);
+                break;
+            }
         }
     }
 
@@ -87,7 +132,7 @@ public class CommanderController : DMonoBehaviour
             {
                 var templateEquip = allBObjects[i].GetComponentInChildren<EquipBase>(true);
                 var temporaryEquip = Instantiate(templateEquip, MyDataInfo.SceneGoParent);
-                temporaryEquip.name = allBObjects[i].BObject.Info.Name +$"_000{MyDataInfo.sceneAllEquips.Count+1}";
+                temporaryEquip.name = allBObjects[i].BObject.Info.Name + $"_000{MyDataInfo.sceneAllEquips.Count + 1}";
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init();
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
@@ -106,6 +151,7 @@ public class CommanderController : DMonoBehaviour
         {
             OnCreatEquipEntity(data.AllEquipDatas[i].templateId, data.AllEquipDatas[i].myId);
         }
+
         //找到所有的资源，通过ID找到数据中的对应数据，
         for (int i = 0; i < allBObjects?.Length; i++)
         {
@@ -114,8 +160,9 @@ public class CommanderController : DMonoBehaviour
             itemZy.SetBeUsedComs(data.ZiYuanControlledList.ContainsKey(itemZy.main.BObjectId) ? data.ZiYuanControlledList[itemZy.main.BObjectId] : null);
             EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
+
         EventManager.Instance.EventTrigger<object>(EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);
-        EventManager.Instance.EventTrigger<string>(EventType.ShowProgrammeName.ToString(),data.programmeName);
+        EventManager.Instance.EventTrigger<string>(EventType.ShowProgrammeName.ToString(), data.programmeName);
     }
 
     private void OnSendWaterIntaking(string data)
@@ -125,11 +172,10 @@ public class CommanderController : DMonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q)&& MyDataInfo.MyLevel==1&& isMe)
+        if (Input.GetKeyDown(KeyCode.Q) && MyDataInfo.MyLevel == 1 && isMe)
         {
-            sender.LogError("游戏结束，生成PDF");
             var player = MyDataInfo.playerInfos.Find(x => string.Equals(x.UID, MyDataInfo.leadId));
-            _pdfReport.CreateReport(player.UID,"一级指挥端",player.PlayerName,player.RoleId,clientOperatorInfos);
+            _pdfReport.CreateReport(player.UID, "一级指挥端", player.PlayerName, player.RoleId, clientOperatorInfos);
         }
     }
 
@@ -141,7 +187,7 @@ public class CommanderController : DMonoBehaviour
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).MoveToTarget(targetPos);
         var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
         string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
-        if(clientOperatorInfos!=null)
+        if (clientOperatorInfos != null)
             clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了机动指令，目标点为{targetPos}");
     }
 
@@ -160,7 +206,7 @@ public class CommanderController : DMonoBehaviour
         var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id));
         string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
         sender.LogError($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了取水指令，取水目标点为{pos}");
-        if(clientOperatorInfos!=null)
+        if (clientOperatorInfos != null)
             clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了取水指令，取水目标点为{pos}");
     }
 

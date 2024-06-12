@@ -23,7 +23,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     private Vector2 uiCameraSize;
     public List<EquipBase> allObjModels;
     public Dictionary<string, IconCellBase> allIconCells; //存储地图上的所有点
-    [HideInInspector] public float mapBL;
+    [HideInInspector] public float mapBLx, mapBLz;
 
     private Dictionary<OperatorState, MapOperateLogicBase> mapLogics;
     private MapOperateLogicBase currentMapLogic;
@@ -41,10 +41,6 @@ public class UIMap : BasePanel, IPointerClickHandler
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
         allObjModels = new List<EquipBase>();
         allIconCells = new Dictionary<string, IconCellBase>();
-
-        //todo:后续要改成实际地图比例
-        ////当前测试地图长宽是100，地图数据转换比例是
-        mapBL = 3900f / mapView.sizeDelta.x;
     }
 
     public override void ShowMe(object userData)
@@ -53,6 +49,9 @@ public class UIMap : BasePanel, IPointerClickHandler
         //刚开始都要显示地图的，都为普通模式
         //当一级点击创建某个装备时，切换为创建模式，并传过来要创建对象的ID
         //当一级发布方案后，把自己状态切换为普通，二级收到消息后切换为创建，创建完立刻切回普通
+        
+        mapBLx = ((Vector2)userData).x / mapView.sizeDelta.x;
+        mapBLz = ((Vector2)userData).y / mapView.sizeDelta.y;
 
         SwitchMapLogic(OperatorState.CreatAndEditor);
 
@@ -104,7 +103,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     private void OnCloseMap(bool isShowMap)
     {
         //点击了切换三维地图或二维地图
-        EventManager.Instance.EventTrigger(EventType.CameraSwitch.ToString(),!isShowMap);
+        EventManager.Instance.EventTrigger(EventType.CameraSwitch.ToString(), !isShowMap);
     }
 
     private EquipBase[] sceneAllObjs;
@@ -113,7 +112,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     {
         return;
 #if UNITY_EDITOR
-        mapBL = 3600f / mapView.sizeDelta.x;
+        mapBLx = 3600f / mapView.sizeDelta.x;
         allObjModels = new List<EquipBase>();
         uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
         Debug.Log("uiCameraSize：" + uiCameraSize);
@@ -216,12 +215,12 @@ public abstract class MapOperateLogicBase
 
     protected Vector2 worldPos2UiPos(Vector3 pos)
     {
-        return new Vector2(pos.x / mainLogic.mapBL/* - mainLogic.mapView.sizeDelta.x / 2*/, pos.z / mainLogic.mapBL /*- mainLogic.mapView.sizeDelta.y / 2*/);
+        return new Vector2(pos.x / mainLogic.mapBLx /* - mainLogic.mapView.sizeDelta.x / 2*/, pos.z / mainLogic.mapBLz /*- mainLogic.mapView.sizeDelta.y / 2*/);
     }
 
     protected Vector3 uiPos2WorldPos(Vector2 pos)
     {
-        return new Vector3((pos.x - canvanceSize.x / 2 /*+ mainLogic.mapView.sizeDelta.x / 2*/) * mainLogic.mapBL, 0,
-            (pos.y - canvanceSize.y / 2 /*+ mainLogic.mapView.sizeDelta.y / 2*/) * mainLogic.mapBL);
+        return new Vector3((pos.x - canvanceSize.x / 2 /*+ mainLogic.mapView.sizeDelta.x / 2*/) * mainLogic.mapBLx, 0,
+            (pos.y - canvanceSize.y / 2 /*+ mainLogic.mapView.sizeDelta.y / 2*/) * mainLogic.mapBLz);
     }
 }

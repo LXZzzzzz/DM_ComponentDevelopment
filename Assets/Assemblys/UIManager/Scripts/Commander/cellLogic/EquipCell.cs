@@ -21,6 +21,8 @@ public class EquipCell : DMonoBehaviour
         showName = GetComponentInChildren<Text>();
         changeCtrl = GetComponentInChildren<Dropdown>();
         chooseImg = transform.Find("ChooseImg").gameObject;
+        transform.Find("btn_positioning").GetComponent<Button>().onClick.AddListener(onPositioning);
+        transform.Find("btn_track").GetComponent<Button>().onClick.AddListener(onTrack);
         changeCallBack = changeCb;
         this._equip = equip;
 
@@ -33,9 +35,10 @@ public class EquipCell : DMonoBehaviour
             changeCtrl.options.Add(itemData);
             dropDownSupplementInfo.Add(changeCtrl.options.Count - 1, info.Key);
         }
+
         dropDownInit();
         checkTimer = Time.time;
-        GetComponent<Button>().onClick.AddListener(()=> EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), equip.BObjectId));
+        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), equip.BObjectId));
     }
 
     private void dropDownInit()
@@ -48,7 +51,7 @@ public class EquipCell : DMonoBehaviour
             //找到这个id的下标，赋值
             foreach (var info in dropDownSupplementInfo)
             {
-                if (string.Equals(controllerId,info.Value))
+                if (string.Equals(controllerId, info.Value))
                 {
                     changeCtrl.value = info.Key;
                     break;
@@ -69,8 +72,18 @@ public class EquipCell : DMonoBehaviour
     {
         if (Time.time > checkTimer)
         {
-            checkTimer = Time.time + 1/25f;
+            checkTimer = Time.time + 1 / 25f;
             chooseImg.SetActive(_equip.isChooseMe);
         }
+    }
+
+    private void onPositioning()
+    {
+        EventManager.Instance.EventTrigger(Enums.EventType.CameraControl.ToString(),1,_equip.transform);
+    }
+
+    private void onTrack()
+    {
+        EventManager.Instance.EventTrigger(Enums.EventType.CameraControl.ToString(),2,_equip.transform);
     }
 }

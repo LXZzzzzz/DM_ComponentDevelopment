@@ -16,7 +16,9 @@ namespace Enums
         InitZiYuanBeUsed, //初始化资源可被谁使用
         ConfirmationCbSure, //确认窗口返回确认消息
         CameraSwitch,//相机切换是否开启控制脚本
+        CameraControl,//控制相机追踪或定位
         ShowProgrammeName,//显示方案名
+        ChooseZiyuan,//选中某个资源
     }
 
     public enum MessageID

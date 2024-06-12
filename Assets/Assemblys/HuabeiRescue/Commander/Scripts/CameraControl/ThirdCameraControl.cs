@@ -24,18 +24,18 @@ namespace DMCameraControl
         private Quaternion rotation;
         private float timeSinceLastWarningAboutMissingTarget = 10.0f;
         private Camera localCamera;
-
+        
         void Awake()
         {
             localCamera = GetComponent<Camera>();
         }
-
+        
         void Start()
         {
             currentDistance = StartDistance;
             yMovement = 30;
         }
-
+        
         void Update()
         {
             if (Target == null)
@@ -47,7 +47,7 @@ namespace DMCameraControl
                 }
                 return;
             }
-
+        
             if (EnableControls)
             {
                 zoom();
@@ -61,7 +61,7 @@ namespace DMCameraControl
             transform.LookAt(Target.transform, Vector3.up);
             localCamera.farClipPlane = Mathf.Max(50000.0f, 1000.0f + transform.position.y * 20);
         }
-
+        
         private void doRotation()
         {
             xMovement = xMovement + Input.GetAxis("Mouse X") * RotationSpeed * 0.02f;
@@ -71,7 +71,7 @@ namespace DMCameraControl
             if (yMovement < MinAngle)
                 yMovement = MinAngle;
         }
-
+        
         private void zoom()
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");

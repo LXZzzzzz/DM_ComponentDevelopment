@@ -29,20 +29,28 @@ public class TestLogic : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, null);
+            UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, new Vector2(18000,18000));
             EventManager.Instance.EventTrigger<object>(Enums.EventType.SwitchCreatModel.ToString(), allEquip);
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
             UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            // if (cvm == null) cvm = Camera.main.gameObject.AddComponent<DMCameraControl.DMCameraViewMove>();
+            // if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
+            if (tc == null) tc = Camera.main.gameObject.AddComponent<DMCameraControl.ThirdCameraControl>();
         }
     }
 
     private DMCameraControl.DMouseOrbit mo;
     private DMCameraControl.DMCameraViewMove cvm;
-
+    private DMCameraControl.ThirdCameraControl tc;
     private void testaaa(bool isMove)
     {
         if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
         if (cvm == null) cvm = Camera.main.gameObject.AddComponent<DMCameraControl.DMCameraViewMove>();
+        if (tc == null) tc = Camera.main.gameObject.AddComponent<DMCameraControl.ThirdCameraControl>();
 
         cvm.enabled = isMove;
         mo.enabled = isMove;
