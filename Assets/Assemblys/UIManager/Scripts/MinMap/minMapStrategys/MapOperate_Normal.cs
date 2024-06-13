@@ -6,7 +6,7 @@ using ToolsLibrary.EquipPart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.Events;
-using EventType=Enums.EventType;
+using EventType = Enums.EventType;
 
 public class MapOperate_Normal : MapOperateLogicBase
 {
@@ -40,14 +40,13 @@ public class MapOperate_Normal : MapOperateLogicBase
         {
             for (int i = 0; i < mainLogic.allBObjects.Length; i++)
             {
-                if (string.Equals(mainLogic.allBObjects[i].BObject.Id,targetIconCell.belongToId))
+                if (string.Equals(mainLogic.allBObjects[i].BObject.Id, targetIconCell.belongToId))
                 {
-                    EventManager.Instance.EventTrigger(EventType.MapChooseIcon.ToString(),mainLogic.allBObjects[i]);
+                    EventManager.Instance.EventTrigger(EventType.MapChooseIcon.ToString(), mainLogic.allBObjects[i]);
                     break;
                 }
             }
         }
-
     }
 
     public override void OnRightClickIcon(IconCellBase clickIcon)
@@ -55,25 +54,32 @@ public class MapOperate_Normal : MapOperateLogicBase
         //打开指令集页面
         if (clickIcon is AirIconCell)
         {
-           var itemEquip =MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, clickIcon.belongToId));
-           if (!string.Equals(MyDataInfo.leadId, itemEquip.BeLongToCommanderId)) return;
-           EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), clickIcon.belongToId);
-           RightClickShowInfo info = new RightClickShowInfo()
-           {
-               PointPos = clickIcon.GetComponent<RectTransform>().anchoredPosition,ShowSkillDatas = itemEquip.mySkills, OnTriggerCallBack = itemEquip.OnSelectSkill
-           };
-           UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
+            var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, clickIcon.belongToId));
+            if (!string.Equals(MyDataInfo.leadId, itemEquip.BeLongToCommanderId)) return;
+            EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), clickIcon.belongToId);
+            RightClickShowInfo info = new RightClickShowInfo()
+            {
+                PointPos = clickIcon.GetComponent<RectTransform>().anchoredPosition, ShowSkillDatas = itemEquip.mySkills, OnTriggerCallBack = itemEquip.OnSelectSkill
+            };
+            UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
         }
     }
 
     public override void OnUpdate()
     {
-        
     }
 
     public override void OnLeftClickMap(Vector2 pos)
     {
-        
+#if UNITY_EDITOR
+        var  itemPoint=GameObject.Instantiate(mainLogic.pointIconPrefab, mainLogic.iconCellParent);
+        itemPoint.enabled = false;
+        var itemGo=GameObject.CreatePrimitive(PrimitiveType.Cube);
+        itemGo.transform.position = uiPos2WorldPos(pos);
+        itemPoint.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(uiPos2WorldPos(pos));
+        itemPoint.gameObject.SetActive(true);
+#endif
+        EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), string.Empty);
     }
 
     public override void OnRightClickMap(Vector2 pos)
@@ -83,7 +89,6 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     public override void OnExit()
     {
-        
     }
 
     public MapOperate_Normal(UIMap mainLogic) : base(mainLogic)

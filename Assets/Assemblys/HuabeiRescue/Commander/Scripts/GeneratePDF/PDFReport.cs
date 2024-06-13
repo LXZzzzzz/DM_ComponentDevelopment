@@ -67,6 +67,7 @@ namespace 导教端_WRJ
 
         private void enterFormat(PdfPTable table,List<string> infos)
         {
+            Debug.LogError("指令数据有几条"+infos.Count);
             for (int i = 0; i < infos.Count; i++)
             {
                 table.AddCell(new PdfPCell(new Phrase(infos[i], fontTable)));

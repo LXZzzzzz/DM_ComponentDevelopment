@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ToolsLibrary;
@@ -8,6 +9,7 @@ using UnityEngine;
 public class TestLogic : MonoBehaviour
 {
     private List<EquipBase> allEquip;
+    private Dictionary<string, string> testDic;
 
     void Start()
     {
@@ -23,8 +25,10 @@ public class TestLogic : MonoBehaviour
         MyDataInfo.sceneAllEquips = allEquip;
 
         EventManager.Instance.AddEventListener<bool>(Enums.EventType.CameraSwitch.ToString(), testaaa);
+        testDic = new Dictionary<string, string>();
     }
 
+    private string testStr="";
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
@@ -37,9 +41,10 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            // if (cvm == null) cvm = Camera.main.gameObject.AddComponent<DMCameraControl.DMCameraViewMove>();
-            // if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
-            if (tc == null) tc = Camera.main.gameObject.AddComponent<DMCameraControl.ThirdCameraControl>();
+            if (testDic.ContainsKey(testStr))
+            {
+                Debug.LogError(testDic[testStr]);
+            }
         }
     }
 

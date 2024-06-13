@@ -49,7 +49,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         //刚开始都要显示地图的，都为普通模式
         //当一级点击创建某个装备时，切换为创建模式，并传过来要创建对象的ID
         //当一级发布方案后，把自己状态切换为普通，二级收到消息后切换为创建，创建完立刻切回普通
-        
+
         mapBLx = ((Vector2)userData).x / mapView.sizeDelta.x;
         mapBLz = ((Vector2)userData).y / mapView.sizeDelta.y;
 
@@ -114,7 +114,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 #if UNITY_EDITOR
         mapBLx = 3600f / mapView.sizeDelta.x;
         allObjModels = new List<EquipBase>();
-        uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
+        // uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
         Debug.Log("uiCameraSize：" + uiCameraSize);
         sceneAllObjs = GameObject.FindObjectsOfType<EquipBase>();
         for (int i = 0; i < sceneAllObjs?.Length; i++)
@@ -160,20 +160,28 @@ public class UIMap : BasePanel, IPointerClickHandler
     private void Update()
     {
         currentMapLogic?.OnUpdate();
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            Debug.LogError(Screen.width + "=" + Screen.height);
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         //这里是检测点击区域是否在地图内部
-        Vector2 point = mousePos2UI(eventData.position) + new Vector2(mapView.sizeDelta.x / 2, mapView.sizeDelta.y / 2);
+        float xbl = Screen.width / uiCameraSize.x;
+        float ybl = Screen.height / uiCameraSize.y;
+        Vector2 newPos = new Vector2(eventData.position.x / xbl, eventData.position.y / ybl);
+        
+        Vector2 point = mousePos2UI(newPos) + new Vector2(mapView.sizeDelta.x / 2, mapView.sizeDelta.y / 2);
         if (point.x < 0 || point.y < 0 || point.x > mapView.sizeDelta.x || point.y > mapView.sizeDelta.y) return;
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                currentMapLogic?.OnLeftClickMap(eventData.position);
+                currentMapLogic?.OnLeftClickMap(newPos);
                 break;
             case PointerEventData.InputButton.Right:
-                currentMapLogic?.OnRightClickMap(eventData.position);
+                currentMapLogic?.OnRightClickMap(newPos);
                 break;
         }
     }
@@ -184,8 +192,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     /// <returns></returns>
     public Vector2 mousePos2UI(Vector2 pos)
     {
-        Vector2 point = new Vector2(uiCameraSize.x * pos.x / Screen.width, uiCameraSize.y * pos.y / Screen.height) -
-                        new Vector2(uiCameraSize.x / 2, uiCameraSize.y / 2);
+        Vector2 point = new Vector2(pos.x, pos.y) - new Vector2(uiCameraSize.x / 2, uiCameraSize.y / 2);
         return point;
     }
 }

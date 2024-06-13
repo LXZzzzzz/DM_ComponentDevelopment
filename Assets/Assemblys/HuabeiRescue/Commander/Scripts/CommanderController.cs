@@ -60,6 +60,13 @@ public class CommanderController : DMonoBehaviour
         if (tc == null) tc = Camera.main.gameObject.AddComponent<DMCameraControl.ThirdCameraControl>();
         cvm.enabled = isMove;
         mo.enabled = isMove;
+        tc.enabled = isMove;
+        if (tc.enabled && tc.Target != null)
+        {
+            tc.Target = tc.Target;
+            cvm.enabled = false;
+            mo.enabled = false;
+        }
     }
 
     private void OnCameraContral(int type, Transform target)
@@ -87,6 +94,14 @@ public class CommanderController : DMonoBehaviour
     private void OnChangeCurrentEquip(string equipId)
     {
         // if (MyDataInfo.gameState != GameState.GameStart) return;
+        if (string.IsNullOrEmpty(equipId))
+        {
+            if (currentChooseEquip != null)
+                currentChooseEquip.isChooseMe = false;
+            currentChooseEquip = null;
+            return;
+        }
+
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
         if (MyDataInfo.gameState == GameState.FirstLevelCommanderEditor || string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
         {
@@ -137,7 +152,7 @@ public class CommanderController : DMonoBehaviour
                 temporaryEquip.Init();
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
-                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 20, dataPos.z);
+                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 600, dataPos.z);
                 EventManager.Instance.EventTrigger(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
                 break;
@@ -187,6 +202,7 @@ public class CommanderController : DMonoBehaviour
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).MoveToTarget(targetPos);
         var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
         string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
+        sender.LogError($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了机动指令，目标点为{targetPos}");
         if (clientOperatorInfos != null)
             clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了机动指令，目标点为{targetPos}");
     }

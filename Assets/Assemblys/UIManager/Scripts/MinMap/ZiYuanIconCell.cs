@@ -23,7 +23,7 @@ public class ZiYuanIconCell : IconCellBase
             }
         }
 
-        transform.GetChild(8).gameObject.SetActive(true);
+        transform.GetChild(1).gameObject.SetActive(true);
     }
 
     private void changeIcon(ZiYuanType type)
@@ -37,25 +37,25 @@ public class ZiYuanIconCell : IconCellBase
         switch (type)
         {
             case ZiYuanType.Accident:
-                index = 7;
+                index = 8;
                 break;
             case ZiYuanType.Airport:
-                index = 3;
-                break;
-            case ZiYuanType.Hospital:
-                index = 2;
-                break;
-            case ZiYuanType.Supply:
-                index = 6;
-                break;
-            case ZiYuanType.Waters:
-                index = 1;
-                break;
-            case ZiYuanType.DisasterArea:
                 index = 4;
                 break;
-            case ZiYuanType.SourceOfAFire:
+            case ZiYuanType.Hospital:
+                index = 3;
+                break;
+            case ZiYuanType.Supply:
+                index = 7;
+                break;
+            case ZiYuanType.Waters:
+                index = 2;
+                break;
+            case ZiYuanType.DisasterArea:
                 index = 5;
+                break;
+            case ZiYuanType.SourceOfAFire:
+                index = 6;
                 break;
         }
 

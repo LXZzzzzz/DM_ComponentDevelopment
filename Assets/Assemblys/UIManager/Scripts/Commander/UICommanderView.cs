@@ -29,6 +29,7 @@ public class UICommanderView : BasePanel
     private List<EquipCell> allEquipCells; //存储所有装备cell
     private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
+    private Dictionary<string, CommanderCell> allCommanderCells; //存储所有玩家cell
 
 
     public override void Init()
@@ -51,6 +52,7 @@ public class UICommanderView : BasePanel
         allEquipCells = new List<EquipCell>();
         allZiYuanCells = new List<ZiYuanCell>();
         allTaskCells = new List<TaskCell>();
+        allCommanderCells = new Dictionary<string, CommanderCell>();
     }
 
     public override void ShowMe(object userData)
@@ -89,6 +91,7 @@ public class UICommanderView : BasePanel
                     itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChooseCommander);
                     itemCell.gameObject.SetActive(true);
                     allCommanderIds.Add(itemObj.BObject.Id, itemObj.BObject.Info.Name);
+                    allCommanderCells.Add(itemObj.BObject.Id, itemCell);
                 }
             }
 
@@ -153,8 +156,18 @@ public class UICommanderView : BasePanel
         }
     }
 
+    private string currentSelectComId="";
+
     private void OnChooseCommander(string id)
     {
+        if (!string.Equals(currentSelectComId, id))
+        {
+            if (allCommanderCells.ContainsKey(currentSelectComId)) allCommanderCells[currentSelectComId].SetSelect(false);
+            if (allCommanderCells.ContainsKey(id)) allCommanderCells[id].SetSelect(true);
+            currentSelectComId = id;
+        }
+        else return;
+
         var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
         if (currentCommander.ClientLevel == 1)
         {
@@ -223,7 +236,7 @@ public class UICommanderView : BasePanel
                 itemZiyuan.gameObject.SetActive(isShow);
             }
 
-            if (itemTask!=null)
+            if (itemTask != null)
             {
                 bool isShow = itemTask.allcoms.Find(x => string.Equals(x.comId, MyDataInfo.leadId));
                 itemTask.gameObject.SetActive(isShow);

@@ -12,11 +12,13 @@ public class CommanderCell : DMonoBehaviour, IDropHandler
     private Text zuJianName;
     private Text playerName;
     private string myId;
+    private GameObject selectImg;
 
     public void Init(string Namestr, string myId, UnityAction<string> callBack)
     {
         if (zuJianName == null) zuJianName = transform.Find("text_AssemblyName").GetComponent<Text>();
         if (playerName == null) playerName = transform.Find("text_ClientName").GetComponent<Text>();
+        selectImg = transform.Find("bg_Select").gameObject;
         zuJianName.text = Namestr;
         if (MyDataInfo.playerInfos != null)
             playerName.text = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, myId)).PlayerName;
@@ -27,5 +29,10 @@ public class CommanderCell : DMonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         EventManager.Instance.EventTrigger(EventType.AddCommanderForZiYuan.ToString(), myId);
+    }
+
+    public void SetSelect(bool isChoose)
+    {
+        selectImg?.SetActive(isChoose);
     }
 }

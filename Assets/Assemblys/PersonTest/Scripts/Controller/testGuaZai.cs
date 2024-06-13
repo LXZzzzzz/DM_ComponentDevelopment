@@ -14,9 +14,5 @@ public class testGuaZai : DMonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Debug.LogError("事件系统："+EventManager.Instance);
-        }
     }
 }
