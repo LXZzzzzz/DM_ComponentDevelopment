@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using Vectrosity;
 using UiManager;
+using UnityEngine.UI;
 
 public class AirIconCell : IconCellBase
 {
@@ -26,6 +27,7 @@ public class AirIconCell : IconCellBase
         iconShow = GetComponent<RectTransform>();
         showChooseState = transform.GetChild(1).gameObject;
         meRect = GetComponent<RectTransform>();
+        transform.Find("airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
         initLine();
     }
 

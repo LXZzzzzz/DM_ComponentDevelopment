@@ -14,7 +14,8 @@ public class HelicopterMain : ScriptManager
     public override void RunModeInitialized(bool isRoomCreator, SceneInfo info)
     {
         base.RunModeInitialized(isRoomCreator, info);
-        gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController>();
+        var logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController>();
         //进入运行模式后，将一些基础属性通过控制器传给飞机，
+        logic.EquipIcon = info.PicBObjects[BObjectId];
     }
 }
