@@ -64,6 +64,7 @@ public class UICommanderView : BasePanel
         showView();
 #endif
         EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
+        EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), OnRemoveEquip);
         EventManager.Instance.AddEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
     }
 
@@ -71,6 +72,7 @@ public class UICommanderView : BasePanel
     {
         base.HideMe();
         EventManager.Instance.RemoveEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
+        EventManager.Instance.RemoveEventListener<string>(Enums.EventType.DestoryEquip.ToString(), OnRemoveEquip);
         EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
     }
 
@@ -152,7 +154,7 @@ public class UICommanderView : BasePanel
 
         if (chooseObject != null)
         {
-            EventManager.Instance.EventTrigger<object>(Enums.EventType.SwitchCreatModel.ToString(), chooseObject.BObject.Id);
+            EventManager.Instance.EventTrigger<object>(Enums.EventType.TransferEditingInfo.ToString(), chooseObject.BObject.Id);
         }
     }
 
@@ -217,6 +219,19 @@ public class UICommanderView : BasePanel
         if (MyDataInfo.MyLevel != 1)
         {
             itemCell.gameObject.SetActive(string.Equals(equip.BeLongToCommanderId, MyDataInfo.leadId));
+        }
+    }
+
+    private void OnRemoveEquip(string id)
+    {
+        for (int i = 0; i < allEquipCells.Count; i++)
+        {
+            if (string.Equals(allEquipCells[i].equipObjectId,id))
+            {
+                Destroy(allEquipCells[i].gameObject);
+                allEquipCells.RemoveAt(i);
+                break;
+            }
         }
     }
 

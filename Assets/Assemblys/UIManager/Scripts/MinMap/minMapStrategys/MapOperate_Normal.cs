@@ -10,7 +10,7 @@ using EventType = Enums.EventType;
 
 public class MapOperate_Normal : MapOperateLogicBase
 {
-    public override void OnEnter(object initData)
+    public override void OnEnter()
     {
     }
 

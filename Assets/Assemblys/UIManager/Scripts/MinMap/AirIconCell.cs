@@ -25,7 +25,7 @@ public class AirIconCell : IconCellBase
         this.equipGo = equipGo;
         this.worldPosMapPosFunc = worldPosMapPosFunc;
         iconShow = GetComponent<RectTransform>();
-        showChooseState = transform.GetChild(1).gameObject;
+        showChooseState = transform.Find("Choose").gameObject;
         meRect = GetComponent<RectTransform>();
         transform.Find("airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
         initLine();

@@ -1,54 +1,60 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using DM.Core.Map;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using EventType = Enums.EventType;
+using Object = UnityEngine.Object;
 
 public class MapOperate_CreatAndEditor : MapOperateLogicBase
 {
     private string creatTargetTemplate;
 
-    public override void OnEnter(object initData)
+    public override void OnEnter()
     {
-        EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
-        if (initData == null)
+        EventManager.Instance.AddEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
+        EventManager.Instance.AddEventListener<string>(EventType.DestoryEquip.ToString(), destroyAirCell);
+        EventManager.Instance.AddEventListener<object>(EventType.TransferEditingInfo.ToString(), parsingData);
+    }
+
+
+    private void parsingData(object data)
+    {
+        if (data is BObjectModel[])
         {
+            var initData = data as BObjectModel[];
             //场景初始化逻辑,走完切回默认模式
-            for (int i = 0; i < mainLogic.allBObjects.Length; i++)
+            for (int i = 0; i < initData.Length; i++)
             {
                 //找到场景中所有资源，显示到地图上
-                var tagItem = mainLogic.allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+                var tagItem = initData[i].BObject.Info.Tags.Find(x => x.Id == 1010);
                 if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
                 {
-                    creatZiYuanCell(mainLogic.allBObjects[i].BObject.Id, mainLogic.allBObjects[i].gameObject.transform.position);
+                    creatZiYuanCell(initData[i].BObject.Id, initData[i].gameObject.transform.position);
                 }
             }
-
-            mainLogic.SwitchMapLogic(OperatorState.Normal);
         }
-        else if (initData is string)
+        else if (data is string)
         {
-            //todo：打开时刻跟随鼠标显示的模板对象
-            creatTargetTemplate = (string)initData;
+            mainLogic.TempIcon.gameObject.SetActive(true);
+            creatTargetTemplate = (string)data;
         }
-        else if (initData is List<EquipBase>)
+        else if (data is List<EquipBase>)
         {
+            Debug.LogError("这里应该不会走了");
             //传过来装备列表，说明这是一级发布了方案，做一个初始化后，直接切回普通模式
-            var allObjModels = initData as List<EquipBase>;
+            var allObjModels = data as List<EquipBase>;
             for (int i = 0; i < allObjModels?.Count; i++)
             {
                 if (allObjModels[i].GetComponent<EquipBase>() == null) continue;
                 creatAirCell(allObjModels[i]);
             }
-#if UNITY_EDITOR
-            mainLogic.SwitchMapLogic(OperatorState.Normal);
-#else
-            mainLogic.SwitchMapLogic(OperatorState.Normal);
-#endif
         }
     }
+
 
     public override void OnLeftClickIcon(IconCellBase clickIcon)
     {
@@ -62,10 +68,16 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
 
     public override void OnUpdate()
     {
+        if (!string.IsNullOrEmpty(creatTargetTemplate))
+        {
+            var rectPos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
+            mainLogic.TempIcon.anchoredPosition = mainLogic.mousePos2UI(rectPos);
+        }
     }
 
     public override void OnLeftClickMap(Vector2 pos)
     {
+        if (string.IsNullOrEmpty(creatTargetTemplate)) return;
         //这里先去数据管理器里申请创建，然后将数据ID传给创建者
         string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, uiPos2WorldPos(pos));
         ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = MyDataInfo.leadId;
@@ -75,14 +87,15 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
 
     public override void OnRightClickMap(Vector2 pos)
     {
-        //todo:关闭预创建显示的图标
-
-        mainLogic.SwitchMapLogic(OperatorState.Normal);
+        mainLogic.TempIcon.gameObject.SetActive(false);
+        creatTargetTemplate = String.Empty;
     }
 
     public override void OnExit()
     {
-        EventManager.Instance.RemoveEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
+        EventManager.Instance.RemoveEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
+        EventManager.Instance.RemoveEventListener<string>(EventType.DestoryEquip.ToString(), destroyAirCell);
+        EventManager.Instance.RemoveEventListener<object>(EventType.TransferEditingInfo.ToString(), parsingData);
     }
 
     private void creatAirCell(EquipBase equip)
@@ -93,6 +106,19 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         itemCell.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(equip.gameObject.transform.position);
         (itemCell as AirIconCell).Init(equip, equip.BObjectId, mainLogic.OnChooseObj, worldPos2UiPos);
         mainLogic.allIconCells.Add(equip.BObjectId, itemCell);
+    }
+
+    private void destroyAirCell(string id)
+    {
+        foreach (var iconCell in mainLogic.allIconCells)
+        {
+            if (string.Equals(iconCell.Key, id))
+            {
+                Object.Destroy(iconCell.Value.gameObject);
+                mainLogic.allIconCells.Remove(id);
+                break;
+            }
+        }
     }
 
     private void creatZiYuanCell(string entityId, Vector3 pos)

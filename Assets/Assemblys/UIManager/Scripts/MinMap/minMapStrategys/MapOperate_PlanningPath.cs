@@ -17,7 +17,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
     private string attachedObjectId;
     private EquipBase currentChooseEquip;
 
-    public override void OnEnter(object initData)
+    public override void OnEnter()
     {
         isCreatPathPoint = false;
         isWaitCreat = false;

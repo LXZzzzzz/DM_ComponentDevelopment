@@ -14,6 +14,8 @@ public class EquipCell : DMonoBehaviour
     private UnityAction<string, string> changeCallBack;
     private Dictionary<int, string> dropDownSupplementInfo;
     private float checkTimer;
+
+    public string equipObjectId => _equip.BObjectId;
     public string equipBeUseCommander => _equip.BeLongToCommanderId;
 
     public void Init(EquipBase equip, Dictionary<string, string> allCommanderInfos, UnityAction<string, string> changeCb)

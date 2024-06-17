@@ -16,16 +16,20 @@ public class CommanderController : DMonoBehaviour
     private ZiYuanBase currentChooseZiYuan;
 
     private PDFReport _pdfReport;
-    private List<string> clientOperatorInfos;
+    public List<string> clientOperatorInfos;
 
     private bool isMe;
+
+    private void Start()
+    {
+        clientOperatorInfos = new List<string>();
+    }
 
     public void Init()
     {
         sender.LogError("指挥端组件ID：" + main.BObjectId);
         isMe = true;
         _pdfReport = new PDFReport();
-        clientOperatorInfos = new List<string>();
         MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.AddEventListener<string>(EventType.ChooseZiyuan.ToString(), OnChangeCurrentZiyuan);
@@ -35,6 +39,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<string>(EventType.SendWaterInfoToControler.ToString(), OnSendWaterIntaking);
         EventManager.Instance.AddEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
         EventManager.Instance.AddEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
+        EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
     }
 
     public void Terminate()
@@ -47,6 +52,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<string>(EventType.SendWaterInfoToControler.ToString(), OnSendWaterIntaking);
         EventManager.Instance.RemoveEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
         EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
+        EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
     }
 
     private DMCameraControl.DMCameraViewMove cvm;
@@ -80,7 +86,9 @@ public class CommanderController : DMonoBehaviour
                 cvm.enabled = true;
                 mo.enabled = true;
                 tc.enabled = false;
-                Camera.main.transform.position = target.position - target.forward * 10 + target.up * 5;
+                Camera.main.transform.position = target.position + target.up * 35;
+                Camera.main.transform.rotation = Quaternion.LookRotation(target.forward);
+                Camera.main.transform.LookAt(target);
                 break;
             case 2:
                 cvm.enabled = false;
@@ -153,7 +161,7 @@ public class CommanderController : DMonoBehaviour
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
                 temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 600, dataPos.z);
-                EventManager.Instance.EventTrigger(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
+                EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
                 break;
             }
@@ -162,6 +170,8 @@ public class CommanderController : DMonoBehaviour
 
     private void OnLoadProgrammeDataSuc(ProgrammeData data)
     {
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
+        OnClearScene();
         for (int i = 0; i < data.AllEquipDatas.Count; i++)
         {
             OnCreatEquipEntity(data.AllEquipDatas[i].templateId, data.AllEquipDatas[i].myId);
@@ -176,8 +186,23 @@ public class CommanderController : DMonoBehaviour
             EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
 
-        EventManager.Instance.EventTrigger<object>(EventType.SwitchCreatModel.ToString(), MyDataInfo.sceneAllEquips);
-        EventManager.Instance.EventTrigger<string>(EventType.ShowProgrammeName.ToString(), data.programmeName);
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+        EventManager.Instance.EventTrigger(EventType.ShowProgrammeName.ToString(), data.programmeName);
+    }
+
+    //清空场景中的所有方案数据
+    private void OnClearScene()
+    {
+        //清空所有装备
+        MyDataInfo.sceneAllEquips.ForEach(x => x.Destroy());
+        //对所有资源的归属情况都清零
+        for (int i = 0; i < allBObjects?.Length; i++)
+        {
+            ZiYuanBase itemZy = allBObjects[i].GetComponent<ZiYuanBase>();
+            if (itemZy == null) continue;
+            itemZy.SetBeUsedComs(null);
+            EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
+        }
     }
 
     private void OnSendWaterIntaking(string data)
@@ -189,7 +214,15 @@ public class CommanderController : DMonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q) && MyDataInfo.MyLevel == 1 && isMe)
         {
-            var player = MyDataInfo.playerInfos.Find(x => string.Equals(x.UID, MyDataInfo.leadId));
+            var player = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId));
+
+            for (int i = 0; i < allBObjects.Length; i++)
+            {
+                if (!string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id) && allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) == null) continue;
+                var itemCom = allBObjects[i].GetComponent<CommanderController>();
+                clientOperatorInfos.AddRange(itemCom.clientOperatorInfos);
+            }
+
             _pdfReport.CreateReport(player.UID, "一级指挥端", player.PlayerName, player.RoleId, clientOperatorInfos);
         }
     }
@@ -202,7 +235,6 @@ public class CommanderController : DMonoBehaviour
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).MoveToTarget(targetPos);
         var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
         string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
-        sender.LogError($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了机动指令，目标点为{targetPos}");
         if (clientOperatorInfos != null)
             clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了机动指令，目标点为{targetPos}");
     }
@@ -221,7 +253,6 @@ public class CommanderController : DMonoBehaviour
 
         var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id));
         string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
-        sender.LogError($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了取水指令，取水目标点为{pos}");
         if (clientOperatorInfos != null)
             clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了取水指令，取水目标点为{pos}");
     }

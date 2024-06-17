@@ -13,4 +13,8 @@ public class TestEquip : EquipBase
     {
         throw new System.NotImplementedException();
     }
+
+    protected override void OnClose()
+    {
+    }
 }

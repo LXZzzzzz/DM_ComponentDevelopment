@@ -6,7 +6,8 @@ namespace Enums
         ShowUI,
         ChooseEquip,
         MoveToTarget,
-        SwitchCreatModel, //切换为创建模式
+        SwitchMapModel, //切换地图模式
+        TransferEditingInfo,//传递地图编辑信息
         CreatEquipEntity, //创建飞机实体
         CreatEquipCorrespondingIcon, //创建飞机对应的图标
         LoadProgrammeDataSuc, //读取方案成功通知场景响应
@@ -19,6 +20,8 @@ namespace Enums
         CameraControl,//控制相机追踪或定位
         ShowProgrammeName,//显示方案名
         ChooseZiyuan,//选中某个资源
+        DestoryEquip,//删除某个飞机
+        ClearProgramme,//清除方案数据
     }
 
     public enum MessageID

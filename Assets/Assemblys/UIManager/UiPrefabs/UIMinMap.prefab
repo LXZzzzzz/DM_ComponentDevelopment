@@ -339,7 +339,7 @@ GameObject:
   - component: {fileID: 1676561785389855427}
   - component: {fileID: 758058485920416048}
   m_Layer: 5
-  m_Name: Image
+  m_Name: TempIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -362,7 +362,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 650, y: 540}
-  m_SizeDelta: {x: 10, y: 10}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1676561785389855427
 CanvasRenderer:
@@ -1534,6 +1534,7 @@ MonoBehaviour:
   allObjModels: []
   mapBLx: 0
   mapBLz: 0
+  TempIcon: {fileID: 0}
 --- !u!1 &5777005456036112487
 GameObject:
   m_ObjectHideFlags: 0

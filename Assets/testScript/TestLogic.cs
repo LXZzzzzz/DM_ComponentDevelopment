@@ -10,7 +10,7 @@ public class TestLogic : MonoBehaviour
 {
     private List<EquipBase> allEquip;
     private Dictionary<string, string> testDic;
-
+    public Transform target;
     void Start()
     {
         allEquip = new List<EquipBase>();
@@ -28,23 +28,21 @@ public class TestLogic : MonoBehaviour
         testDic = new Dictionary<string, string>();
     }
 
-    private string testStr="";
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
             UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, new Vector2(18000,18000));
-            EventManager.Instance.EventTrigger<object>(Enums.EventType.SwitchCreatModel.ToString(), allEquip);
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
             UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            if (testDic.ContainsKey(testStr))
-            {
-                Debug.LogError(testDic[testStr]);
-            }
+            
+            Camera.main.transform.position = target.position + target.up * 20;
+            Camera.main.transform.rotation = Quaternion.LookRotation(target.forward);
+            Camera.main.transform.LookAt(target);
         }
     }
 

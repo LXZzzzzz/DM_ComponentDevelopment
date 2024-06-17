@@ -49,13 +49,14 @@ public class UITopMenuView : BasePanel
     {
         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, null);
         EventManager.Instance.AddEventListener<string>(EventType.ConfirmationCbSure.ToString(), runNewScheme);
-        //todo：新建方案后，要对场景中的元素清空
     }
 
     private void runNewScheme(string schemeName)
     {
         EventManager.Instance.RemoveEventListener<string>(EventType.ConfirmationCbSure.ToString(), runNewScheme);
         ProgrammeDataManager.Instance.CreatProgramme(schemeName);
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
+        EventManager.Instance.EventTrigger(EventType.ClearProgramme.ToString());
         ShowName(schemeName);
     }
 
@@ -91,6 +92,7 @@ public class UITopMenuView : BasePanel
             sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendProgramme, packedData);
         }
 
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
         // for (int i = 0; i < allBObjects.Length; i++)
         // {
         //     if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
@@ -107,10 +109,16 @@ public class UITopMenuView : BasePanel
 
     private void onLine()
     {
-        if (MyDataInfo.gameState != GameState.Preparation)
+        switch (MyDataInfo.gameState)
         {
-            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, "请先发布方案，再通知游戏开始");
-            return;
+            case GameState.FirstLevelCommanderEditor:
+                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, "请先发布方案，再通知游戏开始");
+                return;
+            case GameState.Preparation:
+                break;
+            case GameState.GameStart:
+                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, "游戏已经开始！！");
+                return;
         }
 
         for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)

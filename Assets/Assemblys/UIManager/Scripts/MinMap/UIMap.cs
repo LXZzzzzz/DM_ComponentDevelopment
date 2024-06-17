@@ -28,6 +28,8 @@ public class UIMap : BasePanel, IPointerClickHandler
     private Dictionary<OperatorState, MapOperateLogicBase> mapLogics;
     private MapOperateLogicBase currentMapLogic;
 
+    public RectTransform TempIcon;
+
     public override void Init()
     {
         base.Init();
@@ -36,6 +38,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         airIconPrefab = transform.Find("prefabs/airCell").GetComponent<AirIconCell>();
         pointIconPrefab = transform.Find("prefabs/pointCell").GetComponent<PointIconCell>();
         ziYuanIconPrefab = transform.Find("prefabs/ziyuanCell").GetComponent<ZiYuanIconCell>();
+        TempIcon = transform.Find("maxMap/objects/TempIcon").GetComponent<RectTransform>();
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
 
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
@@ -53,31 +56,38 @@ public class UIMap : BasePanel, IPointerClickHandler
         mapBLx = ((Vector2)userData).x / mapView.sizeDelta.x;
         mapBLz = ((Vector2)userData).y / mapView.sizeDelta.y;
 
-        SwitchMapLogic(OperatorState.CreatAndEditor);
-
         uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
-        EventManager.Instance.AddEventListener<object>(EventType.SwitchCreatModel.ToString(), ToCreatModel);
+        EventManager.Instance.AddEventListener<int>(EventType.SwitchMapModel.ToString(), SwithMode);
+        
+        //刚开始切换为编辑模式，并通知初始化场景
+        SwitchMapLogic(OperatorState.CreatAndEditor);
+        EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allBObjects);
     }
 
     public override void HideMe()
     {
         base.HideMe();
         currentMapLogic?.OnExit();
-        EventManager.Instance.RemoveEventListener<object>(EventType.SwitchCreatModel.ToString(), ToCreatModel);
+        EventManager.Instance.RemoveEventListener<int>(EventType.SwitchMapModel.ToString(), SwithMode);
     }
 
-    private void ToCreatModel(object info)
+    private void SwithMode(int mode)
     {
-        if (MyDataInfo.gameState == GameState.GameStart)
+        switch (mode)
         {
-            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, "游戏进行阶段，不允许对场景资源进行调整");
-            return;
+            case 0:
+                SwitchMapLogic(OperatorState.Normal);
+                break;
+            case 1:
+                SwitchMapLogic(OperatorState.CreatAndEditor);
+                break;
+            case 2:
+                SwitchMapLogic(OperatorState.PlanningPath);
+                break;
         }
-
-        SwitchMapLogic(OperatorState.CreatAndEditor, info);
     }
 
-    public void SwitchMapLogic(OperatorState targetState, object data = null)
+    public void SwitchMapLogic(OperatorState targetState)
     {
         bool isCreat = !mapLogics.ContainsKey(targetState);
         switch (targetState)
@@ -97,7 +107,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
         currentMapLogic?.OnExit();
         currentMapLogic = mapLogics[targetState];
-        currentMapLogic?.OnEnter(data);
+        currentMapLogic?.OnEnter();
     }
 
     private void OnCloseMap(bool isShowMap)
@@ -127,7 +137,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         allIconCells = new Dictionary<string, IconCellBase>();
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
 
-        SwitchMapLogic(OperatorState.CreatAndEditor, allObjModels);
+        SwitchMapLogic(OperatorState.CreatAndEditor);
+        EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allObjModels);
 #endif
     }
 
@@ -169,9 +180,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         //这里是检测点击区域是否在地图内部
-        float xbl = Screen.width / uiCameraSize.x;
-        float ybl = Screen.height / uiCameraSize.y;
-        Vector2 newPos = new Vector2(eventData.position.x / xbl, eventData.position.y / ybl);
+        Vector2 newPos = resolutionRatioNormalized(eventData.position);
         
         Vector2 point = mousePos2UI(newPos) + new Vector2(mapView.sizeDelta.x / 2, mapView.sizeDelta.y / 2);
         if (point.x < 0 || point.y < 0 || point.x > mapView.sizeDelta.x || point.y > mapView.sizeDelta.y) return;
@@ -186,6 +195,14 @@ public class UIMap : BasePanel, IPointerClickHandler
         }
     }
 
+    //针对屏幕分辨率对应鼠标位置进行归一化
+    public Vector2 resolutionRatioNormalized(Vector2 nowPos)
+    {
+        float xbl = Screen.width / uiCameraSize.x;
+        float ybl = Screen.height / uiCameraSize.y;
+        return new Vector2(nowPos.x / xbl, nowPos.y / ybl);
+    }
+    
     /// <summary>
     /// 鼠标位置转UI点
     /// </summary>
@@ -212,7 +229,7 @@ public abstract class MapOperateLogicBase
         this.mainLogic = mainLogic;
     }
 
-    public abstract void OnEnter(object initData);
+    public abstract void OnEnter();
     public abstract void OnLeftClickIcon(IconCellBase clickIcon);
     public abstract void OnRightClickIcon(IconCellBase clickIcon);
     public abstract void OnUpdate();

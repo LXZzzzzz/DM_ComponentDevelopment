@@ -64,7 +64,7 @@ namespace OldLogic
             }
 
             uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
-            EventManager.Instance.AddEventListener<string>(EventType.SwitchCreatModel.ToString(), switchCreatModel);
+            EventManager.Instance.AddEventListener<string>(EventType.SwitchMapModel.ToString(), switchCreatModel);
             EventManager.Instance.AddEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
             currentState = OperatorState.NoPlanningRoute;
         }
@@ -73,7 +73,7 @@ namespace OldLogic
         {
             base.HideMe();
 
-            EventManager.Instance.RemoveEventListener<string>(EventType.SwitchCreatModel.ToString(), switchCreatModel);
+            EventManager.Instance.RemoveEventListener<string>(EventType.SwitchMapModel.ToString(), switchCreatModel);
             EventManager.Instance.RemoveEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
         }
 

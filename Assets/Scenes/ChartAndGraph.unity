@@ -484,6 +484,7 @@ MonoBehaviour:
   BeLongToCommanderId: 
   lastPointId: 
   isChooseMe: 0
+  EquipIcon: {fileID: 0}
 --- !u!1 &432432459
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,6 +700,7 @@ MonoBehaviour:
   BeLongToCommanderId: 
   lastPointId: 
   isChooseMe: 0
+  EquipIcon: {fileID: 0}
 --- !u!1 &886457579
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,6 +826,7 @@ MonoBehaviour:
   BeLongToCommanderId: 
   lastPointId: 
   isChooseMe: 0
+  EquipIcon: {fileID: 0}
 --- !u!4 &1409209833 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3685933877476911958, guid: 3f9cbc022ae4c704281f26d98794a4da,
@@ -879,6 +882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc2a81970e8b8cf4b9f6c8cb301e1050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 4558047237484213652}
 --- !u!1 &1823688464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1476,6 +1480,7 @@ MonoBehaviour:
   BeLongToCommanderId: 
   lastPointId: 
   isChooseMe: 0
+  EquipIcon: {fileID: 0}
 --- !u!1 &5486839748247815840
 GameObject:
   m_ObjectHideFlags: 0

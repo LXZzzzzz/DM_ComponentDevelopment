@@ -161,6 +161,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendGameStart:
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStart;
+                EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
                 break;
             case MessageID.MoveToTarget:
                 sender.LogError("收到了移动的指令" + type);

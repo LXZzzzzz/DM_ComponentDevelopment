@@ -33,6 +33,11 @@ public class HelicopterController : EquipBase, IWaterIntaking
         }
     }
 
+    protected override void OnClose()
+    {
+        EventManager.Instance.EventTrigger(EventType.DestoryEquip.ToString(), BObjectId);
+    }
+
     public void WaterIntaking(Vector3 pos, float range, float amount, bool isExecuteImmediately)
     {
         Debug.LogError("取水技能参数回传" + isExecuteImmediately);
@@ -74,12 +79,13 @@ public class HelicopterController : EquipBase, IWaterIntaking
         Transform waterSphere = transform.GetChild(1);
         while (true)
         {
-            waterSphere.Translate(Vector3.up*.8f);
+            waterSphere.Translate(Vector3.up * .8f);
             if (waterSphere.localPosition.y >= 0) waterSphere.localPosition = Vector3.up * -20;
             yield return 1;
             if (Time.time > endTime) break;
         }
-        waterSphere.localPosition=Vector3.zero;
+
+        waterSphere.localPosition = Vector3.zero;
     }
 
 
