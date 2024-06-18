@@ -223,13 +223,6 @@ public class UICommanderView : BasePanel
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            Debug.LogError("UI逻辑能不能控制："+UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject());
-        }
-    }
 
     private void OnRemoveEquip(string id)
     {
