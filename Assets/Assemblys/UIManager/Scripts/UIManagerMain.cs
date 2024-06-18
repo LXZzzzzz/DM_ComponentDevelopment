@@ -51,6 +51,11 @@ public class UIManagerMain : ScriptManager, IMesRec
         base.RunModeInitialized(isMain, info);
         EventManager.Instance.AddEventListener<string, object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
         gameObject.AddComponent<UIManager>();
+        if (info?.PicBObjects != null)
+        {
+            UIManager.Instance.PicBObjects = info.PicBObjects;
+            UIManager.Instance.MisName = info.MisName;
+        }
         //其他UI预制体脚本也需要在这里进行挂载
         uiprefabAddLogic();
     }

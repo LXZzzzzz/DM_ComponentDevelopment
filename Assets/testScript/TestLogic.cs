@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UiManager;
+using UiManager.IconShowPart;
 using UnityEngine;
 
 public class TestLogic : MonoBehaviour
@@ -32,9 +33,11 @@ public class TestLogic : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
+            EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "IconShow", null);
             UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, new Vector2(18000,18000));
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
             UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
+            EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "AttributeView", null);
         }
 
         if (Input.GetKeyDown(KeyCode.B))

@@ -9,6 +9,7 @@ public class EquipCell : DMonoBehaviour
 {
     private Text showName;
     private Dropdown changeCtrl;
+    private Text noDpShowName;
     private EquipBase _equip;
     private GameObject chooseImg;
     private UnityAction<string, string> changeCallBack;
@@ -25,8 +26,9 @@ public class EquipCell : DMonoBehaviour
         chooseImg = transform.Find("ChooseImg").gameObject;
         transform.Find("btn_positioning").GetComponent<Button>().onClick.AddListener(onPositioning);
         transform.Find("btn_track").GetComponent<Button>().onClick.AddListener(onTrack);
+        noDpShowName = transform.Find("noDpShowName").GetComponent<Text>();
         changeCallBack = changeCb;
-        this._equip = equip;
+        _equip = equip;
 
         showName.text = equip.name;
         changeCtrl.options = new List<Dropdown.OptionData>();
@@ -50,6 +52,16 @@ public class EquipCell : DMonoBehaviour
             changeCtrl.value = 0;
         else
         {
+            if (dropDownSupplementInfo.Count == 0)
+            {
+                //证明是二级指挥端，显示自己名字即可
+                noDpShowName.gameObject.SetActive(true);
+                changeCtrl.gameObject.SetActive(false);
+                noDpShowName.text = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, controllerId)).PlayerName;
+                return;
+            }
+            noDpShowName.gameObject.SetActive(false);
+            changeCtrl.gameObject.SetActive(true);
             //找到这个id的下标，赋值
             foreach (var info in dropDownSupplementInfo)
             {

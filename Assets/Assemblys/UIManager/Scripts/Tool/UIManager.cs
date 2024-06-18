@@ -17,6 +17,10 @@ namespace UiManager
 
         private Dictionary<UIName, BasePanel.UIType> uiPanelWhereLayer;
 
+        public Dictionary<string, Sprite> PicBObjects;
+
+        public string MisName;
+
         private void Start()
         {
             //DontDestroyOnLoad(this);

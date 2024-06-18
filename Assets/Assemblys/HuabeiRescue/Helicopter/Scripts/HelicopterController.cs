@@ -8,6 +8,8 @@ using EventType = Enums.EventType;
 public class HelicopterController : EquipBase, IWaterIntaking
 {
     private bool isWaitArrive;
+    private float quWaterDuration = 3;
+
 
     public override void Init()
     {
@@ -18,6 +20,7 @@ public class HelicopterController : EquipBase, IWaterIntaking
         mySkills.Add(new SkillData() { SkillType = SkillType.WaterIntaking, skillName = "盘旋" });
         mySkills.Add(new SkillData() { SkillType = SkillType.WaterIntaking, skillName = "补给" });
 
+        currentSkill = SkillType.None;
         isWaitArrive = false;
     }
 
@@ -54,7 +57,7 @@ public class HelicopterController : EquipBase, IWaterIntaking
             isWaitArrive = true;
             MoveToTarget(pos);
         }
-        else quWater();
+        else StartCoroutine(quWater());
     }
 
     public float CheckCapacity()
@@ -66,6 +69,7 @@ public class HelicopterController : EquipBase, IWaterIntaking
 
     private void LateUpdate()
     {
+        if (MyDataInfo.gameState is GameState.GamePause or GameState.GameStop) return;
         if (isWaitArrive && isArrive)
         {
             isWaitArrive = false;
@@ -75,17 +79,21 @@ public class HelicopterController : EquipBase, IWaterIntaking
 
     IEnumerator quWater()
     {
-        float endTime = Time.time + 3;
+        currentSkill = SkillType.WaterIntaking;
+        skillProgress = 0;
+        float endTime = Time.time + quWaterDuration / MyDataInfo.speedMultiplier;
         Transform waterSphere = transform.GetChild(1);
         while (true)
         {
             waterSphere.Translate(Vector3.up * .8f);
             if (waterSphere.localPosition.y >= 0) waterSphere.localPosition = Vector3.up * -20;
             yield return 1;
+            skillProgress = 1 - (endTime - Time.time) / (quWaterDuration / MyDataInfo.speedMultiplier);
             if (Time.time > endTime) break;
         }
 
         waterSphere.localPosition = Vector3.zero;
+        currentSkill = SkillType.None;
     }
 
 

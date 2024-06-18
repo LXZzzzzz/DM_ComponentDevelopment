@@ -18,6 +18,8 @@ public class AirIconCell : IconCellBase
     private VectorLine currentMoveRoute;
     private List<Vector2> routePoints;
     private RectTransform meRect;
+    private Image skillProgressShow;
+    private Text skillName;
 
     public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc)
     {
@@ -28,6 +30,9 @@ public class AirIconCell : IconCellBase
         showChooseState = transform.Find("Choose").gameObject;
         meRect = GetComponent<RectTransform>();
         transform.Find("airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
+        transform.Find("equipName").GetComponent<Text>().text = equipGo.name;
+        skillProgressShow = transform.Find("progress").GetComponent<Image>();
+        skillName = transform.Find("skillName").GetComponent<Text>();
         initLine();
     }
 
@@ -36,7 +41,7 @@ public class AirIconCell : IconCellBase
         routePoints = new List<Vector2>();
         routePoints.Add(Vector2.zero);
         routePoints.Add(Vector2.zero);
-        currentMoveRoute = new VectorLine("Line" + equipGo.BObjectId, routePoints, 5, LineType.Continuous);
+        currentMoveRoute = new VectorLine("Line" + equipGo.BObjectId, routePoints, 3, LineType.Continuous);
 #if UNITY_EDITOR
         currentMoveRoute.SetCanvas(gameObject.GetComponentInParent<Canvas>());
 #else
@@ -55,6 +60,7 @@ public class AirIconCell : IconCellBase
             iconShow.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(equipGo.transform.position);
 
         selectChange(equipGo.isChooseMe);
+        showSkillState();
     }
 
     protected override IconInfoData GetBasicInfo()
@@ -90,5 +96,27 @@ public class AirIconCell : IconCellBase
         {
             currentMoveRoute.active = false;
         }
+    }
+
+    private void showSkillState()
+    {
+        if (equipGo.currentSkill == SkillType.None)
+        {
+            if (skillName.gameObject.activeSelf) skillName.gameObject.SetActive(false);
+            if (skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(false);
+            return;
+        }
+
+        if (!skillName.gameObject.activeSelf) skillName.gameObject.SetActive(true);
+        if (!skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(true);
+
+        switch (equipGo.currentSkill)
+        {
+            case SkillType.WaterIntaking:
+                skillName.text = "正在取水...";
+                break;
+        }
+
+        skillProgressShow.fillAmount = equipGo.skillProgress;
     }
 }

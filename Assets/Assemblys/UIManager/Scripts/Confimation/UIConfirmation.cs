@@ -16,6 +16,13 @@ namespace UiManager
         newScheme
     }
 
+    public struct ConfirmatonInfo
+    {
+        public showType type;
+        public string showStrInfo;
+        public UnityAction<object> sureCallBack;
+    }
+
     public class UIConfirmation : BasePanel
     {
         private ShowTipsViewBase currentShowView;
@@ -35,29 +42,28 @@ namespace UiManager
             btns = transform.Find("View/btns").gameObject;
         }
 
-        
+
         //todo：后期这里要改成传过来委托，不能通过事件传递，造成逻辑复杂了
         public override void ShowMe(object userData)
         {
             base.ShowMe(userData);
             //根据传过来的数据类型，决定以哪种显示模型进行显示
-            if (userData != null)
-            {
-                string info = userData as string;
-                SelectShowViewLogic(showType.tipView);
-                currentShowView?.OnShow(info);
-            }
-            else
-            {
-                SelectShowViewLogic(showType.newScheme);
-                currentShowView?.OnShow(string.Empty);
-            }
+            ConfirmatonInfo cinfo = (ConfirmatonInfo)userData;
+
+            SelectShowViewLogic(cinfo.type);
+            currentShowView?.OnShow(cinfo.showStrInfo);
 
             GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UIConfirmation));
             GetControl<Button>("sure").onClick.AddListener(() =>
             {
-                if (currentShowView.OnSure()) Close(UIName.UIConfirmation);
+                if (currentShowView.OnSure(out object cbObj))
+                {
+                    cinfo.sureCallBack?.Invoke(cbObj);
+                    Close(UIName.UIConfirmation);
+                }
             });
+
+            GetControl<Button>("cancel").gameObject.SetActive(cinfo.sureCallBack != null);
         }
 
         private void SelectShowViewLogic(showType st)
@@ -91,7 +97,7 @@ namespace UiManager
         }
 
         public abstract void OnShow(string infoStr);
-        public abstract bool OnSure();
+        public abstract bool OnSure(out object cbObj);
     }
 
     public class ShowTip : ShowTipsViewBase
@@ -107,9 +113,9 @@ namespace UiManager
             mainLogic.tipsPart.GetComponent<Text>().text = infoStr;
         }
 
-        public override bool OnSure()
+        public override bool OnSure(out object cbObj)
         {
-            EventManager.Instance.EventTrigger(EventType.ConfirmationCbSure.ToString());
+            cbObj = null;
             return true;
         }
     }
@@ -126,12 +132,16 @@ namespace UiManager
             mainLogic.newSchemePart.SetActive(true);
         }
 
-        public override bool OnSure()
+        public override bool OnSure(out object cbObj)
         {
             string name = mainLogic.newSchemePart.GetComponentInChildren<InputField>().text;
-            if (string.IsNullOrEmpty(name)) return false;
+            if (string.IsNullOrEmpty(name))
+            {
+                cbObj = null;
+                return false;
+            }
 
-            EventManager.Instance.EventTrigger(EventType.ConfirmationCbSure.ToString(), name);
+            cbObj = name;
 
             return true;
         }

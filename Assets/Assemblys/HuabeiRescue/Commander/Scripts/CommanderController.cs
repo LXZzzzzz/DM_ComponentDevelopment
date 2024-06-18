@@ -40,6 +40,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
         EventManager.Instance.AddEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
+        EventManager.Instance.AddEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
     }
 
     public void Terminate()
@@ -53,6 +54,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
         EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
+        EventManager.Instance.RemoveEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
     }
 
     private DMCameraControl.DMCameraViewMove cvm;
@@ -86,7 +88,7 @@ public class CommanderController : DMonoBehaviour
                 cvm.enabled = true;
                 mo.enabled = true;
                 tc.enabled = false;
-                Camera.main.transform.position = target.position + target.up * 35;
+                Camera.main.transform.position = target.position + target.up * 40;
                 Camera.main.transform.rotation = Quaternion.LookRotation(target.forward);
                 Camera.main.transform.LookAt(target);
                 break;
@@ -107,6 +109,7 @@ public class CommanderController : DMonoBehaviour
             if (currentChooseEquip != null)
                 currentChooseEquip.isChooseMe = false;
             currentChooseEquip = null;
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
             return;
         }
 
@@ -195,6 +198,7 @@ public class CommanderController : DMonoBehaviour
     {
         //清空所有装备
         MyDataInfo.sceneAllEquips.ForEach(x => x.Destroy());
+        MyDataInfo.sceneAllEquips.Clear();
         //对所有资源的归属情况都清零
         for (int i = 0; i < allBObjects?.Length; i++)
         {
@@ -210,21 +214,18 @@ public class CommanderController : DMonoBehaviour
         sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.TriggerWaterIntaking, data);
     }
 
-    private void Update()
+    private void OnGeneratePdf()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && MyDataInfo.MyLevel == 1 && isMe)
+        var player = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId));
+
+        for (int i = 0; i < allBObjects.Length; i++)
         {
-            var player = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId));
-
-            for (int i = 0; i < allBObjects.Length; i++)
-            {
-                if (!string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id) && allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) == null) continue;
-                var itemCom = allBObjects[i].GetComponent<CommanderController>();
-                clientOperatorInfos.AddRange(itemCom.clientOperatorInfos);
-            }
-
-            _pdfReport.CreateReport(player.UID, "一级指挥端", player.PlayerName, player.RoleId, clientOperatorInfos);
+            if (!string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id) && allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) == null) continue;
+            var itemCom = allBObjects[i].GetComponent<CommanderController>();
+            clientOperatorInfos.AddRange(itemCom.clientOperatorInfos);
         }
+
+        _pdfReport.CreateReport(player.UID, "一级指挥端", player.PlayerName, player.RoleId, clientOperatorInfos);
     }
 
     #region 处理接收的消息
@@ -255,6 +256,12 @@ public class CommanderController : DMonoBehaviour
         string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
         if (clientOperatorInfos != null)
             clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了取水指令，取水目标点为{pos}");
+    }
+
+    public void Receive_GameStop()
+    {
+        currentChooseEquip = null;
+        OnLoadProgrammeDataSuc(ProgrammeDataManager.Instance.GetCurrentData);
     }
 
     #endregion

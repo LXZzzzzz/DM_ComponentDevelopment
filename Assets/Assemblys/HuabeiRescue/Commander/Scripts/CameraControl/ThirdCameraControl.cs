@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace DMCameraControl
 {
@@ -12,10 +13,8 @@ namespace DMCameraControl
         private float currentDistance;
         public float RotationSpeed = 90f;
         public float ScrollSpeed = 50f;
-        [Range(-89.0f, 89.0f)]
-        public float MaxAngle = 70f;
-        [Range(-89.0f, 89.0f)]
-        public float MinAngle = 10f;
+        [Range(-89.0f, 89.0f)] public float MaxAngle = 70f;
+        [Range(-89.0f, 89.0f)] public float MinAngle = 10f;
         private float xMovement = 0.0f;
         private float yMovement = 0.0f;
         public int MouseButton = 1;
@@ -24,18 +23,18 @@ namespace DMCameraControl
         private Quaternion rotation;
         private float timeSinceLastWarningAboutMissingTarget = 10.0f;
         private Camera localCamera;
-        
+
         void Awake()
         {
             localCamera = GetComponent<Camera>();
         }
-        
+
         void Start()
         {
             currentDistance = StartDistance;
             yMovement = 30;
         }
-        
+
         void Update()
         {
             if (Target == null)
@@ -45,15 +44,17 @@ namespace DMCameraControl
                 {
                     timeSinceLastWarningAboutMissingTarget = 0f;
                 }
+
                 return;
             }
-        
-            if (EnableControls)
+
+            if (EnableControls && !EventSystem.current.IsPointerOverGameObject())
             {
                 zoom();
                 if (Input.GetMouseButton(MouseButton) || AlwaysRotateWithMouseMovement)
                     doRotation();
             }
+
             rotation = Quaternion.Euler(yMovement, xMovement, 0);
             Vector3 distanceVector = new Vector3(0.0f, 0.0f, -currentDistance);
             Vector3 position = rotation * distanceVector + Target.transform.position;
@@ -61,7 +62,7 @@ namespace DMCameraControl
             transform.LookAt(Target.transform, Vector3.up);
             localCamera.farClipPlane = Mathf.Max(50000.0f, 1000.0f + transform.position.y * 20);
         }
-        
+
         private void doRotation()
         {
             xMovement = xMovement + Input.GetAxis("Mouse X") * RotationSpeed * 0.02f;
@@ -71,7 +72,7 @@ namespace DMCameraControl
             if (yMovement < MinAngle)
                 yMovement = MinAngle;
         }
-        
+
         private void zoom()
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
@@ -86,4 +87,3 @@ namespace DMCameraControl
         }
     }
 }
-

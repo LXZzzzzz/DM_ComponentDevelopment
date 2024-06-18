@@ -114,6 +114,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     {
         //点击了切换三维地图或二维地图
         EventManager.Instance.EventTrigger(EventType.CameraSwitch.ToString(), !isShowMap);
+        UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).gameObject.SetActive(isShowMap);
     }
 
     private EquipBase[] sceneAllObjs;

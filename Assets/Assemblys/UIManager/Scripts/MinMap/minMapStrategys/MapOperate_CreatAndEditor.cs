@@ -1,11 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using DM.Core.Map;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
+using UiManager;
 using UnityEngine;
+using UnityEngine.UI;
 using EventType = Enums.EventType;
 using Object = UnityEngine.Object;
 
@@ -18,6 +19,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         EventManager.Instance.AddEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryEquip.ToString(), destroyAirCell);
         EventManager.Instance.AddEventListener<object>(EventType.TransferEditingInfo.ToString(), parsingData);
+        EventManager.Instance.AddEventListener(EventType.CloseCreatTarget.ToString(), closeCreatTarget);
     }
 
 
@@ -41,6 +43,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         {
             mainLogic.TempIcon.gameObject.SetActive(true);
             creatTargetTemplate = (string)data;
+            mainLogic.TempIcon.GetComponent<Image>().sprite = UIManager.Instance.PicBObjects[creatTargetTemplate];
         }
         else if (data is List<EquipBase>)
         {
@@ -91,11 +94,18 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         creatTargetTemplate = String.Empty;
     }
 
+    private void closeCreatTarget()
+    {
+        mainLogic.TempIcon.gameObject.SetActive(false);
+        creatTargetTemplate = String.Empty;
+    }
+
     public override void OnExit()
     {
         EventManager.Instance.RemoveEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
         EventManager.Instance.RemoveEventListener<string>(EventType.DestoryEquip.ToString(), destroyAirCell);
         EventManager.Instance.RemoveEventListener<object>(EventType.TransferEditingInfo.ToString(), parsingData);
+        EventManager.Instance.RemoveEventListener(EventType.CloseCreatTarget.ToString(), closeCreatTarget);
     }
 
     private void creatAirCell(EquipBase equip)

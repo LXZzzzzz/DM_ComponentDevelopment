@@ -31,6 +31,15 @@ public class UIAttributeView : BasePanel
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
+
+        //如果当前正在接收外部，则关闭其他属性展示逻辑
+        if (isReceiveMapInfo) return;
+        if (userData == null)
+        {
+            watersSkillView.SetActive(false);
+            equipInfoView.SetActive(false);
+        }
+
         if (userData is IWaterIntaking)
         {
             watersSkillView.SetActive(true);
@@ -39,7 +48,7 @@ public class UIAttributeView : BasePanel
             isReceiveMapInfo = false;
             EventManager.Instance.AddEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
         }
-        else if(userData is int)
+        else if (userData is int)
         {
             watersSkillView.SetActive(false);
             equipInfoView.SetActive(true);
@@ -62,17 +71,19 @@ public class UIAttributeView : BasePanel
 
         if (bom.GetComponent<ZiYuanBase>().ZiYuanType != ZiYuanType.Waters)
         {
-            sender.LogError("当前选择并不是取水点");
+            ConfirmatonInfo infoa = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "当前选择并不是取水点" };
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
             watersPos = Vector3.zero;
             return;
         }
-        
+
         if (isMeControl == null)
         {
             //这里的目的是：当资源归属人为空，那就交给一级指挥官控制
             if (MyDataInfo.MyLevel != 1 || coms != null && coms.Count != 0)
             {
-                sender.LogError("选择的取水点不可为我所用");
+                ConfirmatonInfo infoa = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "选择的取水点不可为我所用" };
+                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
                 watersPos = Vector3.zero;
                 return;
             }
@@ -86,7 +97,8 @@ public class UIAttributeView : BasePanel
     {
         if (string.IsNullOrEmpty(waterAmount.text) || watersPos == Vector3.zero)
         {
-            sender.LogError("取水参数错误");
+            ConfirmatonInfo infoa = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "取水参数错误" };
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
             return;
         }
 
@@ -94,6 +106,11 @@ public class UIAttributeView : BasePanel
         float itemWaterAmount = int.Parse(waterAmount.text);
         if (operateObj.CheckCapacity() > itemWaterAmount)
             operateObj.WaterIntaking(watersPos, 1, itemWaterAmount, false);
+        else
+        {
+            ConfirmatonInfo infoa = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "取水量超出飞机最大核载水量" };
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
+        }
     }
 
     public override void HideMe()

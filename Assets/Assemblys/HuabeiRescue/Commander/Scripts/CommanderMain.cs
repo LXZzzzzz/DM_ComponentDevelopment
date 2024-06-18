@@ -115,6 +115,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "MinMap", mapSizeData);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "TopMenuView", myLevel);
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
         if (MyDataInfo.isPlayBack)
             EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
 
@@ -161,6 +162,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendGameStart:
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStart;
+                MyDataInfo.speedMultiplier = 1;
+                MyDataInfo.gameStartTime = Time.time;
                 EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
                 break;
             case MessageID.MoveToTarget:
@@ -170,6 +173,19 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.TriggerWaterIntaking:
                 sender.LogError("收到了取水的指令" + type);
                 _commanderController.Receive_TriggerWaterIntaking(param);
+                break;
+            case MessageID.SendGamePause:
+                if (MyDataInfo.leadId != BObjectId) break;
+                MyDataInfo.gameState = int.Parse(param) == 1 ? GameState.GamePause : GameState.GameStart;
+                break;
+            case MessageID.SendGameStop:
+                if (MyDataInfo.leadId != BObjectId) break;
+                MyDataInfo.gameState = GameState.GameStop;
+                _commanderController.Receive_GameStop();
+                break;
+            case MessageID.SendChangeSpeed:
+                if (MyDataInfo.leadId != BObjectId) break;
+                MyDataInfo.speedMultiplier = float.Parse(param);
                 break;
         }
     }

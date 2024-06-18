@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace DMCameraControl
 {
@@ -34,6 +35,7 @@ namespace DMCameraControl
 
         private void LateUpdate()
         {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
             if (Input.GetMouseButton(1))
             {
                 float deltaX = Input.GetAxis("Mouse X");

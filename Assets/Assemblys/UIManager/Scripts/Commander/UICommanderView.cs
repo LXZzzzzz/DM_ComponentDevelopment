@@ -45,6 +45,7 @@ public class UICommanderView : BasePanel
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
         taskParent = GetControl<ScrollRect>("TaskListView").content;
         taskPrefab = GetComponentInChildren<TaskCell>(true);
+        GetControl<Button>("X").onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString()));
 
         myCommanderInfoShow = GetComponentInChildren<MyCommanderView>(true);
 
@@ -219,6 +220,14 @@ public class UICommanderView : BasePanel
         if (MyDataInfo.MyLevel != 1)
         {
             itemCell.gameObject.SetActive(string.Equals(equip.BeLongToCommanderId, MyDataInfo.leadId));
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Debug.LogError("UI逻辑能不能控制："+UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject());
         }
     }
 

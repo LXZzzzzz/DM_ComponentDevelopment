@@ -485,6 +485,8 @@ MonoBehaviour:
   lastPointId: 
   isChooseMe: 0
   EquipIcon: {fileID: 0}
+  currentSkill: 0
+  skillProgress: 0
 --- !u!1 &432432459
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,6 +703,8 @@ MonoBehaviour:
   lastPointId: 
   isChooseMe: 0
   EquipIcon: {fileID: 0}
+  currentSkill: 0
+  skillProgress: 0
 --- !u!1 &886457579
 GameObject:
   m_ObjectHideFlags: 0
@@ -827,6 +831,8 @@ MonoBehaviour:
   lastPointId: 
   isChooseMe: 0
   EquipIcon: {fileID: 0}
+  currentSkill: 0
+  skillProgress: 0
 --- !u!4 &1409209833 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3685933877476911958, guid: 3f9cbc022ae4c704281f26d98794a4da,
@@ -1481,6 +1487,8 @@ MonoBehaviour:
   lastPointId: 
   isChooseMe: 0
   EquipIcon: {fileID: 0}
+  currentSkill: 0
+  skillProgress: 0
 --- !u!1 &5486839748247815840
 GameObject:
   m_ObjectHideFlags: 0
