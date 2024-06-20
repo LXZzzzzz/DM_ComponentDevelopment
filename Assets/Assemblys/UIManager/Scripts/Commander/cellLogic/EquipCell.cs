@@ -57,9 +57,10 @@ public class EquipCell : DMonoBehaviour
                 //证明是二级指挥端，显示自己名字即可
                 noDpShowName.gameObject.SetActive(true);
                 changeCtrl.gameObject.SetActive(false);
-                noDpShowName.text = "二级指挥端";
+                noDpShowName.text = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId)).ClientLevelName;
                 return;
             }
+
             noDpShowName.gameObject.SetActive(false);
             changeCtrl.gameObject.SetActive(true);
             //找到这个id的下标，赋值
@@ -94,11 +95,11 @@ public class EquipCell : DMonoBehaviour
 
     private void onPositioning()
     {
-        EventManager.Instance.EventTrigger(Enums.EventType.CameraControl.ToString(),1,_equip.transform);
+        EventManager.Instance.EventTrigger(Enums.EventType.CameraControl.ToString(), 1, _equip.transform);
     }
 
     private void onTrack()
     {
-        EventManager.Instance.EventTrigger(Enums.EventType.CameraControl.ToString(),2,_equip.transform);
+        EventManager.Instance.EventTrigger(Enums.EventType.CameraControl.ToString(), 2, _equip.transform);
     }
 }

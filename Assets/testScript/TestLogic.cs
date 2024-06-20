@@ -8,12 +8,11 @@ using UiManager.IconShowPart;
 using UnityEngine;
 using Vectrosity;
 
-public class TestLogic : MonoBehaviour,Iaaa,Ibbb
+public class TestLogic : MonoBehaviour
 {
     private List<EquipBase> allEquip;
     private Dictionary<string, string> testDic;
     public Transform target;
-    public TestReceiveObj testReceice;
 
     public VectorLine vl;
     public Canvas can;
@@ -33,7 +32,6 @@ public class TestLogic : MonoBehaviour,Iaaa,Ibbb
         MyDataInfo.sceneAllEquips = allEquip;
 
         testDic = new Dictionary<string, string>();
-        testReceice = new TestReceiveObj();
     }
 
     void Update()
@@ -50,14 +48,8 @@ public class TestLogic : MonoBehaviour,Iaaa,Ibbb
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-
-            Destroy(vl.rectTransform.gameObject);
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            
-            testReceice.SetObj((Ibbb)transform);
+            Vector3 vec = new Vector3(1, 2, 3);
+            Debug.Log((Vector2)vec);
         }
     }
 
@@ -80,31 +72,5 @@ public class TestLogic : MonoBehaviour,Iaaa,Ibbb
         vl.color = Color.cyan;
         vl.Draw();
         vl.active = true;
-    }
-}
-
-public interface Iaaa
-{
-    
-}
-
-public interface Ibbb
-{
-    
-}
-
-
-public class TestReceiveObj
-{
-    public void SetObj(object obj)
-    {
-        if (obj is Iaaa)
-        {
-            Debug.LogError("aaa对象");
-        }
-        else if (obj is Ibbb)
-        {
-            Debug.LogError("bbb对象");
-        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
@@ -31,8 +32,11 @@ public class HelicopterController : EquipBase, IWaterIntaking
         switch (st)
         {
             case SkillType.WaterIntaking:
-                //这里需要打开取水UI界面，并把自己以接口形式传过去
-                EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", this);
+                //这里需要打开取水UI界面，并把自己以接口形式传过去(这里需求更改，取水直接执行)
+                // EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", this);
+
+                EventManager.Instance.EventTrigger(EventType.SendWaterInfoToControler.ToString(), BObjectId);
+
                 break;
         }
     }
@@ -65,6 +69,24 @@ public class HelicopterController : EquipBase, IWaterIntaking
     {
         Debug.LogError("检查数量");
         return 10;
+    }
+
+    public void WaterIntaking_New(List<ZiYuanBase> allzy)
+    {
+        //找到场景中所有水源点，判断距离
+        var items = allzy.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
+        for (int i = 0; i < items.Count; i++)
+        {
+            Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
+            if (Vector3.Distance(transform.position, zyPos) < 10)
+            {
+                StartCoroutine(quWater());
+                return;
+            }
+        }
+
+        if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId))
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前位置超出取水距离，请前往水源地再进行操作");
     }
 
 

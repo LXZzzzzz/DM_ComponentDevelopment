@@ -12,27 +12,29 @@ using UnityEngine.UI;
 public class AirIconCell : IconCellBase
 {
     private EquipBase equipGo;
-    private RectTransform iconShow;
+    private RectTransform meRect;
+    private GameObject rootObj;
     private Func<Vector3, Vector2> worldPosMapPosFunc;
     private GameObject showChooseState;
     private VectorLine currentMoveRoute;
     private List<Vector2> routePoints;
-    private RectTransform meRect;
     private Image skillProgressShow;
     private Text skillName;
+    private Image belongtoShow;
 
     public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc)
     {
         base.Init(belongToId, chooseCb);
         this.equipGo = equipGo;
         this.worldPosMapPosFunc = worldPosMapPosFunc;
-        iconShow = GetComponent<RectTransform>();
-        showChooseState = transform.Find("Choose").gameObject;
         meRect = GetComponent<RectTransform>();
-        transform.Find("airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
-        transform.Find("equipName").GetComponent<Text>().text = equipGo.name;
-        skillProgressShow = transform.Find("progress").GetComponent<Image>();
-        skillName = transform.Find("skillName").GetComponent<Text>();
+        rootObj = transform.Find("Root").gameObject;
+        showChooseState = transform.Find("Root/Choose").gameObject;
+        transform.Find("Root/airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
+        transform.Find("Root/equipName").GetComponent<Text>().text = equipGo.name;
+        skillProgressShow = transform.Find("Root/progress").GetComponent<Image>();
+        skillName = transform.Find("Root/skillName").GetComponent<Text>();
+        belongtoShow = transform.Find("Root/belongTo").GetComponent<Image>();
         initLine();
     }
 
@@ -57,9 +59,13 @@ public class AirIconCell : IconCellBase
     private void Update()
     {
         if (equipGo != null)
-            iconShow.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(equipGo.transform.position);
+        {
+            meRect.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(equipGo.transform.position);
+            rootObj.SetActive(!equipGo.isDockingAtTheAirport);
+        }
 
         selectChange(equipGo.isChooseMe);
+        changeBelongtoShow();
         showSkillState();
     }
 
@@ -95,6 +101,14 @@ public class AirIconCell : IconCellBase
         else
         {
             currentMoveRoute.active = false;
+        }
+    }
+
+    private void changeBelongtoShow()
+    {
+        if ((int)MyDataInfo.gameState < 2)
+        {
+            belongtoShow.color = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equipGo.BeLongToCommanderId)).MyColor;
         }
     }
 

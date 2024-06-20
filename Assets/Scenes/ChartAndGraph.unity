@@ -485,6 +485,7 @@ MonoBehaviour:
   lastPointId: 
   isChooseMe: 0
   EquipIcon: {fileID: 0}
+  CurrentChooseSkillType: 0
   currentSkill: 0
   skillProgress: 0
 --- !u!1 &432432459
@@ -748,6 +749,7 @@ MonoBehaviour:
   lastPointId: 
   isChooseMe: 0
   EquipIcon: {fileID: 0}
+  CurrentChooseSkillType: 0
   currentSkill: 0
   skillProgress: 0
 --- !u!1 &886457579
@@ -876,8 +878,15 @@ MonoBehaviour:
   lastPointId: 
   isChooseMe: 0
   EquipIcon: {fileID: 0}
+  CurrentChooseSkillType: 0
   currentSkill: 0
   skillProgress: 0
+--- !u!223 &1015827771 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 3141163028321617580, guid: 13861a70b510f7e448a80feca267c02e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1962316843}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1409209833 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3685933877476911958, guid: 3f9cbc022ae4c704281f26d98794a4da,
@@ -934,6 +943,91 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 4558047237484213652}
+  vl:
+    m_lineVertices: []
+    m_lineUVs: []
+    m_lineColors: []
+    m_lineTriangles: 
+    m_vertexCount: 0
+    m_go: {fileID: 0}
+    m_rectTransform: {fileID: 0}
+    m_color:
+      serializedVersion: 2
+      rgba: 0
+    m_canvasState: 0
+    m_is2D: 0
+    m_points2: []
+    m_points3: []
+    m_pointsCount: 0
+    m_screenPoints: []
+    m_lineWidths: []
+    m_lineWidth: 0
+    m_maxWeldDistance: 0
+    m_distances: []
+    m_name: 
+    m_material: {fileID: 0}
+    m_originalTexture: {fileID: 0}
+    m_texture: {fileID: 0}
+    m_active: 0
+    m_lineType: 0
+    m_capLength: 0
+    m_smoothWidth: 0
+    m_smoothColor: 0
+    m_joins: 0
+    m_isAutoDrawing: 0
+    m_drawStart: 0
+    m_drawEnd: 0
+    m_endPointsUpdate: 0
+    m_useNormals: 0
+    m_useTangents: 0
+    m_normalsCalculated: 0
+    m_tangentsCalculated: 0
+    m_capType: 0
+    m_endCap: 
+    m_useCapColors: 0
+    m_frontColor:
+      serializedVersion: 2
+      rgba: 0
+    m_backColor:
+      serializedVersion: 2
+      rgba: 0
+    m_frontEndCapIndex: 0
+    m_backEndCapIndex: 0
+    m_lineUVBottom: 0
+    m_lineUVTop: 0
+    m_frontCapUVBottom: 0
+    m_frontCapUVTop: 0
+    m_backCapUVBottom: 0
+    m_backCapUVTop: 0
+    m_continuousTexture: 0
+    m_drawTransform: {fileID: 0}
+    m_viewportDraw: 0
+    m_textureScale: 0
+    m_useTextureScale: 0
+    m_textureOffset: 0
+    m_useMatrix: 0
+    m_matrix:
+      e00: 0
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 0
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 0
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 0
+    m_collider: 0
+    m_trigger: 0
+    m_physicsMaterial: {fileID: 0}
+    m_alignOddWidthToPixels: 0
+  can: {fileID: 1015827771}
   obj: {fileID: 597214295}
 --- !u!1 &1823688464
 GameObject:
@@ -1533,6 +1627,7 @@ MonoBehaviour:
   lastPointId: 
   isChooseMe: 0
   EquipIcon: {fileID: 0}
+  CurrentChooseSkillType: 0
   currentSkill: 0
   skillProgress: 0
 --- !u!1 &5486839748247815840

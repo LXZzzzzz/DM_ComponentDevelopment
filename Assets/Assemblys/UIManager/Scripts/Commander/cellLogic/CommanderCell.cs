@@ -20,6 +20,7 @@ public class CommanderCell : DMonoBehaviour, IDropHandler
         if (playerName == null) playerName = transform.Find("text_ClientName").GetComponent<Text>();
         selectImg = transform.Find("bg_Select").gameObject;
         zuJianName.text = Namestr;
+        transform.Find("bg_Normal").GetComponent<Image>().color = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, myId)).MyColor;
         if (MyDataInfo.playerInfos != null)
             playerName.text = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, myId)).PlayerName;
         this.myId = myId;

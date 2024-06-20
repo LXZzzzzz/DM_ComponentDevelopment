@@ -23,6 +23,7 @@ namespace Enums
         ClearProgramme, //清除方案数据
         CloseCreatTarget, //关闭创建的模板对象
         GeneratePDF,//生成pdf
+        ShowTipUI,//非UI层调用弹窗页面
     }
 
     public enum MessageID

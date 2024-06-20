@@ -120,7 +120,7 @@ public class CommanderController : DMonoBehaviour
             currentChooseEquip = itemEquip;
             currentChooseEquip.isChooseMe = true;
             currentChooseEquip.CurrentChooseSkillType = SkillType.None;
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", this);
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", currentChooseEquip);
         }
         else
         {
@@ -172,6 +172,7 @@ public class CommanderController : DMonoBehaviour
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init();
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
+                temporaryEquip.isDockingAtTheAirport = true;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
                 temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 600, dataPos.z);
                 EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
@@ -199,7 +200,7 @@ public class CommanderController : DMonoBehaviour
             EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
 
-        if (MyDataInfo.MyLevel != 1)//一级指挥端当前还开放编辑模式
+        if (MyDataInfo.MyLevel != 1) //一级指挥端当前还开放编辑模式
             EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
         EventManager.Instance.EventTrigger(EventType.ShowProgrammeName.ToString(), data.programmeName);
     }
@@ -257,8 +258,24 @@ public class CommanderController : DMonoBehaviour
         OnLoadProgrammeDataSuc(programmeData);
     }
 
+    private List<ZiYuanBase> sceneAllzy;
+
     public void Receive_TriggerWaterIntaking(string data)
     {
+        if (sceneAllzy == null)
+        {
+            sceneAllzy = new List<ZiYuanBase>();
+            for (int i = 0; i < allBObjects.Length; i++)
+            {
+                if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
+                {
+                    sceneAllzy.Add(allBObjects[i].GetComponent<ZiYuanBase>());
+                }
+            }
+        }
+
+        (MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data)) as IWaterIntaking).WaterIntaking_New(sceneAllzy);
+        return;
         MsgReceive_Water(data, out string id, out Vector3 pos, out float amount);
         (MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id)) as IWaterIntaking).WaterIntaking(pos, 10, amount, true);
 

@@ -64,6 +64,17 @@ public class MapOperate_Normal : MapOperateLogicBase
             };
             UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
         }
+        else if (clickIcon is ZiYuanIconCell)
+        {
+            for (int i = 0; i < mainLogic.allBObjects.Length; i++)
+            {
+                if (string.Equals(mainLogic.allBObjects[i].BObject.Id,clickIcon.belongToId))
+                {
+                    EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), mainLogic.allBObjects[i].gameObject.transform.position);
+                    break;
+                }
+            }
+        }
     }
 
     public override void OnUpdate()
@@ -73,9 +84,9 @@ public class MapOperate_Normal : MapOperateLogicBase
     public override void OnLeftClickMap(Vector2 pos)
     {
 #if UNITY_EDITOR
-        var  itemPoint=GameObject.Instantiate(mainLogic.pointIconPrefab, mainLogic.iconCellParent);
+        var itemPoint = GameObject.Instantiate(mainLogic.pointIconPrefab, mainLogic.iconCellParent);
         itemPoint.enabled = false;
-        var itemGo=GameObject.CreatePrimitive(PrimitiveType.Cube);
+        var itemGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
         itemGo.transform.position = uiPos2WorldPos(pos);
         itemPoint.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(uiPos2WorldPos(pos));
         itemPoint.gameObject.SetActive(true);

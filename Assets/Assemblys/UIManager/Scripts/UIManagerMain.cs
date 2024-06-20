@@ -50,12 +50,14 @@ public class UIManagerMain : ScriptManager, IMesRec
     {
         base.RunModeInitialized(isMain, info);
         EventManager.Instance.AddEventListener<string, object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
+        EventManager.Instance.AddEventListener<string>(Enums.EventType.ShowTipUI.ToString(), OnShowTip);
         gameObject.AddComponent<UIManager>();
         if (info?.PicBObjects != null)
         {
             UIManager.Instance.PicBObjects = info.PicBObjects;
             UIManager.Instance.MisName = info.MisName;
         }
+
         //其他UI预制体脚本也需要在这里进行挂载
         uiprefabAddLogic();
     }
@@ -63,6 +65,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     private void OnDestroy()
     {
         EventManager.Instance.RemoveEventListener<string, object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
+        EventManager.Instance.RemoveEventListener<string>(Enums.EventType.ShowTipUI.ToString(), OnShowTip);
         UIManager.Instance.ClearUI();
     }
 
@@ -133,6 +136,12 @@ public class UIManagerMain : ScriptManager, IMesRec
             default:
                 break;
         }
+    }
+
+    private void OnShowTip(string tipInfo)
+    {
+        ConfirmatonInfo info = new ConfirmatonInfo() { type = showType.tipView, showStrInfo = tipInfo };
+        UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, info);
     }
 
     public void RecMessage(SendType type, GameObject senderObj, int eventType, string param)
