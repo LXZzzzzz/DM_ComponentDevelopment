@@ -48,6 +48,11 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
     {
         UIManager.Instance.HidePanel(UIName.UIHangShowInfo.ToString());
     }
+
+    public virtual void DestroyMe()
+    {
+        
+    }
 }
 
 

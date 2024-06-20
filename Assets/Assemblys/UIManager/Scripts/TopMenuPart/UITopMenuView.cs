@@ -17,11 +17,14 @@ public class UITopMenuView : BasePanel
     private Button btn_start, btn_pause;
     private Dropdown speedChange;
     private List<float> dropdownValue;
+    private Transform menuView;
+    
 
     public override void Init()
     {
         base.Init();
         _myUIType = UIType.upper;
+        menuView = transform.Find("menuView");
         ProgrammName = GetControl<Text>("text_PName");
         speedChangePart = transform.Find("SpeedChange").gameObject;
         currentState = GetControl<Text>("currentState");
@@ -42,6 +45,24 @@ public class UITopMenuView : BasePanel
         GetControl<Button>("btn_stop").onClick.AddListener(OnContolStop);
         GetControl<Button>("btn_pdf").onClick.AddListener(OnGeneratePdf);
         GetControl<Button>("btn_upload").onClick.AddListener(OnUpLoad);
+        GetControl<Button>("btn_CLose").onClick.AddListener(() =>
+        {
+            foreach (var toggle in menuView.GetComponentsInChildren<Toggle>())
+            {
+                toggle.isOn = false;
+            }
+            GetControl<Button>("btn_CLose").gameObject.SetActive(false);
+        });
+        GetControl<Toggle>("Tog_Zhty").onValueChanged.AddListener(a =>
+        {
+            if (!a)
+            {
+                foreach (var toggle in GetControl<Toggle>("Tog_Zhty").transform.parent.GetComponentsInChildren<Toggle>(true))
+                {
+                    toggle.isOn = false;
+                }
+            }
+        });
     }
 
     public override void ShowMe(object userData)
@@ -88,6 +109,7 @@ public class UITopMenuView : BasePanel
         ProgrammeDataManager.Instance.CreatProgramme(schemeName);
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
         EventManager.Instance.EventTrigger(EventType.ClearProgramme.ToString());
+        MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         ShowName(schemeName);
     }
 
@@ -107,6 +129,7 @@ public class UITopMenuView : BasePanel
         if (data != null)
         {
             EventManager.Instance.EventTrigger(Enums.EventType.LoadProgrammeDataSuc.ToString(), data);
+            MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         }
         else
         {
@@ -146,6 +169,8 @@ public class UITopMenuView : BasePanel
         sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendGameStart, "");
 
         currentState.text = "实时指挥 > 单机";
+        btn_start.gameObject.SetActive(false);
+        btn_pause.gameObject.SetActive(true);
     }
 
     private void onLine()
@@ -171,6 +196,8 @@ public class UITopMenuView : BasePanel
         }
 
         currentState.text = "实时指挥 > 联机";
+        btn_start.gameObject.SetActive(false);
+        btn_pause.gameObject.SetActive(true);
     }
 
     private void OnControlStartAndPause(bool isPause)

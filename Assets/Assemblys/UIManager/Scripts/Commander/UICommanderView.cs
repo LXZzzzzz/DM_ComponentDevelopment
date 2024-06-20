@@ -122,7 +122,7 @@ public class UICommanderView : BasePanel
             {
                 var itemObj = allBObjects[i];
                 var itemCell = Instantiate(zycPrefab, ziYuanParent);
-                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChangeZiYuanBelongTo);
+                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, itemObj.GetComponent<ZiYuanBase>(), OnChangeZiYuanBelongTo);
                 itemCell.gameObject.SetActive(true);
                 allZiYuanCells.Add(itemCell);
             }
@@ -159,7 +159,7 @@ public class UICommanderView : BasePanel
         }
     }
 
-    private string currentSelectComId="";
+    private string currentSelectComId = "";
 
     private void OnChooseCommander(string id)
     {
@@ -228,7 +228,7 @@ public class UICommanderView : BasePanel
     {
         for (int i = 0; i < allEquipCells.Count; i++)
         {
-            if (string.Equals(allEquipCells[i].equipObjectId,id))
+            if (string.Equals(allEquipCells[i].equipObjectId, id))
             {
                 Destroy(allEquipCells[i].gameObject);
                 allEquipCells.RemoveAt(i);

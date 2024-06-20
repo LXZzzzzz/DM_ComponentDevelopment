@@ -57,7 +57,7 @@ public class EquipCell : DMonoBehaviour
                 //证明是二级指挥端，显示自己名字即可
                 noDpShowName.gameObject.SetActive(true);
                 changeCtrl.gameObject.SetActive(false);
-                noDpShowName.text = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, controllerId)).PlayerName;
+                noDpShowName.text = "二级指挥端";
                 return;
             }
             noDpShowName.gameObject.SetActive(false);
@@ -88,6 +88,7 @@ public class EquipCell : DMonoBehaviour
         {
             checkTimer = Time.time + 1 / 25f;
             chooseImg.SetActive(_equip.isChooseMe);
+            changeCtrl.interactable = (int)MyDataInfo.gameState < 2;
         }
     }
 

@@ -6,12 +6,19 @@ using ToolsLibrary.EquipPart;
 using UiManager;
 using UiManager.IconShowPart;
 using UnityEngine;
+using Vectrosity;
 
-public class TestLogic : MonoBehaviour
+public class TestLogic : MonoBehaviour,Iaaa,Ibbb
 {
     private List<EquipBase> allEquip;
     private Dictionary<string, string> testDic;
     public Transform target;
+    public TestReceiveObj testReceice;
+
+    public VectorLine vl;
+    public Canvas can;
+
+    public ZiYuanBase obj;
     void Start()
     {
         allEquip = new List<EquipBase>();
@@ -25,8 +32,8 @@ public class TestLogic : MonoBehaviour
 
         MyDataInfo.sceneAllEquips = allEquip;
 
-        EventManager.Instance.AddEventListener<bool>(Enums.EventType.CameraSwitch.ToString(), testaaa);
         testDic = new Dictionary<string, string>();
+        testReceice = new TestReceiveObj();
     }
 
     void Update()
@@ -38,27 +45,66 @@ public class TestLogic : MonoBehaviour
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
             UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
             EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "AttributeView", null);
+            initLine();
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
+
+            Destroy(vl.rectTransform.gameObject);
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
             
-            Camera.main.transform.position = target.position + target.up * 20;
-            Camera.main.transform.rotation = Quaternion.LookRotation(target.forward);
-            Camera.main.transform.LookAt(target);
+            testReceice.SetObj((Ibbb)transform);
         }
     }
 
-    private DMCameraControl.DMouseOrbit mo;
-    private DMCameraControl.DMCameraViewMove cvm;
-    private DMCameraControl.ThirdCameraControl tc;
-    private void testaaa(bool isMove)
+    private List<Vector2> routePoints;
+    private void initLine()
     {
-        if (mo == null) mo = Camera.main.gameObject.AddComponent<DMCameraControl.DMouseOrbit>();
-        if (cvm == null) cvm = Camera.main.gameObject.AddComponent<DMCameraControl.DMCameraViewMove>();
-        if (tc == null) tc = Camera.main.gameObject.AddComponent<DMCameraControl.ThirdCameraControl>();
+        routePoints = new List<Vector2>();
+        routePoints.Add(Vector2.zero);
+        routePoints.Add(Vector2.one*10);
+        vl = new VectorLine("Line", routePoints, 3, LineType.Continuous);
+#if UNITY_EDITOR
+        vl.SetCanvas(can);
+#else
+        vl.SetCanvas(UIManager.Instance.CurrentCanvans);
+#endif
+        vl.rectTransform.SetParent(can.transform);
+        vl.rectTransform.localPosition = Vector3.zero;
+        vl.rectTransform.localScale = Vector3.one;
+        vl.active = true;
+        vl.color = Color.cyan;
+        vl.Draw();
+        vl.active = true;
+    }
+}
 
-        cvm.enabled = isMove;
-        mo.enabled = isMove;
+public interface Iaaa
+{
+    
+}
+
+public interface Ibbb
+{
+    
+}
+
+
+public class TestReceiveObj
+{
+    public void SetObj(object obj)
+    {
+        if (obj is Iaaa)
+        {
+            Debug.LogError("aaa对象");
+        }
+        else if (obj is Ibbb)
+        {
+            Debug.LogError("bbb对象");
+        }
     }
 }

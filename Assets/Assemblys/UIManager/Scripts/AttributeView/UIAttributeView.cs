@@ -15,6 +15,7 @@ public class UIAttributeView : BasePanel
     private Vector3 watersPos;
     private bool isReceiveMapInfo;
     private GameObject watersSkillView, equipInfoView;
+    private AttributeView_ZiyuanPart ziYuanInfoView;
 
     public override void Init()
     {
@@ -23,6 +24,7 @@ public class UIAttributeView : BasePanel
         watersName = GetControl<Text>("text_waters");
         watersSkillView = transform.Find("Skill_WaterIntaking/skillWatersInfoView").gameObject;
         equipInfoView = transform.Find("Skill_WaterIntaking/equipInfoView").gameObject;
+        ziYuanInfoView = GetComponentInChildren<AttributeView_ZiyuanPart>(true);
         GetControl<Button>("btn_chooseWaters").onClick.AddListener(() => isReceiveMapInfo = true);
         GetControl<Button>("btn_sure").onClick.AddListener(OnSendSkillParameter);
         GetControl<Button>("btn_close").onClick.AddListener(() => Close(UIName.UIAttributeView));
@@ -38,25 +40,35 @@ public class UIAttributeView : BasePanel
         {
             watersSkillView.SetActive(false);
             equipInfoView.SetActive(false);
+            ziYuanInfoView.gameObject.SetActive(false);
         }
 
-        if (userData is IWaterIntaking)
+        if (userData is EquipBase)
         {
-            watersSkillView.SetActive(true);
-            equipInfoView.SetActive(false);
-            operateObj = (IWaterIntaking)userData;
-            isReceiveMapInfo = false;
-            EventManager.Instance.AddEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
-        }
-        else if (userData is int)
-        {
-            watersSkillView.SetActive(false);
-            equipInfoView.SetActive(true);
+            EquipBase currentEquip = userData as EquipBase;
+            switch (currentEquip.CurrentChooseSkillType)
+            {
+                case SkillType.None:
+                    watersSkillView.SetActive(false);
+                    equipInfoView.SetActive(true);
+                    ziYuanInfoView.gameObject.SetActive(false);
+                    break;
+                case SkillType.WaterIntaking:
+                    watersSkillView.SetActive(true);
+                    equipInfoView.SetActive(false);
+                    ziYuanInfoView.gameObject.SetActive(false);
+                    operateObj = (IWaterIntaking)userData;
+                    isReceiveMapInfo = false;
+                    EventManager.Instance.AddEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
+                    break;
+            }
         }
         else if (userData is ZiYuanBase)
         {
             watersSkillView.SetActive(false);
-            equipInfoView.SetActive(true);
+            equipInfoView.SetActive(false);
+            ziYuanInfoView.gameObject.SetActive(true);
+            ziYuanInfoView.Init(userData as ZiYuanBase);
         }
     }
 
@@ -91,6 +103,7 @@ public class UIAttributeView : BasePanel
 
         watersName.text = bom.BObject.Info.Name;
         watersPos = bom.gameObject.transform.position;
+        EventManager.Instance.RemoveEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
     }
 
     private void OnSendSkillParameter()

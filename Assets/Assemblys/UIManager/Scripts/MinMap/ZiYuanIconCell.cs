@@ -9,6 +9,8 @@ public class ZiYuanIconCell : IconCellBase
     //为该类型的对象就等于在场景中存在对应组件，所以可以直接通过belongtoID获取组件
 
     private ZiYuanBase ziYuanItem;
+    private float checkTimer;
+    private GameObject chooseImg;
 
     private void Start()
     {
@@ -24,6 +26,7 @@ public class ZiYuanIconCell : IconCellBase
         }
 
         transform.GetChild(1).gameObject.SetActive(true);
+        chooseImg = transform.Find("Choose").gameObject;
     }
 
     private void changeIcon(ZiYuanType type)
@@ -69,5 +72,13 @@ public class ZiYuanIconCell : IconCellBase
             entityName = ziYuanItem.name, entityInfo = "资源资源", beUseCommanders = ziYuanItem.beUsedCommanderIds
         };
         return data;
+    }
+    private void Update()
+    {
+        if (Time.time > checkTimer)
+        {
+            checkTimer = Time.time + 1 / 25f;
+            chooseImg.SetActive(ziYuanItem.isChooseMe);
+        }
     }
 }

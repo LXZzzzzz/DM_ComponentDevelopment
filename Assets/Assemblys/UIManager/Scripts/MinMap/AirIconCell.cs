@@ -119,4 +119,11 @@ public class AirIconCell : IconCellBase
 
         skillProgressShow.fillAmount = equipGo.skillProgress;
     }
+
+    public override void DestroyMe()
+    {
+        base.DestroyMe();
+        currentMoveRoute.active = false;
+        Destroy(currentMoveRoute.rectTransform.gameObject);
+    }
 }

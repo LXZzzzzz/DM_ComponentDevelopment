@@ -27,6 +27,7 @@ public class HelicopterController : EquipBase, IWaterIntaking
     public override void OnSelectSkill(SkillType st)
     {
         if (mySkills.Find(x => x.SkillType == st) == null) return; //技能数据错误
+        CurrentChooseSkillType = st;
         switch (st)
         {
             case SkillType.WaterIntaking:
@@ -69,7 +70,7 @@ public class HelicopterController : EquipBase, IWaterIntaking
 
     private void LateUpdate()
     {
-        if (MyDataInfo.gameState is GameState.GamePause or GameState.GameStop) return;
+        if (MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
         if (isWaitArrive && isArrive)
         {
             isWaitArrive = false;

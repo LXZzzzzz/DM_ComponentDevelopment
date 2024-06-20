@@ -119,7 +119,8 @@ public class CommanderController : DMonoBehaviour
             if (currentChooseEquip != null) currentChooseEquip.isChooseMe = false;
             currentChooseEquip = itemEquip;
             currentChooseEquip.isChooseMe = true;
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", 100);
+            currentChooseEquip.CurrentChooseSkillType = SkillType.None;
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", this);
         }
         else
         {
@@ -129,13 +130,22 @@ public class CommanderController : DMonoBehaviour
 
     private void OnChangeCurrentZiyuan(string ziyuanId)
     {
+        if (string.IsNullOrEmpty(ziyuanId))
+        {
+            if (currentChooseZiYuan != null)
+                currentChooseZiYuan.isChooseMe = false;
+            currentChooseZiYuan = null;
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
+            return;
+        }
+
         for (int i = 0; i < allBObjects.Length; i++)
         {
             if (string.Equals(ziyuanId, allBObjects[i].BObject.Id))
             {
                 var itemZy = allBObjects[i].GetComponent<ZiYuanBase>();
                 if (itemZy == null) return;
-                if (currentChooseZiYuan != null) itemZy.isChooseMe = false;
+                if (currentChooseZiYuan != null) currentChooseZiYuan.isChooseMe = false;
                 currentChooseZiYuan = itemZy;
                 currentChooseZiYuan.isChooseMe = true;
                 EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", currentChooseZiYuan);
@@ -189,7 +199,8 @@ public class CommanderController : DMonoBehaviour
             EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
 
-        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+        if (MyDataInfo.MyLevel != 1)//一级指挥端当前还开放编辑模式
+            EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
         EventManager.Instance.EventTrigger(EventType.ShowProgrammeName.ToString(), data.programmeName);
     }
 
@@ -262,6 +273,7 @@ public class CommanderController : DMonoBehaviour
     {
         currentChooseEquip = null;
         OnLoadProgrammeDataSuc(ProgrammeDataManager.Instance.GetCurrentData);
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
     }
 
     #endregion

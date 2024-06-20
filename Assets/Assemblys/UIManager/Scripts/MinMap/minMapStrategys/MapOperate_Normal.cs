@@ -38,6 +38,7 @@ public class MapOperate_Normal : MapOperateLogicBase
 
         if (targetIconCell is ZiYuanIconCell)
         {
+            EventManager.Instance.EventTrigger(EventType.ChooseZiyuan.ToString(), targetIconCell.belongToId);
             for (int i = 0; i < mainLogic.allBObjects.Length; i++)
             {
                 if (string.Equals(mainLogic.allBObjects[i].BObject.Id, targetIconCell.belongToId))
@@ -80,6 +81,7 @@ public class MapOperate_Normal : MapOperateLogicBase
         itemPoint.gameObject.SetActive(true);
 #endif
         EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), string.Empty);
+        EventManager.Instance.EventTrigger(EventType.ChooseZiyuan.ToString(), string.Empty);
     }
 
     public override void OnRightClickMap(Vector2 pos)

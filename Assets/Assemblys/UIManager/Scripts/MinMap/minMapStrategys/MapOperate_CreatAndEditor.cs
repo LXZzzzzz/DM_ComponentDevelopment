@@ -38,6 +38,8 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
                     creatZiYuanCell(initData[i].BObject.Id, initData[i].gameObject.transform.position);
                 }
             }
+
+            mainLogic.SwitchMapLogic(OperatorState.Normal);
         }
         else if (data is string)
         {
@@ -124,6 +126,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         {
             if (string.Equals(iconCell.Key, id))
             {
+                iconCell.Value.DestroyMe();
                 Object.Destroy(iconCell.Value.gameObject);
                 mainLogic.allIconCells.Remove(id);
                 break;

@@ -89,6 +89,9 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     public void SwitchMapLogic(OperatorState targetState)
     {
+#if !UNITY_EDITOR
+     sender.LogError("当前地图模式："+targetState);   
+#endif
         bool isCreat = !mapLogics.ContainsKey(targetState);
         switch (targetState)
         {
