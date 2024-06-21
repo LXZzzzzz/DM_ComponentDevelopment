@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DM.IFS;
+using Enums;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
@@ -36,7 +37,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.AddEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
-        EventManager.Instance.AddEventListener<string>(EventType.SendWaterInfoToControler.ToString(), OnSendWaterIntaking);
+        EventManager.Instance.AddEventListener<int, string>(EventType.SendSkillInfoForControler.ToString(), OnSendWaterIntaking);
         EventManager.Instance.AddEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
         EventManager.Instance.AddEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
@@ -50,7 +51,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.RemoveEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.RemoveEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
-        EventManager.Instance.RemoveEventListener<string>(EventType.SendWaterInfoToControler.ToString(), OnSendWaterIntaking);
+        EventManager.Instance.RemoveEventListener<int, string>(EventType.SendSkillInfoForControler.ToString(), OnSendWaterIntaking);
         EventManager.Instance.RemoveEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
         EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
@@ -114,6 +115,12 @@ public class CommanderController : DMonoBehaviour
         }
 
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
+        if (itemEquip.isDockingAtTheAirport)
+        {
+            sender.LogError("在机场未起飞");
+            return;
+        }
+
         if (MyDataInfo.gameState == GameState.FirstLevelCommanderEditor || string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
         {
             if (currentChooseEquip != null) currentChooseEquip.isChooseMe = false;
@@ -172,11 +179,24 @@ public class CommanderController : DMonoBehaviour
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init();
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
-                temporaryEquip.isDockingAtTheAirport = true;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
-                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 600, dataPos.z);
+                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 1000, dataPos.z);
                 EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
+                if (!string.IsNullOrEmpty(ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId))
+                {
+                    //找到机场，停机
+                    string airPortId = ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId;
+                    for (int j = 0; j < allBObjects.Length; j++)
+                    {
+                        if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)
+                        {
+                            (allBObjects[j].GetComponent<ZiYuanBase>() as IAirPort)?.AddEquip(myId);
+                        }
+                    }
+                }
+                else temporaryEquip.isDockingAtTheAirport = false;
+
                 break;
             }
         }
@@ -221,9 +241,9 @@ public class CommanderController : DMonoBehaviour
         }
     }
 
-    private void OnSendWaterIntaking(string data)
+    private void OnSendWaterIntaking(int messageID, string data)
     {
-        sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.TriggerWaterIntaking, data);
+        sender.RunSend(SendType.SubToMain, main.BObjectId, messageID, data);
     }
 
     private void OnGeneratePdf()
@@ -291,6 +311,64 @@ public class CommanderController : DMonoBehaviour
         currentChooseEquip = null;
         OnLoadProgrammeDataSuc(ProgrammeDataManager.Instance.GetCurrentData);
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+    }
+
+    public void Receive_TriggerSkill(MessageID messageID, string data)
+    {
+        if (sceneAllzy == null)
+        {
+            sceneAllzy = new List<ZiYuanBase>();
+            for (int i = 0; i < allBObjects.Length; i++)
+            {
+                if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
+                {
+                    sceneAllzy.Add(allBObjects[i].GetComponent<ZiYuanBase>());
+                }
+            }
+        }
+
+        switch (messageID)
+        {
+            case MessageID.TriggerTakeOff:
+                sender.LogError("收到了起飞的指令");
+                var itemAirportId = ProgrammeDataManager.Instance.GetEquipDataById(data).airportId;
+                if (string.IsNullOrEmpty(itemAirportId))
+                {
+                    EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "数据错误，请求起飞的飞机未在机场");
+                    return;
+                }
+
+                for (int i = 0; i < allBObjects.Length; i++)
+                {
+                    if (string.Equals(allBObjects[i].BObject.Id, itemAirportId))
+                    {
+                        allBObjects[i].GetComponent<IAirPort>().OnTakeOff(data, true);
+                    }
+                }
+
+                break;
+            case MessageID.TriggerGroundReady:
+                sender.LogError("收到了地面准备的指令");
+                var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (item as IGroundReady)?.GroundReady();
+                break;
+            case MessageID.TriggerWaterPour:
+                sender.LogError("收到了投水的指令");
+                var itemp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itemp as IWaterPour)?.WaterPour();
+                break;
+            case MessageID.TriggerSupply:
+                sender.LogError("收到了补给的指令");
+                var itemS = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itemS as ISupply)?.Supply(sceneAllzy);
+                break;
+            case MessageID.TriggerReturnFlight:
+                sender.LogError("收到了返航的指令");
+                var itemR = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                var airportId = ProgrammeDataManager.Instance.GetEquipDataById(itemR.BObjectId).airportId;
+                (itemR as IReturnFlight)?.ReturnFlight(sceneAllzy.Find(a => string.Equals(a.BobjectId, airportId)));
+                break;
+        }
     }
 
     #endregion

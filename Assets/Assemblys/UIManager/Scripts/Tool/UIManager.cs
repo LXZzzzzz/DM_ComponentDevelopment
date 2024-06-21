@@ -42,6 +42,7 @@ namespace UiManager
             uiPanelWhereLayer.Add(UIName.UIRightClickMenuView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIAttributeView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIHangShowInfo, BasePanel.UIType.popUp);
+            uiPanelWhereLayer.Add(UIName.UIAirportAircraftShowView, BasePanel.UIType.upper);
         }
 
         /// <summary>
@@ -151,6 +152,9 @@ namespace UiManager
                 case UIName.UIHangShowInfo:
                     itemUI = Instantiate((main as UIManagerMain).UIHangShowInfo, canvansTran);
                     break;
+                case UIName.UIAirportAircraftShowView:
+                    itemUI = Instantiate((main as UIManagerMain).UIAirportAircraftShowView, canvansTran);
+                    break;
             }
 
             itemUI.gameObject.SetActive(true);
@@ -199,6 +203,7 @@ namespace UiManager
         UITopMenuView,
         UIRightClickMenuView,
         UIAttributeView,
-        UIHangShowInfo
+        UIHangShowInfo,
+        UIAirportAircraftShowView
     }
 }

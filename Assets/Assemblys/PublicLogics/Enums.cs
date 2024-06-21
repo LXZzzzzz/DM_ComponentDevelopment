@@ -12,7 +12,7 @@ namespace Enums
         CreatEquipCorrespondingIcon, //创建飞机对应的图标
         LoadProgrammeDataSuc, //读取方案成功通知场景响应
         MapChooseIcon, //地图上选择icon后通知出去（主要代表选择资源：取水点、补给点。。。）
-        SendWaterInfoToControler, //向指挥角色发送取水技能数据
+        SendSkillInfoForControler, //向指挥角色发送技能请求
         AddCommanderForZiYuan, //为资源添加控制者
         InitZiYuanBeUsed, //初始化资源可被谁使用
         CameraSwitch, //相机切换是否开启控制脚本
@@ -22,8 +22,8 @@ namespace Enums
         DestoryEquip, //删除某个飞机
         ClearProgramme, //清除方案数据
         CloseCreatTarget, //关闭创建的模板对象
-        GeneratePDF,//生成pdf
-        ShowTipUI,//非UI层调用弹窗页面
+        GeneratePDF, //生成pdf
+        ShowTipUI, //非UI层调用弹窗页面
     }
 
     public enum MessageID
@@ -35,5 +35,10 @@ namespace Enums
         SendGamePause = 1005, //一级指挥端发送暂停操作
         SendGameStop = 1006, //一级指挥端发送停止操作
         SendChangeSpeed = 1007, //一级指挥端更改运行速度
+        TriggerTakeOff = 1008, //触发起飞操作
+        TriggerGroundReady = 1009, //触发地面准备操作
+        TriggerWaterPour = 1010, //触发投水操作
+        TriggerSupply = 1011, //触发补给操作
+        TriggerReturnFlight = 1012, //触发返航操作
     }
 }

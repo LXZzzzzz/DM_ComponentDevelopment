@@ -484,6 +484,7 @@ MonoBehaviour:
   BeLongToCommanderId: 
   lastPointId: 
   isChooseMe: 0
+  isDockingAtTheAirport: 0
   EquipIcon: {fileID: 0}
   CurrentChooseSkillType: 0
   currentSkill: 0
@@ -623,6 +624,7 @@ MonoBehaviour:
   UIRightClickMenuView: {fileID: 0}
   UIAttributeView: {fileID: 0}
   UIHangShowInfo: {fileID: 0}
+  UIAirportAircraftShowView: {fileID: 0}
 --- !u!1 &812849802
 GameObject:
   m_ObjectHideFlags: 0
@@ -748,6 +750,7 @@ MonoBehaviour:
   BeLongToCommanderId: 
   lastPointId: 
   isChooseMe: 0
+  isDockingAtTheAirport: 0
   EquipIcon: {fileID: 0}
   CurrentChooseSkillType: 0
   currentSkill: 0
@@ -877,6 +880,7 @@ MonoBehaviour:
   BeLongToCommanderId: 
   lastPointId: 
   isChooseMe: 0
+  isDockingAtTheAirport: 0
   EquipIcon: {fileID: 0}
   CurrentChooseSkillType: 0
   currentSkill: 0
@@ -1626,6 +1630,7 @@ MonoBehaviour:
   BeLongToCommanderId: 
   lastPointId: 
   isChooseMe: 0
+  isDockingAtTheAirport: 0
   EquipIcon: {fileID: 0}
   CurrentChooseSkillType: 0
   currentSkill: 0

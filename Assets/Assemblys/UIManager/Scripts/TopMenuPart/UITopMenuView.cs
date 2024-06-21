@@ -45,14 +45,7 @@ public class UITopMenuView : BasePanel
         GetControl<Button>("btn_stop").onClick.AddListener(OnContolStop);
         GetControl<Button>("btn_pdf").onClick.AddListener(OnGeneratePdf);
         GetControl<Button>("btn_upload").onClick.AddListener(OnUpLoad);
-        GetControl<Button>("btn_CLose").onClick.AddListener(() =>
-        {
-            foreach (var toggle in menuView.GetComponentsInChildren<Toggle>())
-            {
-                toggle.isOn = false;
-            }
-            GetControl<Button>("btn_CLose").gameObject.SetActive(false);
-        });
+        GetControl<Button>("btn_CLose").onClick.AddListener(putAwayMenu);
         GetControl<Toggle>("Tog_Zhty").onValueChanged.AddListener(a =>
         {
             if (!a)
@@ -92,6 +85,15 @@ public class UITopMenuView : BasePanel
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
     }
 
+    private void putAwayMenu()
+    {
+        foreach (var toggle in menuView.GetComponentsInChildren<Toggle>())
+        {
+            toggle.isOn = false;
+        }
+        GetControl<Button>("btn_CLose").gameObject.SetActive(false);
+    }
+
     private void ShowName(string pName)
     {
         ProgrammName.text = $"{UIManager.Instance.MisName}（{pName}）";
@@ -99,6 +101,7 @@ public class UITopMenuView : BasePanel
 
     private void newBuild()
     {
+        putAwayMenu();
         ConfirmatonInfo info = new ConfirmatonInfo() { type = showType.newScheme, sureCallBack = runNewScheme };
         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, info);
     }
@@ -115,15 +118,19 @@ public class UITopMenuView : BasePanel
 
     private void save()
     {
+        putAwayMenu();
         ProgrammeDataManager.Instance.SaveProgramme();
     }
 
     private void saveAs()
     {
+        putAwayMenu();
+        ProgrammeDataManager.Instance.SaveProgramme();
     }
 
     private void load()
     {
+        putAwayMenu();
         var data = ProgrammeDataManager.Instance.LoadProgramme();
 
         if (data != null)
@@ -140,6 +147,7 @@ public class UITopMenuView : BasePanel
 
     private void release()
     {
+        putAwayMenu();
         string packedData = ProgrammeDataManager.Instance.PackedData();
 
         for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
@@ -159,6 +167,7 @@ public class UITopMenuView : BasePanel
 
     private void standAlone()
     {
+        putAwayMenu();
         if ((int)MyDataInfo.gameState >= 2)
         {
             ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "推演已经开始！！！" };
@@ -175,6 +184,7 @@ public class UITopMenuView : BasePanel
 
     private void onLine()
     {
+        putAwayMenu();
         switch (MyDataInfo.gameState)
         {
             case GameState.FirstLevelCommanderEditor:

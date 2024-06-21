@@ -39,6 +39,7 @@ public class MapOperate_Normal : MapOperateLogicBase
         if (targetIconCell is ZiYuanIconCell)
         {
             EventManager.Instance.EventTrigger(EventType.ChooseZiyuan.ToString(), targetIconCell.belongToId);
+
             for (int i = 0; i < mainLogic.allBObjects.Length; i++)
             {
                 if (string.Equals(mainLogic.allBObjects[i].BObject.Id, targetIconCell.belongToId))
@@ -46,6 +47,20 @@ public class MapOperate_Normal : MapOperateLogicBase
                     EventManager.Instance.EventTrigger(EventType.MapChooseIcon.ToString(), mainLogic.allBObjects[i]);
                     break;
                 }
+            }
+
+            //如果是机场的话，弹出飞机列表，飞机列表点击起飞，把飞机从机场中去除，并把飞机状态设为起飞状态。 
+            ZiYuanBase zy = (targetIconCell as ZiYuanIconCell).ziYuanItem;
+            if (zy.beUsedCommanderIds == null && MyDataInfo.MyLevel != 1) return;
+            if (zy.beUsedCommanderIds?.Find(x => string.Equals(x, MyDataInfo.leadId)) == null) return;
+            if (zy.ZiYuanType == ZiYuanType.Airport)
+            {
+                AirportAircraftsInfo aai = new AirportAircraftsInfo()
+                {
+                    PointPos = targetIconCell.GetComponent<RectTransform>().anchoredPosition, AircraftDatas = (zy as IAirPort)?.GetAllEquips(),
+                    OnTakeOffCallBack = a => ((IAirPort)zy).OnTakeOff(a, false)
+                };
+                UIManager.Instance.ShowPanel<UIAirportAircraftShowView>(UIName.UIAirportAircraftShowView, aai);
             }
         }
     }
@@ -66,16 +81,7 @@ public class MapOperate_Normal : MapOperateLogicBase
         }
         else if (clickIcon is ZiYuanIconCell)
         {
-            for (int i = 0; i < mainLogic.allBObjects.Length; i++)
-            {
-                if (string.Equals(mainLogic.allBObjects[i].BObject.Id,clickIcon.belongToId))
-                {
-                    EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), mainLogic.allBObjects[i].gameObject.transform.position);
-                    break;
-                }
-            }
-            
-            //如果是机场的话，弹出飞机列表，飞机列表点击起飞，把飞机从机场中去除，并把飞机状态设为起飞状态。
+            EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), (clickIcon as ZiYuanIconCell).ziYuanItem.gameObject.transform.position);
         }
     }
 
@@ -116,4 +122,11 @@ public struct RightClickShowInfo
     public Vector2 PointPos;
     public List<SkillData> ShowSkillDatas;
     public UnityAction<SkillType> OnTriggerCallBack;
+}
+
+public struct AirportAircraftsInfo
+{
+    public Vector2 PointPos;
+    public List<string> AircraftDatas;
+    public UnityAction<string> OnTakeOffCallBack;
 }

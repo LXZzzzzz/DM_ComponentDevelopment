@@ -19,6 +19,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIRightClickMenuView UIRightClickMenuView;
     public UIAttributeView UIAttributeView;
     public UIHangShowInfo UIHangShowInfo;
+    public UIAirportAircraftShowView UIAirportAircraftShowView;
 
     private UIItem_IconShow itemIcon;
 
@@ -81,6 +82,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIRightClickMenuView = transform.Find("UiPrefab/UIRightClickMenuView").gameObject.GetComponent<UIRightClickMenuView>();
         UIAttributeView = transform.Find("UiPrefab/UIAttributeView").gameObject.GetComponent<UIAttributeView>();
         UIHangShowInfo = transform.Find("UiPrefab/UIHangShowInfo").gameObject.GetComponent<UIHangShowInfo>();
+        UIAirportAircraftShowView = transform.Find("UiPrefab/UIAirportAircraftShowView").gameObject.GetComponent<UIAirportAircraftShowView>();
 
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();

@@ -62,7 +62,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                         clientColor = color;
                     }
 
-                    sender.LogError((itemMain.Properties[1] as InputStringProperty).Value+":"+clientColor);
+                    sender.LogError((itemMain.Properties[1] as InputStringProperty).Value + ":" + clientColor);
                     break;
                 }
             }
@@ -190,6 +190,13 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendChangeSpeed:
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.speedMultiplier = float.Parse(param);
+                break;
+            case MessageID.TriggerTakeOff:
+            case MessageID.TriggerGroundReady:
+            case MessageID.TriggerWaterPour:
+            case MessageID.TriggerSupply:
+            case MessageID.TriggerReturnFlight:
+                _commanderController.Receive_TriggerSkill((MessageID)eventType, param);
                 break;
         }
     }

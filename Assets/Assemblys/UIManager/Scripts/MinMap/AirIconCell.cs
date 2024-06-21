@@ -129,6 +129,18 @@ public class AirIconCell : IconCellBase
             case SkillType.WaterIntaking:
                 skillName.text = "正在取水...";
                 break;
+            case SkillType.GroundReady:
+                skillName.text = "正在地面准备...";
+                break;
+            case SkillType.WaterPour:
+                skillName.text = "正在投水...";
+                break;
+            case SkillType.Supply:
+                skillName.text = "正在补给...";
+                break;
+            case SkillType.ReturnFlight:
+                skillName.text = "正在降落...";
+                break;
         }
 
         skillProgressShow.fillAmount = equipGo.skillProgress;

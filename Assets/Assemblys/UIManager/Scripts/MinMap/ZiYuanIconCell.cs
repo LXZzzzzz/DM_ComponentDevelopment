@@ -8,9 +8,11 @@ public class ZiYuanIconCell : IconCellBase
 {
     //为该类型的对象就等于在场景中存在对应组件，所以可以直接通过belongtoID获取组件
 
-    private ZiYuanBase ziYuanItem;
+    private ZiYuanBase _ziYuanItem;
     private float checkTimer;
     private GameObject chooseImg;
+
+    public ZiYuanBase ziYuanItem => _ziYuanItem;
 
     private void Start()
     {
@@ -18,9 +20,9 @@ public class ZiYuanIconCell : IconCellBase
         {
             if (string.Equals(allBObjects[i].BObject.Id, belongToId))
             {
-                ziYuanItem = allBObjects[i].GetComponent<ZiYuanBase>();
-                if (ziYuanItem == null) return;
-                changeIcon(ziYuanItem.ZiYuanType);
+                _ziYuanItem = allBObjects[i].GetComponent<ZiYuanBase>();
+                if (_ziYuanItem == null) return;
+                changeIcon(_ziYuanItem.ZiYuanType);
                 break;
             }
         }
@@ -69,7 +71,7 @@ public class ZiYuanIconCell : IconCellBase
     {
         IconInfoData data = new IconInfoData()
         {
-            entityName = ziYuanItem.name, entityInfo = "资源资源", beUseCommanders = ziYuanItem.beUsedCommanderIds
+            entityName = _ziYuanItem.name, entityInfo = "资源资源", beUseCommanders = _ziYuanItem.beUsedCommanderIds
         };
         return data;
     }
@@ -78,7 +80,7 @@ public class ZiYuanIconCell : IconCellBase
         if (Time.time > checkTimer)
         {
             checkTimer = Time.time + 1 / 25f;
-            chooseImg.SetActive(ziYuanItem.isChooseMe);
+            chooseImg.SetActive(_ziYuanItem.isChooseMe);
         }
     }
 }

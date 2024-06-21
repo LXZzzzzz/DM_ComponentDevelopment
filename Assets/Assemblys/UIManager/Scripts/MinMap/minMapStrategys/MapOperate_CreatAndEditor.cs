@@ -67,17 +67,8 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         //检测当前对象是否是机场属性，是的话才能执行创建
         if (clickIcon is ZiYuanIconCell)
         {
-            ZiYuanBase itemZiYuan = null;
-            string itemObjId = "";
-            for (int i = 0; i < mainLogic.allBObjects.Length; i++)
-            {
-                if (string.Equals(mainLogic.allBObjects[i].BObject.Id, clickIcon.belongToId))
-                {
-                    itemZiYuan = mainLogic.allBObjects[i].GetComponent<ZiYuanBase>();
-                    itemObjId = mainLogic.allBObjects[i].BObject.Id;
-                    break;
-                }
-            }
+            ZiYuanBase itemZiYuan = (clickIcon as ZiYuanIconCell).ziYuanItem;
+            string itemObjId = clickIcon.belongToId;
 
             if (itemZiYuan != null && itemZiYuan.ZiYuanType == ZiYuanType.Airport)
             {
@@ -87,7 +78,6 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
                 ProgrammeDataManager.Instance.GetEquipDataById(equipId).airportId = itemObjId;
                 //通知主角在场景对应位置创建实体
                 EventManager.Instance.EventTrigger(EventType.CreatEquipEntity.ToString(), creatTargetTemplate, equipId);
-                (itemZiYuan as IAirPort)?.AddEquip(equipId);
             }
         }
     }

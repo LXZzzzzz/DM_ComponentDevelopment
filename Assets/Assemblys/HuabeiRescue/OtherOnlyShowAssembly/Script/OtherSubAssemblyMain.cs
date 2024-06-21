@@ -18,7 +18,7 @@ public class OtherSubAssemblyMain : ScriptManager
     public override void RunModeInitialized(bool isRoomCreator, SceneInfo info)
     {
         base.RunModeInitialized(isRoomCreator, info);
-        gameObject.AddComponent<OtherZiYuan>().Init((Properties[0] as InputIntProperty).Value);
         //进入运行模式后，传入参数，告诉他是什么类型的资源
+        gameObject.AddComponent<OtherZiYuan>().Init((Properties[0] as InputIntProperty).Value, BObjectId);
     }
 }
