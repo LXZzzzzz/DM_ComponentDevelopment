@@ -1,45 +1,174 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enums;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
+using UnityEngine.Events;
 using EventType = Enums.EventType;
 
-public class HelicopterController : EquipBase, IWaterIntaking, IGroundReady, IWaterPour, ISupply, IReturnFlight
+public partial class HelicopterController : EquipBase, IWatersOperation, IGroundReady, ITakeOffAndLand, IGoodsOperation, IRescuePersonnelOperation, ISupply
 {
     private bool isWaitArrive;
-    private float quWaterDuration = 3; //取水时长
-    private float groundReadyDuration = 6; //地面准备时长
-    [HideInInspector] public int instructionSetModel;
+    [HideInInspector] public bool isTS, isYSWZ, isYSRY, isSJJY;
+    public HelicopterInfo myAttributeInfo;
+    private List<SkillData> mySkills;
+    private HelicopterState myState;
+    private UnityAction OnCountdownEndsCallBack;
+    private int currentTargetType;
+    private RecordedData myRecordedData;
+
+    private bool isRunTimer;
+    private float timer;
+    private float timeDuration;
 
 
-    public override void Init()
+    public override void Init(EquipBase baseData)
     {
-        base.Init();
+        base.Init(baseData);
+        InitData(baseData);
+        EventManager.Instance.AddEventListener<int>(EventType.ChooseEquipToZiYuanType.ToString(), OnSetTargetType);
+        myRecordedData = new RecordedData();
+        myRecordedData.eachSortieData = new List<SingleSortieData>();
+        mySkills = new List<SkillData>();
         //初始化飞机的基本属性
-        switch (instructionSetModel)
+        mySkills.Add(new SkillData() { SkillType = SkillType.GroundReady, isUsable = false, skillName = "起飞前准备" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.BePutInStorage, isUsable = false, skillName = "入库" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.TakeOff, isUsable = false, skillName = "起飞" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.Supply, isUsable = false, skillName = "补给" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.Landing, isUsable = false, skillName = "降落" });
+        if (isTS)
         {
-            case 1:
-                mySkills.Add(new SkillData() { SkillType = SkillType.GroundReady, skillName = "地面准备" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.WaterIntaking, skillName = "取水" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.WaterPour, skillName = "投水" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.Supply, skillName = "补给" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.ReturnFlight, skillName = "返航" });
-                break;
-            case 2:
-                mySkills.Add(new SkillData() { SkillType = SkillType.GroundReady, skillName = "地面准备" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.LadeGoods, skillName = "装载物资" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.Manned, skillName = "载人" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.UnLadeGoods, skillName = "卸载物资" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.AirdropGoods, skillName = "空投物资" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.Supply, skillName = "补给" });
-                mySkills.Add(new SkillData() { SkillType = SkillType.ReturnFlight, skillName = "返航" });
-                break;
+            mySkills.Add(new SkillData() { SkillType = SkillType.WaterIntaking, isUsable = false, skillName = "取水" });
+            mySkills.Add(new SkillData() { SkillType = SkillType.WaterPour, isUsable = false, skillName = "投水" });
         }
 
+        if (isYSWZ)
+        {
+            mySkills.Add(new SkillData() { SkillType = SkillType.LadeGoods, isUsable = false, skillName = "装载物资" });
+            mySkills.Add(new SkillData() { SkillType = SkillType.UnLadeGoods, isUsable = false, skillName = "卸载物资" });
+            mySkills.Add(new SkillData() { SkillType = SkillType.AirdropGoods, isUsable = false, skillName = "空投物资" });
+        }
+
+        if (isYSRY)
+        {
+            mySkills.Add(new SkillData() { SkillType = SkillType.Manned, isUsable = false, skillName = "装载人员" });
+            mySkills.Add(new SkillData() { SkillType = SkillType.PlacementOfPersonnel, isUsable = false, skillName = "安置人员" });
+        }
+
+        if (isSJJY)
+        {
+            mySkills.Add(new SkillData() { SkillType = SkillType.CableDescentRescue, isUsable = false, skillName = "索降救援" });
+            if (mySkills.Find(x => x.SkillType == SkillType.PlacementOfPersonnel) == null)
+                mySkills.Add(new SkillData() { SkillType = SkillType.PlacementOfPersonnel, isUsable = false, skillName = "安置人员" });
+        }
+
+        mySkills.Add(new SkillData() { SkillType = SkillType.EndTask, isUsable = false, skillName = "结束任务" });
+
         currentSkill = SkillType.None;
+        myState = HelicopterState.NotReady;
         isWaitArrive = false;
+        isRunTimer = false;
+        currentTargetType = -1;
+    }
+
+    private void InitData(EquipBase baseData)
+    {
+        isTS = (baseData as HelicopterController).isTS;
+        isYSWZ = (baseData as HelicopterController).isYSWZ;
+        isYSRY = (baseData as HelicopterController).isYSRY;
+        isSJJY = (baseData as HelicopterController).isSJJY;
+        myAttributeInfo = JsonUtility.FromJson<HelicopterInfo>(JsonUtility.ToJson((baseData as HelicopterController).myAttributeInfo));
+        amountOfOil = myAttributeInfo.zyl;
+        amountOfWater = 0;
+        amountOfGoods = 0;
+        amountOfPerson = 0;
+        speed = myAttributeInfo.zsjxhsd / 3.6f;
+    }
+
+    private void OnSetTargetType(int zyt)
+    {
+        if (isChooseMe) currentTargetType = zyt;
+    }
+
+    public override List<SkillData> GetSkillsData()
+    {
+        for (int i = 0; i < mySkills.Count; i++)
+        {
+            if (mySkills[i].SkillType == SkillType.GroundReady)
+                mySkills[i].isUsable = myState == HelicopterState.NotReady;
+            if (mySkills[i].SkillType == SkillType.BePutInStorage)
+            {
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.Airport;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+            }
+
+            if (mySkills[i].SkillType == SkillType.TakeOff)
+                mySkills[i].isUsable = myState == HelicopterState.Landing;
+            if (mySkills[i].SkillType == SkillType.Landing)
+            {
+                ZiYuanType itemType = (ZiYuanType)currentTargetType;
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && itemType != ZiYuanType.SourceOfAFire && itemType != ZiYuanType.Waters;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover;
+            }
+
+            if (mySkills[i].SkillType == SkillType.Supply)
+            {
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.Supply;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+            }
+
+            if (mySkills[i].SkillType == SkillType.WaterIntaking)
+            {
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.Waters;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover;
+            }
+
+            if (mySkills[i].SkillType == SkillType.WaterPour)
+                mySkills[i].isUsable = myState == HelicopterState.flying || myState == HelicopterState.hover;
+            if (mySkills[i].SkillType == SkillType.LadeGoods)
+            {
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.GoodsPoint;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+            }
+
+            if (mySkills[i].SkillType == SkillType.UnLadeGoods)
+            {
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.GoodsPoint;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+            }
+
+            if (mySkills[i].SkillType == SkillType.AirdropGoods)
+                mySkills[i].isUsable = myState == HelicopterState.flying || myState == HelicopterState.hover;
+            if (mySkills[i].SkillType == SkillType.Manned)
+            {
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.DisasterArea;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+            }
+
+            if (mySkills[i].SkillType == SkillType.PlacementOfPersonnel)
+            {
+                ZiYuanType itemType = (ZiYuanType)currentTargetType;
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (itemType == ZiYuanType.Hospital || itemType == ZiYuanType.RescueStation);
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+            }
+
+            if (mySkills[i].SkillType == SkillType.CableDescentRescue)
+            {
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.DisasterArea;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover;
+            }
+        }
+
+        //检测所有技能的显示条件
+        return mySkills;
+    }
+
+    public override RecordedData GetRecordedData()
+    {
+        //获取记录的数据
+        return myRecordedData;
     }
 
     public override void OnSelectSkill(SkillType st)
@@ -49,191 +178,289 @@ public class HelicopterController : EquipBase, IWaterIntaking, IGroundReady, IWa
         switch (st)
         {
             case SkillType.GroundReady:
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerGroundReady, BObjectId);
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerGroundReady, BObjectId);
+                break;
+            case SkillType.BePutInStorage:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerBePutInStorage, BObjectId);
+                break;
+            case SkillType.TakeOff:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerTakeOff, BObjectId);
+                break;
+            case SkillType.Landing:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerLanding, BObjectId);
+                break;
+            case SkillType.Supply:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerSupply, BObjectId);
                 break;
             case SkillType.WaterIntaking:
                 //这里需要打开取水UI界面，并把自己以接口形式传过去(这里需求更改，取水直接执行)
                 // EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", this);
-
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerWaterIntaking, BObjectId);
-
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerWaterIntaking, BObjectId);
                 break;
             case SkillType.WaterPour:
-
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerWaterPour, BObjectId);
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerWaterPour, MsgSend_WaterPour(BObjectId, transform.position));
                 break;
-            case SkillType.Supply:
-
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerSupply, BObjectId);
+            case SkillType.LadeGoods:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerLadeGoods, BObjectId);
                 break;
-            case SkillType.ReturnFlight:
-
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerReturnFlight, BObjectId);
+            case SkillType.UnLadeGoods:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerUnLadeGoods, BObjectId);
+                break;
+            case SkillType.AirdropGoods:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerAirDropGoods, MsgSend_WaterPour(BObjectId, transform.position));
+                break;
+            case SkillType.Manned:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerManned, BObjectId);
+                break;
+            case SkillType.PlacementOfPersonnel:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerPlacementOfPersonnel, BObjectId);
+                break;
+            case SkillType.CableDescentRescue:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerCableDescentRescue, BObjectId);
+                break;
+            case SkillType.EndTask:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerEndTask, BObjectId);
                 break;
         }
+    }
+
+    public override bool OnCheckIsMove()
+    {
+        // if (currentSkill != SkillType.None)
+        // {
+        //     currentSkill = SkillType.None;
+        //     isRunTimer = false;
+        // }
+
+        bool ismove = myState == HelicopterState.flying || myState == HelicopterState.hover;
+
+        if (!ismove) EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "装备未起飞");
+        return ismove;
+    }
+
+    public override void OnEndTask()
+    {
+        if (myRecordedData.endTaskTime < 1)
+            myRecordedData.endTaskTime = MyDataInfo.gameStartTime;
     }
 
     protected override void OnClose()
     {
         EventManager.Instance.EventTrigger(EventType.DestoryEquip.ToString(), BObjectId);
+        EventManager.Instance.RemoveEventListener<int>(EventType.ChooseEquipToZiYuanType.ToString(), OnSetTargetType);
     }
-
-    public void WaterIntaking(Vector3 pos, float range, float amount, bool isExecuteImmediately)
-    {
-        Debug.LogError("取水技能参数回传" + isExecuteImmediately);
-        if (!isExecuteImmediately)
-        {
-            //把参数传给主角，将参数传给所有客户端，统一执行
-            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerWaterIntaking, MsgSend_WaterIntaking(BObjectId, pos, amount));
-            return;
-        }
-
-        //判断自己是否处于取水地的范围内，不在的话调move机动到目的地，然后，执行取水逻辑
-        if (Vector3.Distance(transform.position, pos) > range)
-        {
-            isWaitArrive = true;
-            MoveToTarget(pos);
-        }
-        else StartCoroutine(quWater());
-    }
-
-    public float CheckCapacity()
-    {
-        Debug.LogError("检查数量");
-        return 10;
-    }
-
-    public void WaterIntaking_New(List<ZiYuanBase> allzy)
-    {
-        //找到场景中所有水源点，判断距离
-        var items = allzy.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
-        for (int i = 0; i < items.Count; i++)
-        {
-            Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
-            if (Vector3.Distance(transform.position, zyPos) < 10)
-            {
-                StartCoroutine(quWater());
-                return;
-            }
-        }
-
-        if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId))
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前位置超出取水距离，请前往水源地再进行操作");
-    }
-
 
     private void LateUpdate()
     {
         if (MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
-        if (isWaitArrive && isArrive)
+
+        if (isRunTimer) runTimer();
+
+        switchMyState();
+
+        calculationData();
+    }
+
+    private void switchMyState()
+    {
+        if (myState == HelicopterState.flying || myState == HelicopterState.hover)
         {
-            isWaitArrive = false;
-            StartCoroutine(returnFlight(3));
+            myState = isArrive ? HelicopterState.hover : HelicopterState.flying;
         }
     }
 
-    IEnumerator quWater()
+    private void calculationData()
     {
-        currentSkill = SkillType.WaterIntaking;
+        if (myState == HelicopterState.flying)
+        {
+            myRecordedData.allDistanceTravelled += speed * Time.deltaTime * MyDataInfo.speedMultiplier;
+            Debug.LogError(myRecordedData.allDistanceTravelled);
+        }
+    }
+
+
+    private void openTimer(float duration, UnityAction cb)
+    {
+        timer = 0;
+        timeDuration = duration;
         skillProgress = 0;
-        float endTime = Time.time + quWaterDuration / MyDataInfo.speedMultiplier;
-        Transform waterSphere = transform.GetChild(1);
-        while (true)
+        OnCountdownEndsCallBack = cb;
+        isRunTimer = true;
+    }
+
+    private void runTimer()
+    {
+        timer += Time.deltaTime * MyDataInfo.speedMultiplier;
+        skillProgress = timer / timeDuration;
+        if (timer >= timeDuration)
         {
-            waterSphere.Translate(Vector3.up * .8f);
-            if (waterSphere.localPosition.y >= 0) waterSphere.localPosition = Vector3.up * -20;
-            yield return 1;
-            skillProgress = 1 - (endTime - Time.time) / (quWaterDuration / MyDataInfo.speedMultiplier);
-            if (Time.time > endTime) break;
+            // 计时结束，执行相关操作
+            skillProgress = 1;
+            timer = 0; // 重置计时器
+            isRunTimer = false;
+            currentSkill = SkillType.None;
+            OnCountdownEndsCallBack?.Invoke();
         }
-
-        waterSphere.localPosition = Vector3.zero;
-        currentSkill = SkillType.None;
     }
+}
 
-    public void GroundReady()
-    {
-        StartCoroutine(onlyShowUI(SkillType.GroundReady, groundReadyDuration));
-    }
+public enum HelicopterState
+{
+    /// <summary>
+    /// 未就绪
+    /// </summary>
+    NotReady,
 
-    IEnumerator onlyShowUI(SkillType type, float duration)
-    {
-        currentSkill = type;
-        skillProgress = 0;
-        float endTime = Time.time + duration / MyDataInfo.speedMultiplier;
-        while (true)
-        {
-            yield return 1;
-            skillProgress = 1 - (endTime - Time.time) / (quWaterDuration / MyDataInfo.speedMultiplier);
-            if (Time.time > endTime) break;
-        }
+    /// <summary>
+    /// 降落
+    /// </summary>
+    Landing,
 
-        currentSkill = SkillType.None;
-    }
+    /// <summary>
+    /// 飞行
+    /// </summary>
+    flying,
 
-    public void WaterPour()
-    {
-        StartCoroutine(onlyShowUI(SkillType.WaterPour, 3));
-    }
+    /// <summary>
+    /// 悬停
+    /// </summary>
+    hover
+}
 
-    public void Supply(List<ZiYuanBase> allzy)
-    {
-        var items = allzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
-        for (int i = 0; i < items.Count; i++)
-        {
-            Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
-            if (Vector3.Distance(transform.position, zyPos) < 10)
-            {
-                StartCoroutine(onlyShowUI(SkillType.Supply, 5));
-                return;
-            }
-        }
+public class HelicopterInfo
+{
+    /// <summary>
+    /// 起飞前准备时间
+    /// </summary>
+    public float qfqzbsj;
 
-        if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId))
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前位置超出补给距离，请前往补给点再进行操作");
-    }
+    /// <summary>
+    /// 最大起飞重量
+    /// </summary>
+    public float zdqfzl;
 
-    public void ReturnFlight(ZiYuanBase ziyuan)
-    {
-        if (ziyuan==null)
-        {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前飞机没有初始机场，不可返航");
-            return;
-        }
-        
-        isWaitArrive = true;
-        returnFlightObj = ziyuan;
-        MoveToTarget(ziyuan.transform.position);
-    }
+    /// <summary>
+    /// 空机重量
+    /// </summary>
+    public float kjzl;
 
-    private ZiYuanBase returnFlightObj;
-    IEnumerator returnFlight(float duration)
-    {
-        currentSkill = SkillType.ReturnFlight;
-        skillProgress = 0;
-        float endTime = Time.time + duration / MyDataInfo.speedMultiplier;
-        while (true)
-        {
-            yield return 1;
-            skillProgress = 1 - (endTime - Time.time) / (quWaterDuration / MyDataInfo.speedMultiplier);
-            if (Time.time > endTime) break;
-        }
+    /// <summary>
+    /// 最大航程
+    /// </summary>
+    public float zdhc;
 
-        (returnFlightObj as IAirPort).AddEquip(BObjectId);
-        currentSkill = SkillType.None;
-    }
+    /// <summary>
+    /// 最大有效载荷
+    /// </summary>
+    public float zdyxzh;
 
-    #region 数据组装
+    /// <summary>
+    /// 载油量
+    /// </summary>
+    public float zyl;
 
-    private string MsgSend_WaterIntaking(string id, Vector3 pos, float amount)
-    {
-        return string.Format($"{pos.x}_{pos.y}_{pos.z}_{amount}_{id}");
-    }
+    /// <summary>
+    /// 最大载客量
+    /// </summary>
+    public int zdzkl;
 
-    private string MsgSend_WaterPour(string id, Vector3 pos)
-    {
-        return string.Format($"{pos.x}_{pos.y}_{pos.z}_{id}");
-    }
+    /// <summary>
+    /// 最大载水量
+    /// </summary>
+    public float zdzsl;
 
-    #endregion
+    /// <summary>
+    /// 最大时速
+    /// </summary>
+    public float zdss;
+
+    /// <summary>
+    /// 直升机巡航速度
+    /// </summary>
+    public float zsjxhsd;
+
+    /// <summary>
+    /// 直升机巡航高度
+    /// </summary>
+    public float zsjxhgd;
+
+    /// <summary>
+    /// 巡航油耗
+    /// </summary>
+    public float xhyh;
+
+    /// <summary>
+    /// 爬升率
+    /// </summary>
+    public float psl;
+
+    /// <summary>
+    /// 爬升油耗
+    /// </summary>
+    public float psyh;
+
+    /// <summary>
+    /// 悬停油耗
+    /// </summary>
+    public float xtyh;
+
+    /// <summary>
+    /// 吊水重量
+    /// </summary>
+    public float dszl;
+
+    /// <summary>
+    /// 取水时间
+    /// </summary>
+    public float qssj;
+
+    /// <summary>
+    /// 洒水时间
+    /// </summary>
+    public float sssj;
+
+    /// <summary>
+    /// 加油时间
+    /// </summary>
+    public float jysj;
+
+    /// <summary>
+    /// 装载物资速率
+    /// </summary>
+    public float zzwzsl;
+
+    /// <summary>
+    /// 卸载物资速率
+    /// </summary>
+    public float xzwzsl;
+
+    /// <summary>
+    /// 空投物资速率
+    /// </summary>
+    public float ktwzsl;
+
+    /// <summary>
+    /// 落地装载人员速率
+    /// </summary>
+    public float ldzzrysl;
+
+    /// <summary>
+    /// 索降救人速率
+    /// </summary>
+    public float sjjrsl;
+
+    /// <summary>
+    /// 安置伤员速率
+    /// </summary>
+    public float azsysl;
+
+    /// <summary>
+    /// 补给时间
+    /// </summary>
+    public float bjsj;
+
+    /// <summary>
+    /// 成年人平均体重
+    /// </summary>
+    public float cnrpjtz;
 }

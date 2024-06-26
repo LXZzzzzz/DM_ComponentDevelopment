@@ -58,11 +58,22 @@ public class MapOperate_Normal : MapOperateLogicBase
                 AirportAircraftsInfo aai = new AirportAircraftsInfo()
                 {
                     PointPos = targetIconCell.GetComponent<RectTransform>().anchoredPosition, AircraftDatas = (zy as IAirPort)?.GetAllEquips(),
-                    OnTakeOffCallBack = a => ((IAirPort)zy).OnTakeOff(a, false)
+                    OnRightClickCallBack = a => openRightClickView(a, targetIconCell.GetComponent<RectTransform>().anchoredPosition)
                 };
                 UIManager.Instance.ShowPanel<UIAirportAircraftShowView>(UIName.UIAirportAircraftShowView, aai);
             }
         }
+    }
+
+    private void openRightClickView(string id, Vector2 pos)
+    {
+        EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), id);
+        var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id));
+        RightClickShowInfo info = new RightClickShowInfo()
+        {
+            PointPos = pos, ShowSkillDatas = itemEquip.GetSkillsData(), OnTriggerCallBack = itemEquip.OnSelectSkill
+        };
+        UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
     }
 
     public override void OnRightClickIcon(IconCellBase clickIcon)
@@ -75,13 +86,14 @@ public class MapOperate_Normal : MapOperateLogicBase
             EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), clickIcon.belongToId);
             RightClickShowInfo info = new RightClickShowInfo()
             {
-                PointPos = clickIcon.GetComponent<RectTransform>().anchoredPosition, ShowSkillDatas = itemEquip.mySkills, OnTriggerCallBack = itemEquip.OnSelectSkill
+                PointPos = clickIcon.GetComponent<RectTransform>().anchoredPosition, ShowSkillDatas = itemEquip.GetSkillsData(), OnTriggerCallBack = itemEquip.OnSelectSkill
             };
             UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
         }
         else if (clickIcon is ZiYuanIconCell)
         {
             EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), (clickIcon as ZiYuanIconCell).ziYuanItem.gameObject.transform.position);
+            EventManager.Instance.EventTrigger(EventType.ChooseEquipToZiYuanType.ToString(), (int)(clickIcon as ZiYuanIconCell).ziYuanItem.ZiYuanType);
         }
     }
 
@@ -106,6 +118,7 @@ public class MapOperate_Normal : MapOperateLogicBase
     public override void OnRightClickMap(Vector2 pos)
     {
         EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), uiPos2WorldPos(pos));
+        EventManager.Instance.EventTrigger(EventType.ChooseEquipToZiYuanType.ToString(), -1);
     }
 
     public override void OnExit()
@@ -128,5 +141,5 @@ public struct AirportAircraftsInfo
 {
     public Vector2 PointPos;
     public List<string> AircraftDatas;
-    public UnityAction<string> OnTakeOffCallBack;
+    public UnityAction<string> OnRightClickCallBack;
 }

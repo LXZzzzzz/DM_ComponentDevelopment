@@ -8,4 +8,9 @@ public class ZiYuan_WaterPoinnt : ZiYuanBase
         // sender.LogError("取水点代码挂载成功");
         ZiYuanType = ZiYuanType.Waters;
     }
+
+    protected override void OnReset()
+    {
+        
+    }
 }

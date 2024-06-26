@@ -18,7 +18,7 @@ public class UITopMenuView : BasePanel
     private Dropdown speedChange;
     private List<float> dropdownValue;
     private Transform menuView;
-    
+
 
     public override void Init()
     {
@@ -68,7 +68,7 @@ public class UITopMenuView : BasePanel
         EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
         ProgrammName.text = UIManager.Instance.MisName;
 
-        dropdownValue = new List<float>() { 0.5f, 1.0f, 1.5f, 2.0f };
+        dropdownValue = new List<float>() { 0.5f, 1.0f, 1.5f, 2.0f, 5.0f };
         speedChange.options.Clear();
         for (int i = 0; i < dropdownValue.Count; i++)
         {
@@ -91,6 +91,7 @@ public class UITopMenuView : BasePanel
         {
             toggle.isOn = false;
         }
+
         GetControl<Button>("btn_CLose").gameObject.SetActive(false);
     }
 
@@ -267,9 +268,10 @@ public class UITopMenuView : BasePanel
 
     private void Update()
     {
-        if ((int)MyDataInfo.gameState >= 2)
+        if (MyDataInfo.gameState == GameState.GameStart)
         {
-            currentTime.text = ConvertSecondsToHHMMSS(Time.time - MyDataInfo.gameStartTime);
+            MyDataInfo.gameStartTime += Time.deltaTime * MyDataInfo.speedMultiplier;
+            currentTime.text = ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime);
         }
     }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DM.Entity;
@@ -6,22 +7,50 @@ using UnityEngine;
 
 public class HelicopterMain : ScriptManager
 {
-    private List<EnumDescription> instructionSetModel;
     public override void EditorModeInitialized()
     {
         base.EditorModeInitialized();
-        //编辑模式下对该装备基本属性进行设置
+        sender.DebugMode = true;
     }
+
     private void Awake()
     {
-        instructionSetModel = new List<EnumDescription>();
-        instructionSetModel.Add(new EnumDescription(1, "灭火任务指令"));
-        instructionSetModel.Add(new EnumDescription(2, "救援任务指令"));
         Properties = new DynamicProperty[]
         {
-            new DropDownProperty("设置飞机指令集", instructionSetModel, 0)
+            new ToggleProperty("投水", true),
+            new ToggleProperty("运送物资", true),
+            new ToggleProperty("运送人员", true),
+            new ToggleProperty("索降救援", true),
+            new InputFloatUnitProperty("起飞前准备时间", 0.5f, "min"),
+            new InputFloatUnitProperty("最大起飞重量", 10592, "kg"),
+            new InputFloatUnitProperty("空机重量", 6980, "kg"),
+            new InputFloatUnitProperty("最大航程", 800, "km"),
+            new InputFloatUnitProperty("最大有效载荷", 3000, "kg"),
+            new InputFloatUnitProperty("载油量", 3900, "kg"),
+            new InputFloatUnitProperty("最大载客量", 33, "人"),
+            new InputFloatUnitProperty("最大载水量", 1000, "kg"),
+            new InputFloatUnitProperty("最大时速", 273, "km/h"),
+            new InputFloatUnitProperty("直升机巡航速度", 255, "km/h"),
+            new InputFloatUnitProperty("直升机巡航高度", 300, "m"), //单位是不是错了
+            new InputFloatUnitProperty("巡航油耗", 1101, "kg/h"),
+            new InputFloatUnitProperty("爬升率", 66.6f, "km/h"),
+            new InputFloatUnitProperty("爬升油耗", 2713.2f, "kg/h"),
+            new InputFloatUnitProperty("悬停油耗", 880.8f, "kg/h"),
+            new InputFloatUnitProperty("吊水重量", 8000, "kg"),
+            new InputFloatUnitProperty("取水时间", 7, "min"),
+            new InputFloatUnitProperty("洒水时间", 1, "min"),
+            new InputFloatUnitProperty("加油时间", 20, "min"),
+            new InputFloatUnitProperty("装载物资速率", 20, "kg/min"),
+            new InputFloatUnitProperty("卸载物资速率", 20, "kg/min"),
+            new InputFloatUnitProperty("空投物资速率", 20, "kg/min"),
+            new InputFloatUnitProperty("落地装载人员速率", 20, "人/min"),
+            new InputFloatUnitProperty("索降救人速率", 20, "人/min"),
+            new InputFloatUnitProperty("安置伤员速率", 20, "人/min"),
+            new InputFloatUnitProperty("补给时间", 20, "min"),
+            new InputFloatUnitProperty("成年人平均重量", 70, "kg"),
         };
     }
+
 
     public override void RunModeInitialized(bool isRoomCreator, SceneInfo info)
     {
@@ -29,6 +58,20 @@ public class HelicopterMain : ScriptManager
         var logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController>();
         //进入运行模式后，将一些基础属性通过控制器传给飞机，
         logic.EquipIcon = info.PicBObjects[BObjectId];
-        logic.instructionSetModel = (Properties[0] as DropDownProperty).Selected.Enum;
+        logic.isTS = (Properties[0] as ToggleProperty).Value;
+        logic.isYSWZ = (Properties[1] as ToggleProperty).Value;
+        logic.isYSRY = (Properties[2] as ToggleProperty).Value;
+        logic.isSJJY = (Properties[3] as ToggleProperty).Value;
+        logic.AttributeInfos = new List<string>();
+        logic.myAttributeInfo = new HelicopterInfo();
+        var fields = logic.myAttributeInfo.GetType().GetFields();
+        for (int i = 4; i < 31; i++)
+        {
+            logic.AttributeInfos.Add((Properties[i] as InputFloatUnitProperty).Value.ToString());
+            if (fields[i - 4].FieldType == typeof(Int32))
+                fields[i - 4].SetValue(logic.myAttributeInfo, (int)(Properties[i] as InputFloatUnitProperty).Value);
+            else
+                fields[i - 4].SetValue(logic.myAttributeInfo, (Properties[i] as InputFloatUnitProperty).Value);
+        }
     }
 }

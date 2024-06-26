@@ -10,6 +10,7 @@ public class TestNullMain : ScriptManager, IControl, IContainer, IMesRec
     {
         Properties = new DynamicProperty[]
         {
+            new ToggleProperty("toggle字段", true),
             new ToggleGroupProperty("toggleGroup字段", new List<ToggleProperty>()
                 { new ToggleProperty("aa", true), new ToggleProperty("bb", false), new ToggleProperty("cc", false) }, true, 0),
             new InputIntUnitProperty("带单位的int输入", 10, "元"),
@@ -26,13 +27,14 @@ public class TestNullMain : ScriptManager, IControl, IContainer, IMesRec
     }
 
     private GameObject cameraObject;
+
     public void Active(DevType type, bool playback)
     {
         Debug.LogError("运行");
         cameraObject = new GameObject("Main Camera");
         cameraObject.transform.parent = transform.parent;
         cameraObject.tag = "MainCamera";
-        cameraObject.transform.position = transform.position+Vector3.up*10;
+        cameraObject.transform.position = transform.position + Vector3.up * 10;
         cameraObject.AddComponent<Camera>();
     }
 

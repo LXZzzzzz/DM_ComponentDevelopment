@@ -41,7 +41,10 @@ public class ZiYuanIconCell : IconCellBase
         int index = -1;
         switch (type)
         {
-            case ZiYuanType.Accident:
+            case ZiYuanType.Supply:
+                index = 9;
+                break;
+            case ZiYuanType.RescueStation:
                 index = 8;
                 break;
             case ZiYuanType.Airport:
@@ -50,7 +53,7 @@ public class ZiYuanIconCell : IconCellBase
             case ZiYuanType.Hospital:
                 index = 3;
                 break;
-            case ZiYuanType.Supply:
+            case ZiYuanType.GoodsPoint:
                 index = 7;
                 break;
             case ZiYuanType.Waters:

@@ -24,6 +24,7 @@ namespace Enums
         CloseCreatTarget, //关闭创建的模板对象
         GeneratePDF, //生成pdf
         ShowTipUI, //非UI层调用弹窗页面
+        ChooseEquipToZiYuanType, //控制飞机飞往某个资源点
     }
 
     public enum MessageID
@@ -31,14 +32,28 @@ namespace Enums
         SendProgramme = 1001, //一级指挥端发送方案
         SendGameStart = 1002, //一级指挥端发送开始推演
         MoveToTarget = 1003, //发送移动指令
-        TriggerWaterIntaking = 1004, //触发取水操作
         SendGamePause = 1005, //一级指挥端发送暂停操作
         SendGameStop = 1006, //一级指挥端发送停止操作
         SendChangeSpeed = 1007, //一级指挥端更改运行速度
-        TriggerTakeOff = 1008, //触发起飞操作
-        TriggerGroundReady = 1009, //触发地面准备操作
-        TriggerWaterPour = 1010, //触发投水操作
-        TriggerSupply = 1011, //触发补给操作
-        TriggerReturnFlight = 1012, //触发返航操作
+
+        TriggerGroundReady = 1101, //触发起飞前准备操作
+        TriggerBePutInStorage = 1102, //触发入库操作
+
+        TriggerTakeOff = 1103, //触发起飞操作
+        TriggerLanding = 1104, //触发降落操作
+        TriggerSupply = 1105, //触发补给操作
+
+        TriggerWaterIntaking = 1106, //触发取水操作
+        TriggerWaterPour = 1107, //触发投水操作
+
+        TriggerLadeGoods = 1108, //触发装载物资操作
+        TriggerUnLadeGoods = 1109, //触发卸载物资操作
+        TriggerAirDropGoods = 1110, //触发空投物资操作
+
+        TriggerManned = 1111, //触发装载人员操作
+        TriggerPlacementOfPersonnel = 1112, //触发安置人员操作
+        TriggerCableDescentRescue = 1113, //触发索降救援操作
+
+        TriggerEndTask = 1114 //触发结束任务操作
     }
 }

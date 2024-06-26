@@ -45,7 +45,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         {
             mainLogic.TempIcon.gameObject.SetActive(true);
             creatTargetTemplate = (string)data;
-            mainLogic.TempIcon.GetComponent<Image>().sprite = UIManager.Instance.PicBObjects[creatTargetTemplate];
+            mainLogic.TempIcon.GetChild(0).GetComponent<Image>().sprite = UIManager.Instance.PicBObjects[creatTargetTemplate];
         }
         else if (data is List<EquipBase>)
         {

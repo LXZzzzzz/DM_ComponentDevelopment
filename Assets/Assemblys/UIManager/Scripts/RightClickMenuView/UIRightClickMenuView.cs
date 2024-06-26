@@ -29,7 +29,7 @@ public class UIRightClickMenuView : BasePanel
         {
             var itemRmc=Instantiate(rmc, menusParent);
             itemRmc.Init(showInfo.ShowSkillDatas[i], showInfo.OnTriggerCallBack);
-            itemRmc.gameObject.SetActive(true);
+            // itemRmc.gameObject.SetActive(true);
         }
     }
 

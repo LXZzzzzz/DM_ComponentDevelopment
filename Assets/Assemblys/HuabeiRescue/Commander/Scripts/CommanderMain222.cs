@@ -148,7 +148,7 @@ public class CommanderMain222 : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.TriggerWaterIntaking:
                 sender.LogError("收到了取水的指令" + type);
-                _commanderController.Receive_TriggerWaterIntaking(param);
+                // _commanderController.Receive_TriggerWaterIntaking(param);
                 break;
         }
     }

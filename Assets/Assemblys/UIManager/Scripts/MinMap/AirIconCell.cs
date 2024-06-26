@@ -32,8 +32,8 @@ public class AirIconCell : IconCellBase
         showChooseState = transform.Find("Root/Choose").gameObject;
         transform.Find("Root/airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
         transform.Find("Root/equipName").GetComponent<Text>().text = equipGo.name;
-        skillProgressShow = transform.Find("Root/progress").GetComponent<Image>();
-        skillName = transform.Find("Root/skillName").GetComponent<Text>();
+        skillProgressShow = transform.Find("progress").GetComponent<Image>();
+        skillName = transform.Find("skillName").GetComponent<Text>();
         belongtoShow = transform.Find("Root/belongTo").GetComponent<Image>();
         initLine();
     }
@@ -43,7 +43,7 @@ public class AirIconCell : IconCellBase
         routePoints = new List<Vector2>();
         routePoints.Add(Vector2.zero);
         routePoints.Add(Vector2.zero);
-        currentMoveRoute = new VectorLine("Line" + equipGo.BObjectId, routePoints, 3, LineType.Continuous);
+        currentMoveRoute = new VectorLine("Line" + equipGo.BObjectId, routePoints, 2, LineType.Continuous);
 #if UNITY_EDITOR
         currentMoveRoute.SetCanvas(gameObject.GetComponentInParent<Canvas>());
 #else
@@ -53,7 +53,9 @@ public class AirIconCell : IconCellBase
         currentMoveRoute.rectTransform.localPosition = Vector3.zero;
         currentMoveRoute.rectTransform.localScale = Vector3.one;
         currentMoveRoute.active = true;
-        currentMoveRoute.color = Color.cyan;
+        if (ColorUtility.TryParseHtmlString("#07D8A7", out Color color))
+            currentMoveRoute.color = color;
+        else currentMoveRoute.color = Color.cyan;
     }
 
     private void Update()
@@ -126,20 +128,44 @@ public class AirIconCell : IconCellBase
 
         switch (equipGo.currentSkill)
         {
-            case SkillType.WaterIntaking:
-                skillName.text = "正在取水...";
-                break;
             case SkillType.GroundReady:
-                skillName.text = "正在地面准备...";
+                skillName.text = "正在起飞前准备...";
                 break;
-            case SkillType.WaterPour:
-                skillName.text = "正在投水...";
+            case SkillType.BePutInStorage:
+                skillName.text = "正在入库...";
+                break;
+            case SkillType.TakeOff:
+                skillName.text = "正在起飞...";
+                break;
+            case SkillType.Landing:
+                skillName.text = "正在降落...";
                 break;
             case SkillType.Supply:
                 skillName.text = "正在补给...";
                 break;
-            case SkillType.ReturnFlight:
-                skillName.text = "正在降落...";
+            case SkillType.WaterIntaking:
+                skillName.text = "正在取水...";
+                break;
+            case SkillType.WaterPour:
+                skillName.text = "正在投水...";
+                break;
+            case SkillType.LadeGoods:
+                skillName.text = "正在装载物资...";
+                break;
+            case SkillType.UnLadeGoods:
+                skillName.text = "正在卸载物资...";
+                break;
+            case SkillType.AirdropGoods:
+                skillName.text = "正在空投物资...";
+                break;
+            case SkillType.Manned:
+                skillName.text = "正在装载人员...";
+                break;
+            case SkillType.PlacementOfPersonnel:
+                skillName.text = "正在安置人员...";
+                break;
+            case SkillType.CableDescentRescue:
+                skillName.text = "正在索降救援...";
                 break;
         }
 

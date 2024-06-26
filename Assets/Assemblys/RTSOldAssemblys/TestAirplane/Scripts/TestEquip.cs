@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
@@ -9,7 +10,27 @@ public class TestEquip : EquipBase
         Debug.LogError("测试组件装备正常挂载继承Mono的脚本"+myid);
     }
 
+    public override List<SkillData> GetSkillsData()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override RecordedData GetRecordedData()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public override void OnSelectSkill(SkillType st)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override bool OnCheckIsMove()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void OnEndTask()
     {
         throw new System.NotImplementedException();
     }

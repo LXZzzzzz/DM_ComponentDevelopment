@@ -38,7 +38,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         airIconPrefab = transform.Find("prefabs/airCell").GetComponent<AirIconCell>();
         pointIconPrefab = transform.Find("prefabs/pointCell").GetComponent<PointIconCell>();
         ziYuanIconPrefab = transform.Find("prefabs/ziyuanCell").GetComponent<ZiYuanIconCell>();
-        TempIcon = transform.Find("maxMap/objects/TempIcon").GetComponent<RectTransform>();
+        TempIcon = transform.Find("maxMap/TempIcon").GetComponent<RectTransform>();
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
 
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();

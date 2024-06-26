@@ -8,7 +8,6 @@ using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using 导教端_WRJ;
 using EventType = Enums.EventType;
-using IWaterIntaking = ToolsLibrary.EquipPart.IWaterIntaking;
 using Random = UnityEngine.Random;
 
 public class CommanderController : DMonoBehaviour
@@ -18,6 +17,7 @@ public class CommanderController : DMonoBehaviour
 
     private PDFReport _pdfReport;
     public List<string> clientOperatorInfos;
+    private List<ZiYuanBase> sceneAllzy;
 
     private bool isMe;
 
@@ -37,7 +37,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.AddEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
-        EventManager.Instance.AddEventListener<int, string>(EventType.SendSkillInfoForControler.ToString(), OnSendWaterIntaking);
+        EventManager.Instance.AddEventListener<int, string>(EventType.SendSkillInfoForControler.ToString(), OnSendSkillInfo);
         EventManager.Instance.AddEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
         EventManager.Instance.AddEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
@@ -51,7 +51,7 @@ public class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.RemoveEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.RemoveEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
-        EventManager.Instance.RemoveEventListener<int, string>(EventType.SendSkillInfoForControler.ToString(), OnSendWaterIntaking);
+        EventManager.Instance.RemoveEventListener<int, string>(EventType.SendSkillInfoForControler.ToString(), OnSendSkillInfo);
         EventManager.Instance.RemoveEventListener<bool>(EventType.CameraSwitch.ToString(), OnCameraSwith);
         EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
@@ -89,7 +89,7 @@ public class CommanderController : DMonoBehaviour
                 cvm.enabled = true;
                 mo.enabled = true;
                 tc.enabled = false;
-                Camera.main.transform.position = target.position + target.up * 40;
+                Camera.main.transform.position = target.position + target.up * 200;
                 Camera.main.transform.rotation = Quaternion.LookRotation(target.forward);
                 Camera.main.transform.LookAt(target);
                 break;
@@ -115,11 +115,6 @@ public class CommanderController : DMonoBehaviour
         }
 
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
-        if (itemEquip.isDockingAtTheAirport)
-        {
-            sender.LogError("在机场未起飞");
-            return;
-        }
 
         if (MyDataInfo.gameState == GameState.FirstLevelCommanderEditor || string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
         {
@@ -164,6 +159,14 @@ public class CommanderController : DMonoBehaviour
     private void OnChangeTarget(Vector3 pos)
     {
         if (MyDataInfo.gameState != GameState.GameStart || currentChooseEquip == null) return;
+        if (currentChooseEquip.isDockingAtTheAirport)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前装备在机场未出库");
+            return;
+        }
+
+        if (!currentChooseEquip.OnCheckIsMove()) return;
+
         sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos));
     }
 
@@ -177,10 +180,10 @@ public class CommanderController : DMonoBehaviour
                 var temporaryEquip = Instantiate(templateEquip, MyDataInfo.SceneGoParent);
                 temporaryEquip.name = allBObjects[i].BObject.Info.Name + $"_000{MyDataInfo.sceneAllEquips.Count + 1}";
                 temporaryEquip.BObjectId = myId;
-                temporaryEquip.Init();
+                temporaryEquip.Init(templateEquip);
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
-                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 1000, dataPos.z);
+                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 800, dataPos.z);
                 EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
                 if (!string.IsNullOrEmpty(ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId))
@@ -191,7 +194,7 @@ public class CommanderController : DMonoBehaviour
                     {
                         if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)
                         {
-                            (allBObjects[j].GetComponent<ZiYuanBase>() as IAirPort)?.AddEquip(myId);
+                            (allBObjects[j].GetComponent<ZiYuanBase>() as IAirPort)?.comeIn(myId);
                         }
                     }
                 }
@@ -236,12 +239,12 @@ public class CommanderController : DMonoBehaviour
         {
             ZiYuanBase itemZy = allBObjects[i].GetComponent<ZiYuanBase>();
             if (itemZy == null) continue;
-            itemZy.SetBeUsedComs(null);
+            itemZy.Reset();
             EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
     }
 
-    private void OnSendWaterIntaking(int messageID, string data)
+    private void OnSendSkillInfo(int messageID, string data)
     {
         sender.RunSend(SendType.SubToMain, main.BObjectId, messageID, data);
     }
@@ -278,33 +281,6 @@ public class CommanderController : DMonoBehaviour
         OnLoadProgrammeDataSuc(programmeData);
     }
 
-    private List<ZiYuanBase> sceneAllzy;
-
-    public void Receive_TriggerWaterIntaking(string data)
-    {
-        if (sceneAllzy == null)
-        {
-            sceneAllzy = new List<ZiYuanBase>();
-            for (int i = 0; i < allBObjects.Length; i++)
-            {
-                if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
-                {
-                    sceneAllzy.Add(allBObjects[i].GetComponent<ZiYuanBase>());
-                }
-            }
-        }
-
-        (MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data)) as IWaterIntaking).WaterIntaking_New(sceneAllzy);
-        return;
-        MsgReceive_Water(data, out string id, out Vector3 pos, out float amount);
-        (MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id)) as IWaterIntaking).WaterIntaking(pos, 10, amount, true);
-
-
-        var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id));
-        string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
-        if (clientOperatorInfos != null)
-            clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了取水指令，取水目标点为{pos}");
-    }
 
     public void Receive_GameStop()
     {
@@ -329,44 +305,84 @@ public class CommanderController : DMonoBehaviour
 
         switch (messageID)
         {
-            case MessageID.TriggerTakeOff:
-                sender.LogError("收到了起飞的指令");
+            case MessageID.TriggerGroundReady:
+                sender.LogError("收到了起飞前准备的指令");
                 var itemAirportId = ProgrammeDataManager.Instance.GetEquipDataById(data).airportId;
                 if (string.IsNullOrEmpty(itemAirportId))
                 {
-                    EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "数据错误，请求起飞的飞机未在机场");
+                    EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "数据错误，指定的飞机未在机场");
                     return;
                 }
 
-                for (int i = 0; i < allBObjects.Length; i++)
-                {
-                    if (string.Equals(allBObjects[i].BObject.Id, itemAirportId))
-                    {
-                        allBObjects[i].GetComponent<IAirPort>().OnTakeOff(data, true);
-                    }
-                }
-
-                break;
-            case MessageID.TriggerGroundReady:
-                sender.LogError("收到了地面准备的指令");
                 var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (item as IGroundReady)?.GroundReady();
+                (item as IGroundReady)?.GroundReady(sceneAllzy.Find(a => string.Equals(a.BobjectId, itemAirportId)) as IAirPort);
                 break;
-            case MessageID.TriggerWaterPour:
-                sender.LogError("收到了投水的指令");
-                var itemp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itemp as IWaterPour)?.WaterPour();
+            case MessageID.TriggerBePutInStorage:
+                sender.LogError("收到了入库的指令");
+                var itema = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itema as IGroundReady)?.BePutInStorage(sceneAllzy);
+                break;
+            case MessageID.TriggerTakeOff:
+                sender.LogError("收到了起飞的指令");
+                var itemb = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itemb as ITakeOffAndLand)?.TakeOff();
+                break;
+            case MessageID.TriggerLanding:
+                sender.LogError("收到了降落的指令");
+                var itemc = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itemc as ITakeOffAndLand)?.Landing();
                 break;
             case MessageID.TriggerSupply:
                 sender.LogError("收到了补给的指令");
                 var itemS = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemS as ISupply)?.Supply(sceneAllzy);
                 break;
-            case MessageID.TriggerReturnFlight:
-                sender.LogError("收到了返航的指令");
-                var itemR = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                var airportId = ProgrammeDataManager.Instance.GetEquipDataById(itemR.BObjectId).airportId;
-                (itemR as IReturnFlight)?.ReturnFlight(sceneAllzy.Find(a => string.Equals(a.BobjectId, airportId)));
+            case MessageID.TriggerWaterIntaking:
+                sender.LogError("收到了取水的指令");
+                var itemwi = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itemwi as IWatersOperation)?.WaterIntaking_New(sceneAllzy);
+                break;
+            case MessageID.TriggerWaterPour:
+                sender.LogError("收到了投水的指令");
+                MsgReceive_WaterPour(data, out string id, out Vector3 pos);
+                var itemp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, id));
+                (itemp as IWatersOperation)?.WaterPour(pos, sceneAllzy);
+                break;
+            case MessageID.TriggerLadeGoods:
+                sender.LogError("收到了装载资源的指令");
+                var iteml = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (iteml as IGoodsOperation)?.LadeGoods(sceneAllzy);
+                break;
+            case MessageID.TriggerUnLadeGoods:
+                sender.LogError("收到了卸载资源的指令");
+                var itemu = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itemu as IGoodsOperation)?.UnLadeGoods(sceneAllzy);
+                break;
+            case MessageID.TriggerAirDropGoods:
+                sender.LogError("收到了空投资源的指令");
+                MsgReceive_WaterPour(data, out string adid, out Vector3 adpos);
+                var itemad = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, adid));
+                (itemad as IGoodsOperation)?.AirdropGoods(adpos, sceneAllzy);
+                break;
+            case MessageID.TriggerManned:
+                sender.LogError("收到了装载人员的指令");
+                var itemm = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itemm as IRescuePersonnelOperation)?.Manned(sceneAllzy);
+                break;
+            case MessageID.TriggerPlacementOfPersonnel:
+                sender.LogError("收到了安置人员的指令");
+                var itempp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itempp as IRescuePersonnelOperation)?.PlacementOfPersonnel(sceneAllzy);
+                break;
+            case MessageID.TriggerCableDescentRescue:
+                sender.LogError("收到了索降救援的指令");
+                var itemcd = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                (itemcd as IRescuePersonnelOperation)?.CableDescentRescue(sceneAllzy);
+                break;
+            case MessageID.TriggerEndTask:
+                sender.LogError("收到了结束任务的指令");
+                var itemet = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                itemet.OnEndTask();
                 break;
         }
     }
@@ -387,13 +403,21 @@ public class CommanderController : DMonoBehaviour
         pos = new Vector3(float.Parse(info[1]), float.Parse(info[2]), float.Parse(info[3]));
     }
 
-    private void MsgReceive_Water(string data, out string id, out Vector3 pos, out float amount)
+    private void MsgReceive_WaterPour(string data, out string id, out Vector3 pos)
     {
         string[] info = data.Split('_');
         pos = new Vector3(float.Parse(info[0]), float.Parse(info[1]), float.Parse(info[2]));
-        amount = float.Parse(info[3]);
-        id = info[4];
+        id = info[3];
     }
 
     #endregion
+}
+
+public class GlobalDataRecording
+{
+    //第一次投水时刻/第一次投放物资时刻
+    public float firstOperationTime;
+
+    //取水点和投水点最短距离/救援点和安置点最短距离
+    public float minDistance;
 }

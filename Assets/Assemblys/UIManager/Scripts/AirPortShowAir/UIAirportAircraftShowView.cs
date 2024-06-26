@@ -30,7 +30,7 @@ public class UIAirportAircraftShowView : BasePanel
             var itemaa = Instantiate(aacell, menusParent);
             var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, info.AircraftDatas[i]));
             itemaa.gameObject.SetActive(true);
-            itemaa.Init(info.AircraftDatas[i], itemEquip.name, string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId), info.OnTakeOffCallBack);
+            itemaa.Init(info.AircraftDatas[i], itemEquip.name, string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId), info.OnRightClickCallBack);
         }
     }
 

@@ -167,16 +167,12 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStart;
                 MyDataInfo.speedMultiplier = 1;
-                MyDataInfo.gameStartTime = Time.time;
+                MyDataInfo.gameStartTime = 0;
                 EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
                 break;
             case MessageID.MoveToTarget:
                 sender.LogError("收到了移动的指令" + type);
                 _commanderController.Receive_MoveEquipToTarget(param);
-                break;
-            case MessageID.TriggerWaterIntaking:
-                sender.LogError("收到了取水的指令" + type);
-                _commanderController.Receive_TriggerWaterIntaking(param);
                 break;
             case MessageID.SendGamePause:
                 if (MyDataInfo.leadId != BObjectId) break;
@@ -185,19 +181,16 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendGameStop:
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStop;
+                MyDataInfo.gameStartTime = 0;
                 _commanderController.Receive_GameStop();
                 break;
             case MessageID.SendChangeSpeed:
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.speedMultiplier = float.Parse(param);
                 break;
-            case MessageID.TriggerTakeOff:
-            case MessageID.TriggerGroundReady:
-            case MessageID.TriggerWaterPour:
-            case MessageID.TriggerSupply:
-            case MessageID.TriggerReturnFlight:
-                _commanderController.Receive_TriggerSkill((MessageID)eventType, param);
-                break;
         }
+
+        if (eventType >= 1100)
+            _commanderController.Receive_TriggerSkill((MessageID)eventType, param);
     }
 }

@@ -46,6 +46,10 @@ public class UICommanderView : BasePanel
         taskParent = GetControl<ScrollRect>("TaskListView").content;
         taskPrefab = GetComponentInChildren<TaskCell>(true);
         GetControl<Button>("X").onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString()));
+        GetControl<Toggle>("tog_CtrlEquipTypeView").onValueChanged.AddListener(a =>
+        {
+            if (!a) EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
+        });
 
         myCommanderInfoShow = GetComponentInChildren<MyCommanderView>(true);
 
@@ -60,7 +64,7 @@ public class UICommanderView : BasePanel
     {
         base.ShowMe(userData);
         level = (int)userData;
-        GetControl<Button>("openEquipTypeView").interactable = level == 1;
+        GetControl<Toggle>("tog_CtrlEquipTypeView").interactable = level == 1;
 #if !UNITY_EDITOR
         showView();
 #endif
