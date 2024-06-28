@@ -183,7 +183,8 @@ public class CommanderController : DMonoBehaviour
                 temporaryEquip.Init(templateEquip);
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
-                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 800, dataPos.z);
+                temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 700, dataPos.z);
+                temporaryEquip.gameObject.SetActive(true);
                 EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
                 if (!string.IsNullOrEmpty(ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId))
@@ -273,6 +274,8 @@ public class CommanderController : DMonoBehaviour
         string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
         if (clientOperatorInfos != null)
             clientOperatorInfos.Add($"玩家{who}控制飞机：{item.name}在{DateTime.Now}执行了机动指令，目标点为{targetPos}");
+
+        EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{item.name}执行机动操作，目标点为{targetPos}");
     }
 
     public void Receive_ProgrammeData(string data)
@@ -316,73 +319,87 @@ public class CommanderController : DMonoBehaviour
 
                 var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (item as IGroundReady)?.GroundReady(sceneAllzy.Find(a => string.Equals(a.BobjectId, itemAirportId)) as IAirPort);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{item.name}执行起飞前准备操作");
                 break;
             case MessageID.TriggerBePutInStorage:
                 sender.LogError("收到了入库的指令");
                 var itema = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itema as IGroundReady)?.BePutInStorage(sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itema.name}执行入库操作");
                 break;
             case MessageID.TriggerTakeOff:
                 sender.LogError("收到了起飞的指令");
                 var itemb = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemb as ITakeOffAndLand)?.TakeOff();
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemb.name}执行起飞操作");
                 break;
             case MessageID.TriggerLanding:
                 sender.LogError("收到了降落的指令");
                 var itemc = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemc as ITakeOffAndLand)?.Landing();
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemc.name}执行降落操作");
                 break;
             case MessageID.TriggerSupply:
                 sender.LogError("收到了补给的指令");
                 var itemS = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemS as ISupply)?.Supply(sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemS.name}执行补给操作");
                 break;
             case MessageID.TriggerWaterIntaking:
                 sender.LogError("收到了取水的指令");
                 var itemwi = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemwi as IWatersOperation)?.WaterIntaking_New(sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemwi.name}执行取水操作");
                 break;
             case MessageID.TriggerWaterPour:
                 sender.LogError("收到了投水的指令");
                 MsgReceive_WaterPour(data, out string id, out Vector3 pos);
                 var itemp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, id));
                 (itemp as IWatersOperation)?.WaterPour(pos, sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemp.name}执行投水操作");
                 break;
             case MessageID.TriggerLadeGoods:
                 sender.LogError("收到了装载资源的指令");
                 var iteml = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (iteml as IGoodsOperation)?.LadeGoods(sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{iteml.name}执行装载资源的操作");
                 break;
             case MessageID.TriggerUnLadeGoods:
                 sender.LogError("收到了卸载资源的指令");
                 var itemu = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemu as IGoodsOperation)?.UnLadeGoods(sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemu.name}执行卸载资源的操作");
                 break;
             case MessageID.TriggerAirDropGoods:
                 sender.LogError("收到了空投资源的指令");
                 MsgReceive_WaterPour(data, out string adid, out Vector3 adpos);
                 var itemad = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, adid));
                 (itemad as IGoodsOperation)?.AirdropGoods(adpos, sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemad.name}执行空投资源的操作");
                 break;
             case MessageID.TriggerManned:
                 sender.LogError("收到了装载人员的指令");
                 var itemm = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemm as IRescuePersonnelOperation)?.Manned(sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemm.name}执行装载人员的操作");
                 break;
             case MessageID.TriggerPlacementOfPersonnel:
                 sender.LogError("收到了安置人员的指令");
                 var itempp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itempp as IRescuePersonnelOperation)?.PlacementOfPersonnel(sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itempp.name}执行安置人员的操作");
                 break;
             case MessageID.TriggerCableDescentRescue:
                 sender.LogError("收到了索降救援的指令");
                 var itemcd = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemcd as IRescuePersonnelOperation)?.CableDescentRescue(sceneAllzy);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemcd.name}执行索降救援操作");
                 break;
             case MessageID.TriggerEndTask:
                 sender.LogError("收到了结束任务的指令");
                 var itemet = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 itemet.OnEndTask();
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemet.name}执行结束任务的操作");
                 break;
         }
     }

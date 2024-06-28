@@ -133,7 +133,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         itemCell.gameObject.SetActive(true);
         //传入这个组件的基本信息，和选择后的回调
         itemCell.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(equip.gameObject.transform.position);
-        (itemCell as AirIconCell).Init(equip, equip.BObjectId, mainLogic.OnChooseObj, worldPos2UiPos);
+        (itemCell as AirIconCell).Init(equip, equip.BObjectId, mainLogic.OnChooseObj, worldPos2UiPos, mainLogic.OnShowRouteArrow);
         mainLogic.allIconCells.Add(equip.BObjectId, itemCell);
     }
 

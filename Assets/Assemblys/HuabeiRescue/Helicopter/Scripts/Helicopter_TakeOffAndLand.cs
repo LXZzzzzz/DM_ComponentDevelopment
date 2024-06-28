@@ -14,6 +14,7 @@ public partial class HelicopterController
         currentSkill = SkillType.TakeOff;
         myRecordedData.eachSortieData.Add(new SingleSortieData());
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), () => myState = HelicopterState.hover);
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].takeOffTime = MyDataInfo.gameStartTime;
     }
 
     public void Landing()
@@ -21,6 +22,7 @@ public partial class HelicopterController
         if (myState != HelicopterState.hover) return;
         currentSkill = SkillType.Landing;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), () => myState = HelicopterState.Landing);
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].landingTime = MyDataInfo.gameStartTime;
     }
 
     public void Supply(List<ZiYuanBase> allzy)

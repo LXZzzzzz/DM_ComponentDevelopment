@@ -59,7 +59,7 @@ public partial class HelicopterController
 
     private void OnAZSYSuc()
     {
-        myRecordedData.eachSortieData[^1].numberOfRescues += amountOfPerson;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].numberOfRescues += amountOfPerson;
         amountOfPerson = 0;
     }
 

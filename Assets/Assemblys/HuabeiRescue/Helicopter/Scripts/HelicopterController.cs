@@ -274,7 +274,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         if (myState == HelicopterState.flying)
         {
             myRecordedData.allDistanceTravelled += speed * Time.deltaTime * MyDataInfo.speedMultiplier;
-            Debug.LogError(myRecordedData.allDistanceTravelled);
+            //todo:应该还得加油耗计算，飞行油耗，悬浮油耗
         }
     }
 

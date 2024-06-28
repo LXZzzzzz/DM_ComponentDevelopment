@@ -15,6 +15,8 @@ public class UIAttributeView : BasePanel
     private bool isReceiveMapInfo;
     private GameObject watersSkillView, equipInfoView;
     private AttributeView_ZiyuanPart ziYuanInfoView;
+    private RectTransform msgParent;
+    private msgCell msgObj;
 
     public override void Init()
     {
@@ -27,6 +29,9 @@ public class UIAttributeView : BasePanel
         GetControl<Button>("btn_chooseWaters").onClick.AddListener(() => isReceiveMapInfo = true);
         GetControl<Button>("btn_sure").onClick.AddListener(OnSendSkillParameter);
         GetControl<Button>("btn_close").onClick.AddListener(() => Close(UIName.UIAttributeView));
+        msgParent = GetControl<ScrollRect>("msgInfoView").content;
+        msgObj = GetComponentInChildren<msgCell>(true);
+        EventManager.Instance.AddEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
     }
 
     public override void ShowMe(object userData)
@@ -50,8 +55,13 @@ public class UIAttributeView : BasePanel
                 case SkillType.None:
                     watersSkillView.SetActive(false);
                     equipInfoView.SetActive(true);
-                    var showInfos = currentEquip.AttributeInfos;
                     ziYuanInfoView.gameObject.SetActive(false);
+                    var showInfos = currentEquip.AttributeInfos;
+                    var allInputf = equipInfoView.GetComponentsInChildren<InputField>(true);
+                    for (int i = 0; i < allInputf.Length; i++)
+                    {
+                        allInputf[i].text = showInfos[i];
+                    }
                     break;
                 case SkillType.WaterIntaking:
                     watersSkillView.SetActive(true);
@@ -126,9 +136,28 @@ public class UIAttributeView : BasePanel
         // }
     }
 
+
+    private void OnAddAMsg(string info)
+    {
+        var itemCell = Instantiate(msgObj, msgParent);
+        itemCell.Init(ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime), info);
+        itemCell.gameObject.SetActive(true);
+    }
+
+    private string ConvertSecondsToHHMMSS(float seconds)
+    {
+        int hours = (int)(seconds / 3600); // 计算小时数
+        int minutes = (int)(seconds % 3600 / 60); // 计算分钟数
+        float remainingSeconds = seconds % 60; // 计算剩余秒数
+
+        // 格式化为“时：分：秒”字符串
+        return string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, (int)remainingSeconds);
+    }
+
     public override void HideMe()
     {
         base.HideMe();
         EventManager.Instance.RemoveEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
+        EventManager.Instance.RemoveEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
     }
 }

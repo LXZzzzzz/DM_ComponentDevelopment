@@ -73,5 +73,7 @@ public class HelicopterMain : ScriptManager
             else
                 fields[i - 4].SetValue(logic.myAttributeInfo, (Properties[i] as InputFloatUnitProperty).Value);
         }
+
+        logic.gameObject.SetActive(false);
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ZiYuanIconCell : IconCellBase
 {
@@ -10,7 +12,14 @@ public class ZiYuanIconCell : IconCellBase
 
     private ZiYuanBase _ziYuanItem;
     private float checkTimer;
+
     private GameObject chooseImg;
+
+    //todo:后面有时间，把这个单独拆成一个Go，如果机场有飞机，就加载出来
+    private GameObject airPortMarkView;
+    private RectTransform equipParent;
+    private AirPortEquipIconCell aec;
+    private int currAllEquipInfoCount;
 
     public ZiYuanBase ziYuanItem => _ziYuanItem;
 
@@ -29,6 +38,11 @@ public class ZiYuanIconCell : IconCellBase
 
         transform.GetChild(1).gameObject.SetActive(true);
         chooseImg = transform.Find("Choose").gameObject;
+        airPortMarkView = transform.Find("airPortMarkView").gameObject;
+        equipParent = airPortMarkView.GetComponentInChildren<ScrollRect>(true).content;
+        aec = airPortMarkView.GetComponentInChildren<AirPortEquipIconCell>(true);
+        airPortMarkView.SetActive(false);
+        airPortMarkView.transform.SetParent(transform.parent);
     }
 
     private void changeIcon(ZiYuanType type)
@@ -78,12 +92,43 @@ public class ZiYuanIconCell : IconCellBase
         };
         return data;
     }
+
     private void Update()
     {
         if (Time.time > checkTimer)
         {
             checkTimer = Time.time + 1 / 25f;
             chooseImg.SetActive(_ziYuanItem.isChooseMe);
+            airPortShowLogic();
         }
+    }
+
+
+    private void airPortShowLogic()
+    {
+        if (ziYuanItem.ZiYuanType != ZiYuanType.Airport) return;
+        if (ziYuanItem.beUsedCommanderIds == null && MyDataInfo.MyLevel != 1) return;
+        if (ziYuanItem.beUsedCommanderIds?.Find(x => string.Equals(x, MyDataInfo.leadId)) == null) return;
+        var itemInfo = (ziYuanItem as IAirPort)?.GetAllEquips();
+        bool isRefresh = currAllEquipInfoCount != itemInfo.Count;
+        if (isRefresh)
+        {
+            Debug.LogError("刷新"+currAllEquipInfoCount+":"+itemInfo.Count);
+            currAllEquipInfoCount = itemInfo.Count;
+            for (int i = 0; i < equipParent.childCount; i++)
+            {
+                Destroy(equipParent.GetChild(i).gameObject);
+            }
+
+            for (int i = 0; i < itemInfo.Count; i++)
+            {
+                var itemCell = Instantiate(aec, equipParent);
+                var itemIcon = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, itemInfo[i])).EquipIcon;
+                itemCell.Init(itemInfo[i],itemIcon);
+                itemCell.gameObject.SetActive(true);
+            }
+        }
+
+        airPortMarkView.SetActive(itemInfo.Count != 0);
     }
 }

@@ -37,5 +37,6 @@ public partial class HelicopterController
         currentSkill = SkillType.None;
         myState = HelicopterState.Landing;
         _airPort.goOut(BObjectId);
+        currentTargetType = (int)ZiYuanType.Airport;
     }
 }

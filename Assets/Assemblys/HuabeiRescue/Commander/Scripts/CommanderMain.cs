@@ -11,7 +11,7 @@ using EventType = Enums.EventType;
 
 public class CommanderMain : ScriptManager, IControl, IMesRec
 {
-    private List<EnumDescription> commanderLevel;
+    private List<EnumDescription> commanderLevel, taskType;
     private CommanderController _commanderController;
     private bool isMain;
 
@@ -20,6 +20,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         commanderLevel = new List<EnumDescription>();
         commanderLevel.Add(new EnumDescription(1, "一级指挥官"));
         commanderLevel.Add(new EnumDescription(2, "二级指挥官"));
+        taskType = new List<EnumDescription>();
+        taskType.Add(new EnumDescription(1, "灭火"));
+        taskType.Add(new EnumDescription(2, "救援"));
         List<EnumDescription> minMapSJY = new List<EnumDescription>();
         minMapSJY.Add(new EnumDescription(0, "中立"));
         minMapSJY.Add(new EnumDescription(1, "红方"));
@@ -27,7 +30,15 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         Properties = new DynamicProperty[]
         {
             new DropDownProperty("指挥官等级", commanderLevel, 0),
-            new InputStringProperty("十六进制标志色号", "")
+            new InputStringProperty("十六进制标志色号", ""),
+            new DropDownProperty("任务类型", taskType, 0),
+            
+            new InputFloatUnitLimitProperty("单位燃烧面积投水需求",2.5f,"kg/㎡",1.5f,2.5f),
+            new InputFloatUnitProperty("最大巡航速度",255,"km/h"),
+            new InputFloatUnitProperty("单次取水时间",0.008f,"h"),
+            new InputFloatUnitProperty("单次投水时间",0.0014f,"h"),
+            new InputFloatUnitProperty("吊桶单次最大装载量",5000,"kg"),
+            new InputFloatUnitProperty("直升机价格",13000,"万元")
         };
     }
 
@@ -169,6 +180,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.speedMultiplier = 1;
                 MyDataInfo.gameStartTime = 0;
                 EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), "推演开始！");
                 break;
             case MessageID.MoveToTarget:
                 sender.LogError("收到了移动的指令" + type);

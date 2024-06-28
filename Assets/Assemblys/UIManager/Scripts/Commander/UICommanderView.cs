@@ -21,6 +21,7 @@ public class UICommanderView : BasePanel
     private CommanderCell ccPrefab;
     private ZiYuanCell zycPrefab;
     private TaskCell taskPrefab;
+    private Text startTime, currentTime;
 
     private MyCommanderView myCommanderInfoShow;
 
@@ -45,6 +46,8 @@ public class UICommanderView : BasePanel
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
         taskParent = GetControl<ScrollRect>("TaskListView").content;
         taskPrefab = GetComponentInChildren<TaskCell>(true);
+        startTime = GetControl<Text>("startTimeShow");
+        currentTime = GetControl<Text>("currentTimeShow");
         GetControl<Button>("X").onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString()));
         GetControl<Toggle>("tog_CtrlEquipTypeView").onValueChanged.AddListener(a =>
         {
@@ -138,11 +141,19 @@ public class UICommanderView : BasePanel
                 //任务与资源逻辑应该是一样的
                 var itemObj = allBObjects[i];
                 var itemCell = Instantiate(taskPrefab, taskParent);
-                itemCell.Init("任务" + taskIndex, itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChangeZiYuanBelongTo);
+                var itemzy = itemObj.gameObject.GetComponent<ZiYuanBase>();
+                itemCell.Init("任务" + taskIndex, itemzy, OnChangeZiYuanBelongTo);
                 itemCell.gameObject.SetActive(true);
                 allTaskCells.Add(itemCell);
             }
         }
+    }
+
+    private void Update()
+    {
+        if (MyDataInfo.gameStartTime > 0 && MyDataInfo.gameStartTime < 1)
+            startTime.text = "开始时间 " + DateTime.Now.ToString("HH:mm:ss");
+        currentTime.text = "当前时间 " + DateTime.Now.ToString("HH:mm:ss");
     }
 
     private void OnChooseEquipType(string id)

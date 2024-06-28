@@ -23,7 +23,7 @@ public class UIAirportAircraftShowView : BasePanel
         base.ShowMe(userData);
         AirportAircraftsInfo info = (AirportAircraftsInfo)userData;
 
-        viewPoint.anchoredPosition = info.PointPos;
+        viewPoint.anchoredPosition = info.PointPos + new Vector2(12, -12);
         //将所有飞机列表展示出来
         for (int i = 0; i < info.AircraftDatas.Count; i++)
         {

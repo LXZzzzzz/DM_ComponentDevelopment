@@ -22,6 +22,7 @@ public class TestLogic : MonoBehaviour
     public float speed;
 
     public testObjData to;
+    public RectTransform testPoint;
 
     void Start()
     {
@@ -54,11 +55,15 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            var ins=Instantiate(to);
-            ins.gameObject.SetActive(true);
+            EventManager.Instance.EventTrigger(Enums.EventType.ShowAMsgInfo.ToString(), "执行起飞操作卡萨丁解放拉萨发");
         }
 
         if (isRunTimer) runTimer();
+
+        if (routePoints!=null)
+        {
+            // testPoint.anchoredPosition = routePoints[1];
+        }
     }
 
     private float timer, timeDuration, skillProgress;
@@ -92,7 +97,7 @@ public class TestLogic : MonoBehaviour
     {
         routePoints = new List<Vector2>();
         routePoints.Add(Vector2.zero);
-        routePoints.Add(Vector2.one * 10);
+        routePoints.Add(Vector2.one * 30);
         vl = new VectorLine("Line", routePoints, 3, LineType.Continuous);
 #if UNITY_EDITOR
         vl.SetCanvas(can);

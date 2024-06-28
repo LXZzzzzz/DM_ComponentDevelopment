@@ -29,6 +29,8 @@ public class UIMap : BasePanel, IPointerClickHandler
     private MapOperateLogicBase currentMapLogic;
 
     public RectTransform TempIcon;
+    private GameObject routeDecorateGo;
+    private RectTransform startPoint, middlePoint, endPoint;
 
     public override void Init()
     {
@@ -40,6 +42,10 @@ public class UIMap : BasePanel, IPointerClickHandler
         ziYuanIconPrefab = transform.Find("prefabs/ziyuanCell").GetComponent<ZiYuanIconCell>();
         TempIcon = transform.Find("maxMap/TempIcon").GetComponent<RectTransform>();
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
+        routeDecorateGo = transform.Find("maxMap/objects/routeDecorate").gameObject;
+        startPoint = transform.Find("maxMap/objects/routeDecorate/startPoint").GetComponent<RectTransform>();
+        middlePoint = transform.Find("maxMap/objects/routeDecorate/middlePoint").GetComponent<RectTransform>();
+        endPoint = transform.Find("maxMap/objects/routeDecorate/endPoint").GetComponent<RectTransform>();
 
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
         allObjModels = new List<EquipBase>();
@@ -58,10 +64,12 @@ public class UIMap : BasePanel, IPointerClickHandler
 
         uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
         EventManager.Instance.AddEventListener<int>(EventType.SwitchMapModel.ToString(), SwithMode);
-        
+
         //刚开始切换为编辑模式，并通知初始化场景
         SwitchMapLogic(OperatorState.CreatAndEditor);
         EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allBObjects);
+        // 当前UI对象的局部Y轴
+        localYAxis = middlePoint.transform.up;
     }
 
     public override void HideMe()
@@ -90,7 +98,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     public void SwitchMapLogic(OperatorState targetState)
     {
 #if !UNITY_EDITOR
-     sender.LogError("当前地图模式："+targetState);   
+     sender.LogError("当前地图模式："+targetState);
 #endif
         bool isCreat = !mapLogics.ContainsKey(targetState);
         switch (targetState)
@@ -175,6 +183,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     private void Update()
     {
         currentMapLogic?.OnUpdate();
+        routeDecorateGo.transform.SetAsLastSibling();
         if (Input.GetKeyDown(KeyCode.M))
         {
             Debug.LogError(Screen.width + "=" + Screen.height);
@@ -185,7 +194,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     {
         //这里是检测点击区域是否在地图内部
         Vector2 newPos = resolutionRatioNormalized(eventData.position);
-        
+
         Vector2 point = mousePos2UI(newPos) + new Vector2(mapView.sizeDelta.x / 2, mapView.sizeDelta.y / 2);
         if (point.x < 0 || point.y < 0 || point.x > mapView.sizeDelta.x || point.y > mapView.sizeDelta.y) return;
         switch (eventData.button)
@@ -199,6 +208,28 @@ public class UIMap : BasePanel, IPointerClickHandler
         }
     }
 
+    private Vector3 localYAxis;
+    public void OnShowRouteArrow(bool isShow, Vector2 startPos, Vector2 endPos)
+    {
+        routeDecorateGo.SetActive(isShow);
+        startPoint.anchoredPosition = startPos;
+        endPoint.anchoredPosition = endPos;
+        middlePoint.anchoredPosition = startPos + (endPos - startPos).normalized * (endPos - startPos).magnitude / 2;
+
+        Vector3 targetDirection = (endPos - startPos).normalized;
+
+        // 计算旋转轴
+        Vector3 rotationAxis = Vector3.Cross(localYAxis, targetDirection);
+
+        // 计算旋转角度
+        float angle = Mathf.Acos(Vector3.Dot(localYAxis, targetDirection));
+        
+        // 创建四元数表示绕rotationAxis旋转angle弧度
+        Quaternion rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, rotationAxis);
+        middlePoint.rotation = rotation;
+        endPoint.rotation = rotation;
+    }
+
     //针对屏幕分辨率对应鼠标位置进行归一化
     public Vector2 resolutionRatioNormalized(Vector2 nowPos)
     {
@@ -206,7 +237,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         float ybl = Screen.height / uiCameraSize.y;
         return new Vector2(nowPos.x / xbl, nowPos.y / ybl);
     }
-    
+
     /// <summary>
     /// 鼠标位置转UI点
     /// </summary>

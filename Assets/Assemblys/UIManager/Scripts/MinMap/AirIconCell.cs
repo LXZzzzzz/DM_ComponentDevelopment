@@ -15,26 +15,30 @@ public class AirIconCell : IconCellBase
     private RectTransform meRect;
     private GameObject rootObj;
     private Func<Vector3, Vector2> worldPosMapPosFunc;
+    private UnityAction<bool, Vector2, Vector2> setRouteCb;
     private GameObject showChooseState;
     private VectorLine currentMoveRoute;
     private List<Vector2> routePoints;
     private Image skillProgressShow;
-    private Text skillName;
+    private Text skillName,skillNameRight;
     private Image belongtoShow;
 
-    public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc)
+    public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc, UnityAction<bool, Vector2, Vector2> setRouteCb)
     {
         base.Init(belongToId, chooseCb);
         this.equipGo = equipGo;
         this.worldPosMapPosFunc = worldPosMapPosFunc;
+        this.setRouteCb = setRouteCb;
         meRect = GetComponent<RectTransform>();
         rootObj = transform.Find("Root").gameObject;
         showChooseState = transform.Find("Root/Choose").gameObject;
         transform.Find("Root/airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
         transform.Find("Root/equipName").GetComponent<Text>().text = equipGo.name;
+        skillName = transform.Find("Root/skillName").GetComponent<Text>();
+        skillNameRight = transform.Find("skillNameRight").GetComponent<Text>();
         skillProgressShow = transform.Find("progress").GetComponent<Image>();
-        skillName = transform.Find("skillName").GetComponent<Text>();
         belongtoShow = transform.Find("Root/belongTo").GetComponent<Image>();
+
         initLine();
     }
 
@@ -90,6 +94,7 @@ public class AirIconCell : IconCellBase
         {
             routePoints[0] = meRect.anchoredPosition;
             routePoints[1] = equipGo.TargetPos == Vector3.zero ? meRect.anchoredPosition : worldPosMapPosFunc(equipGo.TargetPos);
+            setRouteCb?.Invoke(Vector2.Distance(routePoints[0], routePoints[1]) > 50, routePoints[0], routePoints[1]);
             currentMoveRoute.Draw();
         }
 
@@ -103,6 +108,7 @@ public class AirIconCell : IconCellBase
         else
         {
             currentMoveRoute.active = false;
+            setRouteCb?.Invoke(false, Vector2.zero, Vector2.zero);
         }
     }
 
@@ -120,6 +126,7 @@ public class AirIconCell : IconCellBase
         {
             if (skillName.gameObject.activeSelf) skillName.gameObject.SetActive(false);
             if (skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(false);
+            if (skillNameRight.gameObject.activeSelf) skillNameRight.gameObject.SetActive(false);
             return;
         }
 
@@ -129,10 +136,14 @@ public class AirIconCell : IconCellBase
         switch (equipGo.currentSkill)
         {
             case SkillType.GroundReady:
-                skillName.text = "正在起飞前准备...";
+                if (skillName.gameObject.activeSelf) skillName.gameObject.SetActive(false);
+                if (!skillNameRight.gameObject.activeSelf) skillNameRight.gameObject.SetActive(true);
+                skillNameRight.text = "正在起飞前准备...";
                 break;
             case SkillType.BePutInStorage:
-                skillName.text = "正在入库...";
+                if (skillName.gameObject.activeSelf) skillName.gameObject.SetActive(false);
+                if (!skillNameRight.gameObject.activeSelf) skillNameRight.gameObject.SetActive(true);
+                skillNameRight.text = "正在入库...";
                 break;
             case SkillType.TakeOff:
                 skillName.text = "正在起飞...";

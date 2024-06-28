@@ -4,15 +4,27 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using ToolsLibrary;
+using ToolsLibrary.EquipPart;
 
 public class TaskCell : DraggingFunction
 {
-    //todo:还需要实现任务完成的标识
-    public void Init(string taskIndex, string taskInfoStr, string entityId, Func<string, string, bool, bool> changeDataCallBack)
+    private Toggle isComplete;
+    private ITaskProgress tp;
+
+    public void Init(string taskIndex, ZiYuanBase ziYuan, Func<string, string, bool, bool> changeDataCallBack)
     {
-        base.Init(entityId, changeDataCallBack);
-        transform.Find("Text_taskIndex").GetComponentInChildren<Text>().text = taskIndex;
-        transform.Find("Text_taskDescribe").GetComponentInChildren<Text>().text = taskInfoStr;
-        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), entityId));
+        base.Init(ziYuan.BobjectId, changeDataCallBack);
+        isComplete = transform.Find("RootInfo/Tog_status").GetComponent<Toggle>();
+        tp = ziYuan as ITaskProgress;
+        transform.Find("RootInfo/Text_taskIndex").GetComponentInChildren<Text>().text = taskIndex;
+        transform.Find("RootInfo/Text_taskName").GetComponentInChildren<Text>().text = ziYuan.ziYuanName;
+        transform.Find("describe/Text_taskDescribe").GetComponentInChildren<Text>().text = ziYuan.ziYuanDescribe;
+        GetComponentInChildren<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), ziYuan.BobjectId));
+    }
+
+    private void LateUpdate()
+    {
+        if (tp == null) return;
+        isComplete.isOn = tp.getTaskProgress();
     }
 }

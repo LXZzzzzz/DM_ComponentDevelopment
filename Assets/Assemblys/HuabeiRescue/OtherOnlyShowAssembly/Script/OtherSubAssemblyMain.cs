@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DM.Core.Map;
 using DM.Entity;
 using DM.IFS;
 using UnityEngine;
@@ -19,6 +20,8 @@ public class OtherSubAssemblyMain : ScriptManager
     {
         base.RunModeInitialized(isRoomCreator, info);
         //进入运行模式后，传入参数，告诉他是什么类型的资源
-        gameObject.AddComponent<OtherZiYuan>().Init((Properties[0] as InputIntProperty).Value, BObjectId);
+        OtherZiYuan oz = gameObject.AddComponent<OtherZiYuan>();
+        oz.Init((Properties[0] as InputIntProperty).Value, BObjectId);
+        oz.ziYuanName = GetComponent<BObjectModel>().BObject.Info.Name;
     }
 }

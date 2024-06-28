@@ -103,7 +103,7 @@ namespace OldLogic
                 itemCell.gameObject.SetActive(true);
                 //传入这个组件的基本信息，和选择后的回调
                 itemCell.transform.position = worldPos2UiPos(allObjModels[i].gameObject.transform.position);
-                (itemCell as AirIconCell).Init(allObjModels[i], allObjModels[i].BObjectId, OnChooseObj, worldPos2UiPos);
+                // (itemCell as AirIconCell).Init(allObjModels[i], allObjModels[i].BObjectId, OnChooseObj, worldPos2UiPos);
                 allIconCells.Add(allObjModels[i].BObjectId, itemCell);
             }
 
@@ -117,7 +117,7 @@ namespace OldLogic
             itemCell.gameObject.SetActive(true);
             //传入这个组件的基本信息，和选择后的回调
             itemCell.transform.position = worldPos2UiPos(equip.gameObject.transform.position);
-            (itemCell as AirIconCell).Init(equip, equip.BObjectId, OnChooseObj, worldPos2UiPos);
+            // (itemCell as AirIconCell).Init(equip, equip.BObjectId, OnChooseObj, worldPos2UiPos);
             allIconCells.Add(equip.BObjectId, itemCell);
         }
 

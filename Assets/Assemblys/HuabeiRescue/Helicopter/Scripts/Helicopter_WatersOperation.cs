@@ -41,8 +41,8 @@ public partial class HelicopterController
             {
                 currentSkill = SkillType.WaterIntaking;
                 Debug.LogError(myAttributeInfo.qssj * 60);
-                if (myRecordedData.eachSortieData[^1].firstLoadingGoodsTime < 1)
-                    myRecordedData.eachSortieData[^1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
+                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstLoadingGoodsTime < 1)
+                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
                 openTimer(myAttributeInfo.qssj * 60f, OnQSSuc);
                 return;
             }
@@ -63,6 +63,10 @@ public partial class HelicopterController
         Debug.LogError("找到火场：" + items.Count);
         for (int i = 0; i < items.Count; i++)
         {
+            Debug.LogError(items[i].ziYuanName);
+        }
+        for (int i = 0; i < items.Count; i++)
+        {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
             if (Vector3.Distance(transform.position, zyPos) < minDis)
             {
@@ -79,9 +83,9 @@ public partial class HelicopterController
         }
 
         currentSkill = SkillType.WaterPour;
-        if (myRecordedData.eachSortieData[^1].firstOperationTime < 1)
-            myRecordedData.eachSortieData[^1].firstOperationTime = MyDataInfo.gameStartTime;
-        myRecordedData.eachSortieData[^1].lastOperationTime = MyDataInfo.gameStartTime;
+        if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstOperationTime < 1)
+            myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstOperationTime = MyDataInfo.gameStartTime;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].lastOperationTime = MyDataInfo.gameStartTime;
         openTimer(myAttributeInfo.sssj * 60, OnSSSuc);
     }
 
@@ -93,7 +97,7 @@ public partial class HelicopterController
 
     private void OnSSSuc()
     {
-        myRecordedData.eachSortieData[^1].totalWeight += amountOfWater;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].totalWeight += amountOfWater;
         currentSkill = SkillType.None;
         amountOfWater = 0;
     }

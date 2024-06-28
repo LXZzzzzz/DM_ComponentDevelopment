@@ -1,3 +1,4 @@
+using ToolsLibrary;
 using UiManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,6 +33,7 @@ public class UIHangShowInfo : BasePanel
         {
             var itemCom = Instantiate(comCell, comParent);
             itemCom.GetComponentInChildren<Text>(true).text = getComName(data.beUseCommanders[i]);
+            itemCom.GetComponentInChildren<Image>().color = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, data.beUseCommanders[i])).MyColor;
             itemCom.gameObject.SetActive(true);
         }
     }
