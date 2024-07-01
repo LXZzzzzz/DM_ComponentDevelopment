@@ -56,6 +56,10 @@ public class UITopMenuView : BasePanel
                 }
             }
         });
+        GetControl<Toggle>("Tog_Zhpg").onValueChanged.AddListener(a =>
+        {
+            if(a) EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
+        });
     }
 
     public override void ShowMe(object userData)

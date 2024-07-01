@@ -20,6 +20,7 @@ namespace UiManager
         public Dictionary<string, Sprite> PicBObjects;
 
         public string MisName;
+        public string terrainName;
 
         private void Start()
         {
@@ -40,7 +41,7 @@ namespace UiManager
             uiPanelWhereLayer.Add(UIName.UIConfirmation, BasePanel.UIType.popUp);
             uiPanelWhereLayer.Add(UIName.UITopMenuView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIRightClickMenuView, BasePanel.UIType.upper);
-            uiPanelWhereLayer.Add(UIName.UIAttributeView, BasePanel.UIType.upper);
+            // uiPanelWhereLayer.Add(UIName.UIAttributeView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIHangShowInfo, BasePanel.UIType.popUp);
             uiPanelWhereLayer.Add(UIName.UIAirportAircraftShowView, BasePanel.UIType.upper);
         }

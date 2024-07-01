@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2097243664454479537
 Transform:
   m_ObjectHideFlags: 0
@@ -235,6 +235,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: "M26_\u7B80\u5316"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787378286181530143, guid: bb8bfb3851f731a44bedf2068a2f3153,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8787394612882896219, guid: bb8bfb3851f731a44bedf2068a2f3153,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8788068252786866233, guid: bb8bfb3851f731a44bedf2068a2f3153,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8788079831524301151, guid: bb8bfb3851f731a44bedf2068a2f3153,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

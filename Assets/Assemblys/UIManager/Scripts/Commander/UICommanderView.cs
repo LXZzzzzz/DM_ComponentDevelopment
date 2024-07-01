@@ -90,7 +90,6 @@ public class UICommanderView : BasePanel
         //获取子指挥官,一级指挥端才需要显示，只显示别人
         if (level == 1)
         {
-            allCommanderIds.Add(MyDataInfo.leadId, "一级指挥官");
             for (int i = 0; i < allBObjects.Length; i++)
             {
                 //找到了主角,并且不是自己，就要展示
@@ -103,6 +102,9 @@ public class UICommanderView : BasePanel
                     allCommanderIds.Add(itemObj.BObject.Id, itemObj.BObject.Info.Name);
                     allCommanderCells.Add(itemObj.BObject.Id, itemCell);
                 }
+
+                if (string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id))
+                    allCommanderIds.Add(allBObjects[i].BObject.Id, allBObjects[i].BObject.Info.Name);
             }
 
             //获取场景中标识了模板的对象，展示出来

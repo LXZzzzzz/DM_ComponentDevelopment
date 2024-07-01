@@ -35,8 +35,6 @@ public class ZiYuanIconCell : IconCellBase
                 break;
             }
         }
-
-        transform.GetChild(1).gameObject.SetActive(true);
         chooseImg = transform.Find("Choose").gameObject;
         airPortMarkView = transform.Find("airPortMarkView").gameObject;
         equipParent = airPortMarkView.GetComponentInChildren<ScrollRect>(true).content;
@@ -56,28 +54,28 @@ public class ZiYuanIconCell : IconCellBase
         switch (type)
         {
             case ZiYuanType.Supply:
-                index = 9;
-                break;
-            case ZiYuanType.RescueStation:
                 index = 8;
                 break;
-            case ZiYuanType.Airport:
-                index = 4;
-                break;
-            case ZiYuanType.Hospital:
-                index = 3;
-                break;
-            case ZiYuanType.GoodsPoint:
+            case ZiYuanType.RescueStation:
                 index = 7;
                 break;
-            case ZiYuanType.Waters:
+            case ZiYuanType.Airport:
+                index = 3;
+                break;
+            case ZiYuanType.Hospital:
                 index = 2;
                 break;
+            case ZiYuanType.GoodsPoint:
+                index = 6;
+                break;
+            case ZiYuanType.Waters:
+                index = 1;
+                break;
             case ZiYuanType.DisasterArea:
-                index = 5;
+                index = 4;
                 break;
             case ZiYuanType.SourceOfAFire:
-                index = 6;
+                index = 5;
                 break;
         }
 

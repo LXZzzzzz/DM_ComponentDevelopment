@@ -83,7 +83,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2940793303027776523
 Transform:
   m_ObjectHideFlags: 0
@@ -181,6 +181,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4558047237358805615}
     m_Modifications:
+    - target: {fileID: 770737530235288971, guid: 3f9cbc022ae4c704281f26d98794a4da,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -1002.0902
+      objectReference: {fileID: 0}
+    - target: {fileID: 1005863460310299158, guid: 3f9cbc022ae4c704281f26d98794a4da,
+        type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 552d946088e3c534daabc95d3bcf5b7a, type: 2}
+    - target: {fileID: 1359739715139994690, guid: 3f9cbc022ae4c704281f26d98794a4da,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3685933877476911958, guid: 3f9cbc022ae4c704281f26d98794a4da,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -231,10 +246,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3864211499796012580, guid: 3f9cbc022ae4c704281f26d98794a4da,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5266026691457917496, guid: 3f9cbc022ae4c704281f26d98794a4da,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5502765085417705775, guid: 3f9cbc022ae4c704281f26d98794a4da,
+        type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: ea826b374b3e5394da34d6acd58f52da, type: 2}
+    - target: {fileID: 5535135437388057596, guid: 3f9cbc022ae4c704281f26d98794a4da,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -5191.1445
+      objectReference: {fileID: 0}
     - target: {fileID: 5763315389368402863, guid: 3f9cbc022ae4c704281f26d98794a4da,
         type: 3}
       propertyPath: m_Name
       value: "AC313_\u7B80\u5316"
+      objectReference: {fileID: 0}
+    - target: {fileID: 6871076748102078441, guid: 3f9cbc022ae4c704281f26d98794a4da,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

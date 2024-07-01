@@ -55,6 +55,7 @@ namespace Enums
         TriggerPlacementOfPersonnel = 1112, //触发安置人员操作
         TriggerCableDescentRescue = 1113, //触发索降救援操作
 
-        TriggerEndTask = 1114 //触发结束任务操作
+        TriggerReturnFlight = 1114, //触发返航指令
+        TriggerEndTask = 1115 //触发结束任务操作
     }
 }

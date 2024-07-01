@@ -41,8 +41,8 @@ public partial class HelicopterController
             {
                 currentSkill = SkillType.WaterIntaking;
                 Debug.LogError(myAttributeInfo.qssj * 60);
-                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstLoadingGoodsTime < 1)
-                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
+                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime < 1)
+                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
                 openTimer(myAttributeInfo.qssj * 60f, OnQSSuc);
                 return;
             }
@@ -65,6 +65,7 @@ public partial class HelicopterController
         {
             Debug.LogError(items[i].ziYuanName);
         }
+
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
@@ -79,25 +80,26 @@ public partial class HelicopterController
         if (targetZy != null && minDis < targetZy.DetectionRange)
         {
             Debug.LogError("找到了符合条件的火场");
-            (targetZy as ISourceOfAFire).waterPour(MyDataInfo.gameStartTime, amountOfWater);
+            //如果当前没有水了，就不给他水，如果有就直接给喷洒面积
+            (targetZy as ISourceOfAFire).waterPour(MyDataInfo.gameStartTime, amountOfWater < 1 ? 0 : myAttributeInfo.psmj, amountOfWater);
         }
 
         currentSkill = SkillType.WaterPour;
-        if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstOperationTime < 1)
-            myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstOperationTime = MyDataInfo.gameStartTime;
-        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].lastOperationTime = MyDataInfo.gameStartTime;
+        if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime < 1)
+            myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime = MyDataInfo.gameStartTime;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastOperationTime = MyDataInfo.gameStartTime;
         openTimer(myAttributeInfo.sssj * 60, OnSSSuc);
     }
 
     private void OnQSSuc()
     {
         currentSkill = SkillType.None;
-        amountOfWater = myAttributeInfo.dszl;
+        amountOfWater = Mathf.Min(amountOfWater + myAttributeInfo.dszl, myAttributeInfo.zdzsl);
     }
 
     private void OnSSSuc()
     {
-        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].totalWeight += amountOfWater;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].totalWeight += amountOfWater;
         currentSkill = SkillType.None;
         amountOfWater = 0;
     }

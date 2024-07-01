@@ -3,7 +3,7 @@ using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
-public class OtherZiYuan : ZiYuanBase, IAirPort,IDisasterArea
+public class OtherZiYuan : ZiYuanBase, IAirPort
 {
     //需要一个属性，存储我的类型，让地图获取到，显示不同icon
     public void Init(int type, string id)
@@ -36,10 +36,5 @@ public class OtherZiYuan : ZiYuanBase, IAirPort,IDisasterArea
     protected override void OnReset()
     {
         allDockingAircraft.Clear();
-    }
-
-    public void airdropGoods(float time, float squareMeasure)
-    {
-        Debug.LogError($"灾区点在{time}时刻受到{squareMeasure}kg的物资");
     }
 }

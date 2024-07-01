@@ -31,6 +31,8 @@ public class AttributeView_ZiyuanPart : DMonoBehaviour
                 return "救助站";
             case ZiYuanType.SourceOfAFire:
                 return "火灾点";
+            case ZiYuanType.TaskPoint:
+                return "任务点";
         }
 
         return "---";

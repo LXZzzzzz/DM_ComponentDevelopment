@@ -39,7 +39,13 @@ public class TestLogic : MonoBehaviour
         testDic = new Dictionary<string, string>();
 
         to.test = new testClass() { aaa = 20, bbb = 30 };
+        fp.Init(5, 10, 23000, "1111111");
     }
+
+    public FirePointLogic fp;
+    public float waterTime, mj;
+
+    public GameObject fj;
 
     void Update()
     {
@@ -55,12 +61,28 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            EventManager.Instance.EventTrigger(Enums.EventType.ShowAMsgInfo.ToString(), "执行起飞操作卡萨丁解放拉萨发");
+            fp.waterPour(waterTime, mj, 0);
+            var anis = fj.GetComponentsInChildren<Animation>();
+            Debug.LogError(anis.Length);
+            for (int i = 0; i < anis.Length; i++)
+            {
+                anis[i].Play();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            var anis = fj.GetComponentsInChildren<Animation>();
+            Debug.LogError(anis.Length);
+            for (int i = 0; i < anis.Length; i++)
+            {
+                anis[i].Stop();
+            }
         }
 
         if (isRunTimer) runTimer();
 
-        if (routePoints!=null)
+        if (routePoints != null)
         {
             // testPoint.anchoredPosition = routePoints[1];
         }

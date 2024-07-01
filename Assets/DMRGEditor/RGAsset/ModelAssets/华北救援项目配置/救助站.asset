@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c273b499a08c234388d3c55bea2a556, type: 3}
-  m_Name: FirePointPrefab
+  m_Name: RescueStationPrefab
   m_EditorClassIdentifier: 
-  Icon: {fileID: 21300000, guid: 9b4b985ea4197b046ab15f3141886de2, type: 3}
-  AssetName: FirePointPrefab
+  Icon: {fileID: 21300000, guid: 2d8e4c9922fb18647b8b2ddd17fdaf7a, type: 3}
+  AssetName: "\u6551\u52A9\u7AD9"
   Description: 
-  Prefab: {fileID: 5946024634429980818, guid: a8f2fd8e94a53f0429612f0f809bf0cf, type: 3}
+  Prefab: {fileID: 3150196475473390709, guid: 2dd1af6011cd1f84890cf55a1aa657c4, type: 3}
   Size: 0
   listComponent:
   - BuiltIn: 1
@@ -64,7 +64,7 @@ MonoBehaviour:
       SubName: "\u77F3\u5934"
   - BuiltIn: 1
     Id: 2
-    IsOn: 0
+    IsOn: 1
     Name: "\u6C34\u9762"
     SubFoldOut: 1
     SubTags:
@@ -225,14 +225,14 @@ MonoBehaviour:
     Id: 2006
     IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C5"
-  IsCreateTag: 0
+  IsCreateTag: 1
   IsCreateScript: 1
-  IsCreateModel: 0
+  IsCreateModel: 1
   IsCompressModel: 0
   isAssignMain: 1
-  MainCalss: FirePointMain
+  MainCalss: RescueStationMain
   OtherScriptPaths:
-  - D:/UnityProjects/Work/DM_ComponentDevelopment/Assets/Assemblys/HuabeiRescue/FirePoint/Scripts
+  - D:/UnityProjects/Work/DM_ComponentDevelopment/Assets/Assemblys/HuabeiRescue/RescueStationPoint/scripts
   - D:/UnityProjects/Work/DM_ComponentDevelopment/Assets/Assemblys/PublicLogics
   OutputPaths:
   - D:/UnityProjects/Work/DM_ComponentDevelopment/Assets/DMRGEditor/RGOutput

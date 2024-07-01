@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ToolsLibrary.EffectivenessEvaluation;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ public class TestEquip : EquipBase
         throw new System.NotImplementedException();
     }
 
-    public override void OnEndTask()
+    public override void OnNullCommand(int type)
     {
         throw new System.NotImplementedException();
     }

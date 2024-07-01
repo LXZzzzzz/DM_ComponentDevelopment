@@ -32,13 +32,17 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             new DropDownProperty("指挥官等级", commanderLevel, 0),
             new InputStringProperty("十六进制标志色号", ""),
             new DropDownProperty("任务类型", taskType, 0),
-            
-            new InputFloatUnitLimitProperty("单位燃烧面积投水需求",2.5f,"kg/㎡",1.5f,2.5f),
-            new InputFloatUnitProperty("最大巡航速度",255,"km/h"),
-            new InputFloatUnitProperty("单次取水时间",0.008f,"h"),
-            new InputFloatUnitProperty("单次投水时间",0.0014f,"h"),
-            new InputFloatUnitProperty("吊桶单次最大装载量",5000,"kg"),
-            new InputFloatUnitProperty("直升机价格",13000,"万元")
+
+            new InputFloatUnitProperty("单位燃烧面积投水需求/人均救援物资需求", 2.5f, "kg/㎡(kg/人)"),
+            new InputIntUnitProperty("受灾需转运总人数(救援)", 10, "kg/㎡"),
+            new InputFloatUnitProperty("最大巡航速度", 255, "km/h"),
+            new InputFloatUnitProperty("单次取水和投水时间", 0.05f, "h"),
+            new InputFloatUnitProperty("单次物资装载时间", 0.008f, "h"),
+            new InputFloatUnitProperty("单次物资投放时间", 0.0014f, "h"),
+            new InputFloatUnitProperty("单次人员吊救时间(救援)", 0.0014f, "h"),
+            new InputIntUnitProperty("单次最大运载人数(救援)", 10, "人"),
+            new InputFloatUnitProperty("吊桶单次最大装载量/单次最大运载物资重量", 5000, "kg"),
+            new InputFloatUnitProperty("直升机每飞行小时耗油量", 1000, "kg")
         };
     }
 
@@ -85,6 +89,29 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 ClientLevelName = clientLevelName, MyColor = clientColor
             });
         }
+
+        InitRecordData();
+        _commanderController.misName = info.MisName;
+        _commanderController.misDescription = info.MisDescription;
+    }
+
+    private void InitRecordData()
+    {
+        _commanderController.cdata = new ComanderData();
+        var fields = _commanderController.cdata.GetType().GetFields();
+        for (int i = 3; i < 12; i++)
+        {
+            if (fields[i - 3].FieldType == typeof(Int32))
+            {
+                fields[i - 3].SetValue(_commanderController.cdata, (Properties[i] as InputIntUnitProperty).Value);
+            }
+            else
+            {
+                fields[i - 3].SetValue(_commanderController.cdata, (Properties[i] as InputFloatUnitProperty).Value);
+            }
+        }
+
+        _commanderController.gameType = (Properties[2] as DropDownProperty).Selected.Enum;
     }
 
     public override void PropertiesChanged(DynamicProperty[] pros)

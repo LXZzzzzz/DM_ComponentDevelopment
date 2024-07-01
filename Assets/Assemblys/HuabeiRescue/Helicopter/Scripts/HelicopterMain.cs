@@ -27,8 +27,8 @@ public class HelicopterMain : ScriptManager
             new InputFloatUnitProperty("最大航程", 800, "km"),
             new InputFloatUnitProperty("最大有效载荷", 3000, "kg"),
             new InputFloatUnitProperty("载油量", 3900, "kg"),
-            new InputFloatUnitProperty("最大载客量", 33, "人"),
-            new InputFloatUnitProperty("最大载水量", 1000, "kg"),
+            new InputIntUnitProperty("最大载客量", 33, "人"),
+            new InputFloatUnitProperty("最大载水量", 3000, "kg"),
             new InputFloatUnitProperty("最大时速", 273, "km/h"),
             new InputFloatUnitProperty("直升机巡航速度", 255, "km/h"),
             new InputFloatUnitProperty("直升机巡航高度", 300, "m"), //单位是不是错了
@@ -36,7 +36,7 @@ public class HelicopterMain : ScriptManager
             new InputFloatUnitProperty("爬升率", 66.6f, "km/h"),
             new InputFloatUnitProperty("爬升油耗", 2713.2f, "kg/h"),
             new InputFloatUnitProperty("悬停油耗", 880.8f, "kg/h"),
-            new InputFloatUnitProperty("吊水重量", 8000, "kg"),
+            new InputFloatUnitProperty("吊水重量", 3000, "kg"),
             new InputFloatUnitProperty("取水时间", 7, "min"),
             new InputFloatUnitProperty("洒水时间", 1, "min"),
             new InputFloatUnitProperty("加油时间", 20, "min"),
@@ -48,6 +48,9 @@ public class HelicopterMain : ScriptManager
             new InputFloatUnitProperty("安置伤员速率", 20, "人/min"),
             new InputFloatUnitProperty("补给时间", 20, "min"),
             new InputFloatUnitProperty("成年人平均重量", 70, "kg"),
+            new InputFloatUnitProperty("单次洒水喷洒面积", 4200, "m²"),
+            new InputFloatUnitProperty("直升机价格", 13000, "万元"),
+            new InputFloatUnitProperty("最低每小时耗油量", 100, "kg/h")
         };
     }
 
@@ -65,13 +68,18 @@ public class HelicopterMain : ScriptManager
         logic.AttributeInfos = new List<string>();
         logic.myAttributeInfo = new HelicopterInfo();
         var fields = logic.myAttributeInfo.GetType().GetFields();
-        for (int i = 4; i < 31; i++)
+        for (int i = 4; i < 34; i++)
         {
-            logic.AttributeInfos.Add((Properties[i] as InputFloatUnitProperty).Value.ToString());
             if (fields[i - 4].FieldType == typeof(Int32))
-                fields[i - 4].SetValue(logic.myAttributeInfo, (int)(Properties[i] as InputFloatUnitProperty).Value);
+            {
+                logic.AttributeInfos.Add((Properties[i] as InputIntUnitProperty).Value.ToString());
+                fields[i - 4].SetValue(logic.myAttributeInfo, (Properties[i] as InputIntUnitProperty).Value);
+            }
             else
+            {
+                logic.AttributeInfos.Add((Properties[i] as InputFloatUnitProperty).Value.ToString());
                 fields[i - 4].SetValue(logic.myAttributeInfo, (Properties[i] as InputFloatUnitProperty).Value);
+            }
         }
 
         logic.gameObject.SetActive(false);

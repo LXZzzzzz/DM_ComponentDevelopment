@@ -10,6 +10,7 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
     public void Init(string id, string associationId)
     {
         base.Init(id, 0);
+        ZiYuanType = ZiYuanType.TaskPoint;
         StartCoroutine(getZy(associationId));
     }
 
@@ -41,7 +42,11 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
         switch (associationGo.ZiYuanType)
         {
             case ZiYuanType.SourceOfAFire:
-                return (associationGo as ISourceOfAFire).getFireExtinguishingProgress();
+                return (associationGo as ISourceOfAFire).getTaskProgress();
+            case ZiYuanType.RescueStation:
+                return (associationGo as IRescueStation).getTaskProgress();
+            case ZiYuanType.DisasterArea:
+                return (associationGo as IDisasterArea).getTaskProgress();
         }
 
         return false;

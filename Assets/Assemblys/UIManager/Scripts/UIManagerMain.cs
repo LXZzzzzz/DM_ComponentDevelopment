@@ -57,6 +57,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         {
             UIManager.Instance.PicBObjects = info.PicBObjects;
             UIManager.Instance.MisName = info.MisName;
+            UIManager.Instance.terrainName = info.Mission.Terrain;
         }
 
         //其他UI预制体脚本也需要在这里进行挂载

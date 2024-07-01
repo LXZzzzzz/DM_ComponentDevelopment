@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UiManager;
@@ -59,6 +60,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         //当一级点击创建某个装备时，切换为创建模式，并传过来要创建对象的ID
         //当一级发布方案后，把自己状态切换为普通，二级收到消息后切换为创建，创建完立刻切回普通
 
+        LoadMap(Application.dataPath + $"/LibRes/TerrainLib/{UIManager.Instance.terrainName}/{UIManager.Instance.terrainName}.png");
+
         mapBLx = ((Vector2)userData).x / mapView.sizeDelta.x;
         mapBLz = ((Vector2)userData).y / mapView.sizeDelta.y;
 
@@ -70,6 +73,35 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allBObjects);
         // 当前UI对象的局部Y轴
         localYAxis = middlePoint.transform.up;
+    }
+
+    private Texture2D m_Tex;
+
+    private void LoadMap(string path)
+    {
+        m_Tex = new Texture2D(1, 1);
+        //读取图片字节流
+        m_Tex.LoadImage(ReadPNG(path));
+
+        //变换格式
+        Sprite tempSprite = Sprite.Create(m_Tex, new Rect(0, 0, m_Tex.width, m_Tex.height), new Vector2(10, 10));
+        mapView.GetComponent<Image>().sprite = tempSprite; //赋值
+    }
+
+    private byte[] ReadPNG(string path)
+    {
+        Debug.Log(path);
+        FileStream fileStream = new FileStream(path, FileMode.Open, System.IO.FileAccess.Read);
+
+        fileStream.Seek(0, SeekOrigin.Begin);
+        //创建文件长度的buffer
+        byte[] binary = new byte[fileStream.Length];
+        fileStream.Read(binary, 0, (int)fileStream.Length);
+        fileStream.Close();
+        fileStream.Dispose();
+        fileStream = null;
+
+        return binary;
     }
 
     public override void HideMe()
@@ -209,6 +241,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     }
 
     private Vector3 localYAxis;
+
     public void OnShowRouteArrow(bool isShow, Vector2 startPos, Vector2 endPos)
     {
         routeDecorateGo.SetActive(isShow);
@@ -223,7 +256,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
         // 计算旋转角度
         float angle = Mathf.Acos(Vector3.Dot(localYAxis, targetDirection));
-        
+
         // 创建四元数表示绕rotationAxis旋转angle弧度
         Quaternion rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, rotationAxis);
         middlePoint.rotation = rotation;

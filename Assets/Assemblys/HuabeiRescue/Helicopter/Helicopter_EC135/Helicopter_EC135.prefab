@@ -51,7 +51,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1967062426227848035
 Transform:
   m_ObjectHideFlags: 0
@@ -181,6 +181,31 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1566830095304517029}
     m_Modifications:
+    - target: {fileID: 5546518871739192367, guid: 9dbea9bc6708fa64fb1d632c31cd857f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5546520731041735169, guid: 9dbea9bc6708fa64fb1d632c31cd857f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548100864254044157, guid: 9dbea9bc6708fa64fb1d632c31cd857f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548253216776801999, guid: 9dbea9bc6708fa64fb1d632c31cd857f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548385011650840561, guid: 9dbea9bc6708fa64fb1d632c31cd857f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5581782402032994811, guid: 9dbea9bc6708fa64fb1d632c31cd857f,
         type: 3}
       propertyPath: m_Name

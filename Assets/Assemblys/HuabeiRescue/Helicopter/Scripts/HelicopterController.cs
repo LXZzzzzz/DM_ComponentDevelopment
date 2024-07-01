@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using ToolsLibrary;
+using ToolsLibrary.EffectivenessEvaluation;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 using UnityEngine.Events;
@@ -22,6 +23,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private bool isRunTimer;
     private float timer;
     private float timeDuration;
+
+    private Animation[] anis;
 
 
     public override void Init(EquipBase baseData)
@@ -64,13 +67,19 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
                 mySkills.Add(new SkillData() { SkillType = SkillType.PlacementOfPersonnel, isUsable = false, skillName = "安置人员" });
         }
 
-        mySkills.Add(new SkillData() { SkillType = SkillType.EndTask, isUsable = false, skillName = "结束任务" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.ReturnFlight, isUsable = true, skillName = "返航" });
+        mySkills.Add(new SkillData() { SkillType = SkillType.EndTask, isUsable = true, skillName = "结束任务" });
 
         currentSkill = SkillType.None;
         myState = HelicopterState.NotReady;
         isWaitArrive = false;
         isRunTimer = false;
         currentTargetType = -1;
+        anis = transform.GetComponentsInChildren<Animation>();
+        for (int i = 0; i < anis.Length; i++)
+        {
+            anis[i].Stop();
+        }
     }
 
     private void InitData(EquipBase baseData)
@@ -135,7 +144,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
             if (mySkills[i].SkillType == SkillType.UnLadeGoods)
             {
-                bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.GoodsPoint;
+                ZiYuanType itemType = (ZiYuanType)currentTargetType;
+                bool isArriveTargetType = currentTargetType != -1 && isArrive && (itemType == ZiYuanType.GoodsPoint || itemType == ZiYuanType.RescueStation);
                 mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
             }
 
@@ -218,6 +228,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             case SkillType.CableDescentRescue:
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerCableDescentRescue, BObjectId);
                 break;
+            case SkillType.ReturnFlight:
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerReturnFlight, BObjectId);
+                break;
             case SkillType.EndTask:
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerEndTask, BObjectId);
                 break;
@@ -238,10 +251,18 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         return ismove;
     }
 
-    public override void OnEndTask()
+    public override void OnNullCommand(int type)
     {
-        if (myRecordedData.endTaskTime < 1)
-            myRecordedData.endTaskTime = MyDataInfo.gameStartTime;
+        if (type == 0)
+        {
+            myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].returnFlightTime = MyDataInfo.gameStartTime;
+        }
+
+        if (type == 1)
+        {
+            if (myRecordedData.endTaskTime < 1)
+                myRecordedData.endTaskTime = MyDataInfo.gameStartTime;
+        }
     }
 
     protected override void OnClose()
@@ -463,4 +484,20 @@ public class HelicopterInfo
     /// 成年人平均体重
     /// </summary>
     public float cnrpjtz;
+
+    /// <summary>
+    /// 洒水喷洒面积
+    /// </summary>
+    public float psmj;
+
+    /// <summary>
+    /// 直升机价格
+    /// </summary>
+    public float zsjjg;
+
+    /// <summary>
+    /// 最低每小时耗油量
+    /// </summary>
+    /// <returns></returns>
+    public float zdmxshyl;
 }

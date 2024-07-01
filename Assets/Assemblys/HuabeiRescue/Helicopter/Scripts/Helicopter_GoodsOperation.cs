@@ -20,8 +20,8 @@ public partial class HelicopterController
                 currentSkill = SkillType.LadeGoods;
                 float itemgoods = myAttributeInfo.zdyxzh - amountOfGoods - amountOfPerson;
                 Debug.LogError(itemgoods / myAttributeInfo.zzwzsl * 60);
-                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstLoadingGoodsTime < 1)
-                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
+                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime < 1)
+                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
                 openTimer(itemgoods / myAttributeInfo.zzwzsl * 60f, OnZZWZSuc);
                 return;
             }
@@ -40,7 +40,7 @@ public partial class HelicopterController
     {
         if (myState != HelicopterState.Landing) return;
         //找到场景中所有物资点，判断距离
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint);
+        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint || x.ZiYuanType == ZiYuanType.RescueStation);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
@@ -48,9 +48,10 @@ public partial class HelicopterController
             {
                 currentSkill = SkillType.UnLadeGoods;
                 Debug.LogError(amountOfGoods / myAttributeInfo.xzwzsl * 60);
-                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstOperationTime < 1)
-                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstOperationTime = MyDataInfo.gameStartTime;
-                myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].lastOperationTime = MyDataInfo.gameStartTime;
+                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime < 1)
+                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime = MyDataInfo.gameStartTime;
+                myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastOperationTime = MyDataInfo.gameStartTime;
+                if (items[i] is IRescueStation) (items[i] as IRescueStation).goodsPour(amountOfGoods);
                 openTimer(amountOfGoods / myAttributeInfo.xzwzsl * 60f, OnXZWZSuc);
                 return;
             }
@@ -62,7 +63,7 @@ public partial class HelicopterController
 
     private void OnXZWZSuc()
     {
-        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].totalWeight += amountOfGoods;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].totalWeight += amountOfGoods;
         amountOfGoods = 0;
     }
 
@@ -89,9 +90,9 @@ public partial class HelicopterController
         }
 
         currentSkill = SkillType.AirdropGoods;
-        if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstOperationTime < 1)
-            myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].firstOperationTime = MyDataInfo.gameStartTime;
-        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count-1].lastOperationTime = MyDataInfo.gameStartTime;
+        if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime < 1)
+            myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime = MyDataInfo.gameStartTime;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastOperationTime = MyDataInfo.gameStartTime;
         openTimer(amountOfGoods / myAttributeInfo.ktwzsl * 60, OnXZWZSuc);
     }
 }

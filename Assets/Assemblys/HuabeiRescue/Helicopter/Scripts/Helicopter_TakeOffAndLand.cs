@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ToolsLibrary;
+using ToolsLibrary.EffectivenessEvaluation;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
@@ -15,6 +16,11 @@ public partial class HelicopterController
         myRecordedData.eachSortieData.Add(new SingleSortieData());
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), () => myState = HelicopterState.hover);
         myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].takeOffTime = MyDataInfo.gameStartTime;
+        
+        for (int i = 0; i < anis.Length; i++)
+        {
+            anis[i].Play();
+        }
     }
 
     public void Landing()
@@ -23,6 +29,11 @@ public partial class HelicopterController
         currentSkill = SkillType.Landing;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), () => myState = HelicopterState.Landing);
         myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].landingTime = MyDataInfo.gameStartTime;
+        
+        for (int i = 0; i < anis.Length; i++)
+        {
+            anis[i].Stop();
+        }
     }
 
     public void Supply(List<ZiYuanBase> allzy)

@@ -5,6 +5,7 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
 {
     private FireManage fm;
     private float fs, pd, csrsmj;
+    private float allWeight;
 
     public void Init(float fs, float pd, float csrsmj, string id)
     {
@@ -17,21 +18,33 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
         this.fs = fs;
         this.pd = pd;
         this.csrsmj = csrsmj;
+        allWeight = 0;
     }
 
-    public void waterPour(float time, float squareMeasure)
+    public void waterPour(float time, float squareMeasure, float weight)
     {
-        Debug.LogError($"火源点在{time}时刻受到{squareMeasure}kg的水");
+        Debug.LogError($"火源点在{time}时刻受到{squareMeasure}面积对应{weight}kg重的水");
         fm.SetDrowning(squareMeasure, time);
+        allWeight += weight;
     }
 
-    public bool getFireExtinguishingProgress()
+    public bool getTaskProgress()
     {
         return fm.IsFire;
+    }
+
+    public void getFireData(out float ghmj, out float rsmj, out float csrsmj, out float tszl)
+    {
+        Debug.LogError("收到的投水量"+allWeight);
+        ghmj = (float)fm.burnedArea;
+        rsmj = (float)fm.burnArea;
+        csrsmj = this.csrsmj;
+        tszl = allWeight;
     }
 
     protected override void OnReset()
     {
         fm.Init(fs, pd, csrsmj);
+        allWeight = 0;
     }
 }
