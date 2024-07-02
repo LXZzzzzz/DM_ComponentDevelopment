@@ -19,6 +19,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private UnityAction OnCountdownEndsCallBack;
     private int currentTargetType;
     private RecordedData myRecordedData;
+    private List<ZiYuanBase> sceneAllZiyuan;
 
     private bool isRunTimer;
     private float timer;
@@ -27,9 +28,10 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private Animation[] anis;
 
 
-    public override void Init(EquipBase baseData)
+    public override void Init(EquipBase baseData,List<ZiYuanBase> sceneAllZiyuan)
     {
-        base.Init(baseData);
+        base.Init(baseData,sceneAllZiyuan);
+        this.sceneAllZiyuan = sceneAllZiyuan;
         InitData(baseData);
         EventManager.Instance.AddEventListener<int>(EventType.ChooseEquipToZiYuanType.ToString(), OnSetTargetType);
         myRecordedData = new RecordedData();

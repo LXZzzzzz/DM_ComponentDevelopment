@@ -8,11 +8,11 @@ public partial class HelicopterController
     private int amountOfPerson;
 
     private int itemPersonNum;
-    public void Manned(List<ZiYuanBase> allZiyuan)
+    public void Manned()
     {
         if (myState != HelicopterState.Landing) return;
         //找到场景中所有灾区点，判断距离
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
@@ -37,11 +37,11 @@ public partial class HelicopterController
         amountOfPerson = itemPersonNum;
     }
 
-    public void PlacementOfPersonnel(List<ZiYuanBase> allZiyuan)
+    public void PlacementOfPersonnel()
     {
         if (myState != HelicopterState.Landing) return;
         //找到场景中所有灾区点，判断距离
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
@@ -65,11 +65,11 @@ public partial class HelicopterController
         amountOfPerson = 0;
     }
 
-    public void CableDescentRescue(List<ZiYuanBase> allZiyuan)
+    public void CableDescentRescue()
     {
         if (myState != HelicopterState.hover) return;
         //找到场景中所有灾区点，判断距离
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);

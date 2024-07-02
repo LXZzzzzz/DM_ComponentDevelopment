@@ -7,11 +7,11 @@ public partial class HelicopterController
 {
     private float amountOfGoods;
 
-    public void LadeGoods(List<ZiYuanBase> allZiyuan)
+    public void LadeGoods()
     {
         if (myState != HelicopterState.Landing) return;
         //找到场景中所有物资点，判断距离
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
@@ -36,11 +36,11 @@ public partial class HelicopterController
         amountOfGoods = myAttributeInfo.zdyxzh - amountOfGoods - amountOfPerson;
     }
 
-    public void UnLadeGoods(List<ZiYuanBase> allZiyuan)
+    public void UnLadeGoods()
     {
         if (myState != HelicopterState.Landing) return;
         //找到场景中所有物资点，判断距离
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint || x.ZiYuanType == ZiYuanType.RescueStation);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint || x.ZiYuanType == ZiYuanType.RescueStation);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
@@ -67,12 +67,12 @@ public partial class HelicopterController
         amountOfGoods = 0;
     }
 
-    public void AirdropGoods(Vector3 pos, List<ZiYuanBase> allZiyuan)
+    public void AirdropGoods(Vector3 pos)
     {
         transform.position = pos;
         float minDis = float.MaxValue;
         ZiYuanBase targetZy = null;
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);

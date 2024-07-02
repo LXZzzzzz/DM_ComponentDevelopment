@@ -27,12 +27,12 @@ namespace ReportGenerate
     public class HeliSortieData
     {
         /// <summary>
-        /// 起飞时刻
+        /// 物资装载点的起飞时刻//todo:(物资改)
         /// </summary>
         public double TakeOffTime;
 
         /// <summary>
-        /// 返航时刻
+        /// 返航时刻(指令得到)
         /// </summary>
         public double ReturnTime;
 
@@ -47,7 +47,7 @@ namespace ReportGenerate
         public double WaterTime;
 
         /// <summary>
-        /// 投水时刻
+        /// 投水最后的时刻
         /// </summary>
         public double WaterFireTime;
 
@@ -72,12 +72,12 @@ namespace ReportGenerate
         public double MaterialTime;
 
         /// <summary>
-        /// 物资投送重量
+        /// 物资投送总重量
         /// </summary>
         public double MaterialWeight;
 
         /// <summary>
-        /// 投送物资时刻
+        /// 投送物资最后的时刻
         /// </summary>
         public double MaterialPointTime;
 
@@ -85,6 +85,16 @@ namespace ReportGenerate
         /// 转运人员数量
         /// </summary>
         public double PersonCount;
+
+        /// <summary>
+        /// 转运人员首次的时刻 //todo:第一次转运人员时间
+        /// </summary>
+        public double PersonFirstTime;
+
+        /// <summary>
+        /// 转运人员最后的时刻 //todo:最后一次转运人员时间
+        /// </summary>
+        public double PersonEndTime;
 
         /// <summary>
         /// 人员转运任务总时间
@@ -142,6 +152,11 @@ namespace ReportGenerate
         /// 转运人员数量
         /// </summary>
         public double PersonCount;
+
+        /// <summary>
+        /// 物资投放需求重量
+        /// </summary>
+        public double PersonMaterialNeed;
 
         /// <summary>
         /// 物资总完成度

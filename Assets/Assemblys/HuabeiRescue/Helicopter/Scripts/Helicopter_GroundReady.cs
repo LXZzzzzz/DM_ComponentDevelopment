@@ -15,10 +15,10 @@ public partial class HelicopterController
         openTimer(myAttributeInfo.qfqzbsj * 60, OnGRSuc);
     }
 
-    public void BePutInStorage(List<ZiYuanBase> allZiyuan)
+    public void BePutInStorage()
     {
         if (myState != HelicopterState.Landing) return;
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);

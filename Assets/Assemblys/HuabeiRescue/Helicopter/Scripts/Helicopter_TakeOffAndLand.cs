@@ -15,7 +15,18 @@ public partial class HelicopterController
         currentSkill = SkillType.TakeOff;
         myRecordedData.eachSortieData.Add(new SingleSortieData());
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), () => myState = HelicopterState.hover);
-        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].takeOffTime = MyDataInfo.gameStartTime;
+        
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint);
+        for (int i = 0; i < items.Count; i++)
+        {
+            Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
+            if (Vector3.Distance(transform.position, zyPos) < 10)
+            {
+                //在物资装在点起飞时刻记录
+                myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].takeOffTime = MyDataInfo.gameStartTime;
+                return;
+            }
+        }
         
         for (int i = 0; i < anis.Length; i++)
         {
@@ -36,11 +47,11 @@ public partial class HelicopterController
         }
     }
 
-    public void Supply(List<ZiYuanBase> allzy)
+    public void Supply()
     {
         if (myState != HelicopterState.Landing) return;
         //找到场景中补给点，判断距离
-        var items = allzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);

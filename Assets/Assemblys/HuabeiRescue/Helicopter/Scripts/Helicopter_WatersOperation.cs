@@ -29,11 +29,11 @@ public partial class HelicopterController
         // else StartCoroutine(quWater());
     }
 
-    public void WaterIntaking_New(List<ZiYuanBase> allzy)
+    public void WaterIntaking_New()
     {
         if (myState != HelicopterState.hover) return;
         //找到场景中所有水源点，判断距离
-        var items = allzy.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
@@ -53,13 +53,13 @@ public partial class HelicopterController
     }
 
 
-    public void WaterPour(Vector3 pos, List<ZiYuanBase> allZiyuan)
+    public void WaterPour(Vector3 pos)
     {
         currentSkill = SkillType.WaterPour;
         transform.position = pos;
         float minDis = float.MaxValue;
         ZiYuanBase targetZy = null;
-        var items = allZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.SourceOfAFire);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.SourceOfAFire);
         Debug.LogError("找到火场：" + items.Count);
         for (int i = 0; i < items.Count; i++)
         {

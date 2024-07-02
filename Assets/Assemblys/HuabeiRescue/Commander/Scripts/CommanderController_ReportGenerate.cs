@@ -73,15 +73,16 @@ public partial class CommanderController
             }
         }
 
+        sender.LogError("任务结束时过火总面积" + ghzmj);
         ResultFireWaterOutData rfout = new ResultFireWaterOutData
         {
             任务结束时投水总量 = tszl,
             任务结束时过火总面积 = ghzmj,
             任务结束时燃烧面积 = rszmj,
             任务初始燃烧面积 = csrszmj,
-            开始投水时刻 = kstssk,
+            开始投水时刻 = kstssk >= float.MaxValue - 1 ? 0 : kstssk, //增大检测范围，防止浮点误差
             取水点到投水点的最短路径 = minWater2FireDistance,
-            任务结束时刻 = rwjssk,
+            任务结束时刻 = rwjssk < 0 ? 0 : rwjssk,
             总航程 = zhc,
             直升机总架次 = zjc,
             火场数量 = sceneAllzy.FindAll(a => a.ZiYuanType == ZiYuanType.SourceOfAFire).Count,
@@ -130,10 +131,11 @@ public partial class CommanderController
                     MaterialTime = itemDatas[j].firstLoadingGoodsTime,
                     MaterialWeight = itemDatas[j].totalWeight,
                     MaterialPointTime = itemDatas[j].lastOperationTime,
-                    PersonCount = itemDatas[j].numberOfRescues
+                    PersonCount = itemDatas[j].numberOfRescues,
+                    PersonFirstTime = itemDatas[j].firstLoadingGoodsTime, PersonEndTime = itemDatas[j].lastOperationTime
                 };
+                Debug.LogError($"{hd1.Name}返航时间{hsd1.ReturnTime}起飞时间{hsd1.TakeOffTime}");
                 hsd1List.Add(hsd1);
-
                 WaterMegData mpmd = new WaterMegData
                 {
                     sortieIndex = j + 1,
@@ -148,18 +150,10 @@ public partial class CommanderController
             heliWaterMegList.Add(hd1.Name, nwmdList);
         }
 
-        foreach (var aaa in heliWaterMegList)
-        {
-            Debug.LogError(aaa.Key);
-            Debug.LogError(aaa.Value.Count);
-        }
-
         EvalManage em = new EvalManage();
         ResultFireWaterData rfwd = em.EvalWaterCompute(rfout, rfsystem);
 
-        List<string> trainData = clientOperatorInfos;
-        Debug.LogError(trainData.Count + "指令长度");
-        report.CreateWaterMissionReport(MyDataInfo.leadId, misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, trainData, heliWaterMegList);
+        report.CreateWaterMissionReport(MyDataInfo.leadId, misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList);
     }
 
     private void GenerateRescueReport()
@@ -232,7 +226,7 @@ public partial class CommanderController
             任务结束时各救援安置点物资投放重量 = totalWeighta,
             首批救援物资到达安置点时刻 = firstTimea,
             物资装载起降点到安置点的最短路径 = minDisasterArea2RescueStationDis,
-            任务结束时刻 = rwjssk,
+            任务结束时刻 = rwjssk < 0 ? 0 : rwjssk,
             总航程 = zhc,
             所有飞机总架次 = zjc,
             受灾地点数量 = sceneAllzy.FindAll(a => a.ZiYuanType == ZiYuanType.DisasterArea).Count,
@@ -279,7 +273,7 @@ public partial class CommanderController
                 {
                     TakeOffTime = itemDatas[j].takeOffTime,
                     ReturnTime = itemDatas[j].returnFlightTime < itemDatas[j].takeOffTime ? itemDatas[j].takeOffTime + 1 : itemDatas[j].returnFlightTime,
-                    EndMissonTime = itemDatas[j].landingTime,
+                    EndMissonTime = MyDataInfo.sceneAllEquips[i].GetRecordedData().endTaskTime,
                     WaterTime = itemDatas[j].firstLoadingGoodsTime,
                     WaterFireTime = itemDatas[j].lastOperationTime,
                     WaterZongWeight = itemDatas[j].totalWeight,
@@ -287,14 +281,17 @@ public partial class CommanderController
                     MaterialTime = itemDatas[j].firstLoadingGoodsTime,
                     MaterialWeight = itemDatas[j].totalWeight,
                     MaterialPointTime = itemDatas[j].lastOperationTime,
-                    PersonCount = itemDatas[j].numberOfRescues
+                    PersonCount = itemDatas[j].numberOfRescues,
+                    PersonFirstTime = itemDatas[j].firstLoadingGoodsTime, PersonEndTime = itemDatas[j].lastOperationTime
                 };
+                Debug.LogError($"{hd1.Name}返航时间{hsd1.ReturnTime}起飞时间{hsd1.TakeOffTime}");
                 hsd1List.Add(hsd1);
                 MaterialPersonMegData mpmd = new MaterialPersonMegData
                 {
                     sortieIndex = j + 1,
-                    TakeOffTime = ConvertSecondsToHHMMSS(itemDatas[j].firstOperationTime),
-                    EndMissionTime = ConvertSecondsToHHMMSS(itemDatas[j].lastOperationTime),
+                    TakeOffTime = ConvertSecondsToHHMMSS(itemDatas[j].takeOffTime),
+                    EndMissionTime = ConvertSecondsToHHMMSS(MyDataInfo.sceneAllEquips[i].GetRecordedData().endTaskTime),
+                    MaterialTime = ConvertSecondsToHHMMSS(itemDatas[j].lastOperationTime),
                     MaterialWeight = itemDatas[j].totalWeight,
                     PersonCount = itemDatas[j].numberOfRescues
                 };
@@ -307,9 +304,8 @@ public partial class CommanderController
 
         EvalManage em = new EvalManage();
         ResultMaterialPersonData rfwd = em.EvalMaterialCompute(cfout, rfsystem);
-        List<string> trainData = clientOperatorInfos;
 
-        report.CreateRescueMissionReport(MyDataInfo.leadId, misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, trainData, heliMegList);
+        report.CreateRescueMissionReport(MyDataInfo.leadId, misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList);
     }
 }
 
