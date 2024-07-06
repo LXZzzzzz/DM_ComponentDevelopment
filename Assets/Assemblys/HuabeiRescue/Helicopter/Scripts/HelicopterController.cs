@@ -28,9 +28,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private Animation[] anis;
 
 
-    public override void Init(EquipBase baseData,List<ZiYuanBase> sceneAllZiyuan)
+    public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
     {
-        base.Init(baseData,sceneAllZiyuan);
+        base.Init(baseData, sceneAllZiyuan);
         this.sceneAllZiyuan = sceneAllZiyuan;
         InitData(baseData);
         EventManager.Instance.AddEventListener<int>(EventType.ChooseEquipToZiYuanType.ToString(), OnSetTargetType);
@@ -96,11 +96,13 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         amountOfGoods = 0;
         amountOfPerson = 0;
         speed = myAttributeInfo.zsjxhsd / 3.6f;
+        isCrash = false;
     }
 
     private void OnSetTargetType(int zyt)
     {
-        if (isChooseMe) currentTargetType = zyt;
+        if (isChooseMe && (myState == HelicopterState.flying || myState == HelicopterState.hover) && !isCrash)
+            currentTargetType = zyt;
     }
 
     public override List<SkillData> GetSkillsData()
@@ -137,7 +139,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             }
 
             if (mySkills[i].SkillType == SkillType.WaterPour)
-                mySkills[i].isUsable = myState == HelicopterState.flying || myState == HelicopterState.hover;
+                mySkills[i].isUsable = (myState == HelicopterState.flying || myState == HelicopterState.hover) && amountOfWater > 1;
             if (mySkills[i].SkillType == SkillType.LadeGoods)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.GoodsPoint;
@@ -152,7 +154,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             }
 
             if (mySkills[i].SkillType == SkillType.AirdropGoods)
-                mySkills[i].isUsable = myState == HelicopterState.flying || myState == HelicopterState.hover;
+                mySkills[i].isUsable = (myState == HelicopterState.flying || myState == HelicopterState.hover) && amountOfGoods > 1;
             if (mySkills[i].SkillType == SkillType.Manned)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.DisasterArea;
@@ -249,7 +251,14 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
         bool ismove = myState == HelicopterState.flying || myState == HelicopterState.hover;
 
-        if (!ismove) EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "装备未起飞");
+        if (!ismove) EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "装备未起飞！");
+
+        if (isCrash)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "装备油量耗尽，已坠毁！");
+            return false;
+        }
+
         return ismove;
     }
 
@@ -267,6 +276,15 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         }
     }
 
+    public override void GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person)
+    {
+        currentOil = amountOfOil;
+        totalOil = myAttributeInfo.zyl;
+        water = amountOfWater;
+        goods = amountOfGoods;
+        person = amountOfPerson;
+    }
+
     protected override void OnClose()
     {
         EventManager.Instance.EventTrigger(EventType.DestoryEquip.ToString(), BObjectId);
@@ -282,6 +300,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         switchMyState();
 
         calculationData();
+
+        if (!isCrash && amountOfOil <= 0) isCrash = true;
     }
 
     private void switchMyState()
@@ -292,13 +312,49 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         }
     }
 
+    private Vector3 lastPos = Vector3.zero;
+
     private void calculationData()
     {
         if (myState == HelicopterState.flying)
         {
             myRecordedData.allDistanceTravelled += speed * Time.deltaTime * MyDataInfo.speedMultiplier;
-            //todo:应该还得加油耗计算，飞行油耗，悬浮油耗
+            if (lastPos != Vector3.zero)
+            {
+                float ifc = HeliPointFuel(transform.position, lastPos, speed * MyDataInfo.speedMultiplier, myAttributeInfo.xhyh);
+                amountOfOil -= ifc;
+                Debug.LogError("当前油量" + amountOfOil);
+            }
+
+            lastPos = transform.position;
         }
+
+        if (myState == HelicopterState.hover)
+        {
+            amountOfOil -= myAttributeInfo.xtyh / 3600f * Time.deltaTime * MyDataInfo.speedMultiplier;
+        }
+    }
+
+    /// <summary>
+    /// 直升机到目标点之间的消耗油耗
+    /// </summary>
+    /// <param name="StartVect">起点的位置</param>
+    /// <param name="TargetVect">目标点的位置</param>
+    /// <param name="HeliVelocity">直升机速度（巡航，爬升，下降）</param>
+    /// <param name="SegmentFlightFuelConsumption">耗油率</param>
+    /// <returns></returns>
+    private float HeliPointFuel(Vector3 StartVect, Vector3 TargetVect, float HeliVelocity, float SegmentFlightFuelConsumption)
+    {
+        float RemainingFuel = 0f;
+        float SegmentFlightTime; //航段所需时间
+        float distanceab = Vector3.Distance(StartVect, TargetVect);
+        if (distanceab > 0)
+        {
+            SegmentFlightTime = distanceab / HeliVelocity; //千米每小时转换成米每秒
+            RemainingFuel = SegmentFlightTime * SegmentFlightFuelConsumption / 3600.0f;
+        }
+
+        return RemainingFuel;
     }
 
 

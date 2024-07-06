@@ -95,6 +95,9 @@ public class UICommanderView : BasePanel
                 //找到了主角,并且不是自己，就要展示
                 if (!string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id) && allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
                 {
+                    //如果这个玩家没有进入房间，就跳过
+                    string myRoleId = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).RoleId;
+                    if (string.IsNullOrEmpty(myRoleId)) continue;
                     var itemObj = allBObjects[i];
                     var itemCell = Instantiate(ccPrefab, commanderParent);
                     itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChooseCommander);

@@ -27,10 +27,11 @@ public class UIAirportAircraftShowView : BasePanel
         //将所有飞机列表展示出来
         for (int i = 0; i < info.AircraftDatas.Count; i++)
         {
-            var itemaa = Instantiate(aacell, menusParent);
             var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, info.AircraftDatas[i]));
+            if (!string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId)) continue;
+            var itemaa = Instantiate(aacell, menusParent);
             itemaa.gameObject.SetActive(true);
-            itemaa.Init(info.AircraftDatas[i], itemEquip.name, string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId), info.OnRightClickCallBack);
+            itemaa.Init(info.AircraftDatas[i], itemEquip.name, info.OnRightClickCallBack);
         }
     }
 

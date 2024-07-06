@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class FireManage : DMonoBehaviour
@@ -15,6 +16,7 @@ public class FireManage : DMonoBehaviour
     private double burnedCount = 0;
     private double _burnArea = 0; //燃烧面积
     private double _burnedArea = 0f; //过火面积
+    private double _csBurnedArea = 0;//初始过火面积
     private double Wcount;
 
     private double SprayingArea = 0f; //喷洒面积
@@ -27,20 +29,31 @@ public class FireManage : DMonoBehaviour
 
     public double burnedArea => _burnedArea;
 
+    public double csBurnedArea => _csBurnedArea;
+
     public void Init(float wind, float slope, float squareMeasure)
     {
         fireTran = transform.Find("BigFire");
-        this.wind = wind;
-        this.slope = slope > 10 ? 10 : slope;
+        this.wind = wind <= 1 ? 1 : wind;
+        this.slope = slope <= 16 ? 16 : slope;
         _burnArea = 0;
         _burnedArea = 0;
         IsFire = false;
         isGaming = true;
         index = 0;
         fireTran.gameObject.SetActive(true);
-
+        Debug.LogError("初始燃烧面积：" + squareMeasure);
         gameTimer = ComputeTime(squareMeasure / 400);
+        StartCoroutine(Init());
     }
+
+    IEnumerator Init()
+    {
+        yield return 1;
+        _csBurnedArea = _burnedArea;
+        Debug.LogError("初始过火燃烧面积：" + _csBurnedArea);
+    }
+    
 
     public void Update()
     {
@@ -128,27 +141,48 @@ public class FireManage : DMonoBehaviour
         isWater = true;
     }
 
+    /// <summary>
+    /// 燃烧面积公式
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
     public double ComputeBurnCount(double time)
     {
-        double burnCount = -24.889674335 * slope + 3.646092538 * Math.Pow(slope, 2) - 0.088770151 * Math.Pow(slope, 3) - 0.000209294 * Math.Pow(wind, 4) + 0.000048718 * Math.Pow(wind, 3) * slope +
-            0.000071368 * Math.Pow(wind, 2) * Math.Pow(slope, 2) - 0.000004081 * wind * Math.Pow(slope, 3) + 0.000693082 * Math.Pow(slope, 4) + 0.0138951 * time + 14;
-
+        double newSlope = slope * Math.PI / 180;
+        double a = 0.1127 * Math.Pow(Math.Tan(newSlope), 2);
+        double b = 0.422 * (Math.Pow((3.284 * wind), 0.381));
+        double c = 0.305 * time - 9.06;
+        double burnCount = a * b * c;
         return burnCount;
     }
 
+    /// <summary>
+    /// 过火面积公式
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
     public double ComputeBurnedCount(double time)
     {
-        double burnedCount = -0.001177737 * wind + 0.030355707 * slope - 0.215432836 * Math.Pow(wind, 2) + 2.581114293 * wind * slope - 0.492540312 * Math.Pow(wind, 3)
-            + 0.332922535 * Math.Pow(wind, 2) * slope - 0.062450523 * wind * Math.Pow(slope, 2) - 0.007056557 * Math.Pow(slope, 2) + 0.6554745 * time;
-
-
+        double newSlope = slope * Math.PI / 180;
+        double a = 0.0648 * Math.Pow(Math.Tan(newSlope), 2);
+        double b = 0.438 * (Math.Pow((3.284 * wind), 0.381));
+        double c = 2.546 * time - 2999;
+        double burnedCount = a * b * c;
         return burnedCount;
     }
 
+    /// <summary>
+    /// 时间公式
+    /// </summary>
+    /// <param name="count"></param>
+    /// <returns></returns>
     public double ComputeTime(double count)
     {
-        double WTime = -(-24.889674335 * slope + 3.646092538 * Math.Pow(slope, 2) - 0.088770151 * Math.Pow(slope, 3) - 0.000209294 * Math.Pow(wind, 4) + 0.000048718 * Math.Pow(wind, 3) * slope +
-            0.000071368 * Math.Pow(wind, 2) * Math.Pow(slope, 2) - 0.000004081 * wind * Math.Pow(slope, 3) + 0.000693082 * Math.Pow(slope, 4) + 14 - count) / 0.0138951;
+        double newSlope = slope * Math.PI / 180;
+        double a = 0.1127 * Math.Pow(Math.Tan(newSlope), 2);
+        double b = 0.422 * (Math.Pow((3.284 * wind), 0.381));
+        double count1 = a * b;
+        double WTime = (9.06 + (count / count1)) / 0.305;
         return WTime;
     }
 }

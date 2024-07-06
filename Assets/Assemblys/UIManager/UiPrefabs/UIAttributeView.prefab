@@ -5600,8 +5600,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4.4999695, y: 28.640015}
-  m_SizeDelta: {x: 100, y: 30}
+  m_AnchoredPosition: {x: 64.99179, y: 28.640015}
+  m_SizeDelta: {x: 251.2296, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6317773171311024131
 CanvasRenderer:
@@ -6617,7 +6617,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3022212620364465564}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
@@ -13628,13 +13628,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5519079264592372320}
   m_TextComponent: {fileID: 1163508327121025191}
   m_Placeholder: {fileID: 1592568308553102446}
-  m_ContentType: 3
+  m_ContentType: 0
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 2
+  m_KeyboardType: 0
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 2
+  m_CharacterValidation: 0
   m_CharacterLimit: 0
   m_OnSubmit:
     m_PersistentCalls:

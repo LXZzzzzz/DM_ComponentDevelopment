@@ -184,6 +184,7 @@ namespace ReportGenerate
             doc.Close();
             writer.Close();
             Debug.LogError("生成PDF");
+            System.Diagnostics.Process.Start("Explorer", dirPath.Replace('/', '\\'));
         }
 
         /// <summary>
@@ -358,7 +359,8 @@ namespace ReportGenerate
             doc.Add(table); doc.Add(nullString);
             doc.Close();
             writer.Close();
-            Debug.LogError("生成PDF");
+            Debug.LogError("生成PDF"); 
+            System.Diagnostics.Process.Start("Explorer", dirPath.Replace('/', '\\'));
         }
 
         private PdfPCell MyCell(string text)

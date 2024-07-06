@@ -8,7 +8,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
     private float totalWeight;
     private int totalPerson;
 
-    private float needGoodsWeight;
+    private float perPersonNeedGoodsWeight;
     private int maxPersonNum;
 
     public void Init(string id, float goodsWeight, int personNum)
@@ -18,7 +18,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
         firstGoodsTime = 0;
         totalWeight = 0;
         totalPerson = 0;
-        needGoodsWeight = goodsWeight;
+        perPersonNeedGoodsWeight = goodsWeight;
         maxPersonNum = personNum;
     }
 
@@ -43,6 +43,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
     public void placementOfPersonnel(int personNum)
     {
         totalPerson += personNum;
+        totalPerson = totalPerson >= maxPersonNum ? maxPersonNum : totalPerson;
         Debug.LogError($"安置点被安置了{totalPerson}人");
     }
 
@@ -53,8 +54,13 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
         totalWeight = this.totalWeight;
     }
 
-    public bool getTaskProgress()
+    public bool getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum)
     {
-        return totalPerson >= maxPersonNum && totalWeight >= needGoodsWeight;
+        currentPersonNum = totalPerson;
+        maxPersonNum = this.maxPersonNum;
+        currentGoodsNum = totalWeight;
+        maxGoodsNum = perPersonNeedGoodsWeight * totalPerson;
+        
+        return totalPerson >= this.maxPersonNum && totalWeight >= perPersonNeedGoodsWeight * this.maxPersonNum;
     }
 }

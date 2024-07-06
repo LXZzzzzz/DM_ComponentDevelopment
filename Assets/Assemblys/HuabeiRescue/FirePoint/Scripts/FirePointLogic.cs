@@ -23,8 +23,8 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
 
     public void waterPour(float time, float squareMeasure, float weight)
     {
-        Debug.LogError($"火源点在{time}时刻受到{squareMeasure}面积对应{weight}kg重的水");
-        fm.SetDrowning(squareMeasure, time);
+        Debug.LogError($"火源点在{time}时刻受到{weight}面积对应{weight}kg重的水");
+        fm.SetDrowning(weight, time);
         allWeight += weight;
     }
 
@@ -33,11 +33,12 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
         return fm.IsFire;
     }
 
-    public void getFireData(out float ghmj, out float rsmj, out float csrsmj, out float tszl)
+    public void getFireData(out float ghmj, out float rsmj,out float csghmj, out float csrsmj, out float tszl)
     {
         Debug.LogError("收到的投水量"+allWeight);
         ghmj = (float)fm.burnedArea;
         rsmj = (float)fm.burnArea;
+        csghmj = (float)fm.csBurnedArea;
         csrsmj = this.csrsmj;
         tszl = allWeight;
     }

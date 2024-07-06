@@ -10,9 +10,10 @@ public class OtherSubAssemblyMain : ScriptManager
 {
     private void Awake()
     {
-        Properties = new[]
+        Properties = new DynamicProperty[]
         {
-            new InputIntProperty("资源类型", 0)
+            new InputIntProperty("资源类型", 0),
+            new InputStringProperty("组件描述","组件的基本描述。。。")
         };
     }
 

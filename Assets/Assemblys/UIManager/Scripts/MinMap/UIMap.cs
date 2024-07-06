@@ -79,13 +79,15 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     private void LoadMap(string path)
     {
+#if !UNITY_EDITOR
         m_Tex = new Texture2D(1, 1);
         //读取图片字节流
         m_Tex.LoadImage(ReadPNG(path));
 
         //变换格式
         Sprite tempSprite = Sprite.Create(m_Tex, new Rect(0, 0, m_Tex.width, m_Tex.height), new Vector2(10, 10));
-        mapView.GetComponent<Image>().sprite = tempSprite; //赋值
+        mapView.GetComponent<Image>().sprite = tempSprite; //赋值 
+#endif
     }
 
     private byte[] ReadPNG(string path)

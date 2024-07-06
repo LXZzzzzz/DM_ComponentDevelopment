@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
+using UiManager;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -15,6 +17,7 @@ public class EquipCell : DMonoBehaviour
     private UnityAction<string, string> changeCallBack;
     private Dictionary<int, string> dropDownSupplementInfo;
     private float checkTimer;
+    private Button deleBtn;
 
     public string equipObjectId => _equip.BObjectId;
     public string equipBeUseCommander => _equip.BeLongToCommanderId;
@@ -24,8 +27,10 @@ public class EquipCell : DMonoBehaviour
         showName = GetComponentInChildren<Text>();
         changeCtrl = GetComponentInChildren<Dropdown>();
         chooseImg = transform.Find("ChooseImg").gameObject;
+        deleBtn = transform.Find("btn_Dele").GetComponent<Button>();
         transform.Find("btn_positioning").GetComponent<Button>().onClick.AddListener(onPositioning);
         transform.Find("btn_track").GetComponent<Button>().onClick.AddListener(onTrack);
+        deleBtn.onClick.AddListener(deleEquip);
         noDpShowName = transform.Find("noDpShowName").GetComponent<Text>();
         changeCallBack = changeCb;
         _equip = equip;
@@ -43,6 +48,25 @@ public class EquipCell : DMonoBehaviour
         dropDownInit();
         checkTimer = Time.time;
         GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), equip.BObjectId));
+    }
+
+    private void deleEquip()
+    {
+        ConfirmatonInfo infob = new ConfirmatonInfo
+        {
+            type = showType.secondConfirm, showStrInfo = "请确认是否删除", sureCallBack = a =>
+            {
+                bool isdele = ProgrammeDataManager.Instance.DeleEquip(equipObjectId);
+                if (isdele)
+                    MyDataInfo.sceneAllEquips.Find(b => string.Equals(b.BObjectId, equipObjectId)).Destroy();
+                else
+                {
+                    ConfirmatonInfo infoc = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "数据错误，请退出重试！！" };
+                    UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoc);
+                }
+            }
+        };
+        UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
     }
 
     private void dropDownInit()
@@ -90,6 +114,7 @@ public class EquipCell : DMonoBehaviour
             checkTimer = Time.time + 1 / 25f;
             chooseImg.SetActive(_equip.isChooseMe);
             changeCtrl.interactable = (int)MyDataInfo.gameState < 2;
+            deleBtn.gameObject.SetActive(MyDataInfo.gameState == GameState.FirstLevelCommanderEditor);
         }
     }
 

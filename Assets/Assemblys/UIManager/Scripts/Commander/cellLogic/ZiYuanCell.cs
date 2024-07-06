@@ -18,12 +18,12 @@ public class ZiYuanCell : DraggingFunction
 
         _ziYuan = ziyuan;
         chooseImg = transform.Find("ChooseImg").gameObject;
-        transform.Find("Text_name").GetComponent<Text>().text = pointName;
-        transform.Find("Text_describe").GetComponent<Text>().text = pointName;
+        transform.Find("Text_name").GetComponent<Text>().text = _ziYuan.ziYuanName;
+        transform.Find("Text_describe").GetComponent<Text>().text = _ziYuan.ziYuanDescribe;
         GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), entityId));
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (Time.time > checkTimer)
         {

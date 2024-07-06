@@ -35,20 +35,29 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
         //清除任务状态
     }
 
-    public bool getTaskProgress()
+    public bool getTaskProgress(out string progressInfo)
     {
+        progressInfo = "";
+        bool isComplete = false;
         if (associationGo == null)
             return false;
         switch (associationGo.ZiYuanType)
         {
             case ZiYuanType.SourceOfAFire:
-                return (associationGo as ISourceOfAFire).getTaskProgress();
+                isComplete = (associationGo as ISourceOfAFire).getTaskProgress();
+                (associationGo as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl);
+                progressInfo = $"燃烧面积：{(int)(rsmj < 0 ? 0 : rsmj)}m²";
+                break;
             case ZiYuanType.RescueStation:
-                return (associationGo as IRescueStation).getTaskProgress();
+                isComplete = (associationGo as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
+                progressInfo = $"安置人员:{currentPersonNum}人/{maxPersonNum}人\n所需物资:{currentGoodsNum}kg{maxGoodsNum}kg";
+                break;
             case ZiYuanType.DisasterArea:
-                return (associationGo as IDisasterArea).getTaskProgress();
+                isComplete = (associationGo as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
+                progressInfo = $"转运人员:{currentNum}人/{maxNum}人";
+                break;
         }
 
-        return false;
+        return isComplete;
     }
 }

@@ -9,7 +9,8 @@ public class DisasterAreaMain : ScriptManager
     {
         Properties = new DynamicProperty[]
         {
-            new InputIntUnitProperty("需要救助人数", 5000, "人")
+            new InputIntUnitProperty("需要救助人数", 5000, "人"),
+            new InputStringProperty("组件描述","灾区点，需要在这救助人员")
         };
     }
 
@@ -20,5 +21,6 @@ public class DisasterAreaMain : ScriptManager
         rsl.Init(BObjectId, (Properties[0] as InputIntUnitProperty).Value);
 
         rsl.ziYuanName = GetComponent<BObjectModel>().BObject.Info.Name;
+        rsl.ziYuanDescribe = (Properties[1] as InputStringProperty).Value;
     }
 }

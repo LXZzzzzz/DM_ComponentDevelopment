@@ -94,7 +94,7 @@ public partial class HelicopterController
     private void OnQSSuc()
     {
         currentSkill = SkillType.None;
-        amountOfWater = Mathf.Min(amountOfWater + myAttributeInfo.dszl, myAttributeInfo.zdzsl);
+        amountOfWater = myAttributeInfo.dszl; //Mathf.Min(amountOfWater + myAttributeInfo.dszl, myAttributeInfo.zdzsl);
     }
 
     private void OnSSSuc()

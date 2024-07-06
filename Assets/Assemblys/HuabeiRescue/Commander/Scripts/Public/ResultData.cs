@@ -267,6 +267,7 @@ namespace ReportGenerate
         public double 任务结束时投水总量;
         public double 任务结束时过火总面积;
         public double 任务结束时燃烧面积;
+        public double 任务初始过火总面积;
         public double 任务初始燃烧面积;
         public double 开始投水时刻;
         public double 取水点到投水点的最短路径;

@@ -51,7 +51,6 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
 
     public virtual void DestroyMe()
     {
-        
     }
 }
 
@@ -62,4 +61,8 @@ public class IconInfoData
     public string entityName;
     public string entityInfo;
     public List<string> beUseCommanders;
+    public bool isAir = false;
+    public float waterNum;
+    public float goodsNum;
+    public float personNum;
 }

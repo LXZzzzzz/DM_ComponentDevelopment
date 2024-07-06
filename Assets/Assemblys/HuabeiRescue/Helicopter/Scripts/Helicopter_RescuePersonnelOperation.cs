@@ -8,6 +8,7 @@ public partial class HelicopterController
     private int amountOfPerson;
 
     private int itemPersonNum;
+
     public void Manned()
     {
         if (myState != HelicopterState.Landing) return;
@@ -24,6 +25,10 @@ public partial class HelicopterController
                 itemPersonNum = (items[i] as IDisasterArea).rescuePerson(itemperson);
                 Debug.LogError(itemPersonNum / myAttributeInfo.ldzzrysl * 60);
                 openTimer(itemPersonNum / myAttributeInfo.ldzzrysl * 60f, OnZZRYSuc);
+
+                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime < 1)
+                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime = MyDataInfo.gameStartTime;
+                myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastRescuePersonTime = MyDataInfo.gameStartTime;
                 return;
             }
         }
@@ -81,6 +86,10 @@ public partial class HelicopterController
                 itemPersonNum = (items[i] as IDisasterArea).rescuePerson(itemperson);
                 Debug.LogError(itemPersonNum / myAttributeInfo.sjjrsl * 60);
                 openTimer(itemPersonNum / myAttributeInfo.sjjrsl * 60f, OnZZRYSuc);
+                
+                if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime < 1)
+                    myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime = MyDataInfo.gameStartTime;
+                myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastRescuePersonTime = MyDataInfo.gameStartTime;
                 return;
             }
         }

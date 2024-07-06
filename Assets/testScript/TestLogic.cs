@@ -39,7 +39,7 @@ public class TestLogic : MonoBehaviour
         testDic = new Dictionary<string, string>();
 
         to.test = new testClass() { aaa = 20, bbb = 30 };
-        fp.Init(5, 10, 23000, "1111111");
+        fp.Init(5, 10, 30000, "1111111");
     }
 
     public FirePointLogic fp;
@@ -61,7 +61,7 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            fp.waterPour(waterTime, mj, 0);
+            fp.waterPour(waterTime, mj, 4200);
             var anis = fj.GetComponentsInChildren<Animation>();
             Debug.LogError(anis.Length);
             for (int i = 0; i < anis.Length; i++)
@@ -72,6 +72,8 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.C))
         {
+            fp.getFireData(out float ghmj, out float rsmj,out float csghmj, out float csrsmj, out float tszl);
+            Debug.LogError("初始过火面积："+ghmj);
             var anis = fj.GetComponentsInChildren<Animation>();
             Debug.LogError(anis.Length);
             for (int i = 0; i < anis.Length; i++)

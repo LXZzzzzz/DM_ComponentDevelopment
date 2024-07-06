@@ -20,8 +20,10 @@ public class AirIconCell : IconCellBase
     private VectorLine currentMoveRoute;
     private List<Vector2> routePoints;
     private Image skillProgressShow;
-    private Text skillName,skillNameRight;
+    private Text skillName, skillNameRight;
     private Image belongtoShow;
+    private Slider currentOil;
+    private GameObject water, goods, person;
 
     public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc, UnityAction<bool, Vector2, Vector2> setRouteCb)
     {
@@ -38,6 +40,10 @@ public class AirIconCell : IconCellBase
         skillNameRight = transform.Find("skillNameRight").GetComponent<Text>();
         skillProgressShow = transform.Find("progress").GetComponent<Image>();
         belongtoShow = transform.Find("Root/belongTo").GetComponent<Image>();
+        currentOil = transform.Find("Root/currentInfoShow/oilPart/oil").GetComponent<Slider>();
+        water = transform.Find("Root/currentInfoShow/water").gameObject;
+        goods = transform.Find("Root/currentInfoShow/goods").gameObject;
+        person = transform.Find("Root/currentInfoShow/person").gameObject;
 
         initLine();
     }
@@ -73,14 +79,16 @@ public class AirIconCell : IconCellBase
         selectChange(equipGo.isChooseMe);
         changeBelongtoShow();
         showSkillState();
+        showAllMassInfo();
     }
 
     protected override IconInfoData GetBasicInfo()
     {
+        equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person);
         IconInfoData data = new IconInfoData()
         {
-            entityName = equipGo.name, entityInfo = "飞机飞机",
-            beUseCommanders = new List<string> { equipGo.BeLongToCommanderId }
+            entityName = equipGo.name, entityInfo = $"飞机装备:{equipGo.name}", beUseCommanders = new List<string> { equipGo.BeLongToCommanderId },
+            isAir = true, waterNum = water, goodsNum = goods, personNum = person
         };
 
         return data;
@@ -181,6 +189,15 @@ public class AirIconCell : IconCellBase
         }
 
         skillProgressShow.fillAmount = equipGo.skillProgress;
+    }
+
+    private void showAllMassInfo()
+    {
+        equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person);
+        this.currentOil.value = currentOil / totalOil;
+        this.water.SetActive(water > 1);
+        this.goods.SetActive(goods > 1);
+        this.person.SetActive(person > 1);
     }
 
     public override void DestroyMe()

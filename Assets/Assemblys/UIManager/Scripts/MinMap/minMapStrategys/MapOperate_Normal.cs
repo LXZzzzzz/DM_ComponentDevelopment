@@ -51,8 +51,8 @@ public class MapOperate_Normal : MapOperateLogicBase
 
             //如果是机场的话，弹出飞机列表，飞机列表点击起飞，把飞机从机场中去除，并把飞机状态设为起飞状态。 
             ZiYuanBase zy = (targetIconCell as ZiYuanIconCell).ziYuanItem;
-            if (zy.beUsedCommanderIds == null && MyDataInfo.MyLevel != 1) return;
-            if (zy.beUsedCommanderIds?.Find(x => string.Equals(x, MyDataInfo.leadId)) == null) return;
+            if (MyDataInfo.MyLevel != 1 && 
+                (zy.beUsedCommanderIds == null || zy.beUsedCommanderIds.Find(x => string.Equals(x, MyDataInfo.leadId)) == null)) return;
             if (zy.ZiYuanType == ZiYuanType.Airport)
             {
                 AirportAircraftsInfo aai = new AirportAircraftsInfo()

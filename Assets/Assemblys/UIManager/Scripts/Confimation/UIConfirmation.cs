@@ -13,7 +13,8 @@ namespace UiManager
     public enum showType
     {
         tipView,
-        newScheme
+        newScheme,
+        secondConfirm
     }
 
     public struct ConfirmatonInfo
@@ -43,7 +44,6 @@ namespace UiManager
         }
 
 
-        //todo：后期这里要改成传过来委托，不能通过事件传递，造成逻辑复杂了
         public override void ShowMe(object userData)
         {
             base.ShowMe(userData);
@@ -75,6 +75,9 @@ namespace UiManager
                     break;
                 case showType.tipView:
                     currentShowView = new ShowTip(this);
+                    break;
+                case showType.secondConfirm:
+                    currentShowView = new ShowSecondConfirm(this);
                     break;
             }
         }
@@ -143,6 +146,26 @@ namespace UiManager
 
             cbObj = name;
 
+            return true;
+        }
+    }
+
+    public class ShowSecondConfirm : ShowTipsViewBase
+    {
+        public ShowSecondConfirm(UIConfirmation uicf) : base(uicf)
+        {
+        }
+
+        public override void OnShow(string infoStr)
+        {
+            mainLogic.titleText.text = "二次确认";
+            mainLogic.tipsPart.SetActive(true);
+            mainLogic.tipsPart.GetComponent<Text>().text = infoStr;
+        }
+
+        public override bool OnSure(out object cbObj)
+        {
+            cbObj = null;
             return true;
         }
     }

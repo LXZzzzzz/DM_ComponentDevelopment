@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ReportGenerate;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
@@ -34,7 +35,7 @@ public partial class CommanderController
         float rwjssk = float.MinValue;
         float zhc = 0;
         int zjc = 0;
-        float ghzmj = 0, rszmj = 0, csrszmj = 0, firetszl = 0;
+        float ghzmj = 0, rszmj = 0, csghzmj = 0, csrszmj = 0, firetszl = 0;
         float minWater2FireDistance = float.MaxValue;
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
@@ -55,9 +56,10 @@ public partial class CommanderController
         {
             if (sceneAllzy[i] is ISourceOfAFire)
             {
-                (sceneAllzy[i] as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csrsmj, out float atszl);
+                (sceneAllzy[i] as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float atszl);
                 ghzmj += ghmj;
                 rszmj += rsmj;
+                csghzmj += csghmj;
                 csrszmj += csrsmj;
                 firetszl += atszl;
                 for (int j = 0; j < sceneAllzy.Count; j++)
@@ -79,6 +81,7 @@ public partial class CommanderController
             任务结束时投水总量 = tszl,
             任务结束时过火总面积 = ghzmj,
             任务结束时燃烧面积 = rszmj,
+            任务初始过火总面积 = csghzmj,
             任务初始燃烧面积 = csrszmj,
             开始投水时刻 = kstssk >= float.MaxValue - 1 ? 0 : kstssk, //增大检测范围，防止浮点误差
             取水点到投水点的最短路径 = minWater2FireDistance,
@@ -94,7 +97,7 @@ public partial class CommanderController
         {
             if (sceneAllzy[i] is ISourceOfAFire)
             {
-                (sceneAllzy[i] as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csrsmj, out float atszl);
+                (sceneAllzy[i] as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float atszl);
                 FireData itemFireData = new FireData()
                 {
                     Id = sceneAllzy[i].BobjectId, Name = sceneAllzy[i].ziYuanName, burnArea = rsmj, burnedArea = ghmj, initBurnArea = csrsmj, WaterWeight = atszl
@@ -132,7 +135,7 @@ public partial class CommanderController
                     MaterialWeight = itemDatas[j].totalWeight,
                     MaterialPointTime = itemDatas[j].lastOperationTime,
                     PersonCount = itemDatas[j].numberOfRescues,
-                    PersonFirstTime = itemDatas[j].firstLoadingGoodsTime, PersonEndTime = itemDatas[j].lastOperationTime
+                    PersonFirstTime = itemDatas[j].firstRescuePersonTime, PersonEndTime = itemDatas[j].lastRescuePersonTime
                 };
                 Debug.LogError($"{hd1.Name}返航时间{hsd1.ReturnTime}起飞时间{hsd1.TakeOffTime}");
                 hsd1List.Add(hsd1);
@@ -153,7 +156,7 @@ public partial class CommanderController
         EvalManage em = new EvalManage();
         ResultFireWaterData rfwd = em.EvalWaterCompute(rfout, rfsystem);
 
-        report.CreateWaterMissionReport(MyDataInfo.leadId, misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList);
+        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList);
     }
 
     private void GenerateRescueReport()
@@ -165,11 +168,22 @@ public partial class CommanderController
         float minRyxhl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[0]);
         MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[28]).CompareTo(float.Parse(b.AttributeInfos[28])));
         float minDj = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[0]);
+        float zqxzyzrs = 0;
+
+        for (int i = 0; i < sceneAllzy.Count; i++)
+        {
+            if (sceneAllzy[i] is IDisasterArea)
+            {
+                (sceneAllzy[i] as IDisasterArea).getTaskProgress(out int currentNuma, out int maxNuma);
+                zqxzyzrs += maxNuma;
+            }
+        }
+
 
         ResultRescueSystemData rfsystem = new ResultRescueSystemData
         {
             人均救援物资需求 = cdata.dwrsmjtsxq,
-            受灾需转运总人数 = cdata.zqxzyzrs,
+            受灾需转运总人数 = zqxzyzrs,
             最大巡航速度 = cdata.zdxhsd,
             单次人员吊救时间 = cdata.dcrydjsj,
             单次物资投放时间 = cdata.dcwztfsj,
@@ -282,7 +296,7 @@ public partial class CommanderController
                     MaterialWeight = itemDatas[j].totalWeight,
                     MaterialPointTime = itemDatas[j].lastOperationTime,
                     PersonCount = itemDatas[j].numberOfRescues,
-                    PersonFirstTime = itemDatas[j].firstLoadingGoodsTime, PersonEndTime = itemDatas[j].lastOperationTime
+                    PersonFirstTime = itemDatas[j].firstRescuePersonTime, PersonEndTime = itemDatas[j].lastRescuePersonTime
                 };
                 Debug.LogError($"{hd1.Name}返航时间{hsd1.ReturnTime}起飞时间{hsd1.TakeOffTime}");
                 hsd1List.Add(hsd1);
@@ -305,7 +319,7 @@ public partial class CommanderController
         EvalManage em = new EvalManage();
         ResultMaterialPersonData rfwd = em.EvalMaterialCompute(cfout, rfsystem);
 
-        report.CreateRescueMissionReport(MyDataInfo.leadId, misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList);
+        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList);
     }
 }
 

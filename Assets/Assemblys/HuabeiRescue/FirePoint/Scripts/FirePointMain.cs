@@ -7,11 +7,12 @@ public class FirePointMain : ScriptManager
 {
     private void Awake()
     {
-        Properties = new[]
+        Properties = new DynamicProperty[]
         {
             new InputFloatUnitProperty("风速", 5, "m/s"),
             new InputFloatUnitProperty("坡度", 5, "度"),
             new InputFloatUnitProperty("初始燃烧面积", 100, "平方米"),
+            new InputStringProperty("组件描述","着火点，需要扑灭这里的火")
         };
     }
 
@@ -23,5 +24,6 @@ public class FirePointMain : ScriptManager
             (Properties[2] as InputFloatUnitProperty).Value, BObjectId);
 
         fpl.ziYuanName = GetComponent<BObjectModel>().BObject.Info.Name;
+        fpl.ziYuanDescribe = (Properties[3] as InputStringProperty).Value;
     }
 }

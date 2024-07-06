@@ -35,6 +35,7 @@ public class ZiYuanIconCell : IconCellBase
                 break;
             }
         }
+
         chooseImg = transform.Find("Choose").gameObject;
         airPortMarkView = transform.Find("airPortMarkView").gameObject;
         equipParent = airPortMarkView.GetComponentInChildren<ScrollRect>(true).content;
@@ -86,7 +87,7 @@ public class ZiYuanIconCell : IconCellBase
     {
         IconInfoData data = new IconInfoData()
         {
-            entityName = _ziYuanItem.name, entityInfo = "资源资源", beUseCommanders = _ziYuanItem.beUsedCommanderIds
+            entityName = _ziYuanItem.name, entityInfo = _ziYuanItem.ziYuanDescribe, beUseCommanders = _ziYuanItem.beUsedCommanderIds
         };
         return data;
     }
@@ -105,13 +106,14 @@ public class ZiYuanIconCell : IconCellBase
     private void airPortShowLogic()
     {
         if (ziYuanItem.ZiYuanType != ZiYuanType.Airport) return;
-        if (ziYuanItem.beUsedCommanderIds == null && MyDataInfo.MyLevel != 1) return;
-        if (ziYuanItem.beUsedCommanderIds?.Find(x => string.Equals(x, MyDataInfo.leadId)) == null) return;
+        if (MyDataInfo.MyLevel != 1 && 
+            (ziYuanItem.beUsedCommanderIds == null || ziYuanItem.beUsedCommanderIds.Find(x => string.Equals(x, MyDataInfo.leadId)) == null)) return;
+
         var itemInfo = (ziYuanItem as IAirPort)?.GetAllEquips();
         bool isRefresh = currAllEquipInfoCount != itemInfo.Count;
         if (isRefresh)
         {
-            Debug.LogError("刷新"+currAllEquipInfoCount+":"+itemInfo.Count);
+            Debug.LogError("刷新" + currAllEquipInfoCount + ":" + itemInfo.Count);
             currAllEquipInfoCount = itemInfo.Count;
             for (int i = 0; i < equipParent.childCount; i++)
             {
@@ -122,7 +124,7 @@ public class ZiYuanIconCell : IconCellBase
             {
                 var itemCell = Instantiate(aec, equipParent);
                 var itemIcon = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, itemInfo[i])).EquipIcon;
-                itemCell.Init(itemInfo[i],itemIcon);
+                itemCell.Init(itemInfo[i], itemIcon);
                 itemCell.gameObject.SetActive(true);
             }
         }

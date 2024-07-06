@@ -36,6 +36,11 @@ public class TestEquip : EquipBase
         throw new System.NotImplementedException();
     }
 
+    public override void GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person)
+    {
+        throw new System.NotImplementedException();
+    }
+
     protected override void OnClose()
     {
     }

@@ -14,8 +14,8 @@ public partial class HelicopterController
         if (myState != HelicopterState.Landing) return;
         currentSkill = SkillType.TakeOff;
         myRecordedData.eachSortieData.Add(new SingleSortieData());
-        openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), () => myState = HelicopterState.hover);
-        
+        openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnTOSuc);
+
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint);
         for (int i = 0; i < items.Count; i++)
         {
@@ -27,24 +27,40 @@ public partial class HelicopterController
                 return;
             }
         }
-        
+
         for (int i = 0; i < anis.Length; i++)
         {
             anis[i].Play();
         }
     }
 
+    private void OnTOSuc()
+    {
+        myState = HelicopterState.hover;
+        Vector3 startPos = new Vector3(transform.position.x, 0, transform.position.z);
+        Vector3 endPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd, transform.position.z);
+        amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, myAttributeInfo.psyh);
+    }
+
     public void Landing()
     {
         if (myState != HelicopterState.hover) return;
         currentSkill = SkillType.Landing;
-        openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), () => myState = HelicopterState.Landing);
+        openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnLandSuc);
         myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].landingTime = MyDataInfo.gameStartTime;
-        
+
         for (int i = 0; i < anis.Length; i++)
         {
             anis[i].Stop();
         }
+    }
+
+    private void OnLandSuc()
+    {
+        myState = HelicopterState.Landing;
+        Vector3 startPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd, transform.position.z);
+        Vector3 endPos = new Vector3(transform.position.x, 0, transform.position.z);
+        // amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, myAttributeInfo.psyh);
     }
 
     public void Supply()

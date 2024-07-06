@@ -56,12 +56,14 @@ public class UIAttributeView : BasePanel
                     watersSkillView.SetActive(false);
                     equipInfoView.SetActive(true);
                     ziYuanInfoView.gameObject.SetActive(false);
+                    equipInfoView.transform.Find("title").GetComponent<Text>().text = $"{currentEquip.name}-性能参数";
                     var showInfos = currentEquip.AttributeInfos;
                     var allInputf = equipInfoView.GetComponentsInChildren<InputField>(true);
                     for (int i = 0; i < allInputf.Length; i++)
                     {
                         allInputf[i].text = showInfos[i];
                     }
+
                     break;
                 case SkillType.WaterIntaking:
                     watersSkillView.SetActive(true);

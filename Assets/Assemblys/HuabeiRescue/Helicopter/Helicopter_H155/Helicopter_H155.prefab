@@ -251,6 +251,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: -98.76979
       objectReference: {fileID: 0}
+    - target: {fileID: 3951861394887616783, guid: ddd0326ff711a9143914fcda56e10a4b,
+        type: 3}
+      propertyPath: m_Animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 9dcb50493e845da409b53e652d8a71ed, type: 2}
+    - target: {fileID: 3951861394887616783, guid: ddd0326ff711a9143914fcda56e10a4b,
+        type: 3}
+      propertyPath: m_PlayAutomatically
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4686731088710963161, guid: ddd0326ff711a9143914fcda56e10a4b,
         type: 3}
       propertyPath: m_IsActive

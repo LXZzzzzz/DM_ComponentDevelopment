@@ -10,6 +10,7 @@ public class TaskCell : DraggingFunction
 {
     private Toggle isComplete;
     private ITaskProgress tp;
+    private Text taskProgress;
 
     public void Init(string taskIndex, ZiYuanBase ziYuan, Func<string, string, bool, bool> changeDataCallBack)
     {
@@ -17,7 +18,7 @@ public class TaskCell : DraggingFunction
         isComplete = transform.Find("RootInfo/Tog_status").GetComponent<Toggle>();
         tp = ziYuan as ITaskProgress;
         transform.Find("RootInfo/Text_taskIndex").GetComponentInChildren<Text>().text = taskIndex;
-        transform.Find("RootInfo/Text_taskName").GetComponentInChildren<Text>().text = ziYuan.ziYuanName;
+        taskProgress = transform.Find("RootInfo/Text_taskName").GetComponentInChildren<Text>();
         transform.Find("describe/Text_taskDescribe").GetComponentInChildren<Text>().text = ziYuan.ziYuanDescribe;
         GetComponentInChildren<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), ziYuan.BobjectId));
     }
@@ -25,6 +26,7 @@ public class TaskCell : DraggingFunction
     private void LateUpdate()
     {
         if (tp == null) return;
-        isComplete.isOn = tp.getTaskProgress();
+        isComplete.isOn = tp.getTaskProgress(out string progressInfo);
+        taskProgress.text = progressInfo;
     }
 }

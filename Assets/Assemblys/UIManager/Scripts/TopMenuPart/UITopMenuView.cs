@@ -58,7 +58,7 @@ public class UITopMenuView : BasePanel
         });
         GetControl<Toggle>("Tog_Zhpg").onValueChanged.AddListener(a =>
         {
-            if(a) EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
+            if (a) EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
         });
     }
 
@@ -72,7 +72,7 @@ public class UITopMenuView : BasePanel
         EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
         ProgrammName.text = UIManager.Instance.MisName;
 
-        dropdownValue = new List<float>() { 0.5f, 1.0f, 1.5f, 2.0f, 5.0f };
+        dropdownValue = new List<float>() { 0.5f, 1.0f, 1.5f, 2.0f, 5.0f, 10.0f, 20.0f, 50.0f };
         speedChange.options.Clear();
         for (int i = 0; i < dropdownValue.Count; i++)
         {
@@ -152,6 +152,13 @@ public class UITopMenuView : BasePanel
 
     private void release()
     {
+        if (ProgrammeDataManager.Instance.GetCurrentData == null)
+        {
+            ConfirmatonInfo infor = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "当前未创建方案无法发布" };
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infor);
+            return;
+        }
+
         putAwayMenu();
         string packedData = ProgrammeDataManager.Instance.PackedData();
 

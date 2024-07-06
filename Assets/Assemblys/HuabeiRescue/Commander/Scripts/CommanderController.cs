@@ -152,6 +152,7 @@ public partial class CommanderController : DMonoBehaviour
                 if (currentChooseZiYuan != null) currentChooseZiYuan.isChooseMe = false;
                 currentChooseZiYuan = itemZy;
                 currentChooseZiYuan.isChooseMe = true;
+                OnCameraContral(1, currentChooseZiYuan.transform);
                 EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", currentChooseZiYuan);
                 break;
             }
@@ -170,6 +171,15 @@ public partial class CommanderController : DMonoBehaviour
         if (!currentChooseEquip.OnCheckIsMove()) return;
 
         sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos));
+    }
+
+    private bool isLoad = false;
+
+    private void OnCreatEquipLoad(string templateId, string myId)
+    {
+        isLoad = true;
+        OnCreatEquipEntity(templateId, myId);
+        isLoad = false;
     }
 
     private void OnCreatEquipEntity(string templateId, string myId)
@@ -192,7 +202,13 @@ public partial class CommanderController : DMonoBehaviour
             {
                 var templateEquip = allBObjects[i].GetComponentInChildren<EquipBase>(true);
                 var temporaryEquip = Instantiate(templateEquip, MyDataInfo.SceneGoParent);
-                temporaryEquip.name = allBObjects[i].BObject.Info.Name + $"_000{MyDataInfo.sceneAllEquips.Count + 1}";
+                if (!isLoad)
+                {
+                    temporaryEquip.name = allBObjects[i].BObject.Info.Name + $"_00{MyDataInfo.sceneAllEquips.Count + 1}";
+                    ProgrammeDataManager.Instance.GetEquipDataById(myId).myName = temporaryEquip.name;
+                }
+                else
+                    temporaryEquip.name = ProgrammeDataManager.Instance.GetEquipDataById(myId).myName;
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init(templateEquip, sceneAllzy);
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
@@ -226,7 +242,7 @@ public partial class CommanderController : DMonoBehaviour
         OnClearScene();
         for (int i = 0; i < data.AllEquipDatas.Count; i++)
         {
-            OnCreatEquipEntity(data.AllEquipDatas[i].templateId, data.AllEquipDatas[i].myId);
+            OnCreatEquipLoad(data.AllEquipDatas[i].templateId, data.AllEquipDatas[i].myId);
         }
 
         //找到所有的资源，通过ID找到数据中的对应数据，
@@ -293,6 +309,8 @@ public partial class CommanderController : DMonoBehaviour
             GenerateFireExtinguishingReport();
         if (gameType == 2)
             GenerateRescueReport();
+
+        // EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "成功生成评估报告PDF");
     }
 
     #region 处理接收的消息

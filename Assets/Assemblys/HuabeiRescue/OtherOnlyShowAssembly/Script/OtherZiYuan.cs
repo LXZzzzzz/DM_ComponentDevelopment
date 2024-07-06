@@ -12,6 +12,7 @@ public class OtherZiYuan : ZiYuanBase, IAirPort
         //根据不同类型，改变自己的颜色
         allDockingAircraft = new List<string>();
         ZiYuanType = (ZiYuanType)type;
+        EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), desAir);
     }
 
     public List<string> allDockingAircraft;
@@ -26,6 +27,7 @@ public class OtherZiYuan : ZiYuanBase, IAirPort
     {
         return allDockingAircraft;
     }
+
     public void goOut(string equipId)
     {
         //起飞指定飞机，并把他从机场移除出去
@@ -33,8 +35,15 @@ public class OtherZiYuan : ZiYuanBase, IAirPort
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).isDockingAtTheAirport = false;
     }
 
+    private void desAir(string idid)
+    {
+        if (allDockingAircraft.Contains(idid))
+            allDockingAircraft.Remove(idid);
+    }
+
     protected override void OnReset()
     {
         allDockingAircraft.Clear();
+        EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), desAir);
     }
 }

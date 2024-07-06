@@ -9,8 +9,9 @@ public class RescueStationMain : ScriptManager
     {
         Properties = new DynamicProperty[]
         {
-            new InputFloatUnitProperty("需要物资数量", 5000, "kg"),
-            new InputIntUnitProperty("可安置人数",100,"人")
+            new InputFloatUnitProperty("人均救援物资需求", 17.7f, "kg"),
+            new InputIntUnitProperty("可安置人数",100,"人"),
+            new InputStringProperty("组件描述","安置点，需要给这里安排伤员和物资")
         };
     }
 
@@ -21,5 +22,6 @@ public class RescueStationMain : ScriptManager
         rsl.Init(BObjectId, (Properties[0] as InputFloatUnitProperty).Value, (Properties[1] as InputIntUnitProperty).Value);
 
         rsl.ziYuanName = GetComponent<BObjectModel>().BObject.Info.Name;
+        rsl.ziYuanDescribe = (Properties[2] as InputStringProperty).Value;
     }
 }

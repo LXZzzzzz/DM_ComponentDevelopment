@@ -7,7 +7,7 @@ AnimationClip:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: H155__xuanyi_LOOP_2
-  serializedVersion: 6
+  serializedVersion: 7
   m_Legacy: 1
   m_Compressed: 0
   m_UseHighQualityCurve: 1
@@ -1154,7 +1154,8 @@ AnimationClip:
     path: H155_qianjiyi (1)/Bone003
   m_ScaleCurves: []
   m_FloatCurves:
-  - curve:
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1182,7 +1183,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1210,7 +1213,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1238,7 +1243,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1266,7 +1273,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1294,7 +1303,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1322,7 +1333,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1350,7 +1363,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1378,7 +1393,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1406,7 +1423,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1434,7 +1453,9 @@ AnimationClip:
     path: sounds/S76_EMS star2
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1462,7 +1483,9 @@ AnimationClip:
     path: sounds/S76_EMS prop_wai
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1490,7 +1513,9 @@ AnimationClip:
     path: sounds/S76_EMS prop_nei
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1518,7 +1543,9 @@ AnimationClip:
     path: sounds/S76_EMS star2
     classID: 82
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1537,7 +1564,9 @@ AnimationClip:
     path: sounds/S76_EMS prop_wai
     classID: 82
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1556,7 +1585,9 @@ AnimationClip:
     path: sounds/S76_EMS prop_nei
     classID: 82
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1584,7 +1615,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_2
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1612,7 +1645,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1640,7 +1675,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1668,7 +1705,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1696,7 +1735,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1724,9 +1765,10 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 23
     script: {fileID: 0}
+    flags: 16
   m_PPtrCurves: []
   m_SampleRate: 60
-  m_WrapMode: 0
+  m_WrapMode: 2
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
@@ -1754,7 +1796,8 @@ AnimationClip:
     m_HeightFromFeet: 0
     m_Mirror: 0
   m_EditorCurves:
-  - curve:
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1782,7 +1825,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/Bone003
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1810,7 +1855,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/Bone003
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1838,7 +1885,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/Bone003
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1866,7 +1915,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1894,7 +1945,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1922,7 +1975,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1950,7 +2005,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -1978,7 +2035,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi_xuying
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -2006,7 +2065,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -2034,7 +2095,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -2062,7 +2125,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -2090,7 +2155,9 @@ AnimationClip:
     path: H155_qianjiyi (1)/H155_zhujiyi
     classID: 137
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -2649,7 +2716,9 @@ AnimationClip:
     path: H155_qianjiyi (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -3208,7 +3277,9 @@ AnimationClip:
     path: H155_qianjiyi (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -3767,7 +3838,9 @@ AnimationClip:
     path: H155_qianjiyi (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -4326,7 +4399,9 @@ AnimationClip:
     path: H155_qianjiyi (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -4354,7 +4429,9 @@ AnimationClip:
     path: sounds/S76_EMS star2
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -4382,7 +4459,9 @@ AnimationClip:
     path: sounds/S76_EMS prop_wai
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -4410,7 +4489,9 @@ AnimationClip:
     path: sounds/S76_EMS prop_nei
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -4438,7 +4519,9 @@ AnimationClip:
     path: sounds/S76_EMS star2
     classID: 82
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -4457,7 +4540,9 @@ AnimationClip:
     path: sounds/S76_EMS prop_wai
     classID: 82
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -4476,7 +4561,9 @@ AnimationClip:
     path: sounds/S76_EMS prop_nei
     classID: 82
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5035,7 +5122,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5594,7 +5683,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6153,7 +6244,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6712,7 +6805,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6740,7 +6835,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_2
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6768,7 +6865,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6796,7 +6895,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6824,7 +6925,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6852,7 +6955,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6880,8 +6985,10 @@ AnimationClip:
     path: H155_weijiyi001 (1)/H155_weijiyi_xuying
     classID: 23
     script: {fileID: 0}
+    flags: 16
   m_EulerEditorCurves:
-  - curve:
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6909,7 +7016,9 @@ AnimationClip:
     path: H155_qianjiyi (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6937,7 +7046,9 @@ AnimationClip:
     path: H155_qianjiyi (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6965,7 +7076,9 @@ AnimationClip:
     path: H155_qianjiyi (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6993,7 +7106,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -7021,7 +7136,9 @@ AnimationClip:
     path: H155_weijiyi001 (1)
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -7049,6 +7166,7 @@ AnimationClip:
     path: H155_weijiyi001 (1)
     classID: 4
     script: {fileID: 0}
+    flags: 16
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events: []
