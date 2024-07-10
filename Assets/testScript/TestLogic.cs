@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UiManager;
@@ -61,25 +62,18 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            fp.waterPour(waterTime, mj, 4200);
-            var anis = fj.GetComponentsInChildren<Animation>();
-            Debug.LogError(anis.Length);
-            for (int i = 0; i < anis.Length; i++)
-            {
-                anis[i].Play();
-            }
+            fp.waterPour(waterTime, mj, mj);
         }
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            fp.getFireData(out float ghmj, out float rsmj,out float csghmj, out float csrsmj, out float tszl);
-            Debug.LogError("初始过火面积："+ghmj);
-            var anis = fj.GetComponentsInChildren<Animation>();
-            Debug.LogError(anis.Length);
-            for (int i = 0; i < anis.Length; i++)
-            {
-                anis[i].Stop();
-            }
+            fp.Init(5, 10, 30000, "1111111");
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            fp.getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl);
+            Debug.LogError($"当前燃烧面积{rsmj}");
         }
 
         if (isRunTimer) runTimer();

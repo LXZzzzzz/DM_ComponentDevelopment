@@ -31,7 +31,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
 
     public void goodsPour(float weight)
     {
-        if (firstGoodsTime < 0)
+        if (firstGoodsTime < 1)
         {
             firstGoodsTime = MyDataInfo.gameStartTime;
         }

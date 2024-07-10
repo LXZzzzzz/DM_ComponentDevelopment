@@ -6,8 +6,8 @@ namespace ReportGenerate
     public class WaterMegData 
     {
         public int sortieIndex; //架次
-        public string StartWaterTime;
-        public string EndWaterTime;
+        public string StartWaterTime; //开始取水时间
+        public string EndWaterTime;  //最后投水时间
         public double WaterWeight;
     }
 
@@ -26,15 +26,18 @@ namespace ReportGenerate
     /// </summary>
     public class HeliSortieData
     {
+        //当前做了什么 救援/投物资
+        //走了多远
+        //
         /// <summary>
-        /// 物资装载点的起飞时刻//todo:(物资改)
+        /// 机场起飞时刻
         /// </summary>
         public double TakeOffTime;
 
         /// <summary>
-        /// 返航时刻(指令得到)
+        /// 装载物资时刻
         /// </summary>
-        public double ReturnTime;
+        public double MaterialLoadingTime;
 
         /// <summary>
         /// 任务结束时刻（着陆时刻）
@@ -42,9 +45,9 @@ namespace ReportGenerate
         public double EndMissonTime;
 
         /// <summary>
-        /// 取水时刻
+        /// 初次取水时刻
         /// </summary>
-        public double WaterTime;
+        public double FirstWaterTime;
 
         /// <summary>
         /// 投水最后的时刻
@@ -67,17 +70,12 @@ namespace ReportGenerate
         public double ZongWaterMissionTime;
 
         /// <summary>
-        /// 获取物资时刻
-        /// </summary>
-        public double MaterialTime;
-
-        /// <summary>
         /// 物资投送总重量
         /// </summary>
         public double MaterialWeight;
 
         /// <summary>
-        /// 投送物资最后的时刻
+        /// 投送物资的时刻
         /// </summary>
         public double MaterialPointTime;
 
@@ -87,12 +85,12 @@ namespace ReportGenerate
         public double PersonCount;
 
         /// <summary>
-        /// 转运人员首次的时刻 //todo:第一次转运人员时间
+        /// 转运人员的时刻
         /// </summary>
         public double PersonFirstTime;
 
         /// <summary>
-        /// 转运人员最后的时刻 //todo:最后一次转运人员时间
+        /// 安置人员的时刻
         /// </summary>
         public double PersonEndTime;
 
@@ -116,6 +114,11 @@ namespace ReportGenerate
         /// 投水重量
         /// </summary>
         public double WaterWeight;
+
+        /// <summary>
+        /// 初始过火面积
+        /// </summary>
+        public double initBurnedArea;
 
         /// <summary>
         /// 初始燃烧面积
@@ -269,7 +272,7 @@ namespace ReportGenerate
         public double 任务结束时燃烧面积;
         public double 任务初始过火总面积;
         public double 任务初始燃烧面积;
-        public double 开始投水时刻;
+        public string 开始投水时刻;
         public double 取水点到投水点的最短路径;
         public double 任务结束时刻;
         public double 总航程;
@@ -312,7 +315,7 @@ namespace ReportGenerate
         #region 物资
         public double 任务结束时救援物资投放总重量;
         public double 任务结束时各救援安置点物资投放重量;
-        public double 首批救援物资到达安置点时刻;
+        public string 首批救援物资到达安置点时刻;
         public double 物资装载起降点到安置点的最短路径;
         public double 任务结束时刻;
         public double 总航程;

@@ -69,7 +69,6 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
                 mySkills.Add(new SkillData() { SkillType = SkillType.PlacementOfPersonnel, isUsable = false, skillName = "安置人员" });
         }
 
-        mySkills.Add(new SkillData() { SkillType = SkillType.ReturnFlight, isUsable = true, skillName = "返航" });
         mySkills.Add(new SkillData() { SkillType = SkillType.EndTask, isUsable = true, skillName = "结束任务" });
 
         currentSkill = SkillType.None;
@@ -504,34 +503,44 @@ public class HelicopterInfo
     public float jysj;
 
     /// <summary>
-    /// 装载物资速率
+    /// 装载物资时间
     /// </summary>
-    public float zzwzsl;
+    public float zzwzsj;
 
     /// <summary>
-    /// 卸载物资速率
+    /// 卸载物资时间
     /// </summary>
-    public float xzwzsl;
+    public float xzwzsj;
 
     /// <summary>
-    /// 空投物资速率
+    /// 空投物资时间
     /// </summary>
-    public float ktwzsl;
+    public float ktwzsj;
 
     /// <summary>
-    /// 落地装载人员速率
+    /// 落地装载人员时间
     /// </summary>
-    public float ldzzrysl;
+    public float ldzzrysj;
 
     /// <summary>
-    /// 索降救人速率
+    /// 索降救人时间
     /// </summary>
-    public float sjjrsl;
+    public float sjjrsj;
 
     /// <summary>
-    /// 安置伤员速率
+    /// 绞车型号
     /// </summary>
-    public float azsysl;
+    public string jcxh;
+
+    /// <summary>
+    /// 绞车收放速度
+    /// </summary>
+    public string jcsfsd;
+
+    /// <summary>
+    /// 安置伤员时间
+    /// </summary>
+    public float azsysj;
 
     /// <summary>
     /// 补给时间
@@ -544,17 +553,12 @@ public class HelicopterInfo
     public float cnrpjtz;
 
     /// <summary>
-    /// 洒水喷洒面积
-    /// </summary>
-    public float psmj;
-
-    /// <summary>
-    /// 直升机价格
+    /// 直升机价格(只是用来效能评估，取出来算最小单价)
     /// </summary>
     public float zsjjg;
 
     /// <summary>
-    /// 最低每小时耗油量
+    /// 最低每小时耗油量(只是用来效能评估，取出来算最小耗油量)
     /// </summary>
     /// <returns></returns>
     public float zdmxshyl;

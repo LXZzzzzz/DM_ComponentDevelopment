@@ -81,7 +81,7 @@ public partial class HelicopterController
         {
             Debug.LogError("找到了符合条件的火场");
             //如果当前没有水了，就不给他水，如果有就直接给喷洒面积
-            (targetZy as ISourceOfAFire).waterPour(MyDataInfo.gameStartTime, amountOfWater < 1 ? 0 : myAttributeInfo.psmj, amountOfWater);
+            (targetZy as ISourceOfAFire).waterPour(MyDataInfo.gameStartTime, amountOfWater, amountOfWater);
         }
 
         currentSkill = SkillType.WaterPour;

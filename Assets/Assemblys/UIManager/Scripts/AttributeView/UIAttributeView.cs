@@ -32,6 +32,7 @@ public class UIAttributeView : BasePanel
         msgParent = GetControl<ScrollRect>("msgInfoView").content;
         msgObj = GetComponentInChildren<msgCell>(true);
         EventManager.Instance.AddEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
+        EventManager.Instance.AddEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
     }
 
     public override void ShowMe(object userData)
@@ -146,6 +147,14 @@ public class UIAttributeView : BasePanel
         itemCell.gameObject.SetActive(true);
     }
 
+    private void OnCleraMsg()
+    {
+        for (int i = 0; i < msgParent.childCount; i++)
+        {
+            Destroy(msgParent.GetChild(i).gameObject);
+        }
+    }
+
     private string ConvertSecondsToHHMMSS(float seconds)
     {
         int hours = (int)(seconds / 3600); // 计算小时数
@@ -161,5 +170,6 @@ public class UIAttributeView : BasePanel
         base.HideMe();
         EventManager.Instance.RemoveEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
+        EventManager.Instance.RemoveEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
     }
 }

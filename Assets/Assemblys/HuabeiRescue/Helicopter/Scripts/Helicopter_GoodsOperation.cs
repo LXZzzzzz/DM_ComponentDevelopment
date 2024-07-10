@@ -18,11 +18,11 @@ public partial class HelicopterController
             if (Vector3.Distance(transform.position, zyPos) < 10)
             {
                 currentSkill = SkillType.LadeGoods;
-                float itemgoods = myAttributeInfo.zdyxzh - amountOfGoods - amountOfPerson;
-                Debug.LogError(itemgoods / myAttributeInfo.zzwzsl * 60);
+                // float itemgoods = myAttributeInfo.zdyxzh - amountOfGoods - amountOfPerson;
+                // Debug.LogError(itemgoods / myAttributeInfo.zzwzsl * 60);
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime < 1)
                     myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
-                openTimer(itemgoods / myAttributeInfo.zzwzsl * 60f, OnZZWZSuc);
+                openTimer(myAttributeInfo.zzwzsj * 3600f, OnZZWZSuc);
                 return;
             }
         }
@@ -33,26 +33,26 @@ public partial class HelicopterController
 
     private void OnZZWZSuc()
     {
-        amountOfGoods = myAttributeInfo.zdyxzh - amountOfGoods - amountOfPerson;
+        amountOfGoods = myAttributeInfo.zdyxzh;
     }
 
     public void UnLadeGoods()
     {
         if (myState != HelicopterState.Landing) return;
         //找到场景中所有物资点，判断距离
-        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint || x.ZiYuanType == ZiYuanType.RescueStation);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
             if (Vector3.Distance(transform.position, zyPos) < 10)
             {
                 currentSkill = SkillType.UnLadeGoods;
-                Debug.LogError(amountOfGoods / myAttributeInfo.xzwzsl * 60);
+                // Debug.LogError(amountOfGoods / myAttributeInfo.xzwzsl * 60);
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime < 1)
                     myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime = MyDataInfo.gameStartTime;
                 myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastOperationTime = MyDataInfo.gameStartTime;
                 if (items[i] is IRescueStation) (items[i] as IRescueStation).goodsPour(amountOfGoods);
-                openTimer(amountOfGoods / myAttributeInfo.xzwzsl * 60f, OnXZWZSuc);
+                openTimer(myAttributeInfo.xzwzsj * 3600f, OnXZWZSuc);
                 return;
             }
         }
@@ -72,7 +72,7 @@ public partial class HelicopterController
         transform.position = pos;
         float minDis = float.MaxValue;
         ZiYuanBase targetZy = null;
-        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
         for (int i = 0; i < items.Count; i++)
         {
             Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
@@ -83,16 +83,16 @@ public partial class HelicopterController
             }
         }
 
-        //找到离我最近的灾区，作用于它
+        //找到离我最近的安置点，作用于它
         if (targetZy != null && minDis < targetZy.DetectionRange)
         {
-            (targetZy as IDisasterArea).airdropGoods(MyDataInfo.gameStartTime, amountOfGoods);
+            (targetZy as IRescueStation).goodsPour(amountOfGoods);
         }
 
         currentSkill = SkillType.AirdropGoods;
         if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime < 1)
             myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime = MyDataInfo.gameStartTime;
         myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastOperationTime = MyDataInfo.gameStartTime;
-        openTimer(amountOfGoods / myAttributeInfo.ktwzsl * 60, OnXZWZSuc);
+        openTimer(myAttributeInfo.ktwzsj * 3600f, OnXZWZSuc);
     }
 }

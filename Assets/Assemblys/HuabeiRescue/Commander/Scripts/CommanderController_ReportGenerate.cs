@@ -16,16 +16,20 @@ public partial class CommanderController
         PDFReport report = new PDFReport();
         var playerInfo = MyDataInfo.playerInfos.Find(a => a.RoleId == MyDataInfo.leadId);
         string mName = playerInfo.PlayerName, mId = playerInfo.RoleId, mAbstract = misDescription;
+        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[30]).CompareTo(float.Parse(b.AttributeInfos[30])));
+        float minRyxhl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[30]);
         MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[29]).CompareTo(float.Parse(b.AttributeInfos[29])));
-        float minRyxhl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[0]);
-        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[28]).CompareTo(float.Parse(b.AttributeInfos[28])));
-        float minDj = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[0]);
+        float minDj = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[29]);
+        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[9]).CompareTo(float.Parse(b.AttributeInfos[9])));
+        float maxSpeed = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[9]);
+        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[15]).CompareTo(float.Parse(b.AttributeInfos[15])));
+        float maxZzl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[15]);
         ResultFireWaterSystemData rfsystem = new ResultFireWaterSystemData
         {
             单位燃烧面积投水需求 = cdata.dwrsmjtsxq,
-            最大巡航速度 = cdata.zdxhsd,
+            最大巡航速度 = maxSpeed,
             单次取水和投水时间 = cdata.dcqshtssj,
-            吊桶单次最大装载量 = cdata.dtdczdzzl,
+            吊桶单次最大装载量 = maxZzl,
             直升机每飞行小时耗油率 = cdata.zsjmfxxshyl,
             最低小时燃油消耗率 = minRyxhl,
             最低直升机单价 = minDj
@@ -75,7 +79,6 @@ public partial class CommanderController
             }
         }
 
-        sender.LogError("任务结束时过火总面积" + ghzmj);
         ResultFireWaterOutData rfout = new ResultFireWaterOutData
         {
             任务结束时投水总量 = tszl,
@@ -83,10 +86,10 @@ public partial class CommanderController
             任务结束时燃烧面积 = rszmj,
             任务初始过火总面积 = csghzmj,
             任务初始燃烧面积 = csrszmj,
-            开始投水时刻 = kstssk >= float.MaxValue - 1 ? 0 : kstssk, //增大检测范围，防止浮点误差
+            开始投水时刻 = ConvertSecondsToHHMMSS(kstssk >= float.MaxValue / 2 ? 0 : kstssk), //增大检测范围，防止浮点误差
             取水点到投水点的最短路径 = minWater2FireDistance,
-            任务结束时刻 = rwjssk < 0 ? 0 : rwjssk,
-            总航程 = zhc,
+            任务结束时刻 = rwjssk < 0 ? MyDataInfo.gameStartTime / 3600f : rwjssk / 3600f,
+            总航程 = zhc / 1000f,
             直升机总架次 = zjc,
             火场数量 = sceneAllzy.FindAll(a => a.ZiYuanType == ZiYuanType.SourceOfAFire).Count,
             取水点数量 = sceneAllzy.FindAll(a => a.ZiYuanType == ZiYuanType.Waters).Count,
@@ -113,8 +116,8 @@ public partial class CommanderController
             {
                 Id = MyDataInfo.sceneAllEquips[i].BObjectId,
                 Name = MyDataInfo.sceneAllEquips[i].name,
-                Price = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[28]),
-                Consumption = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[29]),
+                Price = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[29]),
+                Consumption = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[30]),
                 Speed = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[9])
             };
             List<HeliSortieData> hsd1List = new List<HeliSortieData>();
@@ -124,25 +127,19 @@ public partial class CommanderController
             {
                 HeliSortieData hsd1 = new HeliSortieData
                 {
-                    TakeOffTime = itemDatas[j].takeOffTime,
-                    ReturnTime = itemDatas[j].returnFlightTime < itemDatas[j].takeOffTime ? itemDatas[j].takeOffTime + 1 : itemDatas[j].returnFlightTime,
-                    EndMissonTime = itemDatas[j].landingTime,
-                    WaterTime = itemDatas[j].firstLoadingGoodsTime,
-                    WaterFireTime = itemDatas[j].lastOperationTime,
+                    TakeOffTime = itemDatas[j].takeOffTime / 3600f,
+                    EndMissonTime = MyDataInfo.sceneAllEquips[i].GetRecordedData().endTaskTime < 1 ? MyDataInfo.gameStartTime / 3600 : MyDataInfo.sceneAllEquips[i].GetRecordedData().endTaskTime / 3600f,
+                    FirstWaterTime = itemDatas[j].firstLoadingGoodsTime / 3600f,
+                    WaterFireTime = itemDatas[j].lastOperationTime / 3600f,
                     WaterZongWeight = itemDatas[j].totalWeight,
-                    FirstWaterFireTime = itemDatas[j].firstOperationTime,
-                    MaterialTime = itemDatas[j].firstLoadingGoodsTime,
-                    MaterialWeight = itemDatas[j].totalWeight,
-                    MaterialPointTime = itemDatas[j].lastOperationTime,
-                    PersonCount = itemDatas[j].numberOfRescues,
-                    PersonFirstTime = itemDatas[j].firstRescuePersonTime, PersonEndTime = itemDatas[j].lastRescuePersonTime
+                    FirstWaterFireTime = itemDatas[j].firstOperationTime * 3600f
                 };
-                Debug.LogError($"{hd1.Name}返航时间{hsd1.ReturnTime}起飞时间{hsd1.TakeOffTime}");
+                Debug.LogError($"{hd1.Name}起飞时间{hsd1.TakeOffTime}");
                 hsd1List.Add(hsd1);
                 WaterMegData mpmd = new WaterMegData
                 {
                     sortieIndex = j + 1,
-                    StartWaterTime = ConvertSecondsToHHMMSS(itemDatas[j].firstOperationTime),
+                    StartWaterTime = ConvertSecondsToHHMMSS(itemDatas[j].firstLoadingGoodsTime),
                     EndWaterTime = ConvertSecondsToHHMMSS(itemDatas[j].lastOperationTime),
                     WaterWeight = itemDatas[j].totalWeight
                 };
@@ -164,10 +161,16 @@ public partial class CommanderController
         PDFReport report = new PDFReport();
         var playerInfo = MyDataInfo.playerInfos.Find(a => a.RoleId == MyDataInfo.leadId);
         string mName = playerInfo.PlayerName, mId = playerInfo.RoleId, mAbstract = misDescription;
+        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[30]).CompareTo(float.Parse(b.AttributeInfos[30])));
+        float minRyxhl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[30]);
         MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[29]).CompareTo(float.Parse(b.AttributeInfos[29])));
-        float minRyxhl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[0]);
-        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[28]).CompareTo(float.Parse(b.AttributeInfos[28])));
-        float minDj = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[0]);
+        float minDj = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[29]);
+        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[9]).CompareTo(float.Parse(b.AttributeInfos[9])));
+        float maxSpeed = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[9]);
+        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[6]).CompareTo(float.Parse(b.AttributeInfos[6])));
+        float maxYzRs = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[6]);
+        MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[4]).CompareTo(float.Parse(b.AttributeInfos[4])));
+        float maxYzzl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[4]);
         float zqxzyzrs = 0;
 
         for (int i = 0; i < sceneAllzy.Count; i++)
@@ -184,12 +187,11 @@ public partial class CommanderController
         {
             人均救援物资需求 = cdata.dwrsmjtsxq,
             受灾需转运总人数 = zqxzyzrs,
-            最大巡航速度 = cdata.zdxhsd,
+            最大巡航速度 = maxSpeed,
             单次人员吊救时间 = cdata.dcrydjsj,
             单次物资投放时间 = cdata.dcwztfsj,
-            直升机单次最大运载人数 = cdata.dczdyzrs,
-            直升机单次最大运载物资重量 = cdata.dtdczdzzl,
-            直升机每飞行小时耗油率 = cdata.zsjmfxxshyl,
+            直升机单次最大运载人数 = maxYzRs,
+            直升机单次最大运载物资重量 = maxYzzl,
             最低小时燃油消耗率 = minRyxhl,
             最低直升机单价 = minDj
         };
@@ -199,6 +201,7 @@ public partial class CommanderController
         int zjc = 0;
         float firstTimea = float.MaxValue, totalWeighta = 0;
         int totalPersona = 0;
+        float minGoodsPoint2RescueStationDis = float.MaxValue;
         float minDisasterArea2RescueStationDis = float.MaxValue;
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
@@ -218,11 +221,18 @@ public partial class CommanderController
             if (sceneAllzy[i] is IRescueStation)
             {
                 (sceneAllzy[i] as IRescueStation).getResData(out float firstTime, out float totalWeight, out int totalPerson);
-                if (firstTime < firstTimea) firstTimea = firstTime;
+                if (firstTime > 1 && firstTime < firstTimea) firstTimea = firstTime;
                 totalWeighta += totalWeight;
-                totalPersona += totalPerson;
                 for (int j = 0; j < sceneAllzy.Count; j++)
                 {
+                    if (sceneAllzy[j].ZiYuanType == ZiYuanType.GoodsPoint)
+                    {
+                        if (Vector3.Distance(sceneAllzy[i].transform.position, sceneAllzy[j].transform.position) < minGoodsPoint2RescueStationDis)
+                        {
+                            minGoodsPoint2RescueStationDis = Vector3.Distance(sceneAllzy[i].transform.position, sceneAllzy[j].transform.position);
+                        }
+                    }
+
                     if (sceneAllzy[j].ZiYuanType == ZiYuanType.DisasterArea)
                     {
                         if (Vector3.Distance(sceneAllzy[i].transform.position, sceneAllzy[j].transform.position) < minDisasterArea2RescueStationDis)
@@ -232,16 +242,24 @@ public partial class CommanderController
                     }
                 }
             }
+
+            if (sceneAllzy[i] is IDisasterArea)
+            {
+                (sceneAllzy[i] as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
+                totalPersona += currentNum;
+            }
         }
 
+        sender.LogError("首批物资到达时刻" + firstTimea + "判断一下" + (firstTimea > float.MaxValue / 2));
+        sender.LogError("给传过去的数是：" + (firstTimea > float.MaxValue / 2 ? 0 : firstTimea / 3600f));
         ResultMaterialPersonOutData cfout = new ResultMaterialPersonOutData
         {
             任务结束时救援物资投放总重量 = twzzl,
             任务结束时各救援安置点物资投放重量 = totalWeighta,
-            首批救援物资到达安置点时刻 = firstTimea,
-            物资装载起降点到安置点的最短路径 = minDisasterArea2RescueStationDis,
-            任务结束时刻 = rwjssk < 0 ? 0 : rwjssk,
-            总航程 = zhc,
+            首批救援物资到达安置点时刻 = ConvertSecondsToHHMMSS(firstTimea > float.MaxValue / 2 ? 0 : firstTimea),
+            物资装载起降点到安置点的最短路径 = minGoodsPoint2RescueStationDis,
+            任务结束时刻 = rwjssk < 0 ? MyDataInfo.gameStartTime / 3600 : rwjssk / 3600f,
+            总航程 = zhc / 1000,
             所有飞机总架次 = zjc,
             受灾地点数量 = sceneAllzy.FindAll(a => a.ZiYuanType == ZiYuanType.DisasterArea).Count,
             临时安置点数量 = sceneAllzy.FindAll(a => a.ZiYuanType == ZiYuanType.RescueStation).Count,
@@ -260,7 +278,7 @@ public partial class CommanderController
                     Id = sceneAllzy[i].BobjectId,
                     Name = sceneAllzy[i].ziYuanName,
                     MaterialWeight = totalWeight,
-                    PersonCount = totalPerson,
+                    PersonCount = totalPerson
                 };
                 cfout.任务结束时各安置点数据.Add(fd1);
             }
@@ -274,8 +292,8 @@ public partial class CommanderController
             {
                 Id = MyDataInfo.sceneAllEquips[i].BObjectId,
                 Name = MyDataInfo.sceneAllEquips[i].name,
-                Price = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[28]),
-                Consumption = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[29]),
+                Price = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[29]),
+                Consumption = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[30]),
                 Speed = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[9])
             };
             List<HeliSortieData> hsd1List = new List<HeliSortieData>();
@@ -285,20 +303,14 @@ public partial class CommanderController
             {
                 HeliSortieData hsd1 = new HeliSortieData
                 {
-                    TakeOffTime = itemDatas[j].takeOffTime,
-                    ReturnTime = itemDatas[j].returnFlightTime < itemDatas[j].takeOffTime ? itemDatas[j].takeOffTime + 1 : itemDatas[j].returnFlightTime,
-                    EndMissonTime = MyDataInfo.sceneAllEquips[i].GetRecordedData().endTaskTime,
-                    WaterTime = itemDatas[j].firstLoadingGoodsTime,
-                    WaterFireTime = itemDatas[j].lastOperationTime,
-                    WaterZongWeight = itemDatas[j].totalWeight,
-                    FirstWaterFireTime = itemDatas[j].firstOperationTime,
-                    MaterialTime = itemDatas[j].firstLoadingGoodsTime,
+                    TakeOffTime = itemDatas[j].takeOffTime / 3600f,
+                    EndMissonTime = MyDataInfo.sceneAllEquips[i].GetRecordedData().endTaskTime < 1 ? MyDataInfo.gameStartTime / 3600 : MyDataInfo.sceneAllEquips[i].GetRecordedData().endTaskTime / 3600f,
+                    FirstWaterFireTime = itemDatas[j].firstOperationTime / 3600f,
                     MaterialWeight = itemDatas[j].totalWeight,
-                    MaterialPointTime = itemDatas[j].lastOperationTime,
+                    MaterialPointTime = itemDatas[j].lastOperationTime / 3600f,
                     PersonCount = itemDatas[j].numberOfRescues,
-                    PersonFirstTime = itemDatas[j].firstRescuePersonTime, PersonEndTime = itemDatas[j].lastRescuePersonTime
+                    PersonFirstTime = itemDatas[j].firstRescuePersonTime / 3600f, PersonEndTime = itemDatas[j].lastRescuePersonTime / 3600f,
                 };
-                Debug.LogError($"{hd1.Name}返航时间{hsd1.ReturnTime}起飞时间{hsd1.TakeOffTime}");
                 hsd1List.Add(hsd1);
                 MaterialPersonMegData mpmd = new MaterialPersonMegData
                 {

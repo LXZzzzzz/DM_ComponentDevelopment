@@ -31,7 +31,7 @@ public class HelicopterMain : ScriptManager
             new InputFloatUnitProperty("最大载水量", 3000, "kg"),
             new InputFloatUnitProperty("最大时速", 273, "km/h"),
             new InputFloatUnitProperty("直升机巡航速度", 255, "km/h"),
-            new InputFloatUnitProperty("直升机巡航高度", 300, "m"), //单位是不是错了
+            new InputFloatUnitProperty("直升机巡航高度", 300, "m"),
             new InputFloatUnitProperty("巡航油耗", 1101, "kg/h"),
             new InputFloatUnitProperty("爬升率", 66.6f, "km/h"),
             new InputFloatUnitProperty("爬升油耗", 2713.2f, "kg/h"),
@@ -40,15 +40,16 @@ public class HelicopterMain : ScriptManager
             new InputFloatUnitProperty("取水时间", 7, "min"),
             new InputFloatUnitProperty("洒水时间", 1, "min"),
             new InputFloatUnitProperty("加油时间", 20, "min"),
-            new InputFloatUnitProperty("装载物资速率", 20, "kg/min"),
-            new InputFloatUnitProperty("卸载物资速率", 20, "kg/min"),
-            new InputFloatUnitProperty("空投物资速率", 20, "kg/min"),
-            new InputFloatUnitProperty("落地装载人员速率", 20, "人/min"),
-            new InputFloatUnitProperty("索降救人速率", 20, "人/min"),
-            new InputFloatUnitProperty("安置伤员速率", 20, "人/min"),
+            new InputFloatUnitProperty("装载物资时间", 20, "小时"),
+            new InputFloatUnitProperty("卸载物资时间", 20, "小时"),
+            new InputFloatUnitProperty("空投物资时间", 20, "小时"),
+            new InputFloatUnitProperty("落地装载人员时间", 20, "小时"),
+            new InputFloatUnitProperty("索降救人时间", 20, "小时"),
+            new InputStringProperty("绞车型号", "44301"),
+            new InputStringProperty("绞车收放速度", "L:73.1,R:45.7"),
+            new InputFloatUnitProperty("安置伤员时间", 20, "小时"),
             new InputFloatUnitProperty("补给时间", 20, "min"),
             new InputFloatUnitProperty("成年人平均重量", 70, "kg"),
-            new InputFloatUnitProperty("单次洒水喷洒面积", 4200, "m²"),
             new InputFloatUnitProperty("直升机价格", 13000, "万元"),
             new InputFloatUnitProperty("最低每小时耗油量", 100, "kg/h")
         };
@@ -68,12 +69,17 @@ public class HelicopterMain : ScriptManager
         logic.AttributeInfos = new List<string>();
         logic.myAttributeInfo = new HelicopterInfo();
         var fields = logic.myAttributeInfo.GetType().GetFields();
-        for (int i = 4; i < 34; i++)
+        for (int i = 4; i < fields.Length + 4; i++)
         {
             if (fields[i - 4].FieldType == typeof(Int32))
             {
                 logic.AttributeInfos.Add((Properties[i] as InputIntUnitProperty).Value.ToString());
                 fields[i - 4].SetValue(logic.myAttributeInfo, (Properties[i] as InputIntUnitProperty).Value);
+            }
+            else if (fields[i - 4].FieldType == typeof(string))
+            {
+                logic.AttributeInfos.Add((Properties[i] as InputStringProperty).Value);
+                fields[i - 4].SetValue(logic.myAttributeInfo, (Properties[i] as InputStringProperty).Value);
             }
             else
             {

@@ -209,6 +209,7 @@ public partial class CommanderController : DMonoBehaviour
                 }
                 else
                     temporaryEquip.name = ProgrammeDataManager.Instance.GetEquipDataById(myId).myName;
+
                 temporaryEquip.BObjectId = myId;
                 temporaryEquip.Init(templateEquip, sceneAllzy);
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
@@ -335,6 +336,15 @@ public partial class CommanderController : DMonoBehaviour
 
     public void Receive_GameStop()
     {
+        OnGeneratePdf();
+        for (int i = 0; i < allBObjects.Length; i++)
+        {
+            if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) == null) continue;
+            var itemCom = allBObjects[i].GetComponent<CommanderController>();
+            itemCom.clientOperatorInfos.Clear();
+        }
+
+        EventManager.Instance.EventTrigger(EventType.ClearMsgBox.ToString());
         currentChooseEquip = null;
         OnLoadProgrammeDataSuc(ProgrammeDataManager.Instance.GetCurrentData);
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
@@ -507,13 +517,4 @@ public partial class CommanderController : DMonoBehaviour
         // 格式化为“时：分：秒”字符串
         return string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, (int)remainingSeconds);
     }
-}
-
-public class GlobalDataRecording
-{
-    //第一次投水时刻/第一次投放物资时刻
-    public float firstOperationTime;
-
-    //取水点和投水点最短距离/救援点和安置点最短距离
-    public float minDistance;
 }

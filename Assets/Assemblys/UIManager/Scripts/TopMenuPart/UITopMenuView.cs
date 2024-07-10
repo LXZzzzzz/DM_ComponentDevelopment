@@ -124,7 +124,7 @@ public class UITopMenuView : BasePanel
     private void save()
     {
         putAwayMenu();
-        ProgrammeDataManager.Instance.SaveProgramme();
+        ProgrammeDataManager.Instance.SaveProgramme(Application.dataPath + "/MapLib/Scheme");
     }
 
     private void saveAs()

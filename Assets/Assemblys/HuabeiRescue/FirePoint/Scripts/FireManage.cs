@@ -16,7 +16,7 @@ public class FireManage : DMonoBehaviour
     private double burnedCount = 0;
     private double _burnArea = 0; //燃烧面积
     private double _burnedArea = 0f; //过火面积
-    private double _csBurnedArea = 0;//初始过火面积
+    private double _csBurnedArea = 0; //初始过火面积
     private double Wcount;
 
     private double SprayingArea = 0f; //喷洒面积
@@ -53,7 +53,7 @@ public class FireManage : DMonoBehaviour
         _csBurnedArea = _burnedArea;
         Debug.LogError("初始过火燃烧面积：" + _csBurnedArea);
     }
-    
+
 
     public void Update()
     {
