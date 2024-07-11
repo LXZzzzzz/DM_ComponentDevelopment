@@ -51,7 +51,7 @@ public class FireManage : DMonoBehaviour
     {
         yield return 1;
         _csBurnedArea = _burnedArea;
-        Debug.LogError("初始过火燃烧面积：" + _csBurnedArea);
+        Debug.LogError("初始过火面积：" + _csBurnedArea);
     }
 
 

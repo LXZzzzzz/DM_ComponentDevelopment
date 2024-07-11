@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ToolsLibrary;
+using ToolsLibrary.EffectivenessEvaluation;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ public partial class HelicopterController
 {
     private float amountOfGoods;
 
+    /// <summary>
+    /// 装载物资
+    /// </summary>
     public void LadeGoods()
     {
         if (myState != HelicopterState.Landing) return;
@@ -20,8 +24,11 @@ public partial class HelicopterController
                 currentSkill = SkillType.LadeGoods;
                 // float itemgoods = myAttributeInfo.zdyxzh - amountOfGoods - amountOfPerson;
                 // Debug.LogError(itemgoods / myAttributeInfo.zzwzsl * 60);
+                myRecordedData.eachSortieData.Add(new SingleSortieData());
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime < 1)
                     myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
+                isGoods = 0;
+                PickupPoint = items[i].transform.position;
                 openTimer(myAttributeInfo.zzwzsj * 3600f, OnZZWZSuc);
                 return;
             }
@@ -36,6 +43,9 @@ public partial class HelicopterController
         amountOfGoods = myAttributeInfo.zdyxzh;
     }
 
+    /// <summary>
+    /// 卸载物资
+    /// </summary>
     public void UnLadeGoods()
     {
         if (myState != HelicopterState.Landing) return;
@@ -53,6 +63,7 @@ public partial class HelicopterController
                 myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastOperationTime = MyDataInfo.gameStartTime;
                 if (items[i] is IRescueStation) (items[i] as IRescueStation).goodsPour(amountOfGoods);
                 openTimer(myAttributeInfo.xzwzsj * 3600f, OnXZWZSuc);
+                myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].goodsDistance = Vector3.Distance(PickupPoint, items[i].transform.position);
                 return;
             }
         }
@@ -67,6 +78,10 @@ public partial class HelicopterController
         amountOfGoods = 0;
     }
 
+    /// <summary>
+    /// 空投物资
+    /// </summary>
+    /// <param name="pos"></param>
     public void AirdropGoods(Vector3 pos)
     {
         transform.position = pos;
@@ -93,6 +108,7 @@ public partial class HelicopterController
         if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime < 1)
             myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime = MyDataInfo.gameStartTime;
         myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastOperationTime = MyDataInfo.gameStartTime;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].goodsDistance = Vector3.Distance(PickupPoint, targetZy.transform.position);
         openTimer(myAttributeInfo.ktwzsj * 3600f, OnXZWZSuc);
     }
 }

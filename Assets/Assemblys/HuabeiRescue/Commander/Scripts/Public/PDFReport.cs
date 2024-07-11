@@ -106,7 +106,7 @@ namespace ReportGenerate
             doc.Add(messageEval);
             doc.Add(nullString);
 
-            double WaterMissonDegree = resultData.灭火任务完成度;
+            double WaterMissonDegree = resultData.灭火任务完成度 * 100;
             if (Double.IsNaN(WaterMissonDegree) || Double.IsInfinity(WaterMissonDegree)) WaterMissonDegree = 0;
 
             double WaterEval = resultData.协同指挥效能;
@@ -122,6 +122,14 @@ namespace ReportGenerate
             tableResult.AddCell(MyCell(WaterEval.ToString("0.00000"), 2, 1));
             tableResult.AddCell(MyCell("总体任务效率", 2, 1));
             tableResult.AddCell(MyCell(ZongMisson.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("单机任务效率", 2, 1));
+            tableResult.AddCell(MyCell(resultData.单机任务效率.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("灭火任务效率", 2, 1));
+            tableResult.AddCell(MyCell(resultData.灭火任务效率.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("灭火任务总时间效率", 2, 1));
+            tableResult.AddCell(MyCell(resultData.灭火任务总时间效率.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("任务总成本效率", 2, 1));
+            tableResult.AddCell(MyCell(resultData.任务总成本效率.ToString("0.00000"), 2, 1));
             tableResult.AddCell(MyCell("过火面积控制率", 2, 1));
             tableResult.AddCell(MyCell(resultData.过火面积控制率.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("开始投水时刻", 2, 1));
@@ -140,8 +148,6 @@ namespace ReportGenerate
             tableResult.AddCell(MyCell(resultOutData.任务结束时过火总面积.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("任务结束时燃烧面积（平方米）", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务结束时燃烧面积.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("单机任务效率", 2, 1));
-            tableResult.AddCell(MyCell(resultData.单机任务效率.ToString("0.00000"), 2, 1));
             doc.Add(tableResult);
             doc.Add(nullString);
 
@@ -150,14 +156,16 @@ namespace ReportGenerate
             doc.Add(mesFire);
             doc.Add(nullString);
 
-            PdfPTable tableFire = new PdfPTable(3);
+            PdfPTable tableFire = new PdfPTable(4);
             tableFire.AddCell(MyCell("火场名称"));
             tableFire.AddCell(MyCell("投水总重量（千克）"));
+            tableFire.AddCell(MyCell("投水需求（千克）"));
             tableFire.AddCell(MyCell("任务完成度"));
             foreach (FireData item in resultData.任务结束时各火场数据)
             {
                 tableFire.AddCell(MyCell(item.Name));
                 tableFire.AddCell(MyCell(item.WaterWeight.ToString("0.00")));
+                tableFire.AddCell(MyCell(item.WaterNeed.ToString("0.00")));
                 tableFire.AddCell(MyCell(item.Degree.ToString("0.00000")));
             }
 
@@ -289,10 +297,10 @@ namespace ReportGenerate
             double RescueEval = resultData.协同指挥效能;
             if (Double.IsNaN(RescueEval) || Double.IsInfinity(RescueEval)) RescueEval = 0;
 
-            double PersonDegree = resultData.人员转运任务完成度;
+            double PersonDegree = resultData.人员转运任务完成度 * 100;
             if (Double.IsNaN(PersonDegree) || Double.IsInfinity(PersonDegree)) PersonDegree = 0;
 
-            double MaterialDegree = resultData.物资任务完成度;
+            double MaterialDegree = resultData.物资任务完成度 * 100;
             if (Double.IsNaN(MaterialDegree) || Double.IsInfinity(MaterialDegree)) MaterialDegree = 0;
 
             double PersonEfficiency = resultData.人员转运单机任务效率;
@@ -307,6 +315,14 @@ namespace ReportGenerate
             double MaterialZongEfficiency = resultData.物资投放总体任务效率;
             if (Double.IsNaN(MaterialZongEfficiency) || Double.IsInfinity(MaterialZongEfficiency)) MaterialZongEfficiency = 0;
 
+            double PersonTimeEfficiency = resultData.人员转运任务时间效率;
+            if (Double.IsNaN(PersonTimeEfficiency) || Double.IsInfinity(PersonTimeEfficiency)) PersonTimeEfficiency = 0;
+            double MaterialTimeEfficiency = resultData.物资投放任务时间效率;
+            if (Double.IsNaN(MaterialTimeEfficiency) || Double.IsInfinity(MaterialTimeEfficiency)) MaterialTimeEfficiency = 0;
+            double PersonTotalCostEfficiency = resultData.人员转运任务总成本效率;
+            if (Double.IsNaN(PersonTotalCostEfficiency) || Double.IsInfinity(PersonTotalCostEfficiency)) PersonTotalCostEfficiency = 0;
+            double MaterialTotalCostEfficiency = resultData.物资投放任务总成本效率;
+            if (Double.IsNaN(MaterialTotalCostEfficiency) || Double.IsInfinity(MaterialTotalCostEfficiency)) MaterialTotalCostEfficiency = 0;
 
             PdfPTable tableResult = new PdfPTable(4);
             tableResult.AddCell(MyCell("协同指挥训练得分", 2, 1));
@@ -335,6 +351,16 @@ namespace ReportGenerate
             tableResult.AddCell(MyCell(PersonZongEfficiency.ToString("0.00000"), 2, 1));
             tableResult.AddCell(MyCell("物资投放总体任务效率", 2, 1));
             tableResult.AddCell(MyCell(MaterialZongEfficiency.ToString("0.00000"), 2, 1));
+
+            tableResult.AddCell(MyCell("人员转运任务时间效率", 2, 1));
+            tableResult.AddCell(MyCell(PersonTimeEfficiency.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("物资投放任务时间效率", 2, 1));
+            tableResult.AddCell(MyCell(MaterialTimeEfficiency.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("人员转运任务总成本效率", 2, 1));
+            tableResult.AddCell(MyCell(PersonTotalCostEfficiency.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("物资投放任务总成本效率", 2, 1));
+            tableResult.AddCell(MyCell(MaterialTotalCostEfficiency.ToString("0.00000"), 2, 1));
+
             doc.Add(tableResult);
             doc.Add(nullString);
 

@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace ReportGenerate
 {
     #region 通用
-    public class WaterMegData 
+
+    public class WaterMegData
     {
         public int sortieIndex; //架次
         public string StartWaterTime; //开始取水时间
-        public string EndWaterTime;  //最后投水时间
+        public string EndWaterTime; //最后投水时间
         public double WaterWeight;
     }
 
@@ -26,21 +30,13 @@ namespace ReportGenerate
     /// </summary>
     public class HeliSortieData
     {
-        //当前做了什么 救援/投物资
-        //走了多远
-        //
         /// <summary>
         /// 机场起飞时刻
         /// </summary>
         public double TakeOffTime;
 
         /// <summary>
-        /// 装载物资时刻
-        /// </summary>
-        public double MaterialLoadingTime;
-
-        /// <summary>
-        /// 任务结束时刻（着陆时刻）
+        /// 任务结束时刻
         /// </summary>
         public double EndMissonTime;
 
@@ -64,10 +60,11 @@ namespace ReportGenerate
         /// </summary>
         public double FirstWaterFireTime;
 
+
         /// <summary>
-        /// 灭火任务总时间
+        /// 装载物资时刻
         /// </summary>
-        public double ZongWaterMissionTime;
+        public double MaterialLoadingTime;
 
         /// <summary>
         /// 物资投送总重量
@@ -85,7 +82,7 @@ namespace ReportGenerate
         public double PersonCount;
 
         /// <summary>
-        /// 转运人员的时刻
+        /// 转运人员首次的时刻
         /// </summary>
         public double PersonFirstTime;
 
@@ -93,6 +90,26 @@ namespace ReportGenerate
         /// 安置人员的时刻
         /// </summary>
         public double PersonEndTime;
+
+        /// <summary>
+        /// 物资 当前位置和目标位置的距离值
+        /// </summary>
+        public double MaterialAToBDistance;
+
+        /// <summary>
+        /// 人员 当前位置和目标位置的距离值
+        /// </summary>
+        public double PersonAToBDistance;
+
+        /// <summary>
+        /// 洒水 取水点和火灾点的距离值
+        /// </summary>
+        public double WatersAToBDistance;
+
+        /// <summary>
+        /// 灭火任务总时间
+        /// </summary>
+        public double ZongWaterMissionTime;
 
         /// <summary>
         /// 人员转运任务总时间
@@ -134,6 +151,11 @@ namespace ReportGenerate
         /// 过火面积
         /// </summary>
         public double burnedArea;
+
+        /// <summary>
+        /// 水源需求重量
+        /// </summary>
+        public double WaterNeed;
 
         /// <summary>
         /// 总完成度
@@ -180,6 +202,7 @@ namespace ReportGenerate
     /// <summary>
     /// 直升机数据
     /// </summary>
+    [Serializable]
     public class HeliData
     {
         public string Id;
@@ -200,17 +223,57 @@ namespace ReportGenerate
         /// </summary>
         public double Speed;
 
+        /// <summary>
+        /// 机场起飞时刻
+        /// </summary>
+        public double TakeOffTime;
+
+        /// <summary>
+        /// 任务结束时刻
+        /// </summary>
+        public double EndMissonTime;
+
+        /// <summary>
+        /// 取水洒水时间
+        /// </summary>
+        public double WatersTime;
+
+        /// <summary>
+        /// 直升机最大装水量
+        /// </summary>
+        public double WatersMaxCoune;
+
+        /// <summary>
+        /// 人员吊救时间
+        /// </summary>
+        public double PersonTime;
+
+        /// <summary>
+        /// 直升机单次最大运载人数
+        /// </summary>
+        public double PersonMaxCount;
+
+        /// <summary>
+        /// 物资投放时间
+        /// </summary>
+        public double MaterialTime;
+
+        /// <summary>
+        /// 直升机最大装载物资重量
+        /// </summary>
+        public double MaterialMaxCount;
+
 
         //以下参数不需要赋值
         public double 单机任务成本;
 
         //灭火
-        public List<double> 单机投水重量效率 = new List<double>();
+        [SerializeField] public List<double> 单机投水重量效率 = new List<double>();
         public double 单位时间单机投水重量;
         public double 单机投水总重量;
 
         //物资
-        public List<double> 单机物资投放效率 = new List<double>();
+        [SerializeField] public List<double> 单机物资投放效率 = new List<double>();
         public double 任务结束时各安置点物资投放需求;
         public double 任务结束时各安置点物资投放任务完成度;
         public double 物资投放任务完成度;
@@ -219,12 +282,23 @@ namespace ReportGenerate
 
         //人员
         public double 累计转运人数;
-        public List<double> 单机人员转运效率 = new List<double>();
+        [SerializeField] public List<double> 单机人员转运效率 = new List<double>();
+
+        public static explicit operator HeliData(string jsonString)
+        {
+            return JsonConvert.DeserializeObject<HeliData>(jsonString);
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 
     #endregion
 
     #region 灭火
+
     /// <summary>
     /// 系统计算参数（灭火）
     /// </summary>
@@ -285,11 +359,14 @@ namespace ReportGenerate
         /// 机型架次数据
         /// </summary>
         public Dictionary<HeliData, List<HeliSortieData>> HeliSortieWaterDataList = new Dictionary<HeliData, List<HeliSortieData>>();
+
         public List<FireData> 任务结束时各火场数据 = new List<FireData>();
     }
+
     #endregion
 
     #region 物资和人员
+
     /// <summary>
     /// 物资投放和转运伤员（系统参数）
     /// </summary>
@@ -313,6 +390,7 @@ namespace ReportGenerate
     public class ResultMaterialPersonOutData
     {
         #region 物资
+
         public double 任务结束时救援物资投放总重量;
         public double 任务结束时各救援安置点物资投放重量;
         public string 首批救援物资到达安置点时刻;
@@ -322,17 +400,21 @@ namespace ReportGenerate
         public int 所有飞机总架次;
         public int 受灾地点数量;
         public int 临时安置点数量;
+
         #endregion
 
         #region 人员
+
         public double 任务结束时转运总人数;
         public double 救援点到安置点的最短路径;
+
         #endregion
 
         /// <summary>
         /// 机型架次数据
         /// </summary>
         public Dictionary<HeliData, List<HeliSortieData>> HeliSortieMaterialPersonDataList = new Dictionary<HeliData, List<HeliSortieData>>();
+
         public List<MaterialData> 任务结束时各安置点数据 = new List<MaterialData>();
     }
 
@@ -342,6 +424,7 @@ namespace ReportGenerate
     public class ResultMaterialPersonData
     {
         #region 物资
+
         public double 物资投放总需求;
         public double 任务结束时对应的物资投放总需求;
         public double 物资任务完成度;
@@ -359,9 +442,11 @@ namespace ReportGenerate
         public double 总体任务效率;
         public double 单机任务效率;
         public double 协同指挥效能;
+
         #endregion
 
         #region 人员
+
         public double 人员转运任务完成度;
         public double 人员转运效率;
         public double 人员转运任务总时间;
@@ -374,10 +459,12 @@ namespace ReportGenerate
         public double 人员转运任务成本基数;
         public double 人员转运任务总成本效率;
         public double 人员转运任务总成本;
+
         #endregion
 
         public Dictionary<HeliData, List<HeliSortieData>> 机型架次数据 = new Dictionary<HeliData, List<HeliSortieData>>();
         public List<MaterialData> 任务结束时各安置点数据 = new List<MaterialData>();
     }
+
     #endregion
 }

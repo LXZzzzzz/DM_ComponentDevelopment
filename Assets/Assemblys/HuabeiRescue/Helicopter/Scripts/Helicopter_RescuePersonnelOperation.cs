@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ToolsLibrary;
+using ToolsLibrary.EffectivenessEvaluation;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
@@ -29,9 +30,12 @@ public partial class HelicopterController
                 Debug.LogError(myAttributeInfo.ldzzrysj * 3600f);
                 openTimer(myAttributeInfo.ldzzrysj * 3600f, OnZZRYSuc);
 
+                myRecordedData.eachSortieData.Add(new SingleSortieData());
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime < 1)
                     myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime = MyDataInfo.gameStartTime;
                 myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastRescuePersonTime = MyDataInfo.gameStartTime;
+                isGoods = 1;
+                PickupPoint = items[i].transform.position;
                 return;
             }
         }
@@ -62,6 +66,8 @@ public partial class HelicopterController
                 currentSkill = SkillType.PlacementOfPersonnel;
                 (items[i] as IRescueStation).placementOfPersonnel(amountOfPerson);
                 // Debug.LogError(amountOfPerson / myAttributeInfo.azsysl * 60);
+                myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].personDistance = Vector3.Distance(PickupPoint, items[i].transform.position);
+                myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].placementOfPersonTime = MyDataInfo.gameStartTime;
                 openTimer(myAttributeInfo.azsysj * 3600f, OnAZSYSuc);
                 return;
             }
@@ -96,9 +102,12 @@ public partial class HelicopterController
                 // Debug.LogError(itemPersonNum / myAttributeInfo.sjjrsl * 60);
                 openTimer(myAttributeInfo.sjjrsj * 3600f, OnZZRYSuc);
 
+                myRecordedData.eachSortieData.Add(new SingleSortieData());
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime < 1)
                     myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime = MyDataInfo.gameStartTime;
                 myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastRescuePersonTime = MyDataInfo.gameStartTime;
+                isGoods = 1;
+                PickupPoint = items[i].transform.position;
                 return;
             }
         }

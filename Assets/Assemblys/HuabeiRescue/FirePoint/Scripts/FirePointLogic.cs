@@ -35,7 +35,7 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
 
     public void getFireData(out float ghmj, out float rsmj,out float csghmj, out float csrsmj, out float tszl)
     {
-        fm.SetDrowning(0, MyDataInfo.gameStartTime);
+        // fm.SetDrowning(0, MyDataInfo.gameStartTime);
         ghmj = (float)fm.burnedArea;
         rsmj = (float)fm.burnArea;
         csghmj = (float)fm.csBurnedArea;

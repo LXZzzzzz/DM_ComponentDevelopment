@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using ReportGenerate;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UiManager;
@@ -48,6 +50,8 @@ public class TestLogic : MonoBehaviour
 
     public GameObject fj;
 
+    public string aa, bb;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A))
@@ -68,12 +72,27 @@ public class TestLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             fp.Init(5, 10, 30000, "1111111");
+            float aa = 400 / mj;
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
             fp.getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl);
             Debug.LogError($"当前燃烧面积{rsmj}");
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            // Dictionary<HeliData, List<HeliSortieData>> asd = new Dictionary<HeliData, List<HeliSortieData>>();
+            // asd.Add(new HeliData() {Consumption = 100}, new List<HeliSortieData>() { new HeliSortieData() { EndMissonTime = 20 } });
+            //
+            // string qw = JsonConvert.SerializeObject(asd);
+            // Debug.Log(qw);
+            //
+            // Dictionary<HeliData, List<HeliSortieData>> er = JsonConvert.DeserializeObject<Dictionary<HeliData, List<HeliSortieData>>>(qw);
+            // return;
+            EvalManage em = new EvalManage();
+            em.EvalWaterCompute(JsonConvert.DeserializeObject<ResultFireWaterOutData>(aa), JsonConvert.DeserializeObject<ResultFireWaterSystemData>(bb));
         }
 
         if (isRunTimer) runTimer();
@@ -129,5 +148,19 @@ public class TestLogic : MonoBehaviour
         vl.color = Color.cyan;
         vl.Draw();
         vl.active = true;
+    }
+}
+
+public class testaaa
+{
+    public float aaa;
+    public static explicit operator testaaa(string jsonString)
+    {
+        return JsonConvert.DeserializeObject<testaaa>(jsonString);
+    }
+
+    public override string ToString()
+    {
+        return JsonConvert.SerializeObject(this);
     }
 }

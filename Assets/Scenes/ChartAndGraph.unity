@@ -1265,6 +1265,41 @@ MonoBehaviour:
   waterTime: 10
   mj: 4200
   fj: {fileID: 2005357735}
+  aa: "{ \t\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u6551\u63F4\u7269\u8D44\u6295\u653E\u603B\u91CD\u91CF\":
+    3800.0, \t\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u6551\u63F4\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u91CD\u91CF\":
+    3800.0, \t\"\u9996\u6279\u6551\u63F4\u7269\u8D44\u5230\u8FBE\u5B89\u7F6E\u70B9\u65F6\u523B\":
+    \"00-49-53\", \t\"\u7269\u8D44\u88C5\u8F7D\u8D77\u964D\u70B9\u5230\u5B89\u7F6E\u70B9\u7684\u6700\u77ED\u8DEF\u5F84\":
+    5666.02880859375, \t\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u523B\": 0.0, \t\"\u603B\u822A\u7A0B\":
+    18.178623046875, \t\"\u6240\u6709\u98DE\u673A\u603B\u67B6\u6B21\": 2, \t\"\u53D7\u707E\u5730\u70B9\u6570\u91CF\":
+    4, \t\"\u4E34\u65F6\u5B89\u7F6E\u70B9\u6570\u91CF\": 3, \t\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u8F6C\u8FD0\u603B\u4EBA\u6570\":
+    39.0, \t\"\u6551\u63F4\u70B9\u5230\u5B89\u7F6E\u70B9\u7684\u6700\u77ED\u8DEF\u5F84\":
+    1631.2254638671875, \t\"HeliSortieMaterialPersonDataList\": { \t\t\"ReportGenerate.HeliData\":
+    [{ \t\t\t\"TakeOffTime\": 0.0, \t\t\t\"EndMissonTime\": 0.0, \t\t\t\"FirstWaterTime\":
+    0.0, \t\t\t\"WaterFireTime\": 0.0, \t\t\t\"WaterZongWeight\": 0.0, \t\t\t\"FirstWaterFireTime\":
+    0.0, \t\t\t\"ZongWaterMissionTime\": 0.0, \t\t\t\"MaterialLoadingTime\": 0.0,
+    \t\t\t\"MaterialWeight\": 0.0, \t\t\t\"MaterialPointTime\": 0.0, \t\t\t\"PersonCount\":
+    39.0, \t\t\t\"PersonFirstTime\": 0.30148834228515625, \t\t\t\"PersonEndTime\":
+    0.30148834228515625, \t\t\t\"MaterialAToBDistance\": 0.0, \t\t\t\"PersonAToBDistance\":
+    0.0, \t\t\t\"ZongPersonMissionTime\": 0.0, \t\t\t\"ZongMaterialMissionTime\":
+    0.0 \t\t}], \t\t\"ReportGenerate.HeliData\": [{ \t\t\t\"TakeOffTime\": 0.0, \t\t\t\"EndMissonTime\":
+    0.0, \t\t\t\"FirstWaterTime\": 0.0, \t\t\t\"WaterFireTime\": 0.0, \t\t\t\"WaterZongWeight\":
+    0.0, \t\t\t\"FirstWaterFireTime\": 0.83151869032118053, \t\t\t\"ZongWaterMissionTime\":
+    0.0, \t\t\t\"MaterialLoadingTime\": 0.0, \t\t\t\"MaterialWeight\": 3800.0, \t\t\t\"MaterialPointTime\":
+    0.83151869032118053, \t\t\t\"PersonCount\": 0.0, \t\t\t\"PersonFirstTime\": 0.0,
+    \t\t\t\"PersonEndTime\": 0.0, \t\t\t\"MaterialAToBDistance\": 0.0, \t\t\t\"PersonAToBDistance\":
+    0.0, \t\t\t\"ZongPersonMissionTime\": 0.0, \t\t\t\"ZongMaterialMissionTime\":
+    0.0 \t\t}] \t}, \t\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u6570\u636E\":
+    [{ \t\t\"Id\": \"133641177512805917106\", \t\t\"Name\": \"\u5B89\u7F6E\u70B91\",
+    \t\t\"MaterialWeight\": 0.0, \t\t\"PersonCount\": 0.0, \t\t\"PersonMaterialNeed\":
+    0.0, \t\t\"MaterialDegree\": 0.0, \t\t\"PersonDegree\": 0.0, \t\t\"ZongDegree\":
+    0.0 \t}, { \t\t\"Id\": \"133641177852012872108\", \t\t\"Name\": \"\u5B89\u7F6E\u70B92\",
+    \t\t\"MaterialWeight\": 3800.0, \t\t\"PersonCount\": 39.0, \t\t\"PersonMaterialNeed\":
+    0.0, \t\t\"MaterialDegree\": 0.0, \t\t\"PersonDegree\": 0.0, \t\t\"ZongDegree\":
+    0.0 \t}, { \t\t\"Id\": \"133641178137236591110\", \t\t\"Name\": \"\u5B89\u7F6E\u70B93\",
+    \t\t\"MaterialWeight\": 0.0, \t\t\"PersonCount\": 0.0, \t\t\"PersonMaterialNeed\":
+    0.0, \t\t\"MaterialDegree\": 0.0, \t\t\"PersonDegree\": 0.0, \t\t\"ZongDegree\":
+    0.0 \t}] }"
+  bb: "{\"\u4EBA\u5747\u6551\u63F4\u7269\u8D44\u9700\u6C42\":50.0,\"\u53D7\u707E\u9700\u8F6C\u8FD0\u603B\u4EBA\u6570\":950.0,\"\u6700\u5927\u5DE1\u822A\u901F\u5EA6\":232.0,\"\u5355\u6B21\u4EBA\u5458\u540A\u6551\u65F6\u95F4\":1.6699999570846558,\"\u5355\u6B21\u7269\u8D44\u6295\u653E\u65F6\u95F4\":5.0,\"\u76F4\u5347\u673A\u5355\u6B21\u6700\u5927\u8FD0\u8F7D\u4EBA\u6570\":15.0,\"\u76F4\u5347\u673A\u5355\u6B21\u6700\u5927\u8FD0\u8F7D\u7269\u8D44\u91CD\u91CF\":3000.0,\"\u76F4\u5347\u673A\u6BCF\u98DE\u884C\u5C0F\u65F6\u8017\u6CB9\u7387\":0.0,\"\u6700\u4F4E\u5C0F\u65F6\u71C3\u6CB9\u6D88\u8017\u7387\":417.0,\"\u6700\u4F4E\u76F4\u5347\u673A\u5355\u4EF7\":13000.0}"
 --- !u!1 &1823688464
 GameObject:
   m_ObjectHideFlags: 0

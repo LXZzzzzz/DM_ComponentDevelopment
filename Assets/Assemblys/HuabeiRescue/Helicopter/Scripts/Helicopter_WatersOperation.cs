@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Enums;
 using ToolsLibrary;
+using ToolsLibrary.EffectivenessEvaluation;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 using EventType = Enums.EventType;
@@ -41,8 +42,11 @@ public partial class HelicopterController
             {
                 currentSkill = SkillType.WaterIntaking;
                 Debug.LogError(myAttributeInfo.qssj * 60);
+                myRecordedData.eachSortieData.Add(new SingleSortieData());
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime < 1)
                     myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstLoadingGoodsTime = MyDataInfo.gameStartTime;
+                isGoods = 2;
+                PickupPoint = items[i].transform.position;
                 openTimer(myAttributeInfo.qssj * 60f, OnQSSuc);
                 return;
             }
@@ -60,7 +64,6 @@ public partial class HelicopterController
         float minDis = float.MaxValue;
         ZiYuanBase targetZy = null;
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.SourceOfAFire);
-        Debug.LogError("找到火场：" + items.Count);
         for (int i = 0; i < items.Count; i++)
         {
             Debug.LogError(items[i].ziYuanName);
@@ -79,7 +82,6 @@ public partial class HelicopterController
         //找到离我最近的火场，作用于它
         if (targetZy != null && minDis < targetZy.DetectionRange)
         {
-            Debug.LogError("找到了符合条件的火场");
             //如果当前没有水了，就不给他水，如果有就直接给喷洒面积
             (targetZy as ISourceOfAFire).waterPour(MyDataInfo.gameStartTime, amountOfWater, amountOfWater);
         }
@@ -88,6 +90,7 @@ public partial class HelicopterController
         if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime < 1)
             myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstOperationTime = MyDataInfo.gameStartTime;
         myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].lastOperationTime = MyDataInfo.gameStartTime;
+        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].waterDistance = Vector3.Distance(PickupPoint, targetZy.transform.position);
         openTimer(myAttributeInfo.sssj * 60, OnSSSuc);
     }
 

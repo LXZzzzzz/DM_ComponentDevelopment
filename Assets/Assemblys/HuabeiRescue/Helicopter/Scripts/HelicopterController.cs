@@ -27,6 +27,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     private Animation[] anis;
 
+    private Vector3 PickupPoint;
+    private int isGoods; //0物资 1人员 2灭火
+
 
     public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
     {
@@ -142,14 +145,14 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             if (mySkills[i].SkillType == SkillType.LadeGoods)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.GoodsPoint;
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing && amountOfPerson == 0;
             }
 
             if (mySkills[i].SkillType == SkillType.UnLadeGoods)
             {
                 ZiYuanType itemType = (ZiYuanType)currentTargetType;
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (itemType == ZiYuanType.GoodsPoint || itemType == ZiYuanType.RescueStation);
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing && amountOfGoods > 1;
             }
 
             if (mySkills[i].SkillType == SkillType.AirdropGoods)
@@ -157,20 +160,20 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             if (mySkills[i].SkillType == SkillType.Manned)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.DisasterArea;
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing && amountOfGoods < 1;
             }
 
             if (mySkills[i].SkillType == SkillType.PlacementOfPersonnel)
             {
                 ZiYuanType itemType = (ZiYuanType)currentTargetType;
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (itemType == ZiYuanType.Hospital || itemType == ZiYuanType.RescueStation);
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing && amountOfPerson > 0;
             }
 
             if (mySkills[i].SkillType == SkillType.CableDescentRescue)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.DisasterArea;
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover && amountOfGoods < 1;
             }
         }
 
@@ -322,7 +325,6 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             {
                 float ifc = HeliPointFuel(transform.position, lastPos, speed * MyDataInfo.speedMultiplier, myAttributeInfo.xhyh);
                 amountOfOil -= ifc;
-                Debug.LogError("当前油量" + amountOfOil);
             }
 
             lastPos = transform.position;

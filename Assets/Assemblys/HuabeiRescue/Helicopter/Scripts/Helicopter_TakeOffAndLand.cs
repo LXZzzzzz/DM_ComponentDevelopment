@@ -15,22 +15,18 @@ public partial class HelicopterController
         currentSkill = SkillType.TakeOff;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnTOSuc);
 
-        
-        myRecordedData.eachSortieData.Add(new SingleSortieData());
-        myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].takeOffTime = MyDataInfo.gameStartTime;
-        
-        // var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
-        // for (int i = 0; i < items.Count; i++)
-        // {
-        //     Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
-        //     if (Vector3.Distance(transform.position, zyPos) < 10)
-        //     {
-        //         //在机场起飞才算一个架次
-        //         myRecordedData.eachSortieData.Add(new SingleSortieData());
-        //         myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].takeOffTime = MyDataInfo.gameStartTime;
-        //         return;
-        //     }
-        // }
+        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
+        for (int i = 0; i < items.Count; i++)
+        {
+            Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
+            if (Vector3.Distance(transform.position, zyPos) < 10)
+            {
+                //第一次从机场起飞记为起飞时刻
+                if (myRecordedData.takeOffTime < 1)
+                    myRecordedData.takeOffTime = MyDataInfo.gameStartTime;
+                return;
+            }
+        }
 
         for (int i = 0; i < anis.Length; i++)
         {
