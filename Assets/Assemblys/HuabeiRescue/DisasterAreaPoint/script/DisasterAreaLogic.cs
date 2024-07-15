@@ -15,6 +15,10 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea
         currentRemainingPersonnel = allPersonNum;
     }
 
+    public override void OnStart()
+    {
+    }
+
     protected override void OnReset()
     {
         currentRemainingPersonnel = allPersonNum;

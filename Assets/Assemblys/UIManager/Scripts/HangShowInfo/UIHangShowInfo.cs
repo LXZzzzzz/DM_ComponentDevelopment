@@ -34,14 +34,14 @@ public class UIHangShowInfo : BasePanel
         showName.text = data.entityName;
         showInfo.text = data.entityInfo;
 
-        bgRect.sizeDelta = new Vector2(192, data.isAir ? 158 : 90);
+        bgRect.sizeDelta = new Vector2(192, data.isAir ? 112 : 90);
 
         waterNum.gameObject.SetActive(data.isAir);
         goodsNum.gameObject.SetActive(data.isAir);
         personNum.gameObject.SetActive(data.isAir);
-        waterNum.text = $"水量：{data.waterNum}kg";
-        goodsNum.text = $"物资量：{data.goodsNum}kg";
-        personNum.text = $"载人量：{data.personNum}人";
+        waterNum.text = $"{data.waterNum}kg";
+        goodsNum.text = $"{data.goodsNum}kg";
+        personNum.text = $"{data.personNum}人";
 
         for (int i = 0; i < data.beUseCommanders?.Count; i++)
         {

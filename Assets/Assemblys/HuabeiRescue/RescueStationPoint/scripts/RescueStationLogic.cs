@@ -22,6 +22,10 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
         maxPersonNum = personNum;
     }
 
+    public override void OnStart()
+    {
+    }
+
     protected override void OnReset()
     {
         firstGoodsTime = 0;

@@ -25,7 +25,7 @@ public class FireManage : DMonoBehaviour
     private double WTime; //修改过后的时间
     private int index = 0; //第几次浇水
 
-    public double burnArea => _burnArea;
+    public double burnArea => _burnArea < 0 ? 0 : _burnArea;
 
     public double burnedArea => _burnedArea;
 
@@ -39,7 +39,7 @@ public class FireManage : DMonoBehaviour
         _burnArea = 0;
         _burnedArea = 0;
         IsFire = false;
-        isGaming = true;
+        isGaming = false;
         index = 0;
         fireTran.gameObject.SetActive(true);
         Debug.LogError("初始燃烧面积：" + squareMeasure);
@@ -50,10 +50,20 @@ public class FireManage : DMonoBehaviour
     IEnumerator Init()
     {
         yield return 1;
-        _csBurnedArea = _burnedArea;
+        
+        burnCount = ComputeBurnCount(gameTimer);
+        burnedCount = ComputeBurnedCount(gameTimer);
+
+        _burnArea = burnCount * 400;
+        _csBurnedArea = burnedCount * 400;
         Debug.LogError("初始过火面积：" + _csBurnedArea);
     }
 
+    public void OnStart()
+    {
+        isGaming = true;
+    }
+    
 
     public void Update()
     {

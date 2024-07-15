@@ -27,6 +27,7 @@ namespace Enums
         ChooseEquipToZiYuanType, //控制飞机飞往某个资源点
         ShowAMsgInfo, //展示一个指令信息
         ClearMsgBox, //清除操作记录数据
+        GameStop, //通知游戏结束
     }
 
     public enum MessageID

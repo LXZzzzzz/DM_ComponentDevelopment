@@ -305,6 +305,7 @@ public partial class CommanderController : DMonoBehaviour
             showAllOperatorInfos.Add(ConvertSecondsToHHMMSS(float.Parse(itemaa[0])) + "    " + itemaa[1]);
         }
 
+        if (MyDataInfo.sceneAllEquips.Count == 0) return;
         // clientOperatorInfos.sore
         if (gameType == 1)
             GenerateFireExtinguishingReport();
@@ -315,6 +316,12 @@ public partial class CommanderController : DMonoBehaviour
     }
 
     #region 处理接收的消息
+
+    public void Receive_GameStart()
+    {
+        if (sceneAllzy != null)
+            sceneAllzy.ForEach(a => a.OnStart());
+    }
 
     public void Receive_MoveEquipToTarget(string data)
     {
@@ -348,6 +355,7 @@ public partial class CommanderController : DMonoBehaviour
         currentChooseEquip = null;
         OnLoadProgrammeDataSuc(ProgrammeDataManager.Instance.GetCurrentData);
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+        EventManager.Instance.EventTrigger(EventType.GameStop.ToString());
     }
 
     public void Receive_TriggerSkill(MessageID messageID, string data)

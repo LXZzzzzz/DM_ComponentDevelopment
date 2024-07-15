@@ -208,6 +208,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.gameStartTime = 0;
                 EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
                 EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), "推演开始！");
+                _commanderController.Receive_GameStart();
                 break;
             case MessageID.MoveToTarget:
                 sender.LogError("收到了移动的指令" + type);
@@ -221,6 +222,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStop;
                 MyDataInfo.gameStartTime = 0;
+                MyDataInfo.speedMultiplier = 1;
                 _commanderController.Receive_GameStop();
                 break;
             case MessageID.SendChangeSpeed:

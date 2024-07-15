@@ -11,6 +11,7 @@ using EventType = Enums.EventType;
 
 public class UITopMenuView : BasePanel
 {
+    private int mainLevel;
     private Text ProgrammName;
     private GameObject speedChangePart;
     private Text currentState, currentTime;
@@ -65,7 +66,7 @@ public class UITopMenuView : BasePanel
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
-        int mainLevel = (int)userData;
+        mainLevel = (int)userData;
         GetControl<Toggle>("Tog_Fazd").isOn = false;
         GetControl<Toggle>("Tog_Fazd").transform.parent.gameObject.SetActive(mainLevel == 1);
         speedChangePart.SetActive(mainLevel == 1);
@@ -180,7 +181,7 @@ public class UITopMenuView : BasePanel
     private void standAlone()
     {
         putAwayMenu();
-        if ((int)MyDataInfo.gameState >= 2)
+        if (MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause)
         {
             ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "推演已经开始！！！" };
             UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
@@ -205,10 +206,13 @@ public class UITopMenuView : BasePanel
                 return;
             case GameState.GameStart:
             case GameState.GamePause:
-            case GameState.GameStop:
                 ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "推演已经开始！！！" };
                 UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
                 return;
+            // case GameState.GameStop:
+            //     ConfirmatonInfo infoc = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "方案已经停止！！！" };
+            //     UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoc);
+            //     break;
         }
 
         //只有在准备阶段才能发送开始
@@ -252,6 +256,7 @@ public class UITopMenuView : BasePanel
         if (MyDataInfo.gameState == GameState.GameStop) return;
         btn_start.gameObject.SetActive(true);
         btn_pause.gameObject.SetActive(false);
+        speedChange.value = 0;
         for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
         {
             sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStop, "");
@@ -284,6 +289,9 @@ public class UITopMenuView : BasePanel
             MyDataInfo.gameStartTime += Time.deltaTime * MyDataInfo.speedMultiplier;
             currentTime.text = ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime);
         }
+
+        if (mainLevel == 1)
+            speedChangePart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
     }
 
     private string ConvertSecondsToHHMMSS(float seconds)

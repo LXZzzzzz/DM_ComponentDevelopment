@@ -9,6 +9,10 @@ public class ZiYuan_WaterPoinnt : ZiYuanBase
         ZiYuanType = ZiYuanType.Waters;
     }
 
+    public override void OnStart()
+    {
+    }
+
     protected override void OnReset()
     {
         

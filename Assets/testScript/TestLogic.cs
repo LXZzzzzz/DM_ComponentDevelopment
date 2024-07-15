@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using ReportGenerate;
 using ToolsLibrary;
@@ -95,6 +96,11 @@ public class TestLogic : MonoBehaviour
             em.EvalWaterCompute(JsonConvert.DeserializeObject<ResultFireWaterOutData>(aa), JsonConvert.DeserializeObject<ResultFireWaterSystemData>(bb));
         }
 
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            fp.OnStart();
+        }
+
         if (isRunTimer) runTimer();
 
         if (routePoints != null)
@@ -154,6 +160,7 @@ public class TestLogic : MonoBehaviour
 public class testaaa
 {
     public float aaa;
+
     public static explicit operator testaaa(string jsonString)
     {
         return JsonConvert.DeserializeObject<testaaa>(jsonString);

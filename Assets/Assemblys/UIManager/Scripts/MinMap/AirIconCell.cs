@@ -22,7 +22,7 @@ public class AirIconCell : IconCellBase
     private Image skillProgressShow;
     private Text skillName, skillNameRight;
     private Image belongtoShow;
-    private Slider currentOil;
+    private Image currentOil;
     private GameObject water, goods, person;
 
     public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc, UnityAction<bool, Vector2, Vector2> setRouteCb)
@@ -40,7 +40,7 @@ public class AirIconCell : IconCellBase
         skillNameRight = transform.Find("skillNameRight").GetComponent<Text>();
         skillProgressShow = transform.Find("progress").GetComponent<Image>();
         belongtoShow = transform.Find("Root/belongTo").GetComponent<Image>();
-        currentOil = transform.Find("Root/currentInfoShow/oilPart/oil").GetComponent<Slider>();
+        currentOil = transform.Find("Root/currentInfoShow/oilPart/oil").GetComponent<Image>();
         water = transform.Find("Root/currentInfoShow/water").gameObject;
         goods = transform.Find("Root/currentInfoShow/goods").gameObject;
         person = transform.Find("Root/currentInfoShow/person").gameObject;
@@ -194,7 +194,7 @@ public class AirIconCell : IconCellBase
     private void showAllMassInfo()
     {
         equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person);
-        this.currentOil.value = currentOil / totalOil;
+        this.currentOil.fillAmount = currentOil / totalOil;
         this.water.SetActive(water > 1);
         this.goods.SetActive(goods > 1);
         this.person.SetActive(person > 1);

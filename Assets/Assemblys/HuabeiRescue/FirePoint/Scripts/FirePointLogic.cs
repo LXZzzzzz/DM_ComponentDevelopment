@@ -33,7 +33,7 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
         return fm.IsFire;
     }
 
-    public void getFireData(out float ghmj, out float rsmj,out float csghmj, out float csrsmj, out float tszl)
+    public void getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl)
     {
         // fm.SetDrowning(0, MyDataInfo.gameStartTime);
         ghmj = (float)fm.burnedArea;
@@ -41,6 +41,11 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
         csghmj = (float)fm.csBurnedArea;
         csrsmj = this.csrsmj;
         tszl = allWeight;
+    }
+
+    public override void OnStart()
+    {
+        fm.OnStart();
     }
 
     protected override void OnReset()

@@ -24,7 +24,7 @@ public partial class HelicopterController
                 //第一次从机场起飞记为起飞时刻
                 if (myRecordedData.takeOffTime < 1)
                     myRecordedData.takeOffTime = MyDataInfo.gameStartTime;
-                return;
+                break;
             }
         }
 

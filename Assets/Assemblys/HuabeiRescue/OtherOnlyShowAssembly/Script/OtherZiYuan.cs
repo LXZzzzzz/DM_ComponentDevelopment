@@ -41,6 +41,10 @@ public class OtherZiYuan : ZiYuanBase, IAirPort
             allDockingAircraft.Remove(idid);
     }
 
+    public override void OnStart()
+    {
+    }
+
     protected override void OnReset()
     {
         allDockingAircraft.Clear();

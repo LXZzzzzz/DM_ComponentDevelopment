@@ -52,6 +52,7 @@ namespace ReportGenerate
                 {
                     double ztime = item.Value[i].WaterFireTime - item.Value[i].FirstWaterTime;
                     if (ztime > 0) ztime += item.Key.WatersTime;
+                    if (ztime < 0) continue;
                     item.Value[i].ZongWaterMissionTime = ztime;
                     ZongEndMissionTime += ztime;
                     ZongTotalCost += (item.Key.Price * 0.00029453 + item.Key.Consumption * 0.00087035 + 0.965) * ztime;
@@ -170,11 +171,13 @@ namespace ReportGenerate
                 {
                     double zPtime = item.Value[i].PersonEndTime - item.Value[i].PersonFirstTime;
                     if (zPtime > 0) zPtime += +item.Key.PersonTime; //这个是确保该架次确实安置人员了，就把安置人员动作所需时间加进去
+                    if (zPtime < 0) continue;
                     item.Value[i].ZongPersonMissionTime = zPtime;
                     ZongPersonMissionTime += zPtime;
 
                     double zMtime = item.Value[i].MaterialPointTime - item.Value[i].MaterialLoadingTime;
                     if (zMtime > 0) zMtime += +item.Key.MaterialTime; //这个是确保该架次确实投放物资了，就把投放物资动作所需时间加进去
+                    if (zMtime < 0) continue;
                     item.Value[i].ZongMaterialMissionTime = zMtime;
                     ZongMaterialMissionTime += zMtime;
 

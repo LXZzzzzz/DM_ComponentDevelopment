@@ -30,6 +30,10 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
         }
     }
 
+    public override void OnStart()
+    {
+    }
+
     protected override void OnReset()
     {
         //清除任务状态

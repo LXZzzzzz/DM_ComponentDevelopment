@@ -11,6 +11,9 @@ using EquipBase = ToolsLibrary.EquipPart.EquipBase;
 
 public class UICommanderView : BasePanel
 {
+    private RectTransform commanderViewGo;
+    private RectTransform goListViewGo;
+    private GameObject equipViewGo, ziYuanViewGo, taskViewGo;
     private RectTransform equipTypeParent;
     private RectTransform equipParent;
     private RectTransform commanderParent;
@@ -22,6 +25,7 @@ public class UICommanderView : BasePanel
     private ZiYuanCell zycPrefab;
     private TaskCell taskPrefab;
     private Text startTime, currentTime;
+    private Button btn_ComUnfold, btn_EquipUnfold, btn_ZiyuanUnfold, btn_TaskUnfold;
 
     private MyCommanderView myCommanderInfoShow;
 
@@ -36,6 +40,11 @@ public class UICommanderView : BasePanel
     public override void Init()
     {
         base.Init();
+        commanderViewGo = transform.Find("LeftPart/CommandersView").GetComponent<RectTransform>();
+        goListViewGo = transform.Find("LeftPart/GoListViews").GetComponent<RectTransform>();
+        equipViewGo = transform.Find("LeftPart/GoListViews/EquipListView").gameObject;
+        ziYuanViewGo = transform.Find("LeftPart/GoListViews/ZiYuanListView").gameObject;
+        taskViewGo = transform.Find("LeftPart/GoListViews/tasksListView").gameObject;
         equipTypeParent = GetControl<ScrollRect>("EquipsTypes").content;
         etcPrefab = GetComponentInChildren<EquipTypeCell>(true);
         equipParent = GetControl<ScrollRect>("EquipsView").content;
@@ -48,11 +57,29 @@ public class UICommanderView : BasePanel
         taskPrefab = GetComponentInChildren<TaskCell>(true);
         startTime = GetControl<Text>("startTimeShow");
         currentTime = GetControl<Text>("currentTimeShow");
-        GetControl<Button>("X").onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString()));
+        btn_ComUnfold = GetControl<Button>("btn_ComUnfold");
+        btn_EquipUnfold = GetControl<Button>("btn_EquipUnfold");
+        btn_ZiyuanUnfold = GetControl<Button>("btn_ZiyuanUnfold");
+        btn_TaskUnfold = GetControl<Button>("btn_TaskUnfold");
+        GetControl<Button>("X").onClick.AddListener(() =>
+        {
+            GetControl<Toggle>("tog_CtrlEquipTypeView").isOn = false;
+            EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
+        });
         GetControl<Toggle>("tog_CtrlEquipTypeView").onValueChanged.AddListener(a =>
         {
             if (!a) EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
         });
+
+        btn_ComUnfold.onClick.AddListener(() => retractOrUnfold(true, 0));
+        btn_EquipUnfold.onClick.AddListener(() => retractOrUnfold(true, 1));
+        btn_ZiyuanUnfold.onClick.AddListener(() => retractOrUnfold(true, 2));
+        btn_TaskUnfold.onClick.AddListener(() => retractOrUnfold(true, 3));
+        GetControl<Button>("btn_ComRecover").onClick.AddListener(() => retractOrUnfold(false, 0));
+        GetControl<Button>("btn_EquipRecover").onClick.AddListener(() => retractOrUnfold(false, 1));
+        GetControl<Button>("btn_ZiyuanRecover").onClick.AddListener(() => retractOrUnfold(false, 2));
+        GetControl<Button>("btn_TaskRecover").onClick.AddListener(() => retractOrUnfold(false, 3));
+
 
         myCommanderInfoShow = GetComponentInChildren<MyCommanderView>(true);
 
@@ -68,6 +95,8 @@ public class UICommanderView : BasePanel
         base.ShowMe(userData);
         level = (int)userData;
         GetControl<Toggle>("tog_CtrlEquipTypeView").interactable = level == 1;
+        if (level != 1)
+            retractOrUnfold(false, 0);
 #if !UNITY_EDITOR
         showView();
 #endif
@@ -161,8 +190,61 @@ public class UICommanderView : BasePanel
         currentTime.text = "当前时间 " + DateTime.Now.ToString("HH:mm:ss");
     }
 
+    private void retractOrUnfold(bool isRetract, int type)
+    {
+        switch (type)
+        {
+            case 0:
+                btn_ComUnfold.gameObject.SetActive(!isRetract);
+                if (!isRetract)
+                {
+                    commanderViewGo.anchoredPosition = new Vector2(commanderViewGo.anchoredPosition.x - 104, commanderViewGo.anchoredPosition.y);
+                    goListViewGo.anchoredPosition = new Vector2(goListViewGo.anchoredPosition.x - 90, commanderViewGo.anchoredPosition.y);
+                }
+                else
+                {
+                    commanderViewGo.anchoredPosition = new Vector2(commanderViewGo.anchoredPosition.x + 104, commanderViewGo.anchoredPosition.y);
+                    goListViewGo.anchoredPosition = new Vector2(goListViewGo.anchoredPosition.x + 90, commanderViewGo.anchoredPosition.y);
+                }
+
+                break;
+            case 1:
+                btn_EquipUnfold.gameObject.SetActive(!isRetract);
+                equipViewGo.SetActive(isRetract);
+                if (!isRetract)
+                {
+                    GetControl<Toggle>("tog_CtrlEquipTypeView").isOn = false;
+                    EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
+                }
+
+                break;
+            case 2:
+                btn_ZiyuanUnfold.gameObject.SetActive(!isRetract);
+                ziYuanViewGo.SetActive(isRetract);
+                break;
+            case 3:
+                btn_TaskUnfold.gameObject.SetActive(!isRetract);
+                taskViewGo.SetActive(isRetract);
+                break;
+        }
+    }
+
     private void OnChooseEquipType(string id)
     {
+        if (ProgrammeDataManager.Instance.GetCurrentData == null)
+        {
+            ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "请先创建方案再进行编辑！" };
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
+            return;
+        }
+
+        if (MyDataInfo.gameState != GameState.FirstLevelCommanderEditor)
+        {
+            ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "当前阶段不可更改场景中的装备！" };
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
+            return;
+        }
+
         BObjectModel chooseObject = null;
         for (int i = 0; i < allBObjects.Length; i++)
         {
