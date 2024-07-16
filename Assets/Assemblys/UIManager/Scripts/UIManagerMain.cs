@@ -6,6 +6,7 @@ using UiManager.IconShowPart;
 using System.Collections;
 using ToolsLibrary;
 using UiManager.CursorShowPart;
+using UnityEngine.Events;
 
 public class UIManagerMain : ScriptManager, IMesRec
 {
@@ -52,6 +53,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         base.RunModeInitialized(isMain, info);
         EventManager.Instance.AddEventListener<string, object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
         EventManager.Instance.AddEventListener<string>(Enums.EventType.ShowTipUI.ToString(), OnShowTip);
+        EventManager.Instance.AddEventListener<string, UnityAction<bool>>(Enums.EventType.ShowConfirmUI.ToString(), OnShowConfirm);
         gameObject.AddComponent<UIManager>();
         if (info?.PicBObjects != null)
         {
@@ -68,6 +70,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     {
         EventManager.Instance.RemoveEventListener<string, object>(Enums.EventType.ShowUI.ToString(), OnShowUI);
         EventManager.Instance.RemoveEventListener<string>(Enums.EventType.ShowTipUI.ToString(), OnShowTip);
+        EventManager.Instance.RemoveEventListener<string, UnityAction<bool>>(Enums.EventType.ShowConfirmUI.ToString(), OnShowConfirm);
         UIManager.Instance.ClearUI();
     }
 
@@ -145,6 +148,15 @@ public class UIManagerMain : ScriptManager, IMesRec
     {
         ConfirmatonInfo info = new ConfirmatonInfo() { type = showType.tipView, showStrInfo = tipInfo };
         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, info);
+    }
+
+    private void OnShowConfirm(string showInfo, UnityAction<bool> cb)
+    {
+        ConfirmatonInfo infob = new ConfirmatonInfo
+        {
+            type = showType.secondConfirm, showStrInfo = showInfo, sureCallBack = a => { cb(true); }
+        };
+        UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
     }
 
     public void RecMessage(SendType type, GameObject senderObj, int eventType, string param)

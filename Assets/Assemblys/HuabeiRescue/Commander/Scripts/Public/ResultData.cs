@@ -263,6 +263,11 @@ namespace ReportGenerate
         /// </summary>
         public double MaterialMaxCount;
 
+        /// <summary>
+        /// 是否已坠毁
+        /// </summary>
+        public bool IsCrash;
+
 
         //以下参数不需要赋值
         public double 单机任务成本;

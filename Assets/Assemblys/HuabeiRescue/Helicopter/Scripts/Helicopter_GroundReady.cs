@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
@@ -26,6 +26,9 @@ public partial class HelicopterController
             {
                 myState = HelicopterState.NotReady;
                 (items[i] as IAirPort).comeIn(BObjectId);
+                // if (myRecordedData.endTaskTime < 1)
+                myRecordedData.endTaskTime = MyDataInfo.gameStartTime;
+                Debug.LogError($"结束时刻：{myRecordedData.endTaskTime}");
                 return;
             }
         }

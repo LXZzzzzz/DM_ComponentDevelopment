@@ -134,6 +134,7 @@ public partial class CommanderController
                 EndMissonTime = endMissonTime / 3600,
                 WatersTime = (float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[16]) + float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[17])) / 60f,
                 WatersMaxCoune = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[15]),
+                IsCrash = MyDataInfo.sceneAllEquips[i].isCrash
             };
             List<HeliSortieData> hsd1List = new List<HeliSortieData>();
             List<WaterMegData> nwmdList = new List<WaterMegData>();
@@ -335,6 +336,7 @@ public partial class CommanderController
                 PersonMaxCount = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[6]),
                 MaterialMaxCount = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[4]),
                 MaterialTime = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[19]) + float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[20]),
+                IsCrash = MyDataInfo.sceneAllEquips[i].isCrash
             };
             List<HeliSortieData> hsd1List = new List<HeliSortieData>();
             List<MaterialPersonMegData> nwmdList = new List<MaterialPersonMegData>();

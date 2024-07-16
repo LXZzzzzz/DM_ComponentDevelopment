@@ -24,6 +24,7 @@ public partial class HelicopterController
                 //第一次从机场起飞记为起飞时刻
                 if (myRecordedData.takeOffTime < 1)
                     myRecordedData.takeOffTime = MyDataInfo.gameStartTime;
+                Debug.LogError($"起飞时刻：{myRecordedData.takeOffTime}");
                 break;
             }
         }
@@ -40,6 +41,9 @@ public partial class HelicopterController
         Vector3 startPos = new Vector3(transform.position.x, 0, transform.position.z);
         Vector3 endPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd, transform.position.z);
         amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, myAttributeInfo.psyh);
+        var itemPosition = transform.position;
+        itemPosition = new Vector3(itemPosition.x, flyHight, itemPosition.z);
+        transform.position = itemPosition;
     }
 
     public void Landing()
@@ -61,6 +65,9 @@ public partial class HelicopterController
         Vector3 startPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd, transform.position.z);
         Vector3 endPos = new Vector3(transform.position.x, 0, transform.position.z);
         // amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, myAttributeInfo.psyh);
+        var itemPosition = transform.position;
+        itemPosition = new Vector3(itemPosition.x, GetCurrentGroundHeight() < 0 ? flyHight : GetCurrentGroundHeight(), itemPosition.z);
+        transform.position = itemPosition;
     }
 
     public void Supply()
@@ -81,5 +88,32 @@ public partial class HelicopterController
 
         if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId))
             EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), "当前位置超出补给距离，请前往补给点再进行操作");
+    }
+
+    /// <summary>
+    /// 获取当前位置地面的高度
+    /// </summary>
+    /// <returns></returns>
+    private float GetCurrentGroundHeight()
+    {
+        // 射线的起点是当前物体的位置
+        Ray ray = new Ray(transform.position, Vector3.down);
+
+        // 存储射线碰撞信息的变量
+        RaycastHit hit;
+
+        // 检测射线是否碰撞到任何物体
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            // 打印碰撞点的坐标
+            Debug.Log("Hit Point: " + hit.point);
+            return hit.point.y;
+        }
+        else
+        {
+            // 如果没有碰撞到任何物体
+            Debug.Log("No hit");
+            return -1;
+        }
     }
 }

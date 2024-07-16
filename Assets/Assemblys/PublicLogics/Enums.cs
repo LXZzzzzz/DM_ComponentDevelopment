@@ -24,6 +24,7 @@ namespace Enums
         CloseCreatTarget, //关闭创建的模板对象
         GeneratePDF, //生成pdf
         ShowTipUI, //非UI层调用弹窗页面
+        ShowConfirmUI, //非UI曾调用二次确认窗口
         ChooseEquipToZiYuanType, //控制飞机飞往某个资源点
         ShowAMsgInfo, //展示一个指令信息
         ClearMsgBox, //清除操作记录数据
@@ -58,6 +59,8 @@ namespace Enums
         TriggerCableDescentRescue = 1113, //触发索降救援操作
 
         TriggerReturnFlight = 1114, //触发返航指令
-        TriggerEndTask = 1115 //触发结束任务操作
+        TriggerEndTask = 1115, //触发结束任务操作
+
+        TriggerEquipCrash = 1116, //触发飞机坠毁
     }
 }

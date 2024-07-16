@@ -21,6 +21,18 @@ public class OtherZiYuan : ZiYuanBase, IAirPort
     {
         allDockingAircraft.Add(equipId);
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).isDockingAtTheAirport = true;
+        for (int i = 0; i < allDockingAircraft.Count; i++)
+        {
+            GameObject itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, allDockingAircraft[i])).gameObject;
+            if (i % 2 == 0)
+            {
+                itemEquip.transform.position = new Vector3(transform.position.x + i * 10, itemEquip.transform.position.y, transform.position.z);
+            }
+            else
+            {
+                itemEquip.transform.position = new Vector3(transform.position.x - i * 10, itemEquip.transform.position.y, transform.position.z);
+            }
+        }
     }
 
     public List<string> GetAllEquips()
@@ -32,7 +44,9 @@ public class OtherZiYuan : ZiYuanBase, IAirPort
     {
         //起飞指定飞机，并把他从机场移除出去
         allDockingAircraft.Remove(equipId);
-        MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).isDockingAtTheAirport = false;
+        var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
+        itemEquip.isDockingAtTheAirport = false;
+        itemEquip.transform.position = new Vector3(transform.position.x, itemEquip.transform.position.y, transform.position.z);
     }
 
     private void desAir(string idid)

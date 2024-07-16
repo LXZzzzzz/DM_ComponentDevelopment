@@ -94,7 +94,7 @@ namespace ReportGenerate
             data.灭火任务总成本 = ZongTotalCost;
             data.成本基数 = (sysData.最低直升机单价 * 0.00029453 + sysData.最低小时燃油消耗率 * 0.00087035 + 0.965) * ((outdata.取水点到投水点的最短路径) /
                 sysData.最大巡航速度 + sysData.单次取水和投水时间) * (ZongWaterWeight / sysData.吊桶单次最大装载量);
-            data.任务总成本效率 = data.成本基数 / data.灭火任务总成本;
+            data.任务总成本效率 = data.灭火任务总成本 < 1.0 / 3600.0 ? 0 : data.成本基数 / data.灭火任务总成本;
 
             #endregion
 
@@ -102,7 +102,7 @@ namespace ReportGenerate
 
             data.过火面积控制率 = outdata.任务结束时过火总面积 / outdata.任务初始燃烧面积;
             data.总体任务效率 = 0.5 * data.灭火任务效率 + 0.3 * data.灭火任务总时间效率 + 0.2 * data.任务总成本效率;
-            data.单机任务效率 = ZongWaterWeightVal / ZongWaterWeightValCount;
+            data.单机任务效率 = ZongWaterWeightValCount < 1 ? 0 : ZongWaterWeightVal / ZongWaterWeightValCount;
             data.协同指挥效能 = 100 * (0.5 * data.总体任务效率 + 0.5 * data.单机任务效率);
 
             #endregion
@@ -250,8 +250,8 @@ namespace ReportGenerate
             data.物资投放任务运成本基数 = (sysData.最低直升机单价 * 0.00029453 + sysData.最低小时燃油消耗率 * 0.00087035 + 0.965) *
                                (outData.物资装载起降点到安置点的最短路径 / sysData.最大巡航速度 + sysData.单次物资投放时间) * (ZongMaterialWeight / sysData.直升机单次最大运载物资重量);
 
-            data.人员转运任务总成本效率 = data.人员转运任务成本基数 / data.人员转运任务总成本;
-            data.物资投放任务总成本效率 = data.物资投放任务运成本基数 / data.物资投放任务总成本;
+            data.人员转运任务总成本效率 = data.人员转运任务总成本 < 1.0 / 3600.0 ? 0 : data.人员转运任务成本基数 / data.人员转运任务总成本;
+            data.物资投放任务总成本效率 = data.物资投放任务总成本 < 1.0 / 3600.0 ? 0 : data.物资投放任务运成本基数 / data.物资投放任务总成本;
 
             #endregion
 
@@ -259,8 +259,8 @@ namespace ReportGenerate
 
             data.人员转运总体任务效率 = 0.5 * data.人员转运效率 + 0.3 * data.人员转运任务时间效率 + 0.2 * data.人员转运任务总成本效率;
             data.物资投放总体任务效率 = 0.5 * data.物资任务效率 + 0.3 * data.物资投放任务时间效率 + 0.2 * data.物资投放任务总成本效率;
-            data.人员转运单机任务效率 = ZongPersonWeightVal / ZongPersonWeightValCount;
-            data.物资投放单机任务效率 = ZongMaterialWeightVal / ZongMaterialWeightValCount;
+            data.人员转运单机任务效率 = ZongPersonWeightValCount < 1 ? 0 : ZongPersonWeightVal / ZongPersonWeightValCount;
+            data.物资投放单机任务效率 = ZongMaterialWeightValCount < 1 ? 0 : ZongMaterialWeightVal / ZongMaterialWeightValCount;
             data.人员转运任务协同指挥效能 = 100 * (0.5 * data.人员转运总体任务效率 + 0.5 * data.人员转运单机任务效率);
             data.物资投放任务协同指挥效能 = 100 * (0.5 * data.物资投放总体任务效率 + 0.5 * data.物资投放单机任务效率);
             data.协同指挥效能 = 0.6 * data.人员转运任务协同指挥效能 + 0.4 * data.物资投放任务协同指挥效能;

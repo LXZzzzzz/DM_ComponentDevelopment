@@ -6,6 +6,7 @@ using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
 using UnityEngine;
+using UnityEngine.Events;
 using 导教端_WRJ;
 using EventType = Enums.EventType;
 
@@ -211,10 +212,10 @@ public partial class CommanderController : DMonoBehaviour
                     temporaryEquip.name = ProgrammeDataManager.Instance.GetEquipDataById(myId).myName;
 
                 temporaryEquip.BObjectId = myId;
-                temporaryEquip.Init(templateEquip, sceneAllzy);
                 temporaryEquip.BeLongToCommanderId = ProgrammeDataManager.Instance.GetEquipDataById(myId).controllerId;
                 var dataPos = ProgrammeDataManager.Instance.GetEquipDataById(myId).pos;
                 temporaryEquip.transform.position = new Vector3(dataPos.x, dataPos.y + 700, dataPos.z);
+                temporaryEquip.Init(templateEquip, sceneAllzy);
                 temporaryEquip.gameObject.SetActive(true);
                 EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
@@ -285,6 +286,12 @@ public partial class CommanderController : DMonoBehaviour
 
     private void OnGeneratePdf()
     {
+        if (MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) != null)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前有飞机未入库机场，无法生成报告！");
+            return;
+        }
+
         if (showAllOperatorInfos == null) showAllOperatorInfos = new List<string>();
         if (itemclientInfos == null) itemclientInfos = new List<string>();
         showAllOperatorInfos.Clear();
@@ -343,7 +350,8 @@ public partial class CommanderController : DMonoBehaviour
 
     public void Receive_GameStop()
     {
-        OnGeneratePdf();
+        if (MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) == null)
+            OnGeneratePdf();
         for (int i = 0; i < allBObjects.Length; i++)
         {
             if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) == null) continue;
@@ -487,6 +495,13 @@ public partial class CommanderController : DMonoBehaviour
                 itemet.OnNullCommand(1);
                 EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemet.name}执行结束任务的操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--{itemet.name}执行结束任务的操作");
+                break;
+            case MessageID.TriggerEquipCrash:
+                sender.LogError("收到了坠毁的指令");
+                var itemec = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                itemec.OnCrash();
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"{itemec.name}油量已耗尽，坠毁");
+                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--{itemec.name}油量已耗尽，坠毁");
                 break;
         }
     }

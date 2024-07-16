@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using ToolsLibrary;
 using UnityEngine;
 
 public class FireManage : DMonoBehaviour
@@ -71,7 +72,7 @@ public class FireManage : DMonoBehaviour
 
         if (isGaming)
         {
-            gameTimer += Time.fixedDeltaTime;
+            gameTimer += Time.deltaTime;
 
             burnCount = ComputeBurnCount(gameTimer);
             burnedCount = ComputeBurnedCount(gameTimer);
@@ -135,6 +136,18 @@ public class FireManage : DMonoBehaviour
             WaterTimeOld = WaterTimeNew;
             isWater = false;
         }
+    }
+
+    public void UpdateBurnArea()
+    {
+        if(isGaming) return;
+        gameTimer += Time.deltaTime;
+
+        burnCount = ComputeBurnCount(gameTimer);
+        burnedCount = ComputeBurnedCount(gameTimer);
+
+        _burnArea = burnCount * 400;
+        _burnedArea = burnedCount * 400;
     }
 
     /// <summary>

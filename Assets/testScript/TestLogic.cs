@@ -27,6 +27,7 @@ public class TestLogic : MonoBehaviour
 
     public testObjData to;
     public RectTransform testPoint;
+    public HelicopterController hc;
 
     void Start()
     {
@@ -84,6 +85,7 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
+            fp.updateBA();
             // Dictionary<HeliData, List<HeliSortieData>> asd = new Dictionary<HeliData, List<HeliSortieData>>();
             // asd.Add(new HeliData() {Consumption = 100}, new List<HeliSortieData>() { new HeliSortieData() { EndMissonTime = 20 } });
             //

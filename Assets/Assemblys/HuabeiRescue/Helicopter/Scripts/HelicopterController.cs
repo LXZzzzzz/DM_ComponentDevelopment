@@ -30,6 +30,10 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private Vector3 PickupPoint;
     private int isGoods; //0物资 1人员 2灭火
 
+    private bool isSendCrash; //记录是否已经发送过坠毁信息
+
+    private float flyHight;
+
 
     public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
     {
@@ -72,13 +76,17 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
                 mySkills.Add(new SkillData() { SkillType = SkillType.PlacementOfPersonnel, isUsable = false, skillName = "安置人员" });
         }
 
-        mySkills.Add(new SkillData() { SkillType = SkillType.EndTask, isUsable = true, skillName = "结束任务" });
+        // mySkills.Add(new SkillData() { SkillType = SkillType.EndTask, isUsable = true, skillName = "结束任务" });
 
         currentSkill = SkillType.None;
         myState = HelicopterState.NotReady;
         isWaitArrive = false;
         isRunTimer = false;
         currentTargetType = -1;
+        var position = transform.position;
+        flyHight = position.y;
+        position = new Vector3(position.x, GetCurrentGroundHeight() < 0 ? flyHight : GetCurrentGroundHeight(), position.z);
+        transform.position = position;
         anis = transform.GetComponentsInChildren<Animation>();
         for (int i = 0; i < anis.Length; i++)
         {
@@ -98,7 +106,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         amountOfGoods = 0;
         amountOfPerson = 0;
         speed = myAttributeInfo.zsjxhsd / 3.6f;
-        isCrash = false;
+        isSendCrash = false;
     }
 
     private void OnSetTargetType(int zyt)
@@ -261,6 +269,12 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             return false;
         }
 
+        if (currentSkill != SkillType.None)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前正在执行任务，无法机动");
+            return false;
+        }
+
         return ismove;
     }
 
@@ -303,7 +317,11 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
         calculationData();
 
-        if (!isCrash && amountOfOil <= 0) isCrash = true;
+        if (!isCrash && !isSendCrash && amountOfOil <= 0)
+        {
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerEquipCrash, BObjectId);
+            isSendCrash = true;
+        }
     }
 
     private void switchMyState()

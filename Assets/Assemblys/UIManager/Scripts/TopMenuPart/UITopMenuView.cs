@@ -5,6 +5,7 @@ using ToolsLibrary;
 using ToolsLibrary.ProgrammePart;
 using UiManager;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 using EventType = Enums.EventType;
@@ -69,6 +70,7 @@ public class UITopMenuView : BasePanel
         mainLevel = (int)userData;
         GetControl<Toggle>("Tog_Fazd").isOn = false;
         GetControl<Toggle>("Tog_Fazd").transform.parent.gameObject.SetActive(mainLevel == 1);
+        GetControl<Toggle>("Tog_Zhpg").transform.parent.gameObject.SetActive(mainLevel == 1);
         speedChangePart.SetActive(mainLevel == 1);
         EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
         ProgrammName.text = UIManager.Instance.MisName;
@@ -254,9 +256,23 @@ public class UITopMenuView : BasePanel
         }
 
         if (MyDataInfo.gameState == GameState.GameStop) return;
+
+
+        if (MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) != null)
+        {
+            EventManager.Instance.EventTrigger<string, UnityAction<bool>>(EventType.ShowConfirmUI.ToString(), "当前有飞机未入库机场，数据将无法生成报告，是否确认丢弃本次推演数据？", (a) =>
+            {
+                for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+                {
+                    sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStop, "");
+                }
+            });
+            return;
+        }
+
         btn_start.gameObject.SetActive(true);
         btn_pause.gameObject.SetActive(false);
-        speedChange.value = 0;
+        speedChange.value = 1;
         for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
         {
             sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStop, "");

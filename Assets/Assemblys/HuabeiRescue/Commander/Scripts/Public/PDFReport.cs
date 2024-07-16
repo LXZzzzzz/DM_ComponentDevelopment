@@ -186,7 +186,7 @@ namespace ReportGenerate
                 tableEffort.AddCell(MyCell("累计投水重量（千克）", 2, 1));
                 tableEffort.AddCell(MyCell(item.Key.单机投水总重量.ToString("0.00"), 2, 1));
                 tableEffort.AddCell(MyCell("单机任务成本", 2, 1));
-                tableEffort.AddCell(MyCell(item.Key.单机任务成本.ToString("0.00"), 2, 1));
+                tableEffort.AddCell(MyCell(item.Key.IsCrash ? "已坠毁" : item.Key.单机任务成本.ToString("0.00"), 2, 1));
                 tableEffort.AddCell(MyCell("单位时间内单机投水重量（千克）", 2, 1));
                 tableEffort.AddCell(MyCell(TimeWaterWeight.ToString("0.00"), 2, 1));
                 tableEffort.AddCell(MyCell("飞行架次", 2, 1));
@@ -400,7 +400,7 @@ namespace ReportGenerate
                 tableEffort.AddCell(MyCell("累计投放物资重量（千克）", 3, 1));
                 tableEffort.AddCell(MyCell(item.Key.累计投放物资重量.ToString("0.00"), 3, 1));
                 tableEffort.AddCell(MyCell("单机任务成本", 3, 1));
-                tableEffort.AddCell(MyCell(item.Key.单机任务成本.ToString("0.00"), 3, 1));
+                tableEffort.AddCell(MyCell(item.Key.IsCrash ? "已坠毁" : item.Key.单机任务成本.ToString("0.00"), 3, 1));
                 tableEffort.AddCell(MyCell("飞行架次", 3, 1));
                 tableEffort.AddCell(MyCell(item.Value.Count.ToString(), 3, 1));
                 tableEffort.AddCell(MyCell("单位架次数据", 6, 1));
