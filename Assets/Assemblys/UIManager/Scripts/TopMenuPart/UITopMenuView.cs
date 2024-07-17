@@ -139,7 +139,7 @@ public class UITopMenuView : BasePanel
     private void load()
     {
         putAwayMenu();
-        var data = ProgrammeDataManager.Instance.LoadProgramme();
+        var data = ProgrammeDataManager.Instance.LoadProgramme(Application.dataPath + "/MapLib/Scheme");
 
         if (data != null)
         {

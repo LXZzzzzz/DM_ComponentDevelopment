@@ -27,7 +27,6 @@ public class TestLogic : MonoBehaviour
 
     public testObjData to;
     public RectTransform testPoint;
-    public HelicopterController hc;
 
     void Start()
     {
@@ -45,6 +44,11 @@ public class TestLogic : MonoBehaviour
 
         to.test = new testClass() { aaa = 20, bbb = 30 };
         fp.Init(5, 10, 30000, "1111111");
+
+        myass = new List<AudioSource>();
+        mywms = new List<WingMark>();
+
+        mywms = fj.transform.GetComponentsInChildren<WingMark>(true).ToList();
     }
 
     public FirePointLogic fp;
@@ -53,6 +57,9 @@ public class TestLogic : MonoBehaviour
     public GameObject fj;
 
     public string aa, bb;
+
+    private List<AudioSource> myass;
+    private List<WingMark> mywms;
 
     void Update()
     {
@@ -101,6 +108,37 @@ public class TestLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             fp.OnStart();
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            var anis = fj.transform.GetComponentsInChildren<Animation>();
+            for (int i = 0; i < anis.Length; i++)
+            {
+                anis[i].Stop();
+            }
+            
+            if (myass.Count == 0)
+            {
+                var ass = fj.transform.GetComponentsInChildren<AudioSource>();
+                for (int i = 0; i < ass.Length; i++)
+                {
+                    if (ass[i].enabled) myass.Add(ass[i]);
+                }
+            }
+            myass.ForEach(x=>x.gameObject.SetActive(false));
+            mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
+        }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+
+            var anis = fj.transform.GetComponentsInChildren<Animation>();
+            for (int i = 0; i < anis.Length; i++)
+            {
+                anis[i].Play();
+            }
+            myass.ForEach(x=>x.gameObject.SetActive(true));
         }
 
         if (isRunTimer) runTimer();

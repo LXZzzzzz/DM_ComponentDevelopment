@@ -24,13 +24,21 @@ public class OtherZiYuan : ZiYuanBase, IAirPort
         for (int i = 0; i < allDockingAircraft.Count; i++)
         {
             GameObject itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, allDockingAircraft[i])).gameObject;
-            if (i % 2 == 0)
+            if (i % 4 == 0)
             {
-                itemEquip.transform.position = new Vector3(transform.position.x + i * 10, itemEquip.transform.position.y, transform.position.z);
+                itemEquip.transform.position = new Vector3(transform.position.x + (i / 4 + 1) * 10, itemEquip.transform.position.y, transform.position.z);
             }
-            else
+            else if (i % 4 == 1)
             {
-                itemEquip.transform.position = new Vector3(transform.position.x - i * 10, itemEquip.transform.position.y, transform.position.z);
+                itemEquip.transform.position = new Vector3(transform.position.x - (i / 4 + 1) * 10, itemEquip.transform.position.y, transform.position.z);
+            }
+            else if (i % 4 == 2)
+            {
+                itemEquip.transform.position = new Vector3(transform.position.x, itemEquip.transform.position.y, transform.position.z - (i / 4 + 1) * 15);
+            }
+            else if (i % 4 == 3)
+            {
+                itemEquip.transform.position = new Vector3(transform.position.x, itemEquip.transform.position.y, transform.position.z + (i / 4 + 1) * 15);
             }
         }
     }

@@ -33,6 +33,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private bool isSendCrash; //记录是否已经发送过坠毁信息
 
     private float flyHight;
+    
+    private List<AudioSource> myass;
+    private List<WingMark> mywms;
 
 
     public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
@@ -107,6 +110,10 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         amountOfPerson = 0;
         speed = myAttributeInfo.zsjxhsd / 3.6f;
         isSendCrash = false;
+        myass = new List<AudioSource>();
+        mywms = new List<WingMark>();
+
+        mywms.AddRange(transform.GetComponentsInChildren<WingMark>(true));
     }
 
     private void OnSetTargetType(int zyt)

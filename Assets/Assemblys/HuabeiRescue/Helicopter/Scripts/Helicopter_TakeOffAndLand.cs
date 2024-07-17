@@ -33,6 +33,7 @@ public partial class HelicopterController
         {
             anis[i].Play();
         }
+        myass.ForEach(x=>x.gameObject.SetActive(true));
     }
 
     private void OnTOSuc()
@@ -56,6 +57,17 @@ public partial class HelicopterController
         {
             anis[i].Stop();
         }
+        
+        if (myass.Count == 0)
+        {
+            var ass = transform.GetComponentsInChildren<AudioSource>();
+            for (int i = 0; i < ass.Length; i++)
+            {
+                if (ass[i].enabled) myass.Add(ass[i]);
+            }
+        }
+        myass.ForEach(x=>x.gameObject.SetActive(false));
+        mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
     }
 
     private void OnLandSuc()
