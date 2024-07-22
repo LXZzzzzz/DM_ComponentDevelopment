@@ -26,7 +26,7 @@ public partial class HelicopterController
                 currentSkill = SkillType.Manned;
                 // float itemgoods = myAttributeInfo.zdyxzh - amountOfPerson * myAttributeInfo.cnrpjtz - amountOfGoods;
                 // int itemperson = Mathf.Min(myAttributeInfo.zdzkl, (int)Mathf.Floor(itemgoods / myAttributeInfo.cnrpjtz));
-                itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl);
+                itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl - amountOfPerson);
                 Debug.LogError(myAttributeInfo.ldzzrysj * 3600f);
                 openTimer(myAttributeInfo.ldzzrysj * 3600f, OnZZRYSuc);
 
@@ -46,7 +46,7 @@ public partial class HelicopterController
 
     private void OnZZRYSuc()
     {
-        amountOfPerson = itemPersonNum;
+        amountOfPerson += itemPersonNum;
         myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].numberOfRescues += amountOfPerson;
     }
 
@@ -64,7 +64,7 @@ public partial class HelicopterController
             if (Vector3.Distance(transform.position, zyPos) < 10)
             {
                 currentSkill = SkillType.PlacementOfPersonnel;
-                (items[i] as IRescueStation).placementOfPersonnel(amountOfPerson);
+                itemPersonNum = (items[i] as IRescueStation).placementOfPersonnel(amountOfPerson);
                 // Debug.LogError(amountOfPerson / myAttributeInfo.azsysl * 60);
                 myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].personDistance = Vector3.Distance(PickupPoint, items[i].transform.position);
                 myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].placementOfPersonTime = MyDataInfo.gameStartTime;
@@ -79,7 +79,7 @@ public partial class HelicopterController
 
     private void OnAZSYSuc()
     {
-        amountOfPerson = 0;
+        amountOfPerson -= itemPersonNum;
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ public partial class HelicopterController
                 currentSkill = SkillType.CableDescentRescue;
                 // float itemgoods = myAttributeInfo.zdyxzh - amountOfPerson - amountOfGoods;
                 // int itemperson = Mathf.Min(myAttributeInfo.zdzkl, (int)Mathf.Floor(itemgoods / myAttributeInfo.cnrpjtz));
-                itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl);
+                itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl - amountOfPerson);
                 // Debug.LogError(itemPersonNum / myAttributeInfo.sjjrsl * 60);
                 openTimer(myAttributeInfo.sjjrsj * 3600f, OnZZRYSuc);
 

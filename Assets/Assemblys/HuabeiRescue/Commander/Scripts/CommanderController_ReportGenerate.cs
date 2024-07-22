@@ -373,7 +373,7 @@ public partial class CommanderController
 
                 if (itemDatas[j].goodsDistance > 1)
                 {
-                    float itemgoodsMinTime = (float)((itemDatas[j].goodsDistance / 1000f / float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[8]) + hd1.MaterialTime) * zqxzyzrs);
+                    float itemgoodsMinTime = (float)((itemDatas[j].goodsDistance / 1000f / float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[8]) + hd1.MaterialTime) * (zqxzyzrs * rfsystem.人均救援物资需求 / hd1.MaterialMaxCount));
                     if (itemgoodsMinTime < goodsMinTime) goodsMinTime = itemgoodsMinTime;
                     sender.LogError("itemGoods值：" + itemgoodsMinTime);
                 }

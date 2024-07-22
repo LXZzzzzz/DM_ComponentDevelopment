@@ -11,7 +11,8 @@ namespace ToolsLibrary.ProgrammePart_Logic
     public class ProgrammeDataManager : MonoSingleTon<ProgrammeDataManager>
     {
         private ProgrammeData currentData;
-        private int serialNumberId;
+        public ProgrammeData GetCurrentData => currentData;
+        private int equipIdNum;
 
         public void CreatProgramme(string name)
         {
@@ -21,14 +22,17 @@ namespace ToolsLibrary.ProgrammePart_Logic
             currentData.CommanderControlList = new Dictionary<string, List<string>>();
             currentData.ZiYuanControlledList = new Dictionary<string, List<string>>();
             currentData.TaskControlledList = new Dictionary<string, List<string>>();
-            serialNumberId = 0;
+            equipIdNum = 0;
         }
 
-        public ProgrammeData LoadProgramme()
+        public ProgrammeData LoadProgramme(string path)
         {
-            if (FileOperator.LoadData(out ProgrammeData data))
+            ProgrammeData data;
+            Debug.LogError($"传来的路径：{path}");
+            if (FileOperator.LoadData(path, out data))
             {
                 currentData = data;
+                equipIdNum = currentData.AllEquipDatas.Count;
                 return currentData;
             }
             else
@@ -40,16 +44,41 @@ namespace ToolsLibrary.ProgrammePart_Logic
         public void SaveProgramme()
         {
             if (currentData != null)
-                FileOperator.SaveData(currentData);
+                FileOperator.SaveAsData(currentData);
+        }
+
+        public void SaveProgramme(string path)
+        {
+            if (currentData != null)
+                FileOperator.SaveData(currentData, path);
         }
 
         public string AddEquip(string templateId, Vector3 initPos)
         {
             JsonVector3 itemPos = new JsonVector3() { x = initPos.x, y = initPos.y, z = initPos.z };
             AEquipData itemData = new AEquipData()
-                { templateId = templateId, pos = itemPos, myId = templateId + serialNumberId++ };
+                { templateId = templateId, pos = itemPos, myId = templateId + (equipIdNum += 1) };
             currentData.AllEquipDatas.Add(itemData);
             return itemData.myId;
+        }
+
+        public bool DeleEquip(string equipId)
+        {
+            if (currentData != null && currentData.AllEquipDatas != null)
+            {
+                for (int i = 0; i < currentData.AllEquipDatas.Count; i++)
+                {
+                    if (string.Equals(equipId, currentData.AllEquipDatas[i].myId))
+                    {
+                        currentData.AllEquipDatas.RemoveAt(i);
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return false;
         }
 
         public AEquipData GetEquipDataById(string targetId)
@@ -119,25 +148,31 @@ namespace ToolsLibrary.ProgrammePart_Logic
     {
         private static string lastPath;
 
-        public static void SaveData<T>(T data)
+        public static void SaveAsData<T>(T data)
         {
             if (string.IsNullOrEmpty(lastPath))
                 lastPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
 
-            SaveData(data, lastPath);
+            SaveDataFunc(data, lastPath);
         }
 
-        public static bool LoadData<T>(out T outData)
+        public static void SaveData<T>(T data, string path)
         {
-            if (string.IsNullOrEmpty(lastPath))
-                lastPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            int fileCount = Directory.GetFiles(path).Length;
 
-            outData = LoadData<T>(lastPath);
+            string jsonData = JsonConvert.SerializeObject(data);
+            File.WriteAllText(path + $"/方案{fileCount + 1}.json", jsonData);
+            lastPath = path;
+        }
+
+        public static bool LoadData<T>(string path, out T outData)
+        {
+            outData = LoadData<T>(path);
 
             return outData != null;
         }
 
-        private static void SaveData<T>(T data, string folderPath)
+        private static void SaveDataFunc<T>(T data, string folderPath)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
@@ -159,10 +194,11 @@ namespace ToolsLibrary.ProgrammePart_Logic
 
         private static T LoadData<T>(string folderPath)
         {
+            Debug.LogError($"打开的路径：{folderPath}");
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "JSON Files (*.json)|*.json",
-                InitialDirectory = folderPath
+                InitialDirectory = folderPath, RestoreDirectory = true, FilterIndex = 2
             };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -172,6 +208,8 @@ namespace ToolsLibrary.ProgrammePart_Logic
                 string jsonData = File.ReadAllText(filePath);
                 return JsonConvert.DeserializeObject<T>(jsonData);
             }
+
+            Debug.LogError($"检查路径：{openFileDialog.InitialDirectory}");
 
             return default(T);
         }

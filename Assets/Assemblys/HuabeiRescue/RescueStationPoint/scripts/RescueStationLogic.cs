@@ -44,11 +44,23 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
         Debug.LogError($"安置点被投放了{totalWeight}物资");
     }
 
-    public void placementOfPersonnel(int personNum)
+    public int placementOfPersonnel(int personNum)
     {
-        totalPerson += personNum;
-        totalPerson = totalPerson >= maxPersonNum ? maxPersonNum : totalPerson;
-        Debug.LogError($"安置点被安置了{totalPerson}人");
+        int itemPersonNum = maxPersonNum - totalPerson;
+        if (itemPersonNum > personNum)
+        {
+            //证明当前安置点还能容纳下所有伤员
+            totalPerson += personNum;
+            Debug.LogError($"安置点被安置了{totalPerson}人");
+            return personNum;
+        }
+        else
+        {
+            //安置点不足以安置下所有伤员
+            totalPerson = maxPersonNum;
+            Debug.LogError($"安置点被安置了{totalPerson}人");
+            return itemPersonNum;
+        }
     }
 
     public void getResData(out float firstTime, out float totalWeight, out int totalPerson)
@@ -64,7 +76,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
         maxPersonNum = this.maxPersonNum;
         currentGoodsNum = totalWeight;
         maxGoodsNum = perPersonNeedGoodsWeight * totalPerson;
-        
+
         return totalPerson >= this.maxPersonNum && totalWeight >= perPersonNeedGoodsWeight * this.maxPersonNum;
     }
 }

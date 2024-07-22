@@ -1,16 +1,14 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using ReportGenerate;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UiManager;
-using UiManager.IconShowPart;
 using UnityEngine;
 using Vectrosity;
+using ToolsLibrary.ProgrammePart;
 
 public class TestLogic : MonoBehaviour
 {
@@ -65,6 +63,7 @@ public class TestLogic : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
+            MyDataInfo.gameState = GameState.GameStart;
             EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "IconShow", null);
             UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, new Vector2(18000, 18000));
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
@@ -101,8 +100,10 @@ public class TestLogic : MonoBehaviour
             //
             // Dictionary<HeliData, List<HeliSortieData>> er = JsonConvert.DeserializeObject<Dictionary<HeliData, List<HeliSortieData>>>(qw);
             // return;
+
+
             EvalManage em = new EvalManage();
-            em.EvalWaterCompute(JsonConvert.DeserializeObject<ResultFireWaterOutData>(aa), JsonConvert.DeserializeObject<ResultFireWaterSystemData>(bb));
+            em.EvalMaterialCompute(JsonConvert.DeserializeObject<ResultMaterialPersonOutData>(aa), JsonConvert.DeserializeObject<ResultRescueSystemData>(bb), 19.14555f, 8.2088f);
         }
 
         if (Input.GetKeyDown(KeyCode.F))
@@ -117,7 +118,7 @@ public class TestLogic : MonoBehaviour
             {
                 anis[i].Stop();
             }
-            
+
             if (myass.Count == 0)
             {
                 var ass = fj.transform.GetComponentsInChildren<AudioSource>();
@@ -126,19 +127,30 @@ public class TestLogic : MonoBehaviour
                     if (ass[i].enabled) myass.Add(ass[i]);
                 }
             }
-            myass.ForEach(x=>x.gameObject.SetActive(false));
+
+            myass.ForEach(x => x.gameObject.SetActive(false));
             mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
         }
 
         if (Input.GetKeyDown(KeyCode.H))
         {
-
             var anis = fj.transform.GetComponentsInChildren<Animation>();
             for (int i = 0; i < anis.Length; i++)
             {
                 anis[i].Play();
             }
-            myass.ForEach(x=>x.gameObject.SetActive(true));
+
+            myass.ForEach(x => x.gameObject.SetActive(true));
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            ProgrammeDataManager.Instance.LoadProgramme("D:/DM/DM2.2.0D/DM_Data/MapLib/Scheme");
+        }
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            EventManager.Instance.EventTrigger(Enums.EventType.ShowAMsgInfo.ToString(), "执行装载资源的操作");
         }
 
         if (isRunTimer) runTimer();

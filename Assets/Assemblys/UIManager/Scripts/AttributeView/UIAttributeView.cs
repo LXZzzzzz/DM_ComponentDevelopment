@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using DM.Core.Map;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
@@ -145,6 +147,14 @@ public class UIAttributeView : BasePanel
         var itemCell = Instantiate(msgObj, msgParent);
         itemCell.Init(ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime), info);
         itemCell.gameObject.SetActive(true);
+        StartCoroutine(setSV());
+    }
+
+    IEnumerator setSV()
+    {
+        yield return 1;
+        yield return 1;
+        GetControl<ScrollRect>("msgInfoView").verticalScrollbar.value = 0;
     }
 
     private void OnCleraMsg()
