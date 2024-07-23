@@ -8,16 +8,21 @@ public class DraggingWindow : DMonoBehaviour, IPointerDownHandler, IPointerUpHan
     private Vector2 lastPos;
     private Vector2 offset;
     private bool isFollow;
+    private float xbl;
+    private float ybl;
 
     private void Start()
     {
         myRect = GetComponent<RectTransform>();
         isFollow = false;
+        Vector2 canVector2 = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
+        xbl = Screen.width / canVector2.x;
+        ybl = Screen.height / canVector2.y;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        lastPos = eventData.position;
+        lastPos = new Vector2(eventData.position.x / xbl, eventData.position.y / ybl);
         isFollow = true;
     }
 
@@ -40,9 +45,11 @@ public class DraggingWindow : DMonoBehaviour, IPointerDownHandler, IPointerUpHan
     {
         if (isFollow)
         {
-            offset = (Vector2)Input.mousePosition - lastPos;
+            Vector2 nowPos = new Vector2(Input.mousePosition.x / xbl, Input.mousePosition.y / ybl);
+
+            offset = nowPos - lastPos;
             myRect.anchoredPosition += offset;
-            lastPos = (Vector2)Input.mousePosition;
+            lastPos = nowPos;
         }
     }
 }

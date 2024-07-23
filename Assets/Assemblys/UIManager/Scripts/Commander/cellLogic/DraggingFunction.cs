@@ -8,10 +8,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using EventType = Enums.EventType;
 
-public class DraggingFunction : DMonoBehaviour, IDragHandler
+public abstract class DraggingFunction : DMonoBehaviour, IDragHandler
 {
     private string _myEntityId;
     private Func<string, string, bool, bool> changeDataCallBack;
+    private UnityAction<bool, string> ctrlCmCb;
     private RectTransform comShowParent;
     private ZiYuan_ComanderCell commanderShowCell;
     private bool isInit;
@@ -21,7 +22,7 @@ public class DraggingFunction : DMonoBehaviour, IDragHandler
 
     public List<ZiYuan_ComanderCell> allcoms => _allcoms;
 
-    public void Init(string entityId, Func<string, string, bool, bool> changeDataCallBack)
+    public void Init(string entityId, Func<string, string, bool, bool> changeDataCallBack, UnityAction<bool, string> ctrlCmCb)
     {
         //显示名称，存储对应实体ID，界面显示自己都可被哪些人使用
         isAddEvent = true;
@@ -31,8 +32,11 @@ public class DraggingFunction : DMonoBehaviour, IDragHandler
 
         _myEntityId = entityId;
         this.changeDataCallBack = changeDataCallBack;
+        this.ctrlCmCb = ctrlCmCb;
         _allcoms = new List<ZiYuan_ComanderCell>();
     }
+
+    public abstract string GetMyName();
 
     public void ShowComCtrls(List<string> canBeUseCommanders)
     {
@@ -55,6 +59,7 @@ public class DraggingFunction : DMonoBehaviour, IDragHandler
         if (!isAddEvent && Input.GetMouseButtonUp(0))
         {
             isAddEvent = true;
+            ctrlCmCb?.Invoke(false, "");
             EventManager.Instance.RemoveEventListener<string>(EventType.AddCommanderForZiYuan.ToString(), OnAddCommander);
         }
     }
@@ -68,6 +73,7 @@ public class DraggingFunction : DMonoBehaviour, IDragHandler
         if (isAddEvent)
         {
             isAddEvent = false;
+            ctrlCmCb?.Invoke(true, GetMyName());
             EventManager.Instance.AddEventListener<string>(EventType.AddCommanderForZiYuan.ToString(), OnAddCommander);
         }
     }
@@ -75,6 +81,7 @@ public class DraggingFunction : DMonoBehaviour, IDragHandler
     private void OnAddCommander(string commanderId)
     {
         isAddEvent = true;
+        ctrlCmCb?.Invoke(false, "");
         EventManager.Instance.RemoveEventListener<string>(EventType.AddCommanderForZiYuan.ToString(), OnAddCommander);
         ChangeCommanders(commanderId, true);
     }

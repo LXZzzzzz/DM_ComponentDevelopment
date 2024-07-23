@@ -26,6 +26,7 @@ public class UICommanderView : BasePanel
     private TaskCell taskPrefab;
     private Text startTime, currentTime;
     private Button btn_ComUnfold, btn_EquipUnfold, btn_ZiyuanUnfold, btn_TaskUnfold;
+    private RectTransform CmGo;
 
     private MyCommanderView myCommanderInfoShow;
 
@@ -35,6 +36,7 @@ public class UICommanderView : BasePanel
     private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
     private Dictionary<string, CommanderCell> allCommanderCells; //存储所有玩家cell
+    private bool isMoveCmGo;
 
 
     public override void Init()
@@ -45,6 +47,7 @@ public class UICommanderView : BasePanel
         equipViewGo = transform.Find("LeftPart/GoListViews/EquipListView").gameObject;
         ziYuanViewGo = transform.Find("LeftPart/GoListViews/ZiYuanListView").gameObject;
         taskViewGo = transform.Find("LeftPart/GoListViews/tasksListView").gameObject;
+        CmGo = transform.Find("CopyMoverPart").GetComponent<RectTransform>();
         equipTypeParent = GetControl<ScrollRect>("EquipsTypes").content;
         etcPrefab = GetComponentInChildren<EquipTypeCell>(true);
         equipParent = GetControl<ScrollRect>("EquipsView").content;
@@ -103,6 +106,7 @@ public class UICommanderView : BasePanel
         EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
         EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), OnRemoveEquip);
         EventManager.Instance.AddEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
+        isMoveCmGo = false;
     }
 
     public override void HideMe()
@@ -163,7 +167,7 @@ public class UICommanderView : BasePanel
             {
                 var itemObj = allBObjects[i];
                 var itemCell = Instantiate(zycPrefab, ziYuanParent);
-                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, itemObj.GetComponent<ZiYuanBase>(), OnChangeZiYuanBelongTo);
+                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, itemObj.GetComponent<ZiYuanBase>(), OnChangeZiYuanBelongTo, OnMoveCm);
                 itemCell.gameObject.SetActive(true);
                 allZiYuanCells.Add(itemCell);
             }
@@ -176,7 +180,7 @@ public class UICommanderView : BasePanel
                 var itemObj = allBObjects[i];
                 var itemCell = Instantiate(taskPrefab, taskParent);
                 var itemzy = itemObj.gameObject.GetComponent<ZiYuanBase>();
-                itemCell.Init("任务" + taskIndex, itemzy, OnChangeZiYuanBelongTo);
+                itemCell.Init("任务" + taskIndex, itemzy, OnChangeZiYuanBelongTo,OnMoveCm);
                 itemCell.gameObject.SetActive(true);
                 allTaskCells.Add(itemCell);
             }
@@ -188,6 +192,12 @@ public class UICommanderView : BasePanel
         if (MyDataInfo.gameStartTime > 0 && MyDataInfo.gameStartTime < 1)
             startTime.text = "开始时间 " + DateTime.Now.ToString("HH:mm:ss");
         currentTime.text = "当前时间 " + DateTime.Now.ToString("HH:mm:ss");
+
+        if (isMoveCmGo)
+        {
+            var rectPos = UIManager.Instance.GetUIPanel<UIMap>(UIName.UIMap).resolutionRatioNormalized(Input.mousePosition);
+            CmGo.anchoredPosition = UIManager.Instance.GetUIPanel<UIMap>(UIName.UIMap).mousePos2UI(rectPos);
+        }
     }
 
     private void retractOrUnfold(bool isRetract, int type)
@@ -388,5 +398,15 @@ public class UICommanderView : BasePanel
         }
 
         return isChangeSuc;
+    }
+
+    private void OnMoveCm(bool isShow,string showName)
+    {
+        CmGo.gameObject.SetActive(isShow);
+        isMoveCmGo = isShow;
+        if (isShow)
+        {
+            CmGo.GetComponentInChildren<Text>().text = showName;
+        }
     }
 }

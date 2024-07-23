@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ZiYuanCell : DraggingFunction
@@ -12,9 +13,9 @@ public class ZiYuanCell : DraggingFunction
     private float checkTimer;
     private GameObject chooseImg;
 
-    public void Init(string pointName, string entityId, ZiYuanBase ziyuan, Func<string, string, bool, bool> changeDataCallBack)
+    public void Init(string pointName, string entityId, ZiYuanBase ziyuan, Func<string, string, bool, bool> changeDataCallBack, UnityAction<bool,string> ctrlCmCb)
     {
-        base.Init(entityId, changeDataCallBack);
+        base.Init(entityId, changeDataCallBack, ctrlCmCb);
 
         _ziYuan = ziyuan;
         chooseImg = transform.Find("ChooseImg").gameObject;
@@ -30,5 +31,10 @@ public class ZiYuanCell : DraggingFunction
             checkTimer = Time.time + 1 / 25f;
             chooseImg.SetActive(_ziYuan.isChooseMe);
         }
+    }
+
+    public override string GetMyName()
+    {
+        return _ziYuan.ziYuanName;
     }
 }
