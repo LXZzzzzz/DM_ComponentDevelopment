@@ -197,6 +197,27 @@ public partial class CommanderController : DMonoBehaviour
             }
         }
 
+        IAirPort myAirPort = null;
+        if (!string.IsNullOrEmpty(ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId))
+        {
+            //找到机场，停机
+            string airPortId = ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId;
+            for (int j = 0; j < allBObjects.Length; j++)
+            {
+                if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)
+                {
+                    myAirPort = allBObjects[j].GetComponent<ZiYuanBase>() as IAirPort;
+                    break;
+                }
+            }
+        }
+
+        if (myAirPort != null && !myAirPort.checkComeIn())
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "该机场已停满！");
+            return;
+        }
+
         for (int i = 0; i < allBObjects.Length; i++)
         {
             if (string.Equals(templateId, allBObjects[i].BObject.Id))
@@ -219,18 +240,7 @@ public partial class CommanderController : DMonoBehaviour
                 temporaryEquip.gameObject.SetActive(true);
                 EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
                 MyDataInfo.sceneAllEquips.Add(temporaryEquip);
-                if (!string.IsNullOrEmpty(ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId))
-                {
-                    //找到机场，停机
-                    string airPortId = ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId;
-                    for (int j = 0; j < allBObjects.Length; j++)
-                    {
-                        if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)
-                        {
-                            (allBObjects[j].GetComponent<ZiYuanBase>() as IAirPort)?.comeIn(myId);
-                        }
-                    }
-                }
+                if (myAirPort != null) myAirPort.comeIn(myId);
                 else temporaryEquip.isDockingAtTheAirport = false;
 
                 break;

@@ -71,6 +71,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         //刚开始切换为编辑模式，并通知初始化场景
         SwitchMapLogic(OperatorState.CreatAndEditor);
         EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allBObjects);
+        EventManager.Instance.AddEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
         // 当前UI对象的局部Y轴
         localYAxis = middlePoint.transform.up;
     }
@@ -111,6 +112,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         base.HideMe();
         currentMapLogic?.OnExit();
         EventManager.Instance.RemoveEventListener<int>(EventType.SwitchMapModel.ToString(), SwithMode);
+        EventManager.Instance.RemoveEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
     }
 
     private void SwithMode(int mode)
@@ -239,6 +241,18 @@ public class UIMap : BasePanel, IPointerClickHandler
             case PointerEventData.InputButton.Right:
                 currentMapLogic?.OnRightClickMap(newPos);
                 break;
+        }
+    }
+
+    private void setAirCellMaxLayer()
+    {
+        foreach (var iconCell in allIconCells)
+        {
+            var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, iconCell.Key));
+            if (string.Equals(itemEquip.BeLongToCommanderId,MyDataInfo.leadId))
+            {
+                iconCell.Value.transform.SetAsLastSibling();
+            }
         }
     }
 

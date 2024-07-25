@@ -69,6 +69,7 @@ public class MapOperate_Normal : MapOperateLogicBase
     {
         EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), id);
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, id));
+        if (itemEquip.currentSkill != SkillType.None) return;
         RightClickShowInfo info = new RightClickShowInfo()
         {
             PointPos = pos, ShowSkillDatas = itemEquip.GetSkillsData(), OnTriggerCallBack = itemEquip.OnSelectSkill

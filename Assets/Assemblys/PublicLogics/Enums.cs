@@ -22,6 +22,7 @@ namespace Enums
         DestoryEquip, //删除某个飞机
         ClearProgramme, //清除方案数据
         CloseCreatTarget, //关闭创建的模板对象
+        SetMyEquipIconLayer, //设置自己飞机icon的最高层级
         GeneratePDF, //生成pdf
         ShowTipUI, //非UI层调用弹窗页面
         ShowConfirmUI, //非UI曾调用二次确认窗口

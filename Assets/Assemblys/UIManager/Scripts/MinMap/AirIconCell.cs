@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -24,6 +25,7 @@ public class AirIconCell : IconCellBase
     private Image belongtoShow;
     private Image currentOil;
     private GameObject water, goods, person;
+    private GameObject airPort;
 
     public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc, UnityAction<bool, Vector2, Vector2> setRouteCb)
     {
@@ -72,7 +74,11 @@ public class AirIconCell : IconCellBase
     {
         if (equipGo != null)
         {
-            meRect.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(equipGo.transform.position);
+            if (!equipGo.isDockingAtTheAirport)
+                meRect.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(equipGo.transform.position);
+            else
+                meRect.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(getAirPort().transform.position);
+
             rootObj.SetActive(!equipGo.isDockingAtTheAirport);
         }
 
@@ -80,6 +86,22 @@ public class AirIconCell : IconCellBase
         changeBelongtoShow();
         showSkillState();
         showAllMassInfo();
+    }
+
+    private GameObject getAirPort()
+    {
+        if (airPort != null) return airPort;
+        string airPortId = ProgrammeDataManager.Instance.GetEquipDataById(equipGo.BObjectId).airportId;
+        for (int j = 0; j < allBObjects.Length; j++)
+        {
+            if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)
+            {
+                airPort = allBObjects[j].gameObject;
+                break;
+            }
+        }
+
+        return airPort;
     }
 
     protected override IconInfoData GetBasicInfo()

@@ -208,6 +208,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.gameStartTime = 0;
                 EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
                 EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), "推演开始！");
+                EventManager.Instance.EventTrigger(EventType.SetMyEquipIconLayer.ToString());
                 _commanderController.Receive_GameStart();
                 break;
             case MessageID.MoveToTarget:
