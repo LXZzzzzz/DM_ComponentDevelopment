@@ -1,8 +1,9 @@
 using UiManager;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIRightClickMenuView : BasePanel
+public class UIRightClickMenuView : BasePanel,IPointerDownHandler
 {
     private RectTransform viewPoint;
     private Transform menusParent;
@@ -32,7 +33,13 @@ public class UIRightClickMenuView : BasePanel
             // itemRmc.gameObject.SetActive(true);
         }
     }
-
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            Close(UIName.UIRightClickMenuView);
+        }
+    }
     public override void HideMe()
     {
         base.HideMe();

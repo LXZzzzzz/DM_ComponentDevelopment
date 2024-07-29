@@ -249,7 +249,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         foreach (var iconCell in allIconCells)
         {
             var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, iconCell.Key));
-            if (string.Equals(itemEquip.BeLongToCommanderId,MyDataInfo.leadId))
+            if (itemEquip && string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
             {
                 iconCell.Value.transform.SetAsLastSibling();
             }

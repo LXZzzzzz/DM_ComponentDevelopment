@@ -65,6 +65,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             int clientLevel = -1;
             string clientLevelName = "";
             Color clientColor = Color.white;
+            string clientColorCode = "";
             for (int j = 0; j < allBObjects.Length; j++)
             {
                 var itemMain = allBObjects[j].GetComponent<ScriptManager>();
@@ -72,7 +73,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 {
                     clientLevel = (itemMain.Properties[0] as DropDownProperty).Selected.Enum;
                     clientLevelName = allBObjects[j].BObject.Info.Name;
-                    if (ColorUtility.TryParseHtmlString((itemMain.Properties[1] as InputStringProperty).Value, out Color color))
+                    clientColorCode = (itemMain.Properties[1] as InputStringProperty).Value;
+                    if (ColorUtility.TryParseHtmlString(clientColorCode, out Color color))
                     {
                         clientColor = color;
                     }
@@ -86,7 +88,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             MyDataInfo.playerInfos.Add(new ClientInfo()
             {
                 PlayerName = info.ClientInfos[i].Name, RoleId = info.ClientInfos[i].RoleId, UID = info.ClientInfos[i].UID, ClientLevel = clientLevel,
-                ClientLevelName = clientLevelName, MyColor = clientColor
+                ClientLevelName = clientLevelName, MyColor = clientColor, ColorCode = clientColorCode
             });
         }
 
