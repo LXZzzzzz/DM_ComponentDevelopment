@@ -20,6 +20,8 @@ public class UITopMenuView : BasePanel
     private Dropdown speedChange;
     private List<float> dropdownValue;
     private Transform menuView;
+    private GameObject zongPart, otherPart;
+    private Text currentSpeed;
 
 
     public override void Init()
@@ -27,6 +29,8 @@ public class UITopMenuView : BasePanel
         base.Init();
         _myUIType = UIType.upper;
         menuView = transform.Find("menuView");
+        zongPart = transform.Find("SpeedChange/zongPart").gameObject;
+        otherPart = transform.Find("SpeedChange/otherPart").gameObject;
         ProgrammName = GetControl<Text>("text_PName");
         speedChangePart = transform.Find("SpeedChange").gameObject;
         currentState = GetControl<Text>("currentState");
@@ -48,6 +52,9 @@ public class UITopMenuView : BasePanel
         GetControl<Button>("btn_pdf").onClick.AddListener(OnGeneratePdf);
         GetControl<Button>("btn_upload").onClick.AddListener(OnUpLoad);
         GetControl<Button>("btn_CLose").onClick.AddListener(putAwayMenu);
+        currentSpeed = GetControl<Text>("txt_speed");
+        GetControl<Button>("btn_report").onClick.AddListener(clickReport);
+
         GetControl<Toggle>("Tog_Zhty").onValueChanged.AddListener(a =>
         {
             if (!a)
@@ -70,6 +77,7 @@ public class UITopMenuView : BasePanel
         mainLevel = (int)userData;
         GetControl<Toggle>("Tog_Fazd").isOn = false;
         GetControl<Toggle>("Tog_Fazd").transform.parent.gameObject.SetActive(mainLevel == 1);
+        GetControl<Toggle>("Tog_Zhty").transform.parent.gameObject.SetActive(mainLevel == 1);
         GetControl<Toggle>("Tog_Zhpg").transform.parent.gameObject.SetActive(mainLevel == 1);
         speedChangePart.SetActive(mainLevel == 1);
         EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
@@ -90,6 +98,11 @@ public class UITopMenuView : BasePanel
     {
         base.HideMe();
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
+    }
+
+    private void clickReport()
+    {
+        //这里是二级点击了报备按钮
     }
 
     private void putAwayMenu()
@@ -190,7 +203,7 @@ public class UITopMenuView : BasePanel
             return;
         }
 
-        sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendGameStart, "");
+        sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
 
         currentState.text = "实时指挥 > 单机";
         btn_start.gameObject.SetActive(false);
@@ -220,7 +233,7 @@ public class UITopMenuView : BasePanel
         //只有在准备阶段才能发送开始
         for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
         {
-            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStart, "");
+            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
         }
 
         currentState.text = "实时指挥 > 联机";
@@ -300,14 +313,19 @@ public class UITopMenuView : BasePanel
 
     private void Update()
     {
-        if (MyDataInfo.gameState == GameState.GameStart)
+        if (MyDataInfo.gameState != GameState.None || MyDataInfo.gameState != GameState.GamePause || MyDataInfo.gameState != GameState.GameStop)
         {
             MyDataInfo.gameStartTime += Time.deltaTime * MyDataInfo.speedMultiplier;
             currentTime.text = ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime);
         }
 
-        if (mainLevel == 1)
-            speedChangePart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
+        //速度页签要在时间进行阶段显示，zongPart要在总指挥开始推演阶段显示，otherPart要在其他指挥开始推演阶段显示
+        speedChangePart.SetActive(MyDataInfo.gameState > GameState.None && MyDataInfo.gameState < GameState.GameStop);
+
+        if (mainLevel == 1) zongPart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
+        else otherPart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
+
+        currentSpeed.text = $"{MyDataInfo.speedMultiplier:0.0} X";
     }
 
     private string ConvertSecondsToHHMMSS(float seconds)
@@ -317,6 +335,6 @@ public class UITopMenuView : BasePanel
         float remainingSeconds = seconds % 60; // 计算剩余秒数
 
         // 格式化为“时：分：秒”字符串
-        return string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, (int)remainingSeconds);
+        return $"{hours:00}:{minutes:00}:{(int)remainingSeconds:00}";
     }
 }

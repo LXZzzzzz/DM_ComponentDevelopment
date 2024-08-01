@@ -7,12 +7,16 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea
 
     private int currentRemainingPersonnel;
 
-    public void Init(string id, int personNum)
+    //1:轻伤员；2：重伤员
+    private int woundedPersonnelType;
+
+    public void Init(string id, int personNum, int type)
     {
         base.Init(id, 50);
         ZiYuanType = ZiYuanType.DisasterArea;
         allPersonNum = personNum;
         currentRemainingPersonnel = allPersonNum;
+        woundedPersonnelType = type;
     }
 
     public override void OnStart()

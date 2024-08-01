@@ -8,6 +8,7 @@ using UiManager;
 using UnityEngine;
 using UnityEngine.UI;
 using EquipBase = ToolsLibrary.EquipPart.EquipBase;
+using EventType = Enums.EventType;
 
 public class UICommanderView : BasePanel
 {
@@ -180,7 +181,7 @@ public class UICommanderView : BasePanel
                 var itemObj = allBObjects[i];
                 var itemCell = Instantiate(taskPrefab, taskParent);
                 var itemzy = itemObj.gameObject.GetComponent<ZiYuanBase>();
-                itemCell.Init("任务" + taskIndex, itemzy, OnChangeZiYuanBelongTo,OnMoveCm);
+                itemCell.Init("任务" + taskIndex, itemzy, OnChangeZiYuanBelongTo, OnMoveCm);
                 itemCell.gameObject.SetActive(true);
                 allTaskCells.Add(itemCell);
             }
@@ -284,6 +285,7 @@ public class UICommanderView : BasePanel
         else return;
 
         var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
+        EventManager.Instance.EventTrigger(EventType.ChangeCurrentCom.ToString(), currentCommander.ClientLevelName);
         if (currentCommander.ClientLevel == 1)
         {
             for (int i = 0; i < allEquipCells.Count; i++)
@@ -400,7 +402,7 @@ public class UICommanderView : BasePanel
         return isChangeSuc;
     }
 
-    private void OnMoveCm(bool isShow,string showName)
+    private void OnMoveCm(bool isShow, string showName)
     {
         CmGo.gameObject.SetActive(isShow);
         isMoveCmGo = isShow;

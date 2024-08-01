@@ -25,11 +25,13 @@ namespace Enums
         SetMyEquipIconLayer, //设置自己飞机icon的最高层级
         GeneratePDF, //生成pdf
         ShowTipUI, //非UI层调用弹窗页面
+        ShowTipUIAndCb, //非UI层调用弹窗页面带回调
         ShowConfirmUI, //非UI曾调用二次确认窗口
         ChooseEquipToZiYuanType, //控制飞机飞往某个资源点
         ShowAMsgInfo, //展示一个指令信息
         ClearMsgBox, //清除操作记录数据
         GameStop, //通知游戏结束
+        ChangeCurrentCom, //更改当前选择的指挥端
     }
 
     public enum MessageID
@@ -40,6 +42,7 @@ namespace Enums
         SendGamePause = 1005, //一级指挥端发送暂停操作
         SendGameStop = 1006, //一级指挥端发送停止操作
         SendChangeSpeed = 1007, //一级指挥端更改运行速度
+        SendReceiveTask = 1008, //一级指挥端接收任务，开始计时
 
         TriggerGroundReady = 1101, //触发起飞前准备操作
         TriggerBePutInStorage = 1102, //触发入库操作
@@ -63,5 +66,7 @@ namespace Enums
         TriggerEndTask = 1115, //触发结束任务操作
 
         TriggerEquipCrash = 1116, //触发飞机坠毁
+
+        TriggerOnlyShow = 1200, //触发只做显示的文本
     }
 }

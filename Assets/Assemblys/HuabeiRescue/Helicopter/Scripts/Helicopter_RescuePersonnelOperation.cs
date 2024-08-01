@@ -10,6 +10,8 @@ public partial class HelicopterController
 
     private int itemPersonNum;
 
+    private int personType;
+
     /// <summary>
     /// 装载人员
     /// </summary>
@@ -100,7 +102,8 @@ public partial class HelicopterController
                 // int itemperson = Mathf.Min(myAttributeInfo.zdzkl, (int)Mathf.Floor(itemgoods / myAttributeInfo.cnrpjtz));
                 itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl - amountOfPerson);
                 // Debug.LogError(itemPersonNum / myAttributeInfo.sjjrsl * 60);
-                openTimer(myAttributeInfo.sjjrsj * 3600f, OnZZRYSuc);
+                //索降救援、伤情评估与地面人员配合救援
+                openTimer(myAttributeInfo.sjjrsj * 3600f, OnZZRYSuc, 3, OnCDRStageComplete);
 
                 myRecordedData.eachSortieData.Add(new SingleSortieData());
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime < 1)
@@ -114,5 +117,25 @@ public partial class HelicopterController
 
         if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId))
             EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), "当前位置超出装载人员距离，请前往灾区点再进行操作");
+    }
+
+    private void OnCDRStageComplete(int aa)
+    {
+        string stageInfo = "";
+        switch (aa)
+        {
+            case 0:
+                stageInfo = "索降救援";
+                break;
+            case 1:
+                stageInfo = "伤情评估";
+                break;
+            case 2:
+                stageInfo = "地面人员配合救援";
+                break;
+            default: return;
+        }
+
+        EventManager.Instance.EventTrigger(Enums.EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerOnlyShow, $"{BObjectId}_{stageInfo}");
     }
 }

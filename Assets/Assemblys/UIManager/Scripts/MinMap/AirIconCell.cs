@@ -137,7 +137,7 @@ public class AirIconCell : IconCellBase
         }
         else
         {
-            currentMoveRoute.active = false;
+            // currentMoveRoute.active = false;
             setRouteCb?.Invoke(false, Vector2.zero, Vector2.zero);
         }
     }

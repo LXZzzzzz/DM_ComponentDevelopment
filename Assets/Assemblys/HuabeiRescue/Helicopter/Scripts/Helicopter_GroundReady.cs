@@ -12,7 +12,31 @@ public partial class HelicopterController
         Debug.LogError("起飞前准备" + myAttributeInfo.qfqzbsj * 60);
         _airPort = airPort;
         currentSkill = SkillType.GroundReady;
-        openTimer(myAttributeInfo.qfqzbsj * 60, OnGRSuc);
+        openTimer(myAttributeInfo.qfqzbsj * 60, OnGRSuc, 4, OnGRStageComplete);
+        //救援前准备、设备检查、登机、起飞前检查
+    }
+
+    private void OnGRStageComplete(int aa)
+    {
+        string stageInfo = "";
+        switch (aa)
+        {
+            case 0:
+                stageInfo = "救援前准备";
+                break;
+            case 1:
+                stageInfo = "设备检查";
+                break;
+            case 2:
+                stageInfo = "登记";
+                break;
+            case 3:
+                stageInfo = "起飞前检查";
+                break;
+            default: return;
+        }
+
+        EventManager.Instance.EventTrigger(Enums.EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerOnlyShow, $"{BObjectId}_{stageInfo}");
     }
 
     public void BePutInStorage()

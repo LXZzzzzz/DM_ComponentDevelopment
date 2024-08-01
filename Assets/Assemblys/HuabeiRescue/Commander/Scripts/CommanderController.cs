@@ -36,7 +36,7 @@ public partial class CommanderController : DMonoBehaviour
         MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.AddEventListener<string>(EventType.ChooseZiyuan.ToString(), OnChangeCurrentZiyuan);
-        EventManager.Instance.AddEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
+        EventManager.Instance.AddEventListener<string, Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.AddEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
         EventManager.Instance.AddEventListener<int, string>(EventType.SendSkillInfoForControler.ToString(), OnSendSkillInfo);
@@ -50,7 +50,7 @@ public partial class CommanderController : DMonoBehaviour
     {
         EventManager.Instance.RemoveEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.RemoveEventListener<string>(EventType.ChooseZiyuan.ToString(), OnChangeCurrentZiyuan);
-        EventManager.Instance.RemoveEventListener<Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
+        EventManager.Instance.RemoveEventListener<string, Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         EventManager.Instance.RemoveEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.RemoveEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
         EventManager.Instance.RemoveEventListener<int, string>(EventType.SendSkillInfoForControler.ToString(), OnSendSkillInfo);
@@ -58,6 +58,18 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.RemoveEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
+    }
+
+    public void SendTaskSureMsg()
+    {
+        EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misName, () =>
+        {
+            //接收灾情任务，此时计时器开始
+            for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+            {
+                sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)MessageID.SendReceiveTask, "");
+            }
+        });
     }
 
     private DMCameraControl.DMCameraViewMove cvm;
@@ -160,18 +172,18 @@ public partial class CommanderController : DMonoBehaviour
         }
     }
 
-    private void OnChangeTarget(Vector3 pos)
+    private void OnChangeTarget(string targetId, Vector3 pos)
     {
         if (MyDataInfo.gameState != GameState.GameStart || currentChooseEquip == null) return;
         if (currentChooseEquip.isDockingAtTheAirport)
         {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前装备在机场未出库");
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUI.ToString(), "当前装备在机场未出库", null);
             return;
         }
 
         if (!currentChooseEquip.OnCheckIsMove()) return;
 
-        sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos));
+        sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos, targetId));
     }
 
     private bool isLoad = false;
@@ -342,25 +354,27 @@ public partial class CommanderController : DMonoBehaviour
 
     public void Receive_MoveEquipToTarget(string data)
     {
-        MsgReceive_Move(data, out string equipId, out Vector3 targetPos);
+        MsgReceive_Move(data, out string equipId, out Vector3 targetPos, out string targetId);
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).MoveToTarget(targetPos);
         var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
-        string who = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, item.BeLongToCommanderId)).PlayerName;
         var playerData = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, item.BeLongToCommanderId));
-        EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerData.ColorCode}>{playerData.PlayerName}</color> {item.name}执行机动操作，目标点为{targetPos}");
-        clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，目标点为{targetPos}");
+        var targetZy = sceneAllzy.Find(a => string.Equals(a.BobjectId, targetId));
+        EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerData.ColorCode}>{playerData.PlayerName}</color> {item.name}执行机动操作，目标点为{(targetZy != null ? targetZy.ziYuanName : targetPos.ToString())}");
+        clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，目标点为{(targetZy != null ? targetZy.ziYuanName : targetPos.ToString())}");
     }
 
     public void Receive_ProgrammeData(string data)
     {
         var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
         OnLoadProgrammeDataSuc(programmeData);
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "收到上级下发任务，请接受");
     }
 
 
     public void Receive_GameStop()
     {
-        if (MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) == null)
+        var myInfo = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, MyDataInfo.leadId));
+        if (myInfo.ClientLevel == 1 && MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) == null)
             OnGeneratePdf();
         for (int i = 0; i < allBObjects.Length; i++)
         {
@@ -529,23 +543,38 @@ public partial class CommanderController : DMonoBehaviour
                 EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataec.ColorCode}>{playerDataec.PlayerName}</color> {itemec.name}油量已耗尽，坠毁");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataec.ClientLevelName}】{itemec.name}油量已耗尽，坠毁");
                 break;
+            case MessageID.TriggerOnlyShow:
+                sender.LogError("收到了文本指令");
+                var showInfo = data.Split('_');
+                var itemes = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, showInfo[0]));
+                var playerDataes = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemes.BeLongToCommanderId));
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataes.ColorCode}>{playerDataes.PlayerName}</color> {itemes.name}进行{showInfo[1]}");
+                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataes.ClientLevelName}】{itemes.name}进行{showInfo[1]}");
+                break;
         }
+    }
+
+    public void Receive_TextMsgRecord(string data)
+    {
+        clientOperatorInfos.Add(data);
+        EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), data);
     }
 
     #endregion
 
     #region 数据转换（消息的打包和解析）
 
-    private string MsgSend_Move(string id, Vector3 pos)
+    private string MsgSend_Move(string id, Vector3 pos, string targetId)
     {
-        return string.Format($"{id}_{pos.x}_{pos.y}_{pos.z}");
+        return string.Format($"{id}_{pos.x}_{pos.y}_{pos.z}_{targetId}");
     }
 
-    private void MsgReceive_Move(string data, out string id, out Vector3 pos)
+    private void MsgReceive_Move(string data, out string id, out Vector3 pos, out string targetId)
     {
         string[] info = data.Split('_');
         id = info[0];
         pos = new Vector3(float.Parse(info[1]), float.Parse(info[2]), float.Parse(info[3]));
+        targetId = info[4];
     }
 
     private void MsgReceive_WaterPour(string data, out string id, out Vector3 pos)

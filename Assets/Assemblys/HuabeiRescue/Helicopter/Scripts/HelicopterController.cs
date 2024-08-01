@@ -24,6 +24,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private bool isRunTimer;
     private float timer;
     private float timeDuration;
+    private int splitNum;
+    private UnityAction<int> stageComplete;
 
     private Animation[] anis;
 
@@ -33,7 +35,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private bool isSendCrash; //记录是否已经发送过坠毁信息
 
     private float flyHight;
-    
+
     private List<AudioSource> myass;
     private List<WingMark> mywms;
 
@@ -384,19 +386,34 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     }
 
 
-    private void openTimer(float duration, UnityAction cb)
+    private void openTimer(float duration, UnityAction cb, int splitNum = 1, UnityAction<int> stageComplete = null)
     {
         timer = 0;
         timeDuration = duration;
         skillProgress = 0;
         OnCountdownEndsCallBack = cb;
+        this.stageComplete = stageComplete;
+        currentStage = 0;
+        stageDuration = duration / splitNum;
         isRunTimer = true;
     }
+
+    private int currentStage; //当前分段
+    private float stageDuration; //每分段时长
 
     private void runTimer()
     {
         timer += Time.deltaTime * MyDataInfo.speedMultiplier;
         skillProgress = timer / timeDuration;
+
+        if (stageComplete != null)
+        {
+            if (timer >= stageDuration * currentStage)
+            {
+                stageComplete.Invoke(currentStage++);
+            }
+        }
+
         if (timer >= timeDuration)
         {
             // 计时结束，执行相关操作

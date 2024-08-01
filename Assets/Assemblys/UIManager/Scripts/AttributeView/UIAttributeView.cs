@@ -19,6 +19,7 @@ public class UIAttributeView : BasePanel
     private AttributeView_ZiyuanPart ziYuanInfoView;
     private RectTransform msgParent;
     private msgCell msgObj;
+    private List<msgCell> allMsgCells;
 
     public override void Init()
     {
@@ -35,6 +36,8 @@ public class UIAttributeView : BasePanel
         msgObj = GetComponentInChildren<msgCell>(true);
         EventManager.Instance.AddEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
         EventManager.Instance.AddEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
+        EventManager.Instance.AddEventListener<string>(EventType.ChangeCurrentCom.ToString(),OnChangeCom);
+        allMsgCells = new List<msgCell>();
     }
 
     public override void ShowMe(object userData)
@@ -147,6 +150,7 @@ public class UIAttributeView : BasePanel
         var itemCell = Instantiate(msgObj, msgParent);
         itemCell.Init(ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime), info);
         itemCell.gameObject.SetActive(true);
+        allMsgCells.Add(itemCell);
         StartCoroutine(setSV());
     }
 
@@ -159,10 +163,17 @@ public class UIAttributeView : BasePanel
 
     private void OnCleraMsg()
     {
-        for (int i = 0; i < msgParent.childCount; i++)
+        for (int i = 0; i < allMsgCells.Count; i++)
         {
-            Destroy(msgParent.GetChild(i).gameObject);
+            Destroy(allMsgCells[i].gameObject);
         }
+
+        allMsgCells.Clear();
+    }
+
+    private void OnChangeCom(string com)
+    {
+        allMsgCells.ForEach(a => a.ChangeController(com));
     }
 
     private string ConvertSecondsToHHMMSS(float seconds)
@@ -181,5 +192,6 @@ public class UIAttributeView : BasePanel
         EventManager.Instance.RemoveEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
         EventManager.Instance.RemoveEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
+        EventManager.Instance.RemoveEventListener<string>(EventType.ChangeCurrentCom.ToString(),OnChangeCom);
     }
 }

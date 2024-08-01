@@ -94,7 +94,7 @@ public class MapOperate_Normal : MapOperateLogicBase
         }
         else if (clickIcon is ZiYuanIconCell)
         {
-            EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), (clickIcon as ZiYuanIconCell).ziYuanItem.gameObject.transform.position);
+            EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), clickIcon.belongToId, (clickIcon as ZiYuanIconCell).ziYuanItem.gameObject.transform.position);
             EventManager.Instance.EventTrigger(EventType.ChooseEquipToZiYuanType.ToString(), (int)(clickIcon as ZiYuanIconCell).ziYuanItem.ZiYuanType);
         }
     }
@@ -119,7 +119,7 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     public override void OnRightClickMap(Vector2 pos)
     {
-        EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), uiPos2WorldPos(pos));
+        EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), string.Empty, uiPos2WorldPos(pos));
         EventManager.Instance.EventTrigger(EventType.ChooseEquipToZiYuanType.ToString(), -1);
     }
 

@@ -14,6 +14,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     private List<EnumDescription> commanderLevel, taskType;
     private CommanderController _commanderController;
     private bool isMain;
+    private int gameStartTimePoint;
 
     private void Awake()
     {
@@ -134,6 +135,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.isPlayBack = playback;
         MyDataInfo.SceneGoParent = transform.Find("AllGoParent");
         MyDataInfo.SceneGoParent.position = Vector3.zero;
+        MyDataInfo.gameState = GameState.None;
+        gameStartTimePoint = -1;
         float mapLength = float.Parse(GameObject.Find("DMLonLat").HGetScript("DMLonLat").HGetField("TerLength").ToString());
         float mapWidth = float.Parse(GameObject.Find("DMLonLat").HGetScript("DMLonLat").HGetField("TerWidth").ToString());
         mapSizeData = new Vector2(mapLength, mapWidth);
@@ -164,6 +167,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
 
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
+        yield return new WaitForSeconds(1);
+        _commanderController.SendTaskSureMsg();
     }
 
     public void DeActive(DevType type, bool playback)
@@ -195,21 +200,30 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
 
         switch ((MessageID)eventType)
         {
+            case MessageID.SendReceiveTask:
+                if (MyDataInfo.leadId != BObjectId) break;
+                MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
+                MyDataInfo.speedMultiplier = 1;
+                MyDataInfo.gameStartTime = 0;
+                _commanderController.Receive_TextMsgRecord("总指挥接受了任务，开始指定方案");
+                break;
             case MessageID.SendProgramme:
                 if (MyDataInfo.leadId != BObjectId) break;
                 int myLevel = (Properties[0] as DropDownProperty).Selected.Enum;
                 sender.LogError(myLevel != 1 ? "我需要接收场景装备数据" : "我就是数据编辑者");
                 MyDataInfo.gameState = GameState.Preparation;
-                if (myLevel != 1)
+                if (myLevel != 1 || MyDataInfo.isPlayBack)
                     _commanderController.Receive_ProgrammeData(param);
+                else _commanderController.Receive_TextMsgRecord("下达二级任务");
                 break;
             case MessageID.SendGameStart:
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStart;
+                if (gameStartTimePoint < 0) gameStartTimePoint = int.Parse(param);
                 MyDataInfo.speedMultiplier = 1;
-                MyDataInfo.gameStartTime = 0;
+                MyDataInfo.gameStartTime = gameStartTimePoint / 1000.0f;
                 EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), "推演开始！");
+                _commanderController.Receive_TextMsgRecord("推演开始！");
                 EventManager.Instance.EventTrigger(EventType.SetMyEquipIconLayer.ToString());
                 _commanderController.Receive_GameStart();
                 break;
@@ -224,7 +238,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendGameStop:
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStop;
-                MyDataInfo.gameStartTime = 0;
+                MyDataInfo.gameStartTime = gameStartTimePoint / 1000.0f;
                 MyDataInfo.speedMultiplier = 1;
                 _commanderController.Receive_GameStop();
                 break;
