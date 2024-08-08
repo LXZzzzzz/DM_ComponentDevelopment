@@ -58,7 +58,17 @@ public class EquipCell : DMonoBehaviour
             {
                 bool isdele = ProgrammeDataManager.Instance.DeleEquip(equipObjectId);
                 if (isdele)
+                {
                     MyDataInfo.sceneAllEquips.Find(b => string.Equals(b.BObjectId, equipObjectId)).Destroy();
+                    for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+                    {
+                        if (string.Equals(MyDataInfo.sceneAllEquips[i].BObjectId, equipObjectId))
+                        {
+                            MyDataInfo.sceneAllEquips.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
                 else
                 {
                     ConfirmatonInfo infoc = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "数据错误，请退出重试！！" };

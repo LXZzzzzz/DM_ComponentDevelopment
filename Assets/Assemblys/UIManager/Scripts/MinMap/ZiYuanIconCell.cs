@@ -12,19 +12,23 @@ public class ZiYuanIconCell : IconCellBase
 
     private ZiYuanBase _ziYuanItem;
     private float checkTimer;
+    private Transform zyTypePart;
+    private Transform ChoosePart;
 
-    private GameObject chooseImg;
+    // private GameObject chooseImg;
 
     //todo:后面有时间，把这个单独拆成一个Go，如果机场有飞机，就加载出来
     private GameObject airPortMarkView;
-    private RectTransform equipParent;
-    private AirPortEquipIconCell aec;
+    private Transform equipParent;
     private int currAllEquipInfoCount;
+    private int currentPageNum, allPageNum;
+    private Button backBtn, nextBtn;
 
     public ZiYuanBase ziYuanItem => _ziYuanItem;
 
     private void Start()
     {
+        zyTypePart = transform.Find("Root/MainPart/zyTypePart");
         for (int i = 0; i < allBObjects.Length; i++)
         {
             if (string.Equals(allBObjects[i].BObject.Id, belongToId))
@@ -36,51 +40,70 @@ public class ZiYuanIconCell : IconCellBase
             }
         }
 
-        chooseImg = transform.Find("Choose").gameObject;
+        if (ziYuanItem != null)
+        {
+            // chooseImg = transform.Find("Choose").gameObject;
+            ChoosePart = transform.Find("Root/MainPart/belongToPart");
+            transform.Find("Root/MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
+            for (int i = 0; i < ChoosePart.childCount; i++)
+            {
+                ChoosePart.GetChild(i).GetComponent<Image>().color = ziYuanItem.MyColor;
+            }
+        }
+
+        #region 机场相关
+
         airPortMarkView = transform.Find("airPortMarkView").gameObject;
-        equipParent = airPortMarkView.GetComponentInChildren<ScrollRect>(true).content;
-        aec = airPortMarkView.GetComponentInChildren<AirPortEquipIconCell>(true);
+        equipParent = airPortMarkView.transform.Find("equipsListView");
+        backBtn = airPortMarkView.transform.Find("back").GetComponent<Button>();
+        nextBtn = airPortMarkView.transform.Find("next").GetComponent<Button>();
+        backBtn.onClick.AddListener(() => pageTurning(false));
+        nextBtn.onClick.AddListener(() => pageTurning(true));
+        allPageNum = currentPageNum = 1;
+
         airPortMarkView.SetActive(false);
-        airPortMarkView.transform.SetParent(transform.parent);
+        // airPortMarkView.transform.SetParent(transform.parent);
+
+        #endregion
     }
 
     private void changeIcon(ZiYuanType type)
     {
-        for (int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < zyTypePart.childCount; i++)
         {
-            transform.GetChild(i).gameObject.SetActive(false);
+            zyTypePart.GetChild(i).gameObject.SetActive(false);
         }
 
         int index = -1;
         switch (type)
         {
             case ZiYuanType.Supply:
-                index = 8;
-                break;
-            case ZiYuanType.RescueStation:
                 index = 7;
                 break;
-            case ZiYuanType.Airport:
-                index = 3;
-                break;
-            case ZiYuanType.Hospital:
-                index = 2;
-                break;
-            case ZiYuanType.GoodsPoint:
+            case ZiYuanType.RescueStation:
                 index = 6;
                 break;
-            case ZiYuanType.Waters:
+            case ZiYuanType.Airport:
+                index = 2;
+                break;
+            case ZiYuanType.Hospital:
                 index = 1;
                 break;
+            case ZiYuanType.GoodsPoint:
+                index = 5;
+                break;
+            case ZiYuanType.Waters:
+                index = 0;
+                break;
             case ZiYuanType.DisasterArea:
-                index = 4;
+                index = 3;
                 break;
             case ZiYuanType.SourceOfAFire:
-                index = 5;
+                index = 4;
                 break;
         }
 
-        if (index != -1) transform.GetChild(index).gameObject.SetActive(true);
+        if (index != -1) zyTypePart.GetChild(index).gameObject.SetActive(true);
     }
 
     protected override IconInfoData GetBasicInfo()
@@ -97,38 +120,63 @@ public class ZiYuanIconCell : IconCellBase
         if (Time.time > checkTimer)
         {
             checkTimer = Time.time + 1 / 25f;
-            chooseImg.SetActive(_ziYuanItem.isChooseMe);
+            if (ChoosePart != null && ziYuanItem != null)
+                ChoosePart.GetChild(1).GetComponent<Image>().color = ziYuanItem.isChooseMe ? Color.white : ziYuanItem.MyColor;
             airPortShowLogic();
         }
     }
 
+    #region 机场相关
 
     private void airPortShowLogic()
     {
-        if (ziYuanItem.ZiYuanType != ZiYuanType.Airport) return;
-        if (MyDataInfo.MyLevel != 1 && 
+        if (ziYuanItem?.ZiYuanType != ZiYuanType.Airport) return;
+        if (MyDataInfo.MyLevel != 1 &&
             (ziYuanItem.beUsedCommanderIds == null || ziYuanItem.beUsedCommanderIds.Find(x => string.Equals(x, MyDataInfo.leadId)) == null)) return;
 
         var itemInfo = (ziYuanItem as IAirPort)?.GetAllEquips();
         bool isRefresh = currAllEquipInfoCount != itemInfo.Count;
         if (isRefresh)
         {
-            Debug.LogError("刷新" + currAllEquipInfoCount + ":" + itemInfo.Count);
             currAllEquipInfoCount = itemInfo.Count;
-            for (int i = 0; i < equipParent.childCount; i++)
-            {
-                Destroy(equipParent.GetChild(i).gameObject);
-            }
-
-            for (int i = 0; i < itemInfo.Count; i++)
-            {
-                var itemCell = Instantiate(aec, equipParent);
-                var itemIcon = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, itemInfo[i])).EquipIcon;
-                itemCell.Init(itemInfo[i], itemIcon);
-                itemCell.gameObject.SetActive(true);
-            }
+            currentPageNum = 1;
+            allPageNum = currAllEquipInfoCount / equipParent.childCount + (currAllEquipInfoCount % equipParent.childCount == 0 ? 0 : 1);
+            Debug.LogError($"{currAllEquipInfoCount}+{equipParent.childCount}+{(currAllEquipInfoCount / equipParent.childCount)}+{(currAllEquipInfoCount % equipParent.childCount == 0 ? 0 : 1)}");
+            refreshCurrentPageInfo(1);
         }
 
         airPortMarkView.SetActive(itemInfo.Count != 0);
     }
+
+    private void pageTurning(bool isNext)
+    {
+        if (isNext)
+        {
+            if (currentPageNum < allPageNum) refreshCurrentPageInfo(++currentPageNum);
+        }
+        else
+        {
+            if (currentPageNum > 1) refreshCurrentPageInfo(--currentPageNum);
+        }
+    }
+
+    private void refreshCurrentPageInfo(int pageNum)
+    {
+        for (int i = 0; i < equipParent.childCount; i++)
+        {
+            int currentIndex = equipParent.childCount * (pageNum - 1) + i;
+            if (currentIndex < MyDataInfo.sceneAllEquips.Count && MyDataInfo.sceneAllEquips[currentIndex].isDockingAtTheAirport)
+            {
+                equipParent.GetChild(i).GetComponent<AirPortEquipIconCell>().Init(MyDataInfo.sceneAllEquips[currentIndex]);
+                equipParent.GetChild(i).gameObject.SetActive(true);
+            }
+            else equipParent.GetChild(i).gameObject.SetActive(false);
+        }
+
+        Debug.LogError($"当前页数{pageNum}总页数{allPageNum}");
+        backBtn.interactable = pageNum != 1;
+        nextBtn.interactable = pageNum != allPageNum;
+    }
+
+    #endregion
 }

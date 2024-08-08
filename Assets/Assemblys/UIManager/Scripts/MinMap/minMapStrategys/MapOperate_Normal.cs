@@ -49,6 +49,7 @@ public class MapOperate_Normal : MapOperateLogicBase
                 }
             }
 
+            return;
             //如果是机场的话，弹出飞机列表，飞机列表点击起飞，把飞机从机场中去除，并把飞机状态设为起飞状态。 
             ZiYuanBase zy = (targetIconCell as ZiYuanIconCell).ziYuanItem;
             if (MyDataInfo.MyLevel != 1 &&
@@ -88,9 +89,11 @@ public class MapOperate_Normal : MapOperateLogicBase
             EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), clickIcon.belongToId);
             RightClickShowInfo info = new RightClickShowInfo()
             {
-                PointPos = clickIcon.GetComponent<RectTransform>().anchoredPosition, ShowSkillDatas = itemEquip.GetSkillsData(), OnTriggerCallBack = itemEquip.OnSelectSkill
+                PointPos = clickIcon.GetComponent<RectTransform>().anchoredPosition + new Vector2(50, 40),
+                ShowSkillDatas = itemEquip.GetSkillsData(), OnTriggerCallBack = itemEquip.OnSelectSkill
             };
-            UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
+            if (info.ShowSkillDatas.Find(x => x.isUsable) != null)
+                UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
         }
         else if (clickIcon is ZiYuanIconCell)
         {

@@ -16,15 +16,17 @@ public class AirIconCell : IconCellBase
     private RectTransform meRect;
     private GameObject rootObj;
     private Func<Vector3, Vector2> worldPosMapPosFunc;
+
     private UnityAction<bool, Vector2, Vector2> setRouteCb;
-    private GameObject showChooseState;
+
+    // private GameObject showChooseState;
     private VectorLine currentMoveRoute;
     private List<Vector2> routePoints;
-    private Image skillProgressShow;
-    private Text skillName, skillNameRight;
-    private Image belongtoShow;
-    private Image currentOil;
-    private GameObject water, goods, person;
+    private Slider skillProgressShow;
+    private Text skillName;
+    private Transform belongtoPart;
+    private Transform currentOil;
+    private GameObject water, goods, qPerson, zPerson;
     private GameObject airPort;
 
     public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc, UnityAction<bool, Vector2, Vector2> setRouteCb)
@@ -35,18 +37,19 @@ public class AirIconCell : IconCellBase
         this.setRouteCb = setRouteCb;
         meRect = GetComponent<RectTransform>();
         rootObj = transform.Find("Root").gameObject;
-        showChooseState = transform.Find("Root/Choose").gameObject;
-        transform.Find("Root/airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
-        transform.Find("Root/equipName").GetComponent<Text>().text = equipGo.name;
-        skillName = transform.Find("Root/skillName").GetComponent<Text>();
-        skillNameRight = transform.Find("skillNameRight").GetComponent<Text>();
-        skillProgressShow = transform.Find("progress").GetComponent<Image>();
-        belongtoShow = transform.Find("Root/belongTo").GetComponent<Image>();
-        currentOil = transform.Find("Root/currentInfoShow/oilPart/oil").GetComponent<Image>();
-        water = transform.Find("Root/currentInfoShow/water").gameObject;
-        goods = transform.Find("Root/currentInfoShow/goods").gameObject;
-        person = transform.Find("Root/currentInfoShow/person").gameObject;
+        // showChooseState = transform.Find("Root/Choose").gameObject;
+        transform.Find("Root/mainPart/airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
+        transform.Find("Root/mainPart/equipName").GetComponent<Text>().text = equipGo.name;
+        skillName = transform.Find("Root/skillBg/skillName").GetComponent<Text>();
+        belongtoPart = transform.Find("Root/mainPart/belongToPart");
+        currentOil = transform.Find("Root/currentInfoShow/oilPart/oil");
+        water = transform.Find("Root/currentInfoShow/waterPart").gameObject;
+        goods = transform.Find("Root/currentInfoShow/goodsPart").gameObject;
+        qPerson = transform.Find("Root/currentInfoShow/qPersonPart").gameObject;
+        zPerson = transform.Find("Root/currentInfoShow/zPersonPart").gameObject;
 
+        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equipGo.BeLongToCommanderId));
+        skillProgressShow = transform.Find($"Root/progressPart/{comData.progressId}").GetComponent<Slider>();
         initLine();
     }
 
@@ -106,11 +109,11 @@ public class AirIconCell : IconCellBase
 
     protected override IconInfoData GetBasicInfo()
     {
-        equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person);
+        equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
         IconInfoData data = new IconInfoData()
         {
             entityName = equipGo.name, entityInfo = $"飞机装备:{equipGo.name}", beUseCommanders = new List<string> { equipGo.BeLongToCommanderId },
-            isAir = true, waterNum = water, goodsNum = goods, personNum = person
+            isAir = true, currentOilMass = currentOil, maxOilMass = totalOil, waterNum = water, goodsNum = goods, personNum = person, personType = personType
         };
 
         return data;
@@ -120,17 +123,22 @@ public class AirIconCell : IconCellBase
 
     private void selectChange(bool isSelect)
     {
-        if (isSelect && routePoints != null)
+        if (isSelect && routePoints != null) setRouteCb?.Invoke(Vector2.Distance(routePoints[0], routePoints[1]) > 50, routePoints[0], routePoints[1]);
+
+        if (routePoints != null)
         {
             routePoints[0] = meRect.anchoredPosition;
             routePoints[1] = equipGo.TargetPos == Vector3.zero ? meRect.anchoredPosition : worldPosMapPosFunc(equipGo.TargetPos);
-            setRouteCb?.Invoke(Vector2.Distance(routePoints[0], routePoints[1]) > 50, routePoints[0], routePoints[1]);
             currentMoveRoute.Draw();
         }
 
         if (isLastSelect == isSelect) return;
         isLastSelect = isSelect;
-        showChooseState.SetActive(isSelect);
+        // showChooseState.SetActive(isSelect);
+        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equipGo.BeLongToCommanderId));
+        belongtoPart.GetChild(0).GetComponent<Image>().color = isSelect ? comData.ChooseColor : comData.MyColor;
+        belongtoPart.GetChild(1).GetComponent<Image>().color = isSelect ? Color.white : comData.MyColor;
+
         if (isSelect && MyDataInfo.gameState == GameState.GameStart)
         {
             currentMoveRoute.active = true;
@@ -142,11 +150,22 @@ public class AirIconCell : IconCellBase
         }
     }
 
+    private string belongtoCom;
+
     private void changeBelongtoShow()
     {
         if ((int)MyDataInfo.gameState < 2)
         {
-            belongtoShow.color = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equipGo.BeLongToCommanderId)).MyColor;
+            if (equipGo.BeLongToCommanderId != belongtoCom)
+            {
+                belongtoCom = equipGo.BeLongToCommanderId;
+                var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equipGo.BeLongToCommanderId));
+                belongtoPart.GetChild(0).GetComponent<Image>().color = comData.MyColor;
+                belongtoPart.GetChild(1).GetComponent<Image>().color = comData.MyColor;
+                belongtoPart.GetChild(2).GetComponent<Image>().color = comData.IconBgColor;
+                belongtoPart.GetChild(3).GetComponent<Image>().color = comData.IconBgColor;
+                skillProgressShow = transform.Find($"Root/progressPart/{comData.progressId}").GetComponent<Slider>();
+            }
         }
     }
 
@@ -154,26 +173,21 @@ public class AirIconCell : IconCellBase
     {
         if (equipGo.currentSkill == SkillType.None)
         {
-            if (skillName.gameObject.activeSelf) skillName.gameObject.SetActive(false);
-            if (skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(false);
-            if (skillNameRight.gameObject.activeSelf) skillNameRight.gameObject.SetActive(false);
+            if (skillName.transform.parent.gameObject.activeSelf) skillName.transform.parent.gameObject.SetActive(false);
+            if (skillProgressShow != null && skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(false);
             return;
         }
 
-        if (!skillName.gameObject.activeSelf) skillName.gameObject.SetActive(true);
-        if (!skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(true);
+        if (!skillName.transform.parent.gameObject.activeSelf) skillName.transform.parent.gameObject.SetActive(true);
+        if (skillProgressShow != null && !skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(true);
 
         switch (equipGo.currentSkill)
         {
             case SkillType.GroundReady:
-                if (skillName.gameObject.activeSelf) skillName.gameObject.SetActive(false);
-                if (!skillNameRight.gameObject.activeSelf) skillNameRight.gameObject.SetActive(true);
-                skillNameRight.text = "正在起飞前准备...";
+                skillName.text = "正在起飞前准备...";
                 break;
             case SkillType.BePutInStorage:
-                if (skillName.gameObject.activeSelf) skillName.gameObject.SetActive(false);
-                if (!skillNameRight.gameObject.activeSelf) skillNameRight.gameObject.SetActive(true);
-                skillNameRight.text = "正在入库...";
+                skillName.text = "正在入库...";
                 break;
             case SkillType.TakeOff:
                 skillName.text = "正在起飞...";
@@ -210,16 +224,23 @@ public class AirIconCell : IconCellBase
                 break;
         }
 
-        skillProgressShow.fillAmount = equipGo.skillProgress;
+        skillProgressShow.value = equipGo.skillProgress;
     }
 
     private void showAllMassInfo()
     {
-        equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person);
-        this.currentOil.fillAmount = currentOil / totalOil;
+        equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
+        // this.currentOil.fillAmount = currentOil / totalOil;
+        float aPartOil = totalOil / this.currentOil.childCount;
+        for (int i = 0; i < this.currentOil.childCount; i++)
+        {
+            this.currentOil.GetChild(i).gameObject.SetActive(currentOil >= aPartOil * (i + 1));
+        }
+
         this.water.SetActive(water > 1);
         this.goods.SetActive(goods > 1);
-        this.person.SetActive(person > 1);
+        qPerson.SetActive(personType == 1 && person > 1);
+        zPerson.SetActive(personType == 2 && person > 1);
     }
 
     public override void DestroyMe()

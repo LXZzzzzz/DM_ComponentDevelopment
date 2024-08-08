@@ -32,6 +32,7 @@ namespace Enums
         ClearMsgBox, //清除操作记录数据
         GameStop, //通知游戏结束
         ChangeCurrentCom, //更改当前选择的指挥端
+        ReceiveTask, //总指挥接收任务
     }
 
     public enum MessageID
@@ -68,5 +69,6 @@ namespace Enums
         TriggerEquipCrash = 1116, //触发飞机坠毁
 
         TriggerOnlyShow = 1200, //触发只做显示的文本
+        TriggerReport = 1201, //触发报备指令
     }
 }

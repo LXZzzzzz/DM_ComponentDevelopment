@@ -21,6 +21,11 @@ public class UIAttributeView : BasePanel
     private msgCell msgObj;
     private List<msgCell> allMsgCells;
 
+
+    private TaskCell taskPrefab;
+    private RectTransform taskParent;
+    private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
+
     public override void Init()
     {
         base.Init();
@@ -34,16 +39,19 @@ public class UIAttributeView : BasePanel
         GetControl<Button>("btn_close").onClick.AddListener(() => Close(UIName.UIAttributeView));
         msgParent = GetControl<ScrollRect>("msgInfoView").content;
         msgObj = GetComponentInChildren<msgCell>(true);
+        taskParent = GetControl<ScrollRect>("TaskListView").content;
+        taskPrefab = GetComponentInChildren<TaskCell>(true);
         EventManager.Instance.AddEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
         EventManager.Instance.AddEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
-        EventManager.Instance.AddEventListener<string>(EventType.ChangeCurrentCom.ToString(),OnChangeCom);
+        EventManager.Instance.AddEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
         allMsgCells = new List<msgCell>();
     }
 
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
-
+        ShowTaskView();
+        return;
         //如果当前正在接收外部，则关闭其他属性展示逻辑
         if (isReceiveMapInfo) return;
         if (userData == null)
@@ -90,6 +98,47 @@ public class UIAttributeView : BasePanel
         }
     }
 
+    private void ShowTaskView()
+    {
+        if (allTaskCells != null) return;
+        allTaskCells = new List<TaskCell>();
+        int taskIndex = 0;
+        for (int i = 0; i < allBObjects.Length; i++)
+        {
+            var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+            //任务列表展示
+            if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 3) != null)
+            {
+                taskIndex++;
+                //任务与资源逻辑应该是一样的
+                var itemObj = allBObjects[i];
+                var itemCell = Instantiate(taskPrefab, taskParent);
+                var itemzy = itemObj.gameObject.GetComponent<ZiYuanBase>();
+                itemCell.Init("任务" + taskIndex, itemzy);
+                itemCell.gameObject.SetActive(true);
+                allTaskCells.Add(itemCell);
+            }
+        }
+    }
+
+    public void OnChooseCommander(bool isZong, string id)
+    {
+        if (isZong)
+        {
+            for (int i = 0; i < allTaskCells.Count; i++)
+            {
+                allTaskCells[i].gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < allTaskCells.Count; i++)
+            {
+                bool isShow = allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                allTaskCells[i].gameObject.SetActive(isShow);
+            }
+        }
+    }
 
     private void OnChooseWaters(BObjectModel bom)
     {
@@ -192,6 +241,6 @@ public class UIAttributeView : BasePanel
         EventManager.Instance.RemoveEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
         EventManager.Instance.RemoveEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
-        EventManager.Instance.RemoveEventListener<string>(EventType.ChangeCurrentCom.ToString(),OnChangeCom);
+        EventManager.Instance.RemoveEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
     }
 }

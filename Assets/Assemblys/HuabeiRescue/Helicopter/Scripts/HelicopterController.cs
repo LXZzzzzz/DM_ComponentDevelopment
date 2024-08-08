@@ -39,6 +39,11 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     private List<AudioSource> myass;
     private List<WingMark> mywms;
 
+    private LineRenderer flyLine;
+    private Vector3[] positions;
+
+    private Vector3 initialScale = Vector3.zero;
+
 
     public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
     {
@@ -97,6 +102,17 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         {
             anis[i].Stop();
         }
+
+        flyLine = gameObject.AddComponent<LineRenderer>();
+        flyLine.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
+        // 设置线宽
+        flyLine.startWidth = 1f;
+        flyLine.endWidth = 1f;
+        // 设置线段颜色
+        flyLine.startColor = Color.red;
+        flyLine.endColor = Color.blue;
+        positions = new Vector3[2];
+        initialScale = transform.localScale;
     }
 
     private void InitData(EquipBase baseData)
@@ -234,7 +250,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerWaterPour, MsgSend_WaterPour(BObjectId, transform.position));
                 break;
             case SkillType.LadeGoods:
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerLadeGoods, BObjectId);
+                if (amountOfGoods < myAttributeInfo.zdyxzh)
+                    EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerLadeGoods, BObjectId);
+                else EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), "已达到最大载荷");
                 break;
             case SkillType.UnLadeGoods:
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerUnLadeGoods, BObjectId);
@@ -243,13 +261,17 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerAirDropGoods, MsgSend_WaterPour(BObjectId, transform.position));
                 break;
             case SkillType.Manned:
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerManned, BObjectId);
+                if (amountOfPerson < myAttributeInfo.zdzkl)
+                    EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerManned, BObjectId);
+                else EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), "已达到最大载客量");
                 break;
             case SkillType.PlacementOfPersonnel:
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerPlacementOfPersonnel, BObjectId);
                 break;
             case SkillType.CableDescentRescue:
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerCableDescentRescue, BObjectId);
+                if (amountOfPerson < myAttributeInfo.zdzkl)
+                    EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerCableDescentRescue, BObjectId);
+                else EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), "已达到最大载客量");
                 break;
             case SkillType.ReturnFlight:
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerReturnFlight, BObjectId);
@@ -301,13 +323,14 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         }
     }
 
-    public override void GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person)
+    public override void GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType)
     {
         currentOil = amountOfOil;
         totalOil = myAttributeInfo.zyl;
         water = amountOfWater;
         goods = amountOfGoods;
         person = amountOfPerson;
+        personType = this.personType;
     }
 
     protected override void OnClose()
@@ -325,6 +348,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         switchMyState();
 
         calculationData();
+
+        DrawLine();
 
         if (!isCrash && !isSendCrash && amountOfOil <= 0)
         {
@@ -360,6 +385,30 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         if (myState == HelicopterState.hover)
         {
             amountOfOil -= myAttributeInfo.xtyh / 3600f * Time.deltaTime * MyDataInfo.speedMultiplier;
+        }
+    }
+
+    private void DrawLine()
+    {
+        Vector3 myUpPos = transform.position + transform.up * 1.5f;
+        positions[0] = myUpPos; // 起点
+        positions[1] = TargetPos == Vector3.zero ? myUpPos : TargetPos; // 终点
+
+        // 设置线段顶点
+        flyLine.SetPositions(positions);
+
+        if (Camera.main != null && initialScale != Vector3.zero)
+        {
+            float distance = Vector3.Distance(transform.position, Camera.main.transform.position);
+            if (distance > 200)
+            {
+                float scaleFactor = distance / 200;
+                transform.localScale = initialScale * scaleFactor;
+            }
+            else
+            {
+                transform.localScale = initialScale;
+            }
         }
     }
 

@@ -2,6 +2,7 @@ using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
+//安置点和医院共用，逻辑一样
 public class RescueStationLogic : ZiYuanBase, IRescueStation
 {
     private float firstGoodsTime;
@@ -11,10 +12,10 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
     private float perPersonNeedGoodsWeight;
     private int maxPersonNum;
 
-    public void Init(string id, float goodsWeight, int personNum)
+    public void Init(string id, int zyType, float goodsWeight, int personNum, string colorCode)
     {
-        base.Init(id, 50);
-        ZiYuanType = ZiYuanType.RescueStation;
+        base.Init(id, 50, colorCode);
+        ZiYuanType = (ZiYuanType)zyType;
         firstGoodsTime = 0;
         totalWeight = 0;
         totalPerson = 0;

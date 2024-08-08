@@ -20,6 +20,7 @@ public partial class CommanderController : DMonoBehaviour
     private List<string> showAllOperatorInfos;
     private List<ZiYuanBase> sceneAllzy;
     public int gameType;
+    private Func<Vector3, Vector2> CalculateLatLon;
 
     private bool isMe;
 
@@ -28,10 +29,11 @@ public partial class CommanderController : DMonoBehaviour
         clientOperatorInfos = new List<string>();
     }
 
-    public void Init()
+    public void Init(Func<Vector3, Vector2> cb)
     {
         sender.LogError("指挥端组件ID：" + main.BObjectId);
         isMe = true;
+        CalculateLatLon = cb;
         _pdfReport = new PDFReport();
         MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
@@ -62,7 +64,7 @@ public partial class CommanderController : DMonoBehaviour
 
     public void SendTaskSureMsg()
     {
-        EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misName, () =>
+        EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misDescription, () =>
         {
             //接收灾情任务，此时计时器开始
             for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
@@ -359,8 +361,9 @@ public partial class CommanderController : DMonoBehaviour
         var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
         var playerData = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, item.BeLongToCommanderId));
         var targetZy = sceneAllzy.Find(a => string.Equals(a.BobjectId, targetId));
-        EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerData.ColorCode}>{playerData.PlayerName}</color> {item.name}执行机动操作，目标点为{(targetZy != null ? targetZy.ziYuanName : targetPos.ToString())}");
-        clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，目标点为{(targetZy != null ? targetZy.ziYuanName : targetPos.ToString())}");
+        EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(),
+            $"<color={playerData.ColorCode}>{playerData.PlayerName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
+        clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
     }
 
     public void Receive_ProgrammeData(string data)
@@ -374,7 +377,7 @@ public partial class CommanderController : DMonoBehaviour
     public void Receive_GameStop()
     {
         var myInfo = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, MyDataInfo.leadId));
-        if (myInfo.ClientLevel == 1 && MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) == null)
+        if (!MyDataInfo.isPlayBack && myInfo.ClientLevel == 1 && MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) == null)
             OnGeneratePdf();
         for (int i = 0; i < allBObjects.Length; i++)
         {
@@ -551,12 +554,15 @@ public partial class CommanderController : DMonoBehaviour
                 EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataes.ColorCode}>{playerDataes.PlayerName}</color> {itemes.name}进行{showInfo[1]}");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataes.ClientLevelName}】{itemes.name}进行{showInfo[1]}");
                 break;
+            case MessageID.TriggerReport:
+                //todo:获取到了指定玩家的报备指令，存起来，生成报告的时候去加分
+                break;
         }
     }
 
     public void Receive_TextMsgRecord(string data)
     {
-        clientOperatorInfos.Add(data);
+        clientOperatorInfos.Add(MyDataInfo.gameStartTime + "--" + data);
         EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), data);
     }
 

@@ -10,9 +10,9 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
     private float allWeight;
     private bool isStart;
 
-    public void Init(float fs, float pd, float csrsmj, string id)
+    public void Init(float fs, float pd, float csrsmj, string id, string colorCode)
     {
-        base.Init(id, 50);
+        base.Init(id, 50, colorCode);
         ZiYuanType = ZiYuanType.SourceOfAFire;
         fm = gameObject.AddComponent<FireManage>();
 

@@ -81,6 +81,7 @@ public class UITopMenuView : BasePanel
         GetControl<Toggle>("Tog_Zhpg").transform.parent.gameObject.SetActive(mainLevel == 1);
         speedChangePart.SetActive(mainLevel == 1);
         EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
+        EventManager.Instance.AddEventListener(EventType.ReceiveTask.ToString(), ReceiveTask);
         ProgrammName.text = UIManager.Instance.MisName;
 
         dropdownValue = new List<float>() { 0.5f, 1.0f, 1.5f, 2.0f, 5.0f, 10.0f, 20.0f, 50.0f };
@@ -98,11 +99,14 @@ public class UITopMenuView : BasePanel
     {
         base.HideMe();
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
+        EventManager.Instance.RemoveEventListener(EventType.ReceiveTask.ToString(), ReceiveTask);
     }
 
     private void clickReport()
     {
         //这里是二级点击了报备按钮
+
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerReport, MyDataInfo.leadId);
     }
 
     private void putAwayMenu()
@@ -118,6 +122,11 @@ public class UITopMenuView : BasePanel
     private void ShowName(string pName)
     {
         ProgrammName.text = $"{UIManager.Instance.MisName}（{pName}）";
+    }
+
+    private void ReceiveTask()
+    {
+        currentState.text = "总指挥制定方案中";
     }
 
     private void newBuild()

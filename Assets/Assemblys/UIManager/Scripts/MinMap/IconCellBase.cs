@@ -36,10 +36,11 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!HasParent(eventData.pointerEnter, "Root")) return;
         var data = GetBasicInfo();
         if (data != null)
         {
-            data.pointPos = GetComponent<RectTransform>().anchoredPosition;
+            data.pointPos = GetComponent<RectTransform>().anchoredPosition + new Vector2(50, 40);
             UIManager.Instance.ShowPanel<UIHangShowInfo>(UIName.UIHangShowInfo, data);
         }
     }
@@ -52,6 +53,24 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
     public virtual void DestroyMe()
     {
     }
+
+    public bool HasParent(GameObject child, string parentToCheck)
+    {
+        // 从child开始向上遍历父物体
+        while (child != null)
+        {
+            // 检查当前父物体是否是我们要查找的
+            if (child.name == parentToCheck)
+            {
+                return true; // 找到了指定的父物体
+            }
+
+            // 移动到下一个父物体
+            child = child.transform.parent?.gameObject;
+        }
+
+        return false; // 没有找到指定的父物体
+    }
 }
 
 
@@ -62,7 +81,10 @@ public class IconInfoData
     public string entityInfo;
     public List<string> beUseCommanders;
     public bool isAir = false;
+    public float currentOilMass;
+    public float maxOilMass;
     public float waterNum;
     public float goodsNum;
     public float personNum;
+    public int personType;
 }

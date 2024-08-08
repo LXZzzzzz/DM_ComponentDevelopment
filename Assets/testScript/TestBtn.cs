@@ -3,10 +3,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TestBtn : MonoBehaviour,IPointerDownHandler
+public class TestBtn : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 {
-    public float maxDistance=200;
+    public float maxDistance = 200;
     private Vector3 initialScale;
+
     private void Start()
     {
         // GetComponent<Button>().onClick.AddListener(OnClick);
@@ -15,7 +16,7 @@ public class TestBtn : MonoBehaviour,IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (eventData.button== PointerEventData.InputButton.Right)
+        if (eventData.button == PointerEventData.InputButton.Right)
         {
             OnClick();
         }
@@ -39,6 +40,17 @@ public class TestBtn : MonoBehaviour,IPointerDownHandler
         {
             transform.localScale = initialScale;
         }
+    }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (eventData.pointerEnter == gameObject)
+        {
+            Debug.LogError("触发父物体");
+        }
+        else
+        {
+            Debug.LogError("未触发");
+        }
     }
 }

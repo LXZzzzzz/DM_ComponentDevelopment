@@ -36,7 +36,7 @@ public class TestEquip : EquipBase
         throw new System.NotImplementedException();
     }
 
-    public override void GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person)
+    public override void GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType)
     {
         throw new System.NotImplementedException();
     }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class UIHangShowInfo : BasePanel
 {
     private RectTransform bgRect;
-    private Text showName, showInfo, waterNum, goodsNum, personNum;
+    private Text showName, showInfo, oilMass, waterNum, goodsNum, qPersonNum, zPersonNum;
     private Transform comParent;
     private GameObject comCell;
 
@@ -17,9 +17,11 @@ public class UIHangShowInfo : BasePanel
         bgRect = transform.Find("point/bg").GetComponent<RectTransform>();
         showName = GetControl<Text>("text_Name");
         showInfo = GetControl<Text>("text_Info");
+        oilMass = GetControl<Text>("text_OilMass");
         waterNum = GetControl<Text>("text_WaterNum");
         goodsNum = GetControl<Text>("text_GoodsNum");
-        personNum = GetControl<Text>("text_PersonNum");
+        qPersonNum = GetControl<Text>("text_qPersonNum");
+        zPersonNum = GetControl<Text>("text_zPersonNum");
         comParent = GetControl<ScrollRect>("commandersListView").content;
         comCell = transform.Find("point/bg/commanderCell").gameObject;
     }
@@ -34,14 +36,18 @@ public class UIHangShowInfo : BasePanel
         showName.text = data.entityName;
         showInfo.text = data.entityInfo;
 
-        bgRect.sizeDelta = new Vector2(192, data.isAir ? 112 : 90);
-
+        bgRect.sizeDelta = new Vector2(391, data.isAir ? 226 : 174);
+ 
+        oilMass.gameObject.SetActive(data.isAir);
         waterNum.gameObject.SetActive(data.isAir);
         goodsNum.gameObject.SetActive(data.isAir);
-        personNum.gameObject.SetActive(data.isAir);
+        qPersonNum.gameObject.SetActive(data.isAir);
+        zPersonNum.gameObject.SetActive(data.isAir);
+        oilMass.text = $"{data.currentOilMass}/{data.maxOilMass}";
         waterNum.text = $"{data.waterNum}kg";
         goodsNum.text = $"{data.goodsNum}kg";
-        personNum.text = $"{data.personNum}人";
+        qPersonNum.text = $"{(data.personType == 1 ? data.personNum : 0)}人";
+        zPersonNum.text = $"{(data.personType == 2 ? data.personNum : 0)}人";
 
         for (int i = 0; i < data.beUseCommanders?.Count; i++)
         {

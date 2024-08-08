@@ -10,9 +10,9 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea
     //1:轻伤员；2：重伤员
     private int woundedPersonnelType;
 
-    public void Init(string id, int personNum, int type)
+    public void Init(string id, int personNum, int type, string colorCode)
     {
-        base.Init(id, 50);
+        base.Init(id, 50, colorCode);
         ZiYuanType = ZiYuanType.DisasterArea;
         allPersonNum = personNum;
         currentRemainingPersonnel = allPersonNum;
@@ -31,6 +31,11 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea
     public void airdropGoods(float time, float squareMeasure)
     {
         //灾区接收物资，目前不用，物资给救助站
+    }
+
+    public int getWoundedPersonnelType()
+    {
+        return woundedPersonnelType;
     }
 
     public int rescuePerson(int maxrescuePersonNum)

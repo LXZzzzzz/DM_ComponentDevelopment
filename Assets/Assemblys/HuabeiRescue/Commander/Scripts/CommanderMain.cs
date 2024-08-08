@@ -15,6 +15,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     private CommanderController _commanderController;
     private bool isMain;
     private int gameStartTimePoint;
+    private MonoBehaviour mDMLonLat;
 
     private void Awake()
     {
@@ -31,7 +32,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         Properties = new DynamicProperty[]
         {
             new DropDownProperty("指挥官等级", commanderLevel, 0),
-            new InputStringProperty("十六进制标志色号", ""),
+            new InputStringProperty("十六进制标志色号", "#3C387D"),
             new DropDownProperty("任务类型", taskType, 0),
 
             new InputFloatUnitProperty("单位燃烧面积投水需求/人均救援物资需求", 2.5f, "kg/㎡(kg/人)"),
@@ -43,8 +44,26 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             new InputFloatUnitProperty("单次人员吊救时间(救援)", 0.0014f, "h"),
             new InputIntUnitProperty("单次最大运载人数(救援)", 10, "人"),
             new InputFloatUnitProperty("吊桶单次最大装载量/单次最大运载物资重量", 5000, "kg"),
-            new InputFloatUnitProperty("直升机每飞行小时耗油量", 1000, "kg")
+            new InputFloatUnitProperty("直升机每飞行小时耗油量", 1000, "kg"),
+            new InputStringProperty("选中色号", "#5B52FF"),
+            new InputStringProperty("icon底色色号", "#3C387D"),
+            new InputStringProperty("进度条标识", "总")
         };
+    }
+
+    private Vector2 CalcAndSetLonLat(Vector3 pos)
+    {
+        //基准点经纬度,基准经纬度默认Type=DMLonLatType.Normal，LonType=E,LatType=N
+        if (mDMLonLat == null) return Vector2.zero;
+        var zeroLon = mDMLonLat.HGetField("Longitude");
+        var zeroLat = mDMLonLat.HGetField("Latitude");
+        double mLon = zeroLon.GetType() != typeof(double) ? 116.4 : (double)zeroLon;
+        double mLat = zeroLat.GetType() != typeof(double) ? 39.9 : (double)zeroLat;
+        int mScaleRate = (int)mDMLonLat.HGetField("ScaleRate");
+        //计算并设置经纬度
+        double lat = HarvenSin.GetLatByDis(mLat, pos.z);
+        double lon = HarvenSin.GetLonByDis(mLon, pos.x, lat);
+        return new Vector2((float)lon, (float)lat);
     }
 
     public override void EditorModeInitialized()
@@ -66,7 +85,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             int clientLevel = -1;
             string clientLevelName = "";
             Color clientColor = Color.white;
+            Color chooseColor = Color.white;
+            Color iconBgColor = Color.white;
             string clientColorCode = "";
+            string progrId = "";
             for (int j = 0; j < allBObjects.Length; j++)
             {
                 var itemMain = allBObjects[j].GetComponent<ScriptManager>();
@@ -74,11 +96,24 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 {
                     clientLevel = (itemMain.Properties[0] as DropDownProperty).Selected.Enum;
                     clientLevelName = allBObjects[j].BObject.Info.Name;
+                    progrId = (itemMain.Properties[15] as InputStringProperty).Value;
+                    
                     clientColorCode = (itemMain.Properties[1] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(clientColorCode, out Color color))
                     {
                         clientColor = color;
                     }
+                    var itemCodeC = (itemMain.Properties[13] as InputStringProperty).Value;
+                    if (ColorUtility.TryParseHtmlString(itemCodeC, out Color colorc))
+                    {
+                        chooseColor = colorc;
+                    }
+                    var itemCodeI = (itemMain.Properties[14] as InputStringProperty).Value;
+                    if (ColorUtility.TryParseHtmlString(itemCodeI, out Color colori))
+                    {
+                        iconBgColor = colori;
+                    }
+
 
                     sender.LogError((itemMain.Properties[1] as InputStringProperty).Value + ":" + clientColor);
                     break;
@@ -89,7 +124,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             MyDataInfo.playerInfos.Add(new ClientInfo()
             {
                 PlayerName = info.ClientInfos[i].Name, RoleId = info.ClientInfos[i].RoleId, UID = info.ClientInfos[i].UID, ClientLevel = clientLevel,
-                ClientLevelName = clientLevelName, MyColor = clientColor, ColorCode = clientColorCode
+                ClientLevelName = clientLevelName, MyColor = clientColor, ColorCode = clientColorCode, ChooseColor = chooseColor, IconBgColor = iconBgColor, progressId = progrId
             });
         }
 
@@ -137,10 +172,11 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.SceneGoParent.position = Vector3.zero;
         MyDataInfo.gameState = GameState.None;
         gameStartTimePoint = -1;
-        float mapLength = float.Parse(GameObject.Find("DMLonLat").HGetScript("DMLonLat").HGetField("TerLength").ToString());
-        float mapWidth = float.Parse(GameObject.Find("DMLonLat").HGetScript("DMLonLat").HGetField("TerWidth").ToString());
+        mDMLonLat = GameObject.Find("DMLonLat").HGetScript("DMLonLat");
+        float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
+        float mapWidth = float.Parse(mDMLonLat.HGetField("TerWidth").ToString());
         mapSizeData = new Vector2(mapLength, mapWidth);
-        _commanderController.Init();
+        _commanderController.Init(CalcAndSetLonLat);
         StartCoroutine(InitMain());
     }
 
@@ -163,6 +199,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "TopMenuView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ThreeDIconView", null);
         if (MyDataInfo.isPlayBack)
             EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
 
@@ -206,6 +243,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.speedMultiplier = 1;
                 MyDataInfo.gameStartTime = 0;
                 _commanderController.Receive_TextMsgRecord("总指挥接受了任务，开始指定方案");
+                EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString());
                 break;
             case MessageID.SendProgramme:
                 if (MyDataInfo.leadId != BObjectId) break;

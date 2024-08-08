@@ -22,7 +22,7 @@ public partial class HelicopterController
         switch (aa)
         {
             case 0:
-                stageInfo = "救援前准备";
+                stageInfo = "起飞前准备";
                 break;
             case 1:
                 stageInfo = "设备检查";

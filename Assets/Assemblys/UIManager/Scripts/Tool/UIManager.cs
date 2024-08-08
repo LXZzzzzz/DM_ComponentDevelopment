@@ -11,6 +11,7 @@ namespace UiManager
         private Canvas popUp;
         private Canvas upper;
         private Canvas middle;
+        private Canvas below;
 
         //public Camera UICamera;
         public Dictionary<string, List<BasePanel>> panelDic;
@@ -32,6 +33,7 @@ namespace UiManager
             popUp = transform.Find("Canvas_Popup").GetComponent<Canvas>();
             upper = transform.Find("Canvas_Upper").GetComponent<Canvas>();
             middle = transform.Find("Canvas_Middle").GetComponent<Canvas>();
+            below = transform.Find("Canvas_Below").GetComponent<Canvas>();
             SetPanelLayer();
         }
 
@@ -44,6 +46,7 @@ namespace UiManager
             // uiPanelWhereLayer.Add(UIName.UIAttributeView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIHangShowInfo, BasePanel.UIType.popUp);
             uiPanelWhereLayer.Add(UIName.UIAirportAircraftShowView, BasePanel.UIType.upper);
+            uiPanelWhereLayer.Add(UIName.UIThreeDIcon, BasePanel.UIType.below);
         }
 
         /// <summary>
@@ -118,6 +121,9 @@ namespace UiManager
                     case BasePanel.UIType.popUp:
                         canvansTran = popUp.transform;
                         break;
+                    case BasePanel.UIType.below:
+                        canvansTran = below.transform;
+                        break;
                 }
             }
 
@@ -155,6 +161,9 @@ namespace UiManager
                     break;
                 case UIName.UIAirportAircraftShowView:
                     itemUI = Instantiate((main as UIManagerMain).UIAirportAircraftShowView, canvansTran);
+                    break;
+                case UIName.UIThreeDIcon:
+                    itemUI = Instantiate((main as UIManagerMain).UIThreeDIconView, canvansTran);
                     break;
             }
 
@@ -205,6 +214,7 @@ namespace UiManager
         UIRightClickMenuView,
         UIAttributeView,
         UIHangShowInfo,
-        UIAirportAircraftShowView
+        UIAirportAircraftShowView,
+        UIThreeDIcon
     }
 }

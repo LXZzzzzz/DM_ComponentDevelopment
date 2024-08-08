@@ -16,6 +16,7 @@ public class DisasterAreaMain : ScriptManager
             new InputIntUnitProperty("需要救助人数", 5000, "人"),
             new InputStringProperty("组件描述", "灾区点，需要在这救助人员"),
             new DropDownProperty("伤员类型", woundedPersonnelType, 0),
+            new InputStringProperty("资源Icon色值","#800049")
         };
     }
 
@@ -23,7 +24,7 @@ public class DisasterAreaMain : ScriptManager
     {
         base.RunModeInitialized(isRoomCreator, info);
         DisasterAreaLogic rsl = gameObject.AddComponent<DisasterAreaLogic>();
-        rsl.Init(BObjectId, (Properties[0] as InputIntUnitProperty).Value, (Properties[2] as DropDownProperty).Selected.Enum);
+        rsl.Init(BObjectId, (Properties[0] as InputIntUnitProperty).Value, (Properties[2] as DropDownProperty).Selected.Enum,(Properties[3] as InputStringProperty).Value);
 
         rsl.ziYuanName = GetComponent<BObjectModel>().BObject.Info.Name;
         rsl.ziYuanDescribe = (Properties[1] as InputStringProperty).Value;

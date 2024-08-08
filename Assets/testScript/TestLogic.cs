@@ -41,7 +41,7 @@ public class TestLogic : MonoBehaviour
         testDic = new Dictionary<string, string>();
 
         to.test = new testClass() { aaa = 20, bbb = 30 };
-        fp.Init(5, 10, 30000, "1111111");
+        fp.Init(5, 10, 30000, "1111111","");
 
         myass = new List<AudioSource>();
         mywms = new List<WingMark>();
@@ -79,7 +79,7 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            fp.Init(5, 10, 30000, "1111111");
+            fp.Init(5, 10, 30000, "1111111","");
             float aa = 400 / mj;
         }
 

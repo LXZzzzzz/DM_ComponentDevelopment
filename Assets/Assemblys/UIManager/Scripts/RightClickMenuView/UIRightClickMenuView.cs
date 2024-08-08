@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIRightClickMenuView : BasePanel,IPointerDownHandler
+public class UIRightClickMenuView : BasePanel, IPointerDownHandler
 {
     private RectTransform viewPoint;
     private Transform menusParent;
@@ -28,11 +28,12 @@ public class UIRightClickMenuView : BasePanel,IPointerDownHandler
 
         for (int i = 0; i < showInfo.ShowSkillDatas.Count; i++)
         {
-            var itemRmc=Instantiate(rmc, menusParent);
+            var itemRmc = Instantiate(rmc, menusParent);
             itemRmc.Init(showInfo.ShowSkillDatas[i], showInfo.OnTriggerCallBack);
             // itemRmc.gameObject.SetActive(true);
         }
     }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Right)
@@ -40,6 +41,7 @@ public class UIRightClickMenuView : BasePanel,IPointerDownHandler
             Close(UIName.UIRightClickMenuView);
         }
     }
+
     public override void HideMe()
     {
         base.HideMe();

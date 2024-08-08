@@ -12,7 +12,8 @@ namespace UiManager
         {
             popUp,
             upper,
-            middle
+            middle,
+            below
         }
 
         //通过里氏转换原则，存储所有UI控件

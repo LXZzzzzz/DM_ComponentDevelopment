@@ -27,12 +27,12 @@ public class ZiYuan_ComanderCell : DMonoBehaviour, IPointerEnterHandler, IPointe
 
     private void OnRemoveMe()
     {
-        removeCallBack(_comId, false);
+        removeCallBack?.Invoke(_comId, false);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (MyDataInfo.gameState == GameState.GameStart) return;
+        if (MyDataInfo.gameState == GameState.GameStart || removeCallBack == null) return;
         removeBtn.gameObject.SetActive(true);
     }
 

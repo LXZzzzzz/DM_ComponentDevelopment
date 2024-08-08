@@ -9,7 +9,7 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
 
     public void Init(string id, string associationId)
     {
-        base.Init(id, 0);
+        base.Init(id, 0, "");
         ZiYuanType = ZiYuanType.TaskPoint;
         StartCoroutine(getZy(associationId));
     }
@@ -39,6 +39,11 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
         //清除任务状态
     }
 
+    public string getAssociationAssemblyId()
+    {
+        return associationGo.BobjectId;
+    }
+
     public bool getTaskProgress(out string progressInfo)
     {
         progressInfo = "";
@@ -53,6 +58,7 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
                 progressInfo = $"需求水量：{(int)(rsmj < 0 ? 0 : rsmj)}kg";
                 break;
             case ZiYuanType.RescueStation:
+            case ZiYuanType.Hospital:
                 isComplete = (associationGo as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
                 progressInfo = $"安置人员:{currentPersonNum}人/{maxPersonNum}人\n所需物资:{currentGoodsNum}kg/{maxGoodsNum}kg";
                 break;
