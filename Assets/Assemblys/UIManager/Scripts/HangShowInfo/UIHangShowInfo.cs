@@ -36,14 +36,14 @@ public class UIHangShowInfo : BasePanel
         showName.text = data.entityName;
         showInfo.text = data.entityInfo;
 
-        bgRect.sizeDelta = new Vector2(391, data.isAir ? 226 : 174);
- 
+        bgRect.sizeDelta = new Vector2(291, data.isAir ? 226 : 174);
+
         oilMass.gameObject.SetActive(data.isAir);
         waterNum.gameObject.SetActive(data.isAir);
         goodsNum.gameObject.SetActive(data.isAir);
         qPersonNum.gameObject.SetActive(data.isAir);
         zPersonNum.gameObject.SetActive(data.isAir);
-        oilMass.text = $"{data.currentOilMass}/{data.maxOilMass}";
+        oilMass.text = $"{(int)data.currentOilMass}/{(int)data.maxOilMass}";
         waterNum.text = $"{data.waterNum}kg";
         goodsNum.text = $"{data.goodsNum}kg";
         qPersonNum.text = $"{(data.personType == 1 ? data.personNum : 0)}人";

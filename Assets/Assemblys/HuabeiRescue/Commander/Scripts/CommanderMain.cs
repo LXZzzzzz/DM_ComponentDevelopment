@@ -57,8 +57,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         if (mDMLonLat == null) return Vector2.zero;
         var zeroLon = mDMLonLat.HGetField("Longitude");
         var zeroLat = mDMLonLat.HGetField("Latitude");
-        double mLon = zeroLon.GetType() != typeof(double) ? 116.4 : (double)zeroLon;
-        double mLat = zeroLat.GetType() != typeof(double) ? 39.9 : (double)zeroLat;
+        Debug.LogError(zeroLon + "--" + zeroLat);
+        double mLon = double.Parse(zeroLon.ToString()); //zeroLon.GetType() != typeof(double) ? 116.4 : (double)zeroLon;
+        double mLat = double.Parse(zeroLat.ToString()); //zeroLat.GetType() != typeof(double) ? 39.9 : (double)zeroLat;
         int mScaleRate = (int)mDMLonLat.HGetField("ScaleRate");
         //计算并设置经纬度
         double lat = HarvenSin.GetLatByDis(mLat, pos.z);
@@ -97,17 +98,19 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                     clientLevel = (itemMain.Properties[0] as DropDownProperty).Selected.Enum;
                     clientLevelName = allBObjects[j].BObject.Info.Name;
                     progrId = (itemMain.Properties[15] as InputStringProperty).Value;
-                    
+
                     clientColorCode = (itemMain.Properties[1] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(clientColorCode, out Color color))
                     {
                         clientColor = color;
                     }
+
                     var itemCodeC = (itemMain.Properties[13] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(itemCodeC, out Color colorc))
                     {
                         chooseColor = colorc;
                     }
+
                     var itemCodeI = (itemMain.Properties[14] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(itemCodeI, out Color colori))
                     {
@@ -205,7 +208,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
 
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
         yield return new WaitForSeconds(1);
-        _commanderController.SendTaskSureMsg();
+        if (myLevel == 1)
+            _commanderController.SendTaskSureMsg();
     }
 
     public void DeActive(DevType type, bool playback)

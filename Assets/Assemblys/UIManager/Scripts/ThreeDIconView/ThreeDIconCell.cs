@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
@@ -42,6 +43,10 @@ public class ThreeDIconCell : DMonoBehaviour
         changeBelongtoShow();
         showSkillState();
         showAllMassInfo();
+    }
+
+    private void LateUpdate()
+    {
         controlView();
     }
 

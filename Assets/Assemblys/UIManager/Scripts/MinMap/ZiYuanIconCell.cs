@@ -162,12 +162,13 @@ public class ZiYuanIconCell : IconCellBase
 
     private void refreshCurrentPageInfo(int pageNum)
     {
+        var currentAirportEquips = MyDataInfo.sceneAllEquips.FindAll(x => x.isDockingAtTheAirport);
         for (int i = 0; i < equipParent.childCount; i++)
         {
             int currentIndex = equipParent.childCount * (pageNum - 1) + i;
-            if (currentIndex < MyDataInfo.sceneAllEquips.Count && MyDataInfo.sceneAllEquips[currentIndex].isDockingAtTheAirport)
+            if (currentIndex < currentAirportEquips.Count)
             {
-                equipParent.GetChild(i).GetComponent<AirPortEquipIconCell>().Init(MyDataInfo.sceneAllEquips[currentIndex]);
+                equipParent.GetChild(i).GetComponent<AirPortEquipIconCell>().Init(currentAirportEquips[currentIndex]);
                 equipParent.GetChild(i).gameObject.SetActive(true);
             }
             else equipParent.GetChild(i).gameObject.SetActive(false);

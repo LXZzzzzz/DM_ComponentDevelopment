@@ -40,7 +40,7 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
         var data = GetBasicInfo();
         if (data != null)
         {
-            data.pointPos = GetComponent<RectTransform>().anchoredPosition + new Vector2(50, 40);
+            data.pointPos = GetComponent<RectTransform>().anchoredPosition + new Vector2(30, 30);
             UIManager.Instance.ShowPanel<UIHangShowInfo>(UIName.UIHangShowInfo, data);
         }
     }

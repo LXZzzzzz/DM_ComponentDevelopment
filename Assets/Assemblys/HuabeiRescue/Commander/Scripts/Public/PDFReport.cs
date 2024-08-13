@@ -31,7 +31,7 @@ namespace ReportGenerate
         /// 灭火任务报告
         /// </summary>
         public void CreateWaterMissionReport(string reportId, string reportName, string userName, string Id, string Abstract, ResultFireWaterData resultData, ResultFireWaterOutData resultOutData, List<string> trainData,
-            Dictionary<string, List<WaterMegData>> heliMegList)
+            Dictionary<string, List<WaterMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports)
         {
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
@@ -71,45 +71,55 @@ namespace ReportGenerate
             doc.Add(mesAbstract);
             doc.Add(nullString);
 
-            Paragraph messageTrainData = new Paragraph("1.训练数据", fontSub);
-            doc.Add(messageTrainData);
+            Paragraph messageUserInfo = new Paragraph("1.救援力量配置", fontSub);
+            doc.Add(messageUserInfo);
             doc.Add(nullString);
-            for (int i = 0; i < trainData.Count; i++)
-            {
-                Paragraph mesItem = new Paragraph(trainData[i], fontText);
-                mesItem.IndentationLeft = 30f;
-                doc.Add(mesItem);
-                doc.Add(nullString);
-            }
+            PdfPTable tableUserInfos = new PdfPTable(5);
+            tableUserInfos.AddCell(MyCell("指挥员", 1, 1));
+            tableUserInfos.AddCell(MyCell("装备", 2, 1));
+            tableUserInfos.AddCell(MyCell("资源", 2, 1));
 
-            Paragraph messageWater = new Paragraph("2.投水数据", fontSub);
-            doc.Add(messageWater);
-            doc.Add(nullString);
-            foreach (KeyValuePair<string, List<WaterMegData>> item in heliMegList)
+            Dictionary<string, string[]> userInfos = new Dictionary<string, string[]>();
+            foreach (var equip in usersEquips)
             {
-                Paragraph mesItem = new Paragraph(item.Key, fontSub);
-                mesItem.IndentationLeft = 20f;
-                doc.Add(mesItem);
-                doc.Add(nullString);
-
-                foreach (WaterMegData wmItem in item.Value)
+                if (!userInfos.ContainsKey(equip.Key)) userInfos.Add(equip.Key, new string[2]);
+                for (int i = 0; i < equip.Value.Count; i++)
                 {
-                    string ShowMeg = String.Format("第{0}架次     开始取水时间：{1}     结束投水时间：{2}     投水重量：{3}", wmItem.sortieIndex, wmItem.StartWaterTime, wmItem.EndWaterTime, wmItem.WaterWeight);
-                    Paragraph mesItemWM = new Paragraph(ShowMeg, fontText);
-                    mesItemWM.IndentationLeft = 30f;
-                    doc.Add(mesItemWM);
-                    doc.Add(nullString);
+                    userInfos[equip.Key][0] += equip.Value[i] + '、';
                 }
+
+                userInfos[equip.Key][0] = userInfos[equip.Key][0].Remove(userInfos[equip.Key][0].Length - 1);
             }
 
-            Paragraph messageEval = new Paragraph("3.评估结果", fontSub);
+            foreach (var ziyuan in usersZiyuans)
+            {
+                if (!userInfos.ContainsKey(ziyuan.Key)) userInfos.Add(ziyuan.Key, new string[2]);
+                for (int i = 0; i < ziyuan.Value.Count; i++)
+                {
+                    userInfos[ziyuan.Key][1] += ziyuan.Value[i] + '、';
+                }
+
+                userInfos[ziyuan.Key][1] = userInfos[ziyuan.Key][1].Remove(userInfos[ziyuan.Key][1].Length - 1);
+            }
+
+            foreach (var item in userInfos)
+            {
+                tableUserInfos.AddCell(MyCell(item.Key, 1, 5));
+                tableUserInfos.AddCell(MyCell(item.Value[0], 2, 5));
+                tableUserInfos.AddCell(MyCell(item.Value[1], 2, 5));
+            }
+
+            doc.Add(tableUserInfos);
+            doc.Add(nullString);
+
+            Paragraph messageEval = new Paragraph("2.评估结果", fontSub);
             doc.Add(messageEval);
             doc.Add(nullString);
 
             double WaterMissonDegree = resultData.灭火任务完成度 * 100;
             if (Double.IsNaN(WaterMissonDegree) || Double.IsInfinity(WaterMissonDegree)) WaterMissonDegree = 0;
 
-            double WaterEval = resultData.协同指挥效能;
+            double WaterEval = resultData.协同指挥效能 + reports;
             if (Double.IsNaN(WaterEval) || Double.IsInfinity(WaterEval)) WaterEval = 0;
 
             double ZongMisson = resultData.总体任务效率;
@@ -208,6 +218,38 @@ namespace ReportGenerate
 
             doc.Add(table);
             doc.Add(nullString);
+
+            Paragraph messageTrainData = new Paragraph("3.训练数据", fontSub);
+            doc.Add(messageTrainData);
+            doc.Add(nullString);
+            for (int i = 0; i < trainData.Count; i++)
+            {
+                Paragraph mesItem = new Paragraph(trainData[i], fontText);
+                mesItem.IndentationLeft = 30f;
+                doc.Add(mesItem);
+                doc.Add(nullString);
+            }
+
+            Paragraph messageWater = new Paragraph("4.投水数据", fontSub);
+            doc.Add(messageWater);
+            doc.Add(nullString);
+            foreach (KeyValuePair<string, List<WaterMegData>> item in heliMegList)
+            {
+                Paragraph mesItem = new Paragraph(item.Key, fontSub);
+                mesItem.IndentationLeft = 20f;
+                doc.Add(mesItem);
+                doc.Add(nullString);
+
+                foreach (WaterMegData wmItem in item.Value)
+                {
+                    string ShowMeg = String.Format("第{0}架次     开始取水时间：{1}     结束投水时间：{2}     投水重量：{3}", wmItem.sortieIndex, wmItem.StartWaterTime, wmItem.EndWaterTime, wmItem.WaterWeight);
+                    Paragraph mesItemWM = new Paragraph(ShowMeg, fontText);
+                    mesItemWM.IndentationLeft = 30f;
+                    doc.Add(mesItemWM);
+                    doc.Add(nullString);
+                }
+            }
+
             doc.Close();
             writer.Close();
             Debug.LogError("生成PDF");
@@ -218,7 +260,7 @@ namespace ReportGenerate
         /// 物资和人员任务报告
         /// </summary>
         public void CreateRescueMissionReport(string reportId, string reportName, string userName, string Id, string Abstract, ResultMaterialPersonData resultData, ResultMaterialPersonOutData resultOutData,
-            ResultRescueSystemData resultSysData, List<string> trainData, Dictionary<string, List<MaterialPersonMegData>> heliMegList)
+            ResultRescueSystemData resultSysData, List<string> trainData, Dictionary<string, List<MaterialPersonMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports)
         {
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
@@ -258,43 +300,52 @@ namespace ReportGenerate
             doc.Add(mesAbstract);
             doc.Add(nullString);
 
-            Paragraph messageTrainData = new Paragraph("1.训练数据", fontSub);
-            doc.Add(messageTrainData);
+            Paragraph messageUserInfo = new Paragraph("1.救援力量配置", fontSub);
+            doc.Add(messageUserInfo);
             doc.Add(nullString);
-            for (int i = 0; i < trainData.Count; i++)
-            {
-                Paragraph mesItem = new Paragraph(trainData[i], fontText);
-                mesItem.IndentationLeft = 30f;
-                doc.Add(mesItem);
-                doc.Add(nullString);
-            }
+            PdfPTable tableUserInfos = new PdfPTable(5);
+            tableUserInfos.AddCell(MyCell("指挥员", 1, 1));
+            tableUserInfos.AddCell(MyCell("装备", 2, 1));
+            tableUserInfos.AddCell(MyCell("资源", 2, 1));
 
-            Paragraph messageWater = new Paragraph("2.救援数据", fontSub);
-            doc.Add(messageWater);
-            doc.Add(nullString);
-            foreach (KeyValuePair<string, List<MaterialPersonMegData>> item in heliMegList)
+            Dictionary<string, string[]> userInfos = new Dictionary<string, string[]>();
+            foreach (var equip in usersEquips)
             {
-                Paragraph mesItem = new Paragraph(item.Key, fontSub);
-                mesItem.IndentationLeft = 20f;
-                doc.Add(mesItem);
-                doc.Add(nullString);
-
-                foreach (MaterialPersonMegData mpmItem in item.Value)
+                if (!userInfos.ContainsKey(equip.Key)) userInfos.Add(equip.Key, new string[2]);
+                for (int i = 0; i < equip.Value.Count; i++)
                 {
-                    string ShowMeg = String.Format("第{0}架次     起飞时间：{1}     物资投放时间：{2}     投放重量：{3}     结束任务时间：{4}     转运人数：{5}", mpmItem.sortieIndex, mpmItem.TakeOffTime, mpmItem.MaterialTime, mpmItem.MaterialWeight,
-                        mpmItem.EndMissionTime, mpmItem.PersonCount);
-                    Paragraph mesItemWM = new Paragraph(ShowMeg, fontText);
-                    mesItemWM.IndentationLeft = 30f;
-                    doc.Add(mesItemWM);
-                    doc.Add(nullString);
+                    userInfos[equip.Key][0] += equip.Value[i] + '、';
                 }
+
+                userInfos[equip.Key][0] = userInfos[equip.Key][0].Remove(userInfos[equip.Key][0].Length - 1);
             }
 
-            Paragraph messageEval = new Paragraph("3.评估结果", fontSub);
+            foreach (var ziyuan in usersZiyuans)
+            {
+                if (!userInfos.ContainsKey(ziyuan.Key)) userInfos.Add(ziyuan.Key, new string[2]);
+                for (int i = 0; i < ziyuan.Value.Count; i++)
+                {
+                    userInfos[ziyuan.Key][1] += ziyuan.Value[i] + '、';
+                }
+
+                userInfos[ziyuan.Key][1] = userInfos[ziyuan.Key][1].Remove(userInfos[ziyuan.Key][1].Length - 1);
+            }
+
+            foreach (var item in userInfos)
+            {
+                tableUserInfos.AddCell(MyCell(item.Key, 1, 5));
+                tableUserInfos.AddCell(MyCell(item.Value[0], 2, 5));
+                tableUserInfos.AddCell(MyCell(item.Value[1], 2, 5));
+            }
+
+            doc.Add(tableUserInfos);
+            doc.Add(nullString);
+
+            Paragraph messageEval = new Paragraph("2.评估结果", fontSub);
             doc.Add(messageEval);
             doc.Add(nullString);
 
-            double RescueEval = resultData.协同指挥效能;
+            double RescueEval = resultData.协同指挥效能 + reports;
             if (Double.IsNaN(RescueEval) || Double.IsInfinity(RescueEval)) RescueEval = 0;
 
             double PersonDegree = resultData.人员转运任务完成度 * 100;
@@ -418,6 +469,38 @@ namespace ReportGenerate
 
                 doc.Add(tableEffort);
                 doc.Add(nullString);
+            }
+
+            Paragraph messageTrainData = new Paragraph("3.训练数据", fontSub);
+            doc.Add(messageTrainData);
+            doc.Add(nullString);
+            for (int i = 0; i < trainData.Count; i++)
+            {
+                Paragraph mesItem = new Paragraph(trainData[i], fontText);
+                mesItem.IndentationLeft = 30f;
+                doc.Add(mesItem);
+                doc.Add(nullString);
+            }
+
+            Paragraph messageWater = new Paragraph("4.救援数据", fontSub);
+            doc.Add(messageWater);
+            doc.Add(nullString);
+            foreach (KeyValuePair<string, List<MaterialPersonMegData>> item in heliMegList)
+            {
+                Paragraph mesItem = new Paragraph(item.Key, fontSub);
+                mesItem.IndentationLeft = 20f;
+                doc.Add(mesItem);
+                doc.Add(nullString);
+
+                foreach (MaterialPersonMegData mpmItem in item.Value)
+                {
+                    string ShowMeg = String.Format("第{0}架次     起飞时间：{1}     物资投放时间：{2}     投放重量：{3}     结束任务时间：{4}     转运人数：{5}", mpmItem.sortieIndex, mpmItem.TakeOffTime, mpmItem.MaterialTime, mpmItem.MaterialWeight,
+                        mpmItem.EndMissionTime, mpmItem.PersonCount);
+                    Paragraph mesItemWM = new Paragraph(ShowMeg, fontText);
+                    mesItemWM.IndentationLeft = 30f;
+                    doc.Add(mesItemWM);
+                    doc.Add(nullString);
+                }
             }
 
             doc.Add(table);

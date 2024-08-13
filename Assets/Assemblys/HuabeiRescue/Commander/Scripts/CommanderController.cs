@@ -337,6 +337,38 @@ public partial class CommanderController : DMonoBehaviour
         }
 
         if (MyDataInfo.sceneAllEquips.Count == 0) return;
+
+        if (playerEquips == null)
+        {
+            playerEquips = new Dictionary<string, List<string>>();
+            for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+            {
+                var itemAllEquip = MyDataInfo.sceneAllEquips.FindAll(x => string.Equals(MyDataInfo.playerInfos[i].RoleId, x.BeLongToCommanderId));
+                if (!playerEquips.ContainsKey(MyDataInfo.playerInfos[i].ClientLevelName))
+                    playerEquips.Add(MyDataInfo.playerInfos[i].ClientLevelName, new List<string>());
+                for (int j = 0; j < itemAllEquip.Count; j++)
+                {
+                    playerEquips[MyDataInfo.playerInfos[i].ClientLevelName].Add(itemAllEquip[j].name);
+                }
+            }
+        }
+
+        if (playerZiyuans == null)
+        {
+            playerZiyuans = new Dictionary<string, List<string>>();
+            for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+            {
+                var itemAllZy = sceneAllzy.FindAll(x => x.beUsedCommanderIds?.Find(y =>
+                    string.Equals(y, MyDataInfo.playerInfos[i].RoleId)) != null);
+                if (!playerZiyuans.ContainsKey(MyDataInfo.playerInfos[i].ClientLevelName))
+                    playerZiyuans.Add(MyDataInfo.playerInfos[i].ClientLevelName, new List<string>());
+                for (int j = 0; j < itemAllZy.Count; j++)
+                {
+                    playerZiyuans[MyDataInfo.playerInfos[i].ClientLevelName].Add(itemAllZy[j].ziYuanName);
+                }
+            }
+        }
+
         // clientOperatorInfos.sore
         if (gameType == 1)
             GenerateFireExtinguishingReport();
@@ -556,6 +588,8 @@ public partial class CommanderController : DMonoBehaviour
                 break;
             case MessageID.TriggerReport:
                 //todo:获取到了指定玩家的报备指令，存起来，生成报告的时候去加分
+                if (reportPlayers == null) reportPlayers = new List<string>();
+                if (!reportPlayers.Contains(data)) reportPlayers.Add(data);
                 break;
         }
     }
