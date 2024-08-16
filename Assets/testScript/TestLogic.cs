@@ -203,7 +203,8 @@ public class TestLogic : MonoBehaviour
         vl.rectTransform.localPosition = Vector3.zero;
         vl.rectTransform.localScale = Vector3.one;
         vl.active = true;
-        vl.color = Color.cyan;
+        if (ColorUtility.TryParseHtmlString("#FF0000", out Color color))
+            vl.color = color;
         vl.Draw();
         vl.active = true;
     }

@@ -6,13 +6,13 @@ using UiManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ThreeDIconCell : DMonoBehaviour
+public class ThreeD_AirIconCell : DMonoBehaviour
 {
     private EquipBase equipGo;
     private Slider skillProgressShow;
     private Text skillName;
     private Transform belongtoPart;
-    private Transform currentOil;
+    private Image currentOil;
     private GameObject water, goods, qPerson, zPerson;
     private GameObject airPort;
     private Vector3 initialScale = Vector3.zero;
@@ -24,7 +24,7 @@ public class ThreeDIconCell : DMonoBehaviour
         transform.Find("Root/mainPart/equipName").GetComponent<Text>().text = equipGo.name;
         skillName = transform.Find("Root/skillBg/skillName").GetComponent<Text>();
         belongtoPart = transform.Find("Root/mainPart/belongToPart");
-        currentOil = transform.Find("Root/currentInfoShow/oilPart/oil");
+        currentOil = transform.Find("Root/currentInfoShow/oilPart/oilShow").GetComponent<Image>();
         water = transform.Find("Root/currentInfoShow/waterPart").gameObject;
         goods = transform.Find("Root/currentInfoShow/goodsPart").gameObject;
         qPerson = transform.Find("Root/currentInfoShow/qPersonPart").gameObject;
@@ -141,12 +141,12 @@ public class ThreeDIconCell : DMonoBehaviour
     private void showAllMassInfo()
     {
         equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
-        // this.currentOil.fillAmount = currentOil / totalOil;
-        float aPartOil = totalOil / this.currentOil.childCount;
-        for (int i = 0; i < this.currentOil.childCount; i++)
-        {
-            this.currentOil.GetChild(i).gameObject.SetActive(currentOil >= aPartOil * (i + 1));
-        }
+        this.currentOil.fillAmount = currentOil / totalOil;
+        // float aPartOil = totalOil / this.currentOil.childCount;
+        // for (int i = 0; i < this.currentOil.childCount; i++)
+        // {
+        //     this.currentOil.GetChild(i).gameObject.SetActive(currentOil >= aPartOil * (i + 1));
+        // }
 
         this.water.SetActive(water > 1);
         this.goods.SetActive(goods > 1);
@@ -167,9 +167,9 @@ public class ThreeDIconCell : DMonoBehaviour
         if (Camera.main != null && initialScale != Vector3.zero)
         {
             float distance = Vector3.Distance(equipGo.transform.position, Camera.main.transform.position);
-            if (distance > 250)
+            if (distance > 500)
             {
-                float scaleFactor = distance / 250;
+                float scaleFactor = distance / 500;
                 transform.localScale = initialScale / scaleFactor;
             }
             else

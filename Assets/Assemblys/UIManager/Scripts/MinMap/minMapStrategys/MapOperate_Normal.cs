@@ -89,7 +89,7 @@ public class MapOperate_Normal : MapOperateLogicBase
             EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), clickIcon.belongToId);
             RightClickShowInfo info = new RightClickShowInfo()
             {
-                PointPos = clickIcon.GetComponent<RectTransform>().anchoredPosition + new Vector2(50, 40),
+                PointPos = (Vector2)clickIcon.GetComponent<RectTransform>().position + new Vector2(50, 40),
                 ShowSkillDatas = itemEquip.GetSkillsData(), OnTriggerCallBack = itemEquip.OnSelectSkill
             };
             if (info.ShowSkillDatas.Find(x => x.isUsable) != null)

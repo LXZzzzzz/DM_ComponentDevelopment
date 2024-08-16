@@ -1,15 +1,12 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using UiManager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ZiYuanIconCell : IconCellBase
+public class ThreeD_ZiYuanIconCell : DMonoBehaviour
 {
-    //为该类型的对象就等于在场景中存在对应组件，所以可以直接通过belongtoID获取组件
-
     private ZiYuanBase _ziYuanItem;
     private float checkTimer;
     private Transform zyTypePart;
@@ -17,6 +14,7 @@ public class ZiYuanIconCell : IconCellBase
     private Image comPointItem;
     private Transform comsParent;
     private List<Transform> currentBelongToInfos;
+    private Vector3 initialScale = Vector3.zero;
 
     // private GameObject chooseImg;
 
@@ -29,36 +27,30 @@ public class ZiYuanIconCell : IconCellBase
 
     public ZiYuanBase ziYuanItem => _ziYuanItem;
 
+
+    public void Init(ZiYuanBase zy)
+    {
+        _ziYuanItem = zy;
+        if (_ziYuanItem == null) return;
+        zyTypePart = transform.Find("MainPart/zyTypePart");
+        changeIcon(_ziYuanItem.ZiYuanType);
+        // chooseImg = transform.Find("Choose").gameObject;
+        ChoosePart = transform.Find("MainPart/belongToPart");
+        transform.Find("MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
+        for (int i = 0; i < ChoosePart.childCount; i++)
+        {
+            if (i == 3) continue;
+            ChoosePart.GetChild(i).GetComponent<Image>().color = ziYuanItem.MyColor;
+        }
+
+        comPointItem = transform.Find("MainPart/comPointItem").GetComponent<Image>();
+        comsParent = transform.Find("MainPart/BelongtoShowPart");
+        currentBelongToInfos = new List<Transform>();
+        initialScale = transform.localScale;
+    }
+
     private void Start()
     {
-        zyTypePart = transform.Find("MainPart/zyTypePart");
-        for (int i = 0; i < allBObjects.Length; i++)
-        {
-            if (string.Equals(allBObjects[i].BObject.Id, belongToId))
-            {
-                _ziYuanItem = allBObjects[i].GetComponent<ZiYuanBase>();
-                if (_ziYuanItem == null) return;
-                changeIcon(_ziYuanItem.ZiYuanType);
-                break;
-            }
-        }
-
-        if (ziYuanItem != null)
-        {
-            // chooseImg = transform.Find("Choose").gameObject;
-            ChoosePart = transform.Find("MainPart/belongToPart");
-            transform.Find("MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
-            for (int i = 0; i < ChoosePart.childCount; i++)
-            {
-                if (i == 3) continue;
-                ChoosePart.GetChild(i).GetComponent<Image>().color = ziYuanItem.MyColor;
-            }
-
-            comPointItem = transform.Find("MainPart/comPointItem").GetComponent<Image>();
-            comsParent = transform.Find("MainPart/BelongtoShowPart");
-            currentBelongToInfos = new List<Transform>();
-        }
-
         #region 机场相关
 
         airPortMarkView = transform.Find("MainPart/airPortMarkView").gameObject;
@@ -114,15 +106,6 @@ public class ZiYuanIconCell : IconCellBase
         if (index != -1) zyTypePart.GetChild(index).gameObject.SetActive(true);
     }
 
-    protected override IconInfoData GetBasicInfo()
-    {
-        IconInfoData data = new IconInfoData()
-        {
-            entityName = _ziYuanItem.name, entityInfo = _ziYuanItem.ziYuanDescribe, beUseCommanders = _ziYuanItem.beUsedCommanderIds
-        };
-        return data;
-    }
-
     private void Update()
     {
         if (Time.time > checkTimer)
@@ -133,6 +116,8 @@ public class ZiYuanIconCell : IconCellBase
             AirPortShowLogic();
             if (ziYuanItem != null) ChangeBelongToShow(_ziYuanItem.beUsedCommanderIds);
         }
+
+        controlView();
     }
 
     private void ChangeBelongToShow(List<string> coms)
@@ -169,6 +154,34 @@ public class ZiYuanIconCell : IconCellBase
         {
             comsParent.gameObject.SetActive(true);
             comsParent.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(142 + (currentBelongToInfos.Count - 1) * 13, 40);
+        }
+    }
+
+    private void controlView()
+    {
+        Vector2 screenPoint = Camera.main.WorldToScreenPoint(ziYuanItem.transform.position + ziYuanItem.transform.up * 30);
+        bool isShow = Vector3.Angle(Camera.main.transform.forward, Vector3.Normalize(ziYuanItem.transform.position - Camera.main.transform.position)) < 60;
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(isShow);
+        }
+
+        Vector2 pointUGUIPos = new Vector2();
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(UIManager.Instance.CurrentCanvans.transform as RectTransform, screenPoint, null, out pointUGUIPos))
+            transform.GetComponent<RectTransform>().anchoredPosition = pointUGUIPos;
+
+        if (Camera.main != null && initialScale != Vector3.zero)
+        {
+            float distance = Vector3.Distance(ziYuanItem.transform.position, Camera.main.transform.position);
+            if (distance > 1000)
+            {
+                float scaleFactor = distance / 1000;
+                transform.localScale = initialScale / scaleFactor;
+            }
+            else
+            {
+                transform.localScale = initialScale;
+            }
         }
     }
 

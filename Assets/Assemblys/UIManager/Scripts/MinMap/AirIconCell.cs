@@ -25,7 +25,7 @@ public class AirIconCell : IconCellBase
     private Slider skillProgressShow;
     private Text skillName;
     private Transform belongtoPart;
-    private Transform currentOil;
+    private Image currentOil;
     private GameObject water, goods, qPerson, zPerson;
     private GameObject airPort;
 
@@ -42,7 +42,7 @@ public class AirIconCell : IconCellBase
         transform.Find("Root/mainPart/equipName").GetComponent<Text>().text = equipGo.name;
         skillName = transform.Find("Root/skillBg/skillName").GetComponent<Text>();
         belongtoPart = transform.Find("Root/mainPart/belongToPart");
-        currentOil = transform.Find("Root/currentInfoShow/oilPart/oil");
+        currentOil = transform.Find("Root/currentInfoShow/oilPart/oilShow").GetComponent<Image>();
         water = transform.Find("Root/currentInfoShow/waterPart").gameObject;
         goods = transform.Find("Root/currentInfoShow/goodsPart").gameObject;
         qPerson = transform.Find("Root/currentInfoShow/qPersonPart").gameObject;
@@ -68,7 +68,7 @@ public class AirIconCell : IconCellBase
         currentMoveRoute.rectTransform.localPosition = Vector3.zero;
         currentMoveRoute.rectTransform.localScale = Vector3.one;
         currentMoveRoute.active = true;
-        if (ColorUtility.TryParseHtmlString("#07D8A7", out Color color))
+        if (ColorUtility.TryParseHtmlString("#FF0000", out Color color))
             currentMoveRoute.color = color;
         else currentMoveRoute.color = Color.cyan;
     }
@@ -230,12 +230,12 @@ public class AirIconCell : IconCellBase
     private void showAllMassInfo()
     {
         equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
-        // this.currentOil.fillAmount = currentOil / totalOil;
-        float aPartOil = totalOil / this.currentOil.childCount;
-        for (int i = 0; i < this.currentOil.childCount; i++)
-        {
-            this.currentOil.GetChild(i).gameObject.SetActive(currentOil >= aPartOil * (i + 1));
-        }
+        this.currentOil.fillAmount = currentOil / totalOil;
+        // float aPartOil = totalOil / this.currentOil.childCount;
+        // for (int i = 0; i < this.currentOil.childCount; i++)
+        // {
+        //     this.currentOil.GetChild(i).gameObject.SetActive(currentOil >= aPartOil * (i + 1));
+        // }
 
         this.water.SetActive(water > 1);
         this.goods.SetActive(goods > 1);

@@ -13,7 +13,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerEnterHandler, IPoint
     private Image icon;
     private GameObject namePart;
     private Slider progress;
-    private bool isInit=false;
+    private bool isInit = false;
 
     private void InitView()
     {
@@ -54,14 +54,12 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerEnterHandler, IPoint
 
     private void openRightClickView()
     {
-        Vector2 iconPos = transform.GetComponentInParent<IconCellBase>().GetComponent<RectTransform>().anchoredPosition;
-        Vector2 apViewPos = transform.GetComponentInParent<IconCellBase>().transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition;
-        Vector2 parentPos = transform.parent.GetComponent<RectTransform>().anchoredPosition;
+        if (eb?.currentSkill != SkillType.None) return;
 #if UNITY_EDITOR
 
         RightClickShowInfo info1 = new RightClickShowInfo()
         {
-            PointPos = iconPos + apViewPos + parentPos + GetComponent<RectTransform>().anchoredPosition, ShowSkillDatas =
+            PointPos = GetComponent<RectTransform>().position, ShowSkillDatas =
                 new List<SkillData>() { new() { isUsable = true, skillName = "测试技能", SkillType = SkillType.EndTask } },
             OnTriggerCallBack = null
         };
@@ -71,7 +69,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerEnterHandler, IPoint
         EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), eb.BObjectId);
         RightClickShowInfo info = new RightClickShowInfo()
         {
-            PointPos = iconPos + apViewPos + parentPos + GetComponent<RectTransform>().anchoredPosition,
+            PointPos = GetComponent<RectTransform>().position,
             ShowSkillDatas = eb.GetSkillsData(), OnTriggerCallBack = eb.OnSelectSkill
         };
         UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);

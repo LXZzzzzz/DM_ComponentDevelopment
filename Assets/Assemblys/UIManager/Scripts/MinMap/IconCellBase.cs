@@ -36,7 +36,7 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!HasParent(eventData.pointerEnter, "Root")) return;
+        if (HasParent(eventData.pointerEnter, "airPortMarkView")) return;
         var data = GetBasicInfo();
         if (data != null)
         {

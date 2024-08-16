@@ -61,7 +61,7 @@ public class TaskCell : DMonoBehaviour
             {
                 Destroy(allcoms[i].gameObject);
                 allcoms.Remove(allcoms[i]);
-                break;
+                i--;
             }
         }
     }

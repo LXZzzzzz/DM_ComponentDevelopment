@@ -32,7 +32,7 @@ public class UIHangShowInfo : BasePanel
 
         var data = (IconInfoData)userData;
 
-        transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = data.pointPos;
+        transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = data.pointPos;
         showName.text = data.entityName;
         showInfo.text = data.entityInfo;
 

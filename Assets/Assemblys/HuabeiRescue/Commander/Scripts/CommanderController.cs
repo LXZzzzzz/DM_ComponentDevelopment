@@ -179,7 +179,7 @@ public partial class CommanderController : DMonoBehaviour
         if (MyDataInfo.gameState != GameState.GameStart || currentChooseEquip == null) return;
         if (currentChooseEquip.isDockingAtTheAirport)
         {
-            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUI.ToString(), "当前装备在机场未出库", null);
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前装备在机场未出库");
             return;
         }
 
@@ -394,7 +394,7 @@ public partial class CommanderController : DMonoBehaviour
         var playerData = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, item.BeLongToCommanderId));
         var targetZy = sceneAllzy.Find(a => string.Equals(a.BobjectId, targetId));
         EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(),
-            $"<color={playerData.ColorCode}>{playerData.PlayerName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
+            $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
         clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
     }
 
@@ -453,7 +453,7 @@ public partial class CommanderController : DMonoBehaviour
                 var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (item as IGroundReady)?.GroundReady(sceneAllzy.Find(a => string.Equals(a.BobjectId, itemAirportId)) as IAirPort);
                 var playerData = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, item.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerData.ColorCode}>{playerData.PlayerName}</color> {item.name}执行起飞前准备操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行起飞前准备操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行起飞前准备操作");
                 break;
             case MessageID.TriggerBePutInStorage:
@@ -461,7 +461,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itema = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itema as IGroundReady)?.BePutInStorage();
                 var playerDataa = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itema.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataa.ColorCode}>{playerDataa.PlayerName}</color> {itema.name}执行入库操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataa.ColorCode}>{playerDataa.ClientLevelName}</color> {itema.name}执行入库操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataa.ClientLevelName}】{itema.name}执行入库操作");
                 break;
             case MessageID.TriggerTakeOff:
@@ -469,7 +469,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemb = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemb as ITakeOffAndLand)?.TakeOff();
                 var playerDatab = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemb.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatab.ColorCode}>{playerDatab.PlayerName}</color> {itemb.name}执行起飞操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatab.ColorCode}>{playerDatab.ClientLevelName}</color> {itemb.name}执行起飞操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatab.ClientLevelName}】{itemb.name}执行起飞操作");
                 break;
             case MessageID.TriggerLanding:
@@ -477,7 +477,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemc = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemc as ITakeOffAndLand)?.Landing();
                 var playerDatac = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemc.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatac.ColorCode}>{playerDatac.PlayerName}</color> {itemc.name}执行降落操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatac.ColorCode}>{playerDatac.ClientLevelName}</color> {itemc.name}执行降落操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatac.ClientLevelName}】{itemc.name}执行降落操作");
                 break;
             case MessageID.TriggerSupply:
@@ -485,7 +485,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemS = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemS as ISupply)?.Supply();
                 var playerDataS = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemS.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataS.ColorCode}>{playerDataS.PlayerName}</color> {itemS.name}执行补给操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataS.ColorCode}>{playerDataS.ClientLevelName}</color> {itemS.name}执行补给操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataS.ClientLevelName}】{itemS.name}执行补给操作");
                 break;
             case MessageID.TriggerWaterIntaking:
@@ -493,7 +493,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemwi = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemwi as IWatersOperation)?.WaterIntaking_New();
                 var playerDatawi = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemwi.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatawi.ColorCode}>{playerDatawi.PlayerName}</color> {itemwi.name}执行取水操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatawi.ColorCode}>{playerDatawi.ClientLevelName}</color> {itemwi.name}执行取水操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatawi.ClientLevelName}】{itemwi.name}执行取水操作");
                 break;
             case MessageID.TriggerWaterPour:
@@ -502,7 +502,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, id));
                 (itemp as IWatersOperation)?.WaterPour(pos);
                 var playerDatap = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemp.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatap.ColorCode}>{playerDatap.PlayerName}</color> {itemp.name}执行投水操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatap.ColorCode}>{playerDatap.ClientLevelName}</color> {itemp.name}执行投水操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatap.ClientLevelName}】{itemp.name}执行投水操作");
                 break;
             case MessageID.TriggerLadeGoods:
@@ -510,7 +510,7 @@ public partial class CommanderController : DMonoBehaviour
                 var iteml = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (iteml as IGoodsOperation)?.LadeGoods();
                 var playerDatal = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, iteml.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatal.ColorCode}>{playerDatal.PlayerName}</color> {iteml.name}执行装载资源的操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatal.ColorCode}>{playerDatal.ClientLevelName}</color> {iteml.name}执行装载资源的操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatal.ClientLevelName}】{iteml.name}执行装载资源的操作");
                 break;
             case MessageID.TriggerUnLadeGoods:
@@ -518,7 +518,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemu = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemu as IGoodsOperation)?.UnLadeGoods();
                 var playerDatau = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemu.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatau.ColorCode}>{playerDatau.PlayerName}</color> {itemu.name}执行卸载资源的操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatau.ColorCode}>{playerDatau.ClientLevelName}</color> {itemu.name}执行卸载资源的操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatau.ClientLevelName}】{itemu.name}执行卸载资源的操作");
                 break;
             case MessageID.TriggerAirDropGoods:
@@ -527,7 +527,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemad = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, adid));
                 (itemad as IGoodsOperation)?.AirdropGoods(adpos);
                 var playerDataad = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemad.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataad.ColorCode}>{playerDataad.PlayerName}</color> {itemad.name}执行空投资源的操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataad.ColorCode}>{playerDataad.ClientLevelName}</color> {itemad.name}执行空投资源的操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataad.ClientLevelName}】{itemad.name}执行空投资源的操作");
                 break;
             case MessageID.TriggerManned:
@@ -535,7 +535,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemm = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemm as IRescuePersonnelOperation)?.Manned();
                 var playerDatam = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemm.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatam.ColorCode}>{playerDatam.PlayerName}</color> {itemm.name}执行装载人员的操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatam.ColorCode}>{playerDatam.ClientLevelName}</color> {itemm.name}执行装载人员的操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatam.ClientLevelName}】{itemm.name}执行装载人员的操作");
                 break;
             case MessageID.TriggerPlacementOfPersonnel:
@@ -543,7 +543,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itempp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itempp as IRescuePersonnelOperation)?.PlacementOfPersonnel();
                 var playerDatapp = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itempp.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatapp.ColorCode}>{playerDatapp.PlayerName}</color> {itempp.name}执行安置人员的操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatapp.ColorCode}>{playerDatapp.ClientLevelName}</color> {itempp.name}执行安置人员的操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatapp.ClientLevelName}】{itempp.name}执行安置人员的操作");
                 break;
             case MessageID.TriggerCableDescentRescue:
@@ -551,7 +551,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemcd = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemcd as IRescuePersonnelOperation)?.CableDescentRescue();
                 var playerDatacd = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemcd.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatacd.ColorCode}>{playerDatacd.PlayerName}</color> {itemcd.name}执行索降救援操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatacd.ColorCode}>{playerDatacd.ClientLevelName}</color> {itemcd.name}执行索降救援操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatacd.ClientLevelName}】{itemcd.name}执行索降救援操作");
                 break;
             case MessageID.TriggerReturnFlight:
@@ -559,7 +559,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemrf = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 itemrf.OnNullCommand(0);
                 var playerDatarf = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemrf.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatarf.ColorCode}>{playerDatarf.PlayerName}</color> {itemrf.name}执行返航的操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatarf.ColorCode}>{playerDatarf.ClientLevelName}</color> {itemrf.name}执行返航的操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatarf.ClientLevelName}】{itemrf.name}执行返航的操作");
                 break;
             case MessageID.TriggerEndTask:
@@ -567,7 +567,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemet = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 itemet.OnNullCommand(1);
                 var playerDataet = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemet.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataet.ColorCode}>{playerDataet.PlayerName}</color> {itemet.name}执行结束任务的操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataet.ColorCode}>{playerDataet.ClientLevelName}</color> {itemet.name}执行结束任务的操作");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataet.ClientLevelName}】{itemet.name}执行结束任务的操作");
                 break;
             case MessageID.TriggerEquipCrash:
@@ -575,7 +575,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemec = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 itemec.OnCrash();
                 var playerDataec = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemec.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataec.ColorCode}>{playerDataec.PlayerName}</color> {itemec.name}油量已耗尽，坠毁");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataec.ColorCode}>{playerDataec.ClientLevelName}</color> {itemec.name}油量已耗尽，坠毁");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataec.ClientLevelName}】{itemec.name}油量已耗尽，坠毁");
                 break;
             case MessageID.TriggerOnlyShow:
@@ -583,7 +583,7 @@ public partial class CommanderController : DMonoBehaviour
                 var showInfo = data.Split('_');
                 var itemes = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, showInfo[0]));
                 var playerDataes = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemes.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataes.ColorCode}>{playerDataes.PlayerName}</color> {itemes.name}进行{showInfo[1]}");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataes.ColorCode}>{playerDataes.ClientLevelName}</color> {itemes.name}进行{showInfo[1]}");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataes.ClientLevelName}】{itemes.name}进行{showInfo[1]}");
                 break;
             case MessageID.TriggerReport:

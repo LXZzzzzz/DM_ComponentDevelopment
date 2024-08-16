@@ -400,9 +400,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         if (Camera.main != null && initialScale != Vector3.zero)
         {
             float distance = Vector3.Distance(transform.position, Camera.main.transform.position);
-            if (distance > 200)
+            if (distance > 500)
             {
-                float scaleFactor = distance / 200;
+                float scaleFactor = distance / 500;
                 transform.localScale = initialScale * scaleFactor;
             }
             else

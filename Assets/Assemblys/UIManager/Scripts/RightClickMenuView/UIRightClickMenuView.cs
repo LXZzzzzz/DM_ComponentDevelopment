@@ -24,7 +24,7 @@ public class UIRightClickMenuView : BasePanel, IPointerDownHandler
 
         var showInfo = (RightClickShowInfo)userData;
 
-        viewPoint.anchoredPosition = showInfo.PointPos + new Vector2(12, -12);
+        viewPoint.position = showInfo.PointPos + new Vector2(12, -15);
 
         for (int i = 0; i < showInfo.ShowSkillDatas.Count; i++)
         {
