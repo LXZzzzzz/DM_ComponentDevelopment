@@ -154,7 +154,7 @@ public class UICommanderView : BasePanel
             }
         }
 
-        //获取场景中的资源和任务，展示
+        //获取场景中的资源，展示
         for (int i = 0; i < allBObjects.Length; i++)
         {
             var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
@@ -164,6 +164,7 @@ public class UICommanderView : BasePanel
                 ZiYuanBase zyObj = itemObj.GetComponent<ZiYuanBase>();
                 bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
                                   zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
+                if (isDisaster) continue;
                 var itemCell = Instantiate(zycPrefab, isDisaster ? disasterParent : ziYuanParent);
                 itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, zyObj, OnChangeZiYuanBelongTo, OnMoveCm);
                 itemCell.gameObject.SetActive(true);
