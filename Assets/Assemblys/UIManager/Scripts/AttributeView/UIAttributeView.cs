@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DM.Core.Map;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,8 +24,10 @@ public class UIAttributeView : BasePanel
     private List<msgCell> allMsgCells;
 
 
+    private ZiYuanCell zycPrefab;
     private TaskCell taskPrefab;
     private RectTransform taskParent;
+    private List<ZiYuanCell> allZyZqCells;
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
 
     public override void Init()
@@ -41,6 +45,7 @@ public class UIAttributeView : BasePanel
         msgObj = GetComponentInChildren<msgCell>(true);
         taskParent = GetControl<ScrollRect>("TaskListView").content;
         taskPrefab = GetComponentInChildren<TaskCell>(true);
+        zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
         EventManager.Instance.AddEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
         EventManager.Instance.AddEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
         EventManager.Instance.AddEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
@@ -50,7 +55,7 @@ public class UIAttributeView : BasePanel
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
-        ShowTaskView();
+        StartCoroutine(ShowTaskView());
         return;
         //如果当前正在接收外部，则关闭其他属性展示逻辑
         if (isReceiveMapInfo) return;
@@ -98,10 +103,30 @@ public class UIAttributeView : BasePanel
         }
     }
 
-    private void ShowTaskView()
+    IEnumerator ShowTaskView()
     {
-        if (allTaskCells != null) return;
+        if (allZyZqCells != null) yield break;
+        allZyZqCells = new List<ZiYuanCell>();
         allTaskCells = new List<TaskCell>();
+
+        for (int i = 0; i < allBObjects.Length; i++)
+        {
+            var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+            if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
+            {
+                var itemObj = allBObjects[i];
+                ZiYuanBase zyObj = itemObj.GetComponent<ZiYuanBase>();
+                bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
+                                  zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
+                if (!isDisaster) continue;
+                var itemCell = Instantiate(zycPrefab, taskParent);
+                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, zyObj, OnChangeZiYuanBelongTo, null);
+                itemCell.gameObject.SetActive(true);
+                allZyZqCells.Add(itemCell);
+            }
+        }
+
+        yield return new WaitForSeconds(1);
         int taskIndex = 0;
         for (int i = 0; i < allBObjects.Length; i++)
         {
@@ -112,14 +137,62 @@ public class UIAttributeView : BasePanel
                 taskIndex++;
                 //任务与资源逻辑应该是一样的
                 var itemObj = allBObjects[i];
-                var itemCell = Instantiate(taskPrefab, taskParent);
                 var itemzy = itemObj.gameObject.GetComponent<ZiYuanBase>();
+                var itemCell = Instantiate(taskPrefab, taskParent);
                 itemCell.Init("任务" + taskIndex, itemzy);
                 itemCell.gameObject.SetActive(true);
                 allTaskCells.Add(itemCell);
+
+                yield return 1;
+                string zqId = String.Empty;
+                while (string.IsNullOrEmpty(zqId))
+                {
+                    zqId = (itemzy as ITaskProgress)?.getAssociationAssemblyId();
+                    yield return 1;
+                }
+
+                int targetIndex = 0;
+                for (int j = 0; j < taskParent.childCount; j++)
+                {
+                    if (string.Equals(zqId, taskParent.GetChild(j).GetComponent<ZiYuanCell>()?.myEntityId))
+                    {
+                        targetIndex = j + 1;
+                        break;
+                    }
+                }
+
+                if (targetIndex >= 0 && targetIndex < taskParent.childCount)
+                {
+                    itemCell.transform.SetSiblingIndex(targetIndex);
+                    Debug.LogError(targetIndex+"更换成功了位置");
+                }
             }
         }
     }
+
+    private bool OnChangeZiYuanBelongTo(string ziYuanId, string commanderId, bool addOrRemove)
+    {
+        bool isChangeSuc = ProgrammeDataManager.Instance.ChangeZiYuanData(ziYuanId, commanderId, addOrRemove);
+
+        if (isChangeSuc)
+        {
+            for (int i = 0; i < allBObjects.Length; i++)
+            {
+                if (string.Equals(ziYuanId, allBObjects[i].BObject.Id))
+                {
+                    var zyObj = allBObjects[i].GetComponent<ZiYuanBase>();
+                    if (addOrRemove) zyObj.AddBeUsdCom(commanderId);
+                    else zyObj.RemoveBeUsedCom(commanderId);
+                    break;
+                }
+            }
+        }
+
+        return isChangeSuc;
+    }
+
+
+    // ////////////////////////////////////////////////////////////消息列表逻辑/////////////////////////////////////////////////////////////////
 
     public void OnChooseCommander(bool isZong, string id)
     {
@@ -139,6 +212,8 @@ public class UIAttributeView : BasePanel
             }
         }
     }
+
+    #region 技能选择逻辑，现在无用了
 
     private void OnChooseWaters(BObjectModel bom)
     {
@@ -192,6 +267,8 @@ public class UIAttributeView : BasePanel
         //     UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
         // }
     }
+
+    #endregion
 
 
     private void OnAddAMsg(string info)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ToolsLibrary.EquipPart;
@@ -41,6 +42,8 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
 
     public string getAssociationAssemblyId()
     {
+        if (associationGo == null)
+            return String.Empty;
         return associationGo.BobjectId;
     }
 
