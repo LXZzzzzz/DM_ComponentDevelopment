@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using DM.Core.Map;
+using DM.IFS;
+using Newtonsoft.Json;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
@@ -20,10 +22,12 @@ public class UICommanderView : BasePanel
     private RectTransform commanderParent;
     private RectTransform ziYuanParent;
     private RectTransform disasterParent; //灾区组件所展示的列表
+    // private RectTransform taskParent;
     private EquipTypeCell etcPrefab;
     private EquipCell ecPrefab;
     private CommanderCell ccPrefab;
     private ZiYuanCell zycPrefab;
+    // private TaskCell taskPrefab;
     private Text startTime, currentTime;
     private Button btn_ComUnfold, btn_EquipUnfold, btn_ZiyuanUnfold, btn_TaskUnfold;
     private RectTransform CmGo;
@@ -34,6 +38,8 @@ public class UICommanderView : BasePanel
     private Dictionary<string, string> allCommanderIds; //存储所有指挥端Id和 对应的名称
     private List<EquipCell> allEquipCells; //存储所有装备cell
     private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
+    private List<ZiYuanCell> allZyZqCells; //存储所有灾区cell
+    private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
     private Dictionary<string, CommanderCell> allCommanderCells; //存储所有玩家cell
     private bool isMoveCmGo;
 
@@ -56,6 +62,8 @@ public class UICommanderView : BasePanel
         ziYuanParent = GetControl<ScrollRect>("ZiYuanView").content;
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
         disasterParent = GetControl<ScrollRect>("TaskListView").content;
+        // taskPrefab = GetComponentInChildren<TaskCell>(true);
+        // taskParent = GetControl<ScrollRect>("TaskListView").content;
         startTime = GetControl<Text>("startTimeShow");
         currentTime = GetControl<Text>("currentTimeShow");
         btn_ComUnfold = GetControl<Button>("btn_ComUnfold");
@@ -100,9 +108,10 @@ public class UICommanderView : BasePanel
 #if !UNITY_EDITOR
         showView();
 #endif
-        EventManager.Instance.AddEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
-        EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), OnRemoveEquip);
-        EventManager.Instance.AddEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
+        EventManager.Instance.AddEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
+        EventManager.Instance.AddEventListener<string>(EventType.DestoryEquip.ToString(), OnRemoveEquip);
+        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
+        EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
         isMoveCmGo = false;
     }
 
@@ -112,6 +121,7 @@ public class UICommanderView : BasePanel
         EventManager.Instance.RemoveEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
         EventManager.Instance.RemoveEventListener<string>(Enums.EventType.DestoryEquip.ToString(), OnRemoveEquip);
         EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
+        EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
     }
 
     private void showView()
@@ -267,9 +277,10 @@ public class UICommanderView : BasePanel
             if (allCommanderCells.ContainsKey(id)) allCommanderCells[id].SetSelect(true);
             currentSelectComId = id;
         }
-        else return;
+        // else return;
 
         var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
+        //更改了某个对象控制着会调用这个，导致消息列表取消其他内容显示
         EventManager.Instance.EventTrigger(EventType.ChangeCurrentCom.ToString(), currentCommander.ClientLevelName);
         if (currentCommander.ClientLevel == 1)
         {
@@ -297,7 +308,7 @@ public class UICommanderView : BasePanel
             }
         }
 
-        UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).OnChooseCommander(currentCommander.ClientLevel == 1, id);
+        UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).OnChooseCommander(id);
     }
 
     private void OnAddEquipView(EquipBase equip)
@@ -342,18 +353,47 @@ public class UICommanderView : BasePanel
                 bool isShow = itemZiyuan.allcoms.Find(x => string.Equals(x.comId, MyDataInfo.leadId));
                 itemZiyuan.gameObject.SetActive(isShow);
             }
-
-            UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).OnChooseCommander(false, MyDataInfo.leadId);
         }
+    }
+
+    private void OnRunningChangeObjCom(int objType, string id)
+    {
+        if (objType == 1)
+        {
+            var itemEquipCell = allEquipCells.Find(x => string.Equals(x.equipObjectId, id));
+            if (itemEquipCell != null) itemEquipCell.RefreshComShow();
+        }
+        else
+        {
+            var itemZyCell = allZiYuanCells.Find(x => string.Equals(x.myEntityId, id));
+            if (itemZyCell != null) itemZyCell.RefreshComShow();
+        }
+
+        OnChooseCommander(MyDataInfo.leadId);
     }
 
     private void OnChangeEquipBelongTo(string equipId, string commanderId)
     {
         //修改数据中的信息
         ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = commanderId;
+
+        if (MyDataInfo.gameState >= GameState.Preparation)
+        {
+            ChangeController ccData = new ChangeController()
+            {
+                objType = 1, ChangeTargetId = equipId, currentComs = new List<string> { commanderId }
+            };
+            string jsonData = JsonConvert.SerializeObject(ccData);
+            string sendData = AESUtils.Encrypt(jsonData);
+            //游戏进行中修改的话，发送给所有人
+            for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+            {
+                sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendChangeController, sendData);
+            }
+        }
     }
 
-    private bool OnChangeZiYuanBelongTo(string ziYuanId, string commanderId, bool addOrRemove)
+    public bool OnChangeZiYuanBelongTo(string ziYuanId, string commanderId, bool addOrRemove)
     {
         bool isChangeSuc = ProgrammeDataManager.Instance.ChangeZiYuanData(ziYuanId, commanderId, addOrRemove);
 
@@ -366,6 +406,26 @@ public class UICommanderView : BasePanel
                     var zyObj = allBObjects[i].GetComponent<ZiYuanBase>();
                     if (addOrRemove) zyObj.AddBeUsdCom(commanderId);
                     else zyObj.RemoveBeUsedCom(commanderId);
+
+                    #region 发送给所有人
+
+                    if (MyDataInfo.gameState >= GameState.Preparation)
+                    {
+                        ChangeController ccData = new ChangeController()
+                        {
+                            objType = 2, ChangeTargetId = zyObj.BobjectId, currentComs = zyObj.beUsedCommanderIds
+                        };
+                        string jsonData = JsonConvert.SerializeObject(ccData);
+                        string sendData = AESUtils.Encrypt(jsonData);
+                        //游戏进行中修改的话，发送给所有人
+                        for (int j = 0; j < MyDataInfo.playerInfos.Count; j++)
+                        {
+                            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[j].RoleId, (int)Enums.MessageID.SendChangeController, sendData);
+                        }
+                    }
+
+                    #endregion
+
                     break;
                 }
             }

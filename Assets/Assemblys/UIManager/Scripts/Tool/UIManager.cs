@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ToolsLibrary;
 using UnityEngine;
 using UnityEngine.Events;
@@ -30,10 +31,18 @@ namespace UiManager
             uiPanelWhereLayer = new Dictionary<UIName, BasePanel.UIType>();
             CurrentCanvans = GetComponentInChildren<Canvas>();
             //UICamera = GetComponentInChildren<Camera>();
-            popUp = transform.Find("Canvas_Popup").GetComponent<Canvas>();
-            upper = transform.Find("Canvas_Upper").GetComponent<Canvas>();
-            middle = transform.Find("Canvas_Middle").GetComponent<Canvas>();
-            below = transform.Find("Canvas_Below").GetComponent<Canvas>();
+            try
+            {
+                popUp = transform.Find("Canvas_Popup").GetComponent<Canvas>();
+                upper = transform.Find("Canvas_Upper").GetComponent<Canvas>();
+                middle = transform.Find("Canvas_Middle").GetComponent<Canvas>();
+                below = transform.Find("Canvas_Below").GetComponent<Canvas>();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("报错了" + e.Message);
+            }
+
             SetPanelLayer();
         }
 
@@ -47,6 +56,7 @@ namespace UiManager
             uiPanelWhereLayer.Add(UIName.UIHangShowInfo, BasePanel.UIType.popUp);
             uiPanelWhereLayer.Add(UIName.UIAirportAircraftShowView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIThreeDIcon, BasePanel.UIType.below);
+            uiPanelWhereLayer.Add(UIName.UIChangeControllers, BasePanel.UIType.upper);
         }
 
         /// <summary>
@@ -165,6 +175,9 @@ namespace UiManager
                 case UIName.UIThreeDIcon:
                     itemUI = Instantiate((main as UIManagerMain).UIThreeDIconView, canvansTran);
                     break;
+                case UIName.UIChangeControllers:
+                    itemUI = Instantiate((main as UIManagerMain).UIChangeControllers, canvansTran);
+                    break;
             }
 
             itemUI.gameObject.SetActive(true);
@@ -215,6 +228,7 @@ namespace UiManager
         UIAttributeView,
         UIHangShowInfo,
         UIAirportAircraftShowView,
-        UIThreeDIcon
+        UIThreeDIcon,
+        UIChangeControllers
     }
 }

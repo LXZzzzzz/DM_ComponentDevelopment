@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DM.IFS;
 using Enums;
+using Newtonsoft.Json;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
@@ -20,7 +21,8 @@ public partial class CommanderController : DMonoBehaviour
     private List<string> showAllOperatorInfos;
     private List<ZiYuanBase> sceneAllzy;
     public int gameType;
-    private Func<Vector3, Vector2> CalculateLatLon;
+    public Func<Vector3, Vector2> CalculateLatLon;
+    private GameObject clouds;
 
     private bool isMe;
 
@@ -29,11 +31,11 @@ public partial class CommanderController : DMonoBehaviour
         clientOperatorInfos = new List<string>();
     }
 
-    public void Init(Func<Vector3, Vector2> cb)
+    public void Init()
     {
         sender.LogError("指挥端组件ID：" + main.BObjectId);
         isMe = true;
-        CalculateLatLon = cb;
+        InitZiyuan();
         _pdfReport = new PDFReport();
         MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
@@ -60,6 +62,33 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.RemoveEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
+    }
+
+    private void InitZiyuan()
+    {
+        if (sceneAllzy == null)
+        {
+            sceneAllzy = new List<ZiYuanBase>();
+            for (int i = 0; i < allBObjects.Length; i++)
+            {
+                if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
+                {
+                    var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
+                    zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
+                    sceneAllzy.Add(zyItem);
+                }
+            }
+        }
+        
+        clouds = GameObject.Find("Expanse Sky/Cumulus Clouds");
+    }
+
+    private void Update()
+    {
+        if (clouds)
+        {
+            clouds.SetActive(Camera.main.gameObject.transform.position.y < 1000);
+        }
     }
 
     public void SendTaskSureMsg()
@@ -206,7 +235,9 @@ public partial class CommanderController : DMonoBehaviour
             {
                 if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
                 {
-                    sceneAllzy.Add(allBObjects[i].GetComponent<ZiYuanBase>());
+                    var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
+                    zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
+                    sceneAllzy.Add(zyItem);
                 }
             }
         }
@@ -312,7 +343,7 @@ public partial class CommanderController : DMonoBehaviour
     {
         if (MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) != null)
         {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前有飞机未入库机场，无法生成报告！");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前有直升机未入库机场，无法生成报告！");
             return;
         }
 
@@ -388,21 +419,34 @@ public partial class CommanderController : DMonoBehaviour
 
     public void Receive_MoveEquipToTarget(string data)
     {
+        Debug.LogError("执行移动逻辑");
         MsgReceive_Move(data, out string equipId, out Vector3 targetPos, out string targetId);
         MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).MoveToTarget(targetPos);
+        Debug.LogError("指定飞机移动目标完成");
         var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
+        Debug.LogError("找到了指定飞机" + item.name);
         var playerData = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, item.BeLongToCommanderId));
-        var targetZy = sceneAllzy.Find(a => string.Equals(a.BobjectId, targetId));
-        EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(),
-            $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
-        clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
+        Debug.LogError("知道到指定玩家" + playerData.PlayerName);
+        var targetZy = string.IsNullOrEmpty(targetId) ? null : sceneAllzy.Find(a => string.Equals(a.BobjectId, targetId));
+        Debug.LogError(sceneAllzy.Count + "寻找资源" + targetId);
+        try
+        {
+            if (EventManager.Instance == null) Debug.LogError("事件系统空");
+            EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(),
+                $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
+            clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
     }
 
     public void Receive_ProgrammeData(string data)
     {
         var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
         OnLoadProgrammeDataSuc(programmeData);
-        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "收到上级下发任务，请接受");
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "收到上级派发任务，请接收");
     }
 
 
@@ -425,6 +469,47 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.EventTrigger(EventType.GameStop.ToString());
     }
 
+    public void Receive_ChangeController(string info)
+    {
+        if (MyDataInfo.MyLevel == 1) return;
+        Debug.LogError("收到了一级指挥端修改的资源权限修改");
+        string deStr = AESUtils.Decrypt(info);
+        var data = JsonConvert.DeserializeObject<ChangeController>(deStr);
+        if (data.objType == 1)
+        {
+            var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data.ChangeTargetId));
+            if (itemEquip != null) itemEquip.BeLongToCommanderId = data.currentComs[0];
+            var itemEquipData = ProgrammeDataManager.Instance.GetCurrentData.AllEquipDatas.Find(x => string.Equals(x.myId, data.ChangeTargetId));
+            if (itemEquipData != null) itemEquipData.controllerId = data.currentComs[0];
+        }
+        else
+        {
+            //这里是资源的权限更改
+            var itemZy = sceneAllzy.Find(x => string.Equals(x.BobjectId, data.ChangeTargetId));
+            if (itemZy != null) itemZy.SetBeUsedComs(data.currentComs);
+
+            if (ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList.ContainsKey(data.ChangeTargetId))
+            {
+                var itemZyData = ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList[data.ChangeTargetId];
+                if (itemZyData != null)
+                {
+                    itemZyData.Clear();
+                    itemZyData.AddRange(data.currentComs.ToArray());
+                }
+            }
+            else
+            {
+                for (int i = 0; i < data.currentComs.Count; i++)
+                {
+                    ProgrammeDataManager.Instance.ChangeZiYuanData(data.ChangeTargetId, data.currentComs[i], true);
+                }
+            }
+        }
+
+        //通知UI层面更改这个对象的控制者的显示
+        EventManager.Instance.EventTrigger(EventType.ChangeObjController.ToString(), data.objType, data.ChangeTargetId);
+    }
+
     public void Receive_TriggerSkill(MessageID messageID, string data)
     {
         if (sceneAllzy == null)
@@ -434,7 +519,9 @@ public partial class CommanderController : DMonoBehaviour
             {
                 if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
                 {
-                    sceneAllzy.Add(allBObjects[i].GetComponent<ZiYuanBase>());
+                    var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
+                    zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
+                    sceneAllzy.Add(zyItem);
                 }
             }
         }
@@ -446,7 +533,7 @@ public partial class CommanderController : DMonoBehaviour
                 var itemAirportId = ProgrammeDataManager.Instance.GetEquipDataById(data).airportId;
                 if (string.IsNullOrEmpty(itemAirportId))
                 {
-                    EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "数据错误，指定的飞机未在机场");
+                    EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "数据错误，指定的直升机未在机场");
                     return;
                 }
 

@@ -36,7 +36,8 @@ public partial class HelicopterController
             default: return;
         }
 
-        EventManager.Instance.EventTrigger(Enums.EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerOnlyShow, $"{BObjectId}_{stageInfo}");
+        if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId))
+            EventManager.Instance.EventTrigger(Enums.EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerOnlyShow, $"{BObjectId}_{stageInfo}");
     }
 
     public void BePutInStorage()

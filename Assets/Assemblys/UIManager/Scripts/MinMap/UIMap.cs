@@ -25,6 +25,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     public List<EquipBase> allObjModels;
     public Dictionary<string, IconCellBase> allIconCells; //存储地图上的所有点
     [HideInInspector] public float mapBLx, mapBLz;
+    public Material dashedLineMat;
 
     private Dictionary<OperatorState, MapOperateLogicBase> mapLogics;
     private MapOperateLogicBase currentMapLogic;
@@ -47,6 +48,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         startPoint = transform.Find("maxMap/objects/routeDecorate/startPoint").GetComponent<RectTransform>();
         middlePoint = transform.Find("maxMap/objects/routeDecorate/middlePoint").GetComponent<RectTransform>();
         endPoint = transform.Find("maxMap/objects/routeDecorate/endPoint").GetComponent<RectTransform>();
+        dashedLineMat = transform.Find("Cube").GetComponent<MeshRenderer>().material;
 
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
         allObjModels = new List<EquipBase>();
@@ -161,7 +163,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     {
         //点击了切换三维地图或二维地图
         EventManager.Instance.EventTrigger(EventType.CameraSwitch.ToString(), !isShowMap);
-        UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).gameObject.SetActive(isShowMap);
+        // UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).gameObject.SetActive(isShowMap);
     }
 
     private EquipBase[] sceneAllObjs;
@@ -285,6 +287,13 @@ public class UIMap : BasePanel, IPointerClickHandler
         float xbl = Screen.width / uiCameraSize.x;
         float ybl = Screen.height / uiCameraSize.y;
         return new Vector2(nowPos.x / xbl, nowPos.y / ybl);
+    }
+
+    public Vector2 resolutionRatioNormalized_size(Vector2 nowSize)
+    {
+        float xbl = Screen.width / uiCameraSize.x;
+        float ybl = Screen.height / uiCameraSize.y;
+        return new Vector2(nowSize.x * xbl, nowSize.y * ybl);
     }
 
     /// <summary>

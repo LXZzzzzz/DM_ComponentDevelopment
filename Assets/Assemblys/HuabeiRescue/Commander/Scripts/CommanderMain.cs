@@ -36,15 +36,16 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             new DropDownProperty("任务类型", taskType, 0),
 
             new InputFloatUnitProperty("单位燃烧面积投水需求/人均救援物资需求", 2.5f, "kg/㎡(kg/人)"),
-            new InputIntUnitProperty("受灾需转运总人数(救援)", 10, "kg/㎡"),
-            new InputFloatUnitProperty("最大巡航速度", 255, "km/h"),
-            new InputFloatUnitProperty("单次取水和投水时间", 0.05f, "h"),
-            new InputFloatUnitProperty("单次物资装载时间", 0.008f, "h"),
-            new InputFloatUnitProperty("单次物资投放时间", 0.0014f, "h"),
-            new InputFloatUnitProperty("单次人员吊救时间(救援)", 0.0014f, "h"),
-            new InputIntUnitProperty("单次最大运载人数(救援)", 10, "人"),
-            new InputFloatUnitProperty("吊桶单次最大装载量/单次最大运载物资重量", 5000, "kg"),
-            new InputFloatUnitProperty("直升机每飞行小时耗油量", 1000, "kg"),
+            new InputIntUnitProperty("无用--受灾需转运总人数(救援)", 10, "kg/㎡"),
+            new InputFloatUnitProperty("无用--最大巡航速度", 255, "km/h"),
+            new InputFloatUnitProperty("无用--单次取水和投水时间", 0.05f, "h"),
+            new InputFloatUnitProperty("无用--单次物资装载时间", 0.008f, "h"),
+            new InputFloatUnitProperty("无用--单次物资投放时间", 0.0014f, "h"),
+            new InputFloatUnitProperty("无用--单次人员吊救时间(救援)", 0.0014f, "h"),
+            new InputIntUnitProperty("无用--单次最大运载人数(救援)", 10, "人"),
+            new InputFloatUnitProperty("无用--吊桶单次最大装载量/单次最大运载物资重量", 5000, "kg"),
+            new InputFloatUnitProperty("无用--直升机每飞行小时耗油量", 1000, "kg"),
+            new InputStringProperty("默认色号", "#5B52FF"),
             new InputStringProperty("选中色号", "#5B52FF"),
             new InputStringProperty("icon底色色号", "#3C387D"),
             new InputStringProperty("进度条标识", "总")
@@ -54,8 +55,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     private Vector2 CalcAndSetLonLat(Vector3 pos)
     {
         //基准点经纬度,基准经纬度默认Type=DMLonLatType.Normal，LonType=E,LatType=N
+        Debug.LogError("移动调用" + pos);
         if (mDMLonLat == null) return Vector2.zero;
         var zeroLon = mDMLonLat.HGetField("Longitude");
+        Debug.LogError("Long数值：" + zeroLon);
         var zeroLat = mDMLonLat.HGetField("Latitude");
         Debug.LogError(zeroLon + "--" + zeroLat);
         double mLon = double.Parse(zeroLon.ToString()); //zeroLon.GetType() != typeof(double) ? 116.4 : (double)zeroLon;
@@ -86,6 +89,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             int clientLevel = -1;
             string clientLevelName = "";
             Color clientColor = Color.white;
+            Color normalColor = Color.white;
             Color chooseColor = Color.white;
             Color iconBgColor = Color.white;
             string clientColorCode = "";
@@ -97,7 +101,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 {
                     clientLevel = (itemMain.Properties[0] as DropDownProperty).Selected.Enum;
                     clientLevelName = allBObjects[j].BObject.Info.Name;
-                    progrId = (itemMain.Properties[15] as InputStringProperty).Value;
+                    progrId = (itemMain.Properties[16] as InputStringProperty).Value;
 
                     clientColorCode = (itemMain.Properties[1] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(clientColorCode, out Color color))
@@ -105,13 +109,19 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                         clientColor = color;
                     }
 
-                    var itemCodeC = (itemMain.Properties[13] as InputStringProperty).Value;
+                    var itemCodeN = (itemMain.Properties[13] as InputStringProperty).Value;
+                    if (ColorUtility.TryParseHtmlString(itemCodeN, out Color colorn))
+                    {
+                        normalColor = colorn;
+                    }
+
+                    var itemCodeC = (itemMain.Properties[14] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(itemCodeC, out Color colorc))
                     {
                         chooseColor = colorc;
                     }
 
-                    var itemCodeI = (itemMain.Properties[14] as InputStringProperty).Value;
+                    var itemCodeI = (itemMain.Properties[15] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(itemCodeI, out Color colori))
                     {
                         iconBgColor = colori;
@@ -127,13 +137,15 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             MyDataInfo.playerInfos.Add(new ClientInfo()
             {
                 PlayerName = info.ClientInfos[i].Name, RoleId = info.ClientInfos[i].RoleId, UID = info.ClientInfos[i].UID, ClientLevel = clientLevel,
-                ClientLevelName = clientLevelName, MyColor = clientColor, ColorCode = clientColorCode, ChooseColor = chooseColor, IconBgColor = iconBgColor, progressId = progrId
+                ClientLevelName = clientLevelName, MyColor = clientColor, ColorCode = clientColorCode, NormalColor = normalColor, ChooseColor = chooseColor, IconBgColor = iconBgColor, progressId = progrId
             });
         }
 
         InitRecordData();
+        mDMLonLat = GameObject.Find("DMLonLat").HGetScript("DMLonLat");
         _commanderController.misName = info.MisName;
         _commanderController.misDescription = info.MisDescription;
+        _commanderController.CalculateLatLon = CalcAndSetLonLat;
     }
 
     private void InitRecordData()
@@ -175,11 +187,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.SceneGoParent.position = Vector3.zero;
         MyDataInfo.gameState = GameState.None;
         gameStartTimePoint = -1;
-        mDMLonLat = GameObject.Find("DMLonLat").HGetScript("DMLonLat");
         float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
         float mapWidth = float.Parse(mDMLonLat.HGetField("TerWidth").ToString());
         mapSizeData = new Vector2(mapLength, mapWidth);
-        _commanderController.Init(CalcAndSetLonLat);
+        _commanderController.Init();
         StartCoroutine(InitMain());
     }
 
@@ -287,6 +298,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendChangeSpeed:
                 if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.speedMultiplier = float.Parse(param);
+                break;
+            case MessageID.SendChangeController:
+                if (MyDataInfo.leadId != BObjectId) break;
+                _commanderController.Receive_ChangeController(param);
                 break;
         }
 

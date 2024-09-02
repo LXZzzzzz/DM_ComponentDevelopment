@@ -102,6 +102,12 @@ public partial class HelicopterController
             EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), "当前位置超出补给距离，请前往补给点再进行操作");
     }
 
+    public override void OnCrash()
+    {
+        base.OnCrash();
+        amountOfOil = 0;
+    }
+
     /// <summary>
     /// 获取当前位置地面的高度
     /// </summary>

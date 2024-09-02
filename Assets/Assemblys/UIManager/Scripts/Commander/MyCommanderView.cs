@@ -9,22 +9,19 @@ using EventType = Enums.EventType;
 
 public class MyCommanderView : DMonoBehaviour, IDropHandler
 {
+    private Text playerLevelName;
     private Text playerName;
     private string myId;
 
     public void Init(string myId, UnityAction<string> callBack)
     {
-        if (playerName == null) playerName = GetComponentInChildren<Text>();
+        if (playerLevelName == null) playerLevelName = GetComponentInChildren<Text>();
+        if (playerName == null) playerName = transform.Find("text_ClientName").GetComponent<Text>();
         if (MyDataInfo.playerInfos != null)
         {
-            for (int i = 0; i < allBObjects.Length; i++)
-            {
-                if (string.Equals(allBObjects[i].BObject.Id, myId))
-                {
-                    playerName.text = allBObjects[i].BObject.Info.Name;
-                    break;
-                }
-            }
+            var myInfo = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, myId));
+            playerLevelName.text = myInfo.ClientLevelName;
+            playerName.text = myInfo.PlayerName;
         }
 
         this.myId = myId;

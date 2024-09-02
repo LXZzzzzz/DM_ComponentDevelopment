@@ -11,6 +11,7 @@ public class EquipCell : DMonoBehaviour
 {
     private Text showName;
     private Dropdown changeCtrl;
+    private Image changeCtrlImg;
     private Text noDpShowName;
     private EquipBase _equip;
     private GameObject chooseImg;
@@ -26,6 +27,7 @@ public class EquipCell : DMonoBehaviour
     {
         showName = GetComponentInChildren<Text>();
         changeCtrl = GetComponentInChildren<Dropdown>();
+        changeCtrlImg = changeCtrl.GetComponent<Image>();
         chooseImg = transform.Find("ChooseImg").gameObject;
         deleBtn = transform.Find("btn_Dele").GetComponent<Button>();
         transform.Find("btn_positioning").GetComponent<Button>().onClick.AddListener(onPositioning);
@@ -107,7 +109,7 @@ public class EquipCell : DMonoBehaviour
                 }
             }
         }
-
+        changeCtrlImg.color = MyDataInfo.playerInfos.Find(x => string.Equals(_equip.BeLongToCommanderId, x.RoleId)).MyColor;
         changeCtrl.onValueChanged.AddListener(OnChange);
     }
 
@@ -115,6 +117,7 @@ public class EquipCell : DMonoBehaviour
     {
         changeCallBack(_equip.BObjectId, dropDownSupplementInfo[select]);
         _equip.BeLongToCommanderId = dropDownSupplementInfo[select];
+        changeCtrlImg.color = MyDataInfo.playerInfos.Find(x => string.Equals(_equip.BeLongToCommanderId, x.RoleId)).MyColor;
     }
 
     private void Update()
@@ -123,9 +126,15 @@ public class EquipCell : DMonoBehaviour
         {
             checkTimer = Time.time + 1 / 25f;
             chooseImg.SetActive(_equip.isChooseMe);
-            changeCtrl.interactable = (int)MyDataInfo.gameState < 2;
+            // changeCtrl.interactable = (int)MyDataInfo.gameState < 2;
             deleBtn.gameObject.SetActive(MyDataInfo.gameState == GameState.FirstLevelCommanderEditor);
         }
+    }
+
+    public void RefreshComShow()
+    {
+        if (noDpShowName.gameObject.activeSelf)
+            noDpShowName.text = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId)).ClientLevelName;
     }
 
     private void onPositioning()

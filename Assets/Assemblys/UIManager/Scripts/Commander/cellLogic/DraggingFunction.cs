@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using EventType = Enums.EventType;
 
-public abstract class DraggingFunction : DMonoBehaviour, IDragHandler
+public abstract class DraggingFunction : DMonoBehaviour /*, IDragHandler*/
 {
     private string _myEntityId;
     private Func<string, string, bool, bool> changeDataCallBack;
@@ -38,9 +38,9 @@ public abstract class DraggingFunction : DMonoBehaviour, IDragHandler
 
     public abstract string GetMyName();
 
-    public void ShowComCtrls(List<string> canBeUseCommanders)
+    public void ShowComCtrls(List<string> canBeUseCommanders, bool isOnlyShow = true)
     {
-        isInit = true;
+        isInit = isOnlyShow;
         for (int i = 0; i < allcoms.Count;)
         {
             ChangeCommanders(allcoms[i].comId, false);
@@ -68,7 +68,8 @@ public abstract class DraggingFunction : DMonoBehaviour, IDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (MyDataInfo.gameState == GameState.GameStart) return;
+        // if (MyDataInfo.gameState == GameState.GameStart) return;
+        if (MyDataInfo.MyLevel != 1) return;
         //注册事件
         if (isAddEvent)
         {

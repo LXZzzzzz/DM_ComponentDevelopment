@@ -45,6 +45,11 @@ public class UITopMenuView : BasePanel
         GetControl<Button>("btn_Release").onClick.AddListener(release);
         GetControl<Button>("btn_StandAlone").onClick.AddListener(standAlone);
         GetControl<Button>("btn_Online").onClick.AddListener(onLine);
+        GetControl<Button>("btn_scbg").onClick.AddListener(() =>
+        {
+            putAwayMenu();
+            EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
+        });
 
         btn_start.onClick.AddListener(() => OnControlStartAndPause(false));
         btn_pause.onClick.AddListener(() => OnControlStartAndPause(true));
@@ -64,10 +69,6 @@ public class UITopMenuView : BasePanel
                     toggle.isOn = false;
                 }
             }
-        });
-        GetControl<Toggle>("Tog_Zhpg").onValueChanged.AddListener(a =>
-        {
-            if (a) EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
         });
     }
 
@@ -322,7 +323,7 @@ public class UITopMenuView : BasePanel
 
     private void Update()
     {
-        if (MyDataInfo.gameState != GameState.None || MyDataInfo.gameState != GameState.GamePause || MyDataInfo.gameState != GameState.GameStop)
+        if (MyDataInfo.gameState != GameState.None && MyDataInfo.gameState != GameState.GamePause && MyDataInfo.gameState != GameState.GameStop)
         {
             MyDataInfo.gameStartTime += Time.deltaTime * MyDataInfo.speedMultiplier;
             currentTime.text = ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime);

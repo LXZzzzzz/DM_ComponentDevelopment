@@ -1909,6 +1909,7 @@ MonoBehaviour:
   UIAttributeView: {fileID: 0}
   UIHangShowInfo: {fileID: 0}
   UIAirportAircraftShowView: {fileID: 0}
+  UIChangeControllers: {fileID: 0}
   UIThreeDIconView: {fileID: 0}
 --- !u!1001 &783700336
 PrefabInstance:
@@ -5406,6 +5407,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 671944597702969854, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1894489682336223816, guid: 13861a70b510f7e448a80feca267c02e,
         type: 3}
       propertyPath: m_RootOrder
@@ -5461,10 +5467,70 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2952673817124374608, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2952673817124374608, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3742606968271135191, guid: 13861a70b510f7e448a80feca267c02e,
         type: 3}
       propertyPath: m_Name
       value: UiManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383816551348043210, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328370078251683250, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328370078251683250, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328370078251683250, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6328370078251683250, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086318283009358214, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086318283009358214, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086318283009358214, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086318283009358214, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8226590633090072162, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

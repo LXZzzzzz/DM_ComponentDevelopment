@@ -21,6 +21,7 @@ public class ZiYuan_ComanderCell : DMonoBehaviour, IPointerEnterHandler, IPointe
 
         GetComponentInChildren<Text>(true).text = comName;
         removeBtn = GetComponentInChildren<Button>(true);
+        GetComponent<Image>().color = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, comId)).MyColor;
         removeBtn.onClick.AddListener(OnRemoveMe);
         removeBtn.gameObject.SetActive(false);
     }
@@ -32,13 +33,13 @@ public class ZiYuan_ComanderCell : DMonoBehaviour, IPointerEnterHandler, IPointe
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (MyDataInfo.gameState == GameState.GameStart || removeCallBack == null) return;
+        if ( /*MyDataInfo.gameState == GameState.GameStart*/MyDataInfo.MyLevel != 1 || removeCallBack == null) return;
         removeBtn.gameObject.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (MyDataInfo.gameState == GameState.GameStart) return;
+        // if (MyDataInfo.gameState == GameState.GameStart) return;
         removeBtn.gameObject.SetActive(false);
     }
 }

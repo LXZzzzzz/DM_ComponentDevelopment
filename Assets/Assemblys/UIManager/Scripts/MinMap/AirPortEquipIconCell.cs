@@ -7,21 +7,21 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AirPortEquipIconCell : DMonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
 {
     private EquipBase eb;
     private Image icon;
-    private GameObject namePart;
+    private Text nameText;
     private Slider progress;
+    private GameObject zbObj;
     private bool isInit = false;
 
     private void InitView()
     {
         icon = transform.Find("icon").GetComponent<Image>();
-        namePart = transform.Find("NamePart").gameObject;
+        nameText = transform.Find("skillName").GetComponent<Text>();
         progress = transform.Find("progress").GetComponent<Slider>();
-        namePart.GetComponentInChildren<Text>().text = "";
-        transform.GetComponentInChildren<Button>().onClick.AddListener(openRightClickView);
+        zbObj = transform.Find("zbName").gameObject;
         isInit = true;
     }
 
@@ -37,24 +37,44 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerEnterHandler, IPoint
         if (!isInit) InitView();
         eb = equip;
         icon.sprite = equip.EquipIcon;
-        namePart.GetComponentInChildren<Text>().text = equip.name;
+        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equip.BeLongToCommanderId));
+        icon.color = comData.MyColor;
+        nameText.text = equip.name;
     }
 
     private void Update()
     {
         if (eb == null || eb.currentSkill == SkillType.None)
         {
-            if (progress.gameObject.activeSelf) progress.gameObject.SetActive(false);
+            if (progress == null)
+            {
+                Debug.LogError("进度条空");
+                return;
+            }
+            if (progress.gameObject.activeSelf)
+            {
+                progress.gameObject.SetActive(false);
+                zbObj.SetActive(false);
+            }
+
             return;
         }
 
-        if (!progress.gameObject.activeSelf) progress.gameObject.SetActive(true);
+        if (!progress.gameObject.activeSelf)
+        {
+            progress.gameObject.SetActive(true);
+            zbObj.SetActive(true);
+        }
+
+        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, eb.BeLongToCommanderId));
+        icon.color = comData.MyColor;
         progress.value = eb.skillProgress;
     }
 
     private void openRightClickView()
     {
         if (eb?.currentSkill != SkillType.None) return;
+        if (!string.Equals(MyDataInfo.leadId, eb.BeLongToCommanderId)) return;
 #if UNITY_EDITOR
 
         RightClickShowInfo info1 = new RightClickShowInfo()
@@ -75,13 +95,12 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerEnterHandler, IPoint
         UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        namePart.gameObject.SetActive(true);
-    }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
-        namePart.gameObject.SetActive(false);
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            openRightClickView();
+        }
     }
 }

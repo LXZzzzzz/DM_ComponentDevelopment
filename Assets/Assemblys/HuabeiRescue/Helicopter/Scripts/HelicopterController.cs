@@ -370,6 +370,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     private void calculationData()
     {
+        if (isCrash) return;
         if (myState == HelicopterState.flying)
         {
             myRecordedData.allDistanceTravelled += speed * Time.deltaTime * MyDataInfo.speedMultiplier;

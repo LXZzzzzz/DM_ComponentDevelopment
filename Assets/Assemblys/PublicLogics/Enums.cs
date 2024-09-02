@@ -33,6 +33,7 @@ namespace Enums
         GameStop, //通知游戏结束
         ChangeCurrentCom, //更改当前选择的指挥端
         ReceiveTask, //总指挥接收任务
+        ChangeObjController, //更改某个对象的控制者
     }
 
     public enum MessageID
@@ -44,6 +45,8 @@ namespace Enums
         SendGameStop = 1006, //一级指挥端发送停止操作
         SendChangeSpeed = 1007, //一级指挥端更改运行速度
         SendReceiveTask = 1008, //一级指挥端接收任务，开始计时
+        SendChangeController = 1009, //游戏进行中更改控制者
+
 
         TriggerGroundReady = 1101, //触发起飞前准备操作
         TriggerBePutInStorage = 1102, //触发入库操作

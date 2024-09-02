@@ -21,6 +21,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIAttributeView UIAttributeView;
     public UIHangShowInfo UIHangShowInfo;
     public UIAirportAircraftShowView UIAirportAircraftShowView;
+    public UIChangeControllers UIChangeControllers;
     public UIThreeDIconView UIThreeDIconView;
 
     private UIItem_IconShow itemIcon;
@@ -90,6 +91,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIAttributeView = transform.Find("UiPrefab/UIAttributeView").gameObject.GetComponent<UIAttributeView>();
         UIHangShowInfo = transform.Find("UiPrefab/UIHangShowInfo").gameObject.GetComponent<UIHangShowInfo>();
         UIAirportAircraftShowView = transform.Find("UiPrefab/UIAirportAircraftShowView").gameObject.GetComponent<UIAirportAircraftShowView>();
+        UIChangeControllers = transform.Find("UiPrefab/UIChangeControllers").gameObject.GetComponent<UIChangeControllers>();
         UIThreeDIconView = transform.Find("UiPrefab/UIThreeDIconView").gameObject.GetComponent<UIThreeDIconView>();
 
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载

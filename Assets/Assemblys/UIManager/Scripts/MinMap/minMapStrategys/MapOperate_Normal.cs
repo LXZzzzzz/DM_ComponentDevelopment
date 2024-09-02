@@ -6,12 +6,45 @@ using ToolsLibrary.EquipPart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.Events;
+using Vectrosity;
 using EventType = Enums.EventType;
 
 public class MapOperate_Normal : MapOperateLogicBase
 {
+    private VectorLine showLine;
+    private List<Vector2> linePoss;
+    private bool isShow;
+    private RectTransform chooseEquip;
+
     public override void OnEnter()
     {
+        EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
+        linePoss = new List<Vector2>();
+        linePoss.Add(Vector2.zero);
+        linePoss.Add(Vector2.zero);
+        showLine = new VectorLine("Line", linePoss, 2, LineType.Continuous);
+#if UNITY_EDITOR
+        showLine.SetCanvas(mainLogic.gameObject.GetComponentInParent<Canvas>());
+#else
+        showLine.SetCanvas(UIManager.Instance.CurrentCanvans);
+#endif
+        showLine.rectTransform.SetParent(mainLogic.iconCellParent);
+        showLine.rectTransform.localPosition = Vector3.zero;
+        showLine.rectTransform.localScale = Vector3.one;
+        showLine.active = true;
+        if (mainLogic.dashedLineMat == null)
+        {
+            if (ColorUtility.TryParseHtmlString("#FF0000", out Color color))
+                showLine.color = color;
+        }
+        else showLine.material = mainLogic.dashedLineMat;
+
+        showLine.Draw();
+        showLine.active = true;
+        isShow = false;
+#if UNITY_EDITOR
+        isShow = true;
+#endif
     }
 
     public override void OnLeftClickIcon(IconCellBase targetIconCell)
@@ -23,6 +56,9 @@ public class MapOperate_Normal : MapOperateLogicBase
             //选中对象
             EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), targetIconCell.belongToId);
             //打开装备数据展示界面
+            isShow = true;
+            showLine.active = true;
+            chooseEquip = targetIconCell.GetComponent<RectTransform>();
         }
 
         if (targetIconCell is PointIconCell)
@@ -49,6 +85,8 @@ public class MapOperate_Normal : MapOperateLogicBase
                 }
             }
 
+            #region 无用逻辑
+
             return;
             //如果是机场的话，弹出飞机列表，飞机列表点击起飞，把飞机从机场中去除，并把飞机状态设为起飞状态。 
             ZiYuanBase zy = (targetIconCell as ZiYuanIconCell).ziYuanItem;
@@ -63,6 +101,8 @@ public class MapOperate_Normal : MapOperateLogicBase
                 };
                 UIManager.Instance.ShowPanel<UIAirportAircraftShowView>(UIName.UIAirportAircraftShowView, aai);
             }
+
+            #endregion
         }
     }
 
@@ -104,6 +144,17 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     public override void OnUpdate()
     {
+        if (!isShow) return;
+#if UNITY_EDITOR
+        linePoss[0] = Vector2.zero;
+#else
+        linePoss[0] = chooseEquip.anchoredPosition;
+#endif
+        var rectPos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
+        linePoss[1] = mainLogic.mousePos2UI(rectPos);
+        showLine.Draw();
+        float dis = Vector2.Distance(linePoss[0], linePoss[1]);
+        mainLogic.dashedLineMat.SetTextureScale("_MainTex", new Vector2(dis, 0));
     }
 
     public override void OnLeftClickMap(Vector2 pos)
@@ -118,6 +169,8 @@ public class MapOperate_Normal : MapOperateLogicBase
 #endif
         EventManager.Instance.EventTrigger(EventType.ChooseEquip.ToString(), string.Empty);
         EventManager.Instance.EventTrigger(EventType.ChooseZiyuan.ToString(), string.Empty);
+        isShow = false;
+        showLine.active = false;
     }
 
     public override void OnRightClickMap(Vector2 pos)
@@ -128,6 +181,15 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     public override void OnExit()
     {
+        EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
+        showLine.active = false;
+        isShow = false;
+    }
+
+    private void OnRunningChangeObjCom(int type, string id)
+    {
+        if (mainLogic.allIconCells.ContainsKey(id))
+            mainLogic.allIconCells[id].RefreshView();
     }
 
     public MapOperate_Normal(UIMap mainLogic) : base(mainLogic)

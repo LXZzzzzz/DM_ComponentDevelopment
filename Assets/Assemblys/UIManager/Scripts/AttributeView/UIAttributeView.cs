@@ -22,6 +22,8 @@ public class UIAttributeView : BasePanel
     private RectTransform msgParent;
     private msgCell msgObj;
     private List<msgCell> allMsgCells;
+    private Transform equipObj, ziyuanObj;
+    private Toggle messageT, infoT;
 
 
     private ZiYuanCell zycPrefab;
@@ -43,19 +45,40 @@ public class UIAttributeView : BasePanel
         GetControl<Button>("btn_close").onClick.AddListener(() => Close(UIName.UIAttributeView));
         msgParent = GetControl<ScrollRect>("msgInfoView").content;
         msgObj = GetComponentInChildren<msgCell>(true);
+        messageT = GetControl<Toggle>("messageT");
+        infoT = GetControl<Toggle>("infoT");
+        equipObj = transform.Find("msgInfoView/infoView/EquipInfo");
+        ziyuanObj = transform.Find("msgInfoView/infoView/ZiyuanInfo");
+
         taskParent = GetControl<ScrollRect>("TaskListView").content;
         taskPrefab = GetComponentInChildren<TaskCell>(true);
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
         EventManager.Instance.AddEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
         EventManager.Instance.AddEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
         EventManager.Instance.AddEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
+        EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
+        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
+        // EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnShowEquipInfo);
         allMsgCells = new List<msgCell>();
     }
 
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
+        Debug.LogError("Attribute界面逻辑");
         StartCoroutine(ShowTaskView());
+
+        if (userData == null)
+        {
+            OnShowEquipInfo(null);
+            OnShowZiyuanInfo(null);
+        }
+        else
+        {
+            if (userData is EquipBase) OnShowEquipInfo(userData as EquipBase);
+            if (userData is ZiYuanBase) OnShowZiyuanInfo(userData as ZiYuanBase);
+        }
+
         return;
         //如果当前正在接收外部，则关闭其他属性展示逻辑
         if (isReceiveMapInfo) return;
@@ -106,6 +129,7 @@ public class UIAttributeView : BasePanel
     IEnumerator ShowTaskView()
     {
         if (allZyZqCells != null) yield break;
+        yield return new WaitForSeconds(1);
         allZyZqCells = new List<ZiYuanCell>();
         allTaskCells = new List<TaskCell>();
 
@@ -120,7 +144,7 @@ public class UIAttributeView : BasePanel
                                   zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
                 if (!isDisaster) continue;
                 var itemCell = Instantiate(zycPrefab, taskParent);
-                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, zyObj, OnChangeZiYuanBelongTo, null);
+                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, zyObj, UIManager.Instance.GetUIPanel<UICommanderView>(UIName.UICommanderView).OnChangeZiYuanBelongTo, null);
                 itemCell.gameObject.SetActive(true);
                 allZyZqCells.Add(itemCell);
             }
@@ -156,6 +180,7 @@ public class UIAttributeView : BasePanel
                 {
                     if (string.Equals(zqId, taskParent.GetChild(j).GetComponent<ZiYuanCell>()?.myEntityId))
                     {
+                        taskParent.GetChild(j).GetComponent<ZiYuanCell>().SetTaskGo(itemCell.gameObject);
                         targetIndex = j + 1;
                         break;
                     }
@@ -164,40 +189,40 @@ public class UIAttributeView : BasePanel
                 if (targetIndex >= 0 && targetIndex < taskParent.childCount)
                 {
                     itemCell.transform.SetSiblingIndex(targetIndex);
-                    Debug.LogError(targetIndex+"更换成功了位置");
                 }
             }
         }
     }
 
-    private bool OnChangeZiYuanBelongTo(string ziYuanId, string commanderId, bool addOrRemove)
+    private void OnInitZiYuanBeUsed(ZiYuanBase data)
     {
-        bool isChangeSuc = ProgrammeDataManager.Instance.ChangeZiYuanData(ziYuanId, commanderId, addOrRemove);
+        var itemZiyuan = allZyZqCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId));
+        itemZiyuan?.ShowComCtrls(data.beUsedCommanderIds);
+        // var itemTask = allTaskCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId));
+        // itemTask?.ShowComCtrls(data.beUsedCommanderIds);
 
-        if (isChangeSuc)
+        if (MyDataInfo.MyLevel != 1)
         {
-            for (int i = 0; i < allBObjects.Length; i++)
+            if (itemZiyuan != null)
             {
-                if (string.Equals(ziYuanId, allBObjects[i].BObject.Id))
-                {
-                    var zyObj = allBObjects[i].GetComponent<ZiYuanBase>();
-                    if (addOrRemove) zyObj.AddBeUsdCom(commanderId);
-                    else zyObj.RemoveBeUsedCom(commanderId);
-                    break;
-                }
+                bool isShow = itemZiyuan.allcoms.Find(x => string.Equals(x.comId, MyDataInfo.leadId));
+                itemZiyuan.gameObject.SetActive(isShow);
             }
         }
 
-        return isChangeSuc;
+        StartCoroutine(dalayCall());
     }
 
-
-    // ////////////////////////////////////////////////////////////消息列表逻辑/////////////////////////////////////////////////////////////////
-
-    public void OnChooseCommander(bool isZong, string id)
+    public void OnChooseCommander(string id)
     {
-        if (isZong)
+        var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
+        if (currentCommander.ClientLevel == 1)
         {
+            for (int i = 0; i < allZyZqCells.Count; i++)
+            {
+                allZyZqCells[i].gameObject.SetActive(true);
+            }
+
             for (int i = 0; i < allTaskCells.Count; i++)
             {
                 allTaskCells[i].gameObject.SetActive(true);
@@ -205,6 +230,12 @@ public class UIAttributeView : BasePanel
         }
         else
         {
+            for (int i = 0; i < allZyZqCells.Count; i++)
+            {
+                bool isShow = allZyZqCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                allZyZqCells[i].gameObject.SetActive(isShow);
+            }
+
             for (int i = 0; i < allTaskCells.Count; i++)
             {
                 bool isShow = allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
@@ -212,6 +243,24 @@ public class UIAttributeView : BasePanel
             }
         }
     }
+
+    private void OnRunningChangeObjCom(int type, string id)
+    {
+        var itemZyCell = allZyZqCells.Find(x => string.Equals(x.myEntityId, id));
+        if (itemZyCell != null) itemZyCell.RefreshComShow();
+
+        StartCoroutine(dalayCall());
+    }
+
+    IEnumerator dalayCall()
+    {
+        yield return 1;
+        OnChooseCommander(MyDataInfo.leadId);
+    }
+
+
+    // ////////////////////////////////////////////////////////////消息列表逻辑/////////////////////////////////////////////////////////////////
+
 
     #region 技能选择逻辑，现在无用了
 
@@ -270,6 +319,12 @@ public class UIAttributeView : BasePanel
 
     #endregion
 
+    private EquipBase currentEquip;
+    private Slider oilSlider;
+    private Text oilValue;
+    private Slider waterSlider, goodsSlider, zsySlider, qsySlider;
+    private Text waterText, goodsText, zsyText, qsyText;
+
 
     private void OnAddAMsg(string info)
     {
@@ -312,6 +367,164 @@ public class UIAttributeView : BasePanel
         return string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, (int)remainingSeconds);
     }
 
+    private void Update()
+    {
+        if (currentEquip)
+        {
+            currentEquip.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
+            oilSlider.value = currentOil / totalOil;
+            oilValue.text = (int)(currentOil / totalOil * 100) + "%";
+            waterSlider.value = water / float.Parse(currentEquip.AttributeInfos[15]);
+            waterText.text = water + "/" + currentEquip.AttributeInfos[15] + "Kg";
+            goodsSlider.value = goods / float.Parse(currentEquip.AttributeInfos[4]);
+            goodsText.text = goods + "/" + currentEquip.AttributeInfos[4] + "Kg";
+            zsySlider.value = (personType == 1 ? 0 : person) / float.Parse(currentEquip.AttributeInfos[6]);
+            zsyText.text = (personType == 1 ? 0 : person) + "/" + currentEquip.AttributeInfos[6] + "人";
+            qsySlider.value = (personType == 1 ? person : 0) / float.Parse(currentEquip.AttributeInfos[6]);
+            qsyText.text = (personType == 1 ? person : 0) + "/" + currentEquip.AttributeInfos[6] + "人";
+        }
+    }
+
+    private void OnShowEquipInfo(EquipBase equip)
+    {
+        if (equip == null)
+        {
+            messageT.isOn = true;
+            currentEquip = null;
+            return;
+        }
+
+        infoT.isOn = true;
+        equipObj.gameObject.SetActive(true);
+        ziyuanObj.gameObject.SetActive(false);
+
+        currentEquip = equip;
+        equipObj.Find("equipNameView/airType").GetComponent<Image>().sprite = equip.EquipIcon;
+        equipObj.Find("equipNameView/equipName").GetComponent<Text>().text = equip.name;
+        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equip.BeLongToCommanderId));
+        equipObj.Find("equipNameView/bg").GetComponent<Image>().color = comData.MyColor;
+        equipObj.Find("equipNameView/AirTypeBg").GetComponent<Image>().color = comData.MyColor;
+        if (oilSlider == null) oilSlider = equipObj.Find("equipNameView/oilPart/oilShow").GetComponent<Slider>();
+        if (oilValue == null) oilValue = equipObj.Find("equipNameView/oilPart/oilValue").GetComponent<Text>();
+        equip.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
+        oilSlider.value = currentOil / totalOil;
+        oilValue.text = (int)(currentOil / totalOil * 100) + "%";
+        //飞机参数
+        equipObj.Find("equipParameter/parameterInfo/personPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[6] + "人";
+        equipObj.Find("equipParameter/parameterInfo/hangcPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[3] + "Km";
+        equipObj.Find("equipParameter/parameterInfo/speedPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[9] + "km/h";
+        equipObj.Find("equipParameter/parameterInfo/oilPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[5] + "Kg";
+        equipObj.Find("equipParameter/parameterInfo/waterPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[15] + "Kg";
+        equipObj.Find("equipParameter/parameterInfo/goodsPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[4] + "Kg";
+        //机载携带
+        if (waterSlider == null) waterSlider = equipObj.Find("carryParameter/parameterInfo/waterPart").GetComponentInChildren<Slider>();
+        if (waterText == null) waterText = equipObj.Find("carryParameter/parameterInfo/waterPart").GetComponentInChildren<Text>();
+        if (goodsSlider == null) goodsSlider = equipObj.Find("carryParameter/parameterInfo/goodsPart").GetComponentInChildren<Slider>();
+        if (goodsText == null) goodsText = equipObj.Find("carryParameter/parameterInfo/goodsPart").GetComponentInChildren<Text>();
+        if (zsySlider == null) zsySlider = equipObj.Find("carryParameter/parameterInfo/zsyPart").GetComponentInChildren<Slider>();
+        if (zsyText == null) zsyText = equipObj.Find("carryParameter/parameterInfo/zsyPart").GetComponentInChildren<Text>();
+        if (qsySlider == null) qsySlider = equipObj.Find("carryParameter/parameterInfo/qsyPart").GetComponentInChildren<Slider>();
+        if (qsyText == null) qsyText = equipObj.Find("carryParameter/parameterInfo/qsyPart").GetComponentInChildren<Text>();
+        waterSlider.value = water / float.Parse(equip.AttributeInfos[15]);
+        waterText.text = water + "/" + equip.AttributeInfos[15] + "Kg";
+        goodsSlider.value = goods / float.Parse(equip.AttributeInfos[4]);
+        goodsText.text = goods + "/" + equip.AttributeInfos[4] + "Kg";
+        zsySlider.value = (personType == 1 ? 0 : person) / float.Parse(equip.AttributeInfos[6]);
+        zsyText.text = (personType == 1 ? 0 : person) + "/" + equip.AttributeInfos[6] + "人";
+        qsySlider.value = (personType == 1 ? person : 0) / float.Parse(equip.AttributeInfos[6]);
+        qsyText.text = (personType == 1 ? person : 0) + "/" + equip.AttributeInfos[6] + "人";
+    }
+
+    private void OnShowZiyuanInfo(ZiYuanBase ziyuan)
+    {
+        if (ziyuan == null)
+        {
+            messageT.isOn = true;
+            return;
+        }
+
+        equipObj.gameObject.SetActive(false);
+        ziyuanObj.gameObject.SetActive(true);
+        infoT.isOn = true;
+
+        ziyuanObj.Find("ziyuanNameView/equipName").GetComponent<Text>().text = ziyuan.ziYuanName;
+        ziyuanObj.Find("ziyuanNameView/bg").GetComponent<Image>().color = ziyuan.MyColor;
+        ziyuanObj.Find("ziyuanNameView/AirTypeBg").GetComponent<Image>().color = ziyuan.MyColor;
+        changeIcon(ziyuan.ZiYuanType);
+        ziyuanObj.Find("ziyuanInfo/ziyuanInfo").GetComponent<Text>().text = getZiyuanInfo(ziyuan);
+        ziyuanObj.Find("ziyuanJWD").GetComponent<Text>().text = ziyuan.latAndLon.ToString();
+    }
+
+    private void changeIcon(ZiYuanType type)
+    {
+        Transform zyTypePart = ziyuanObj.Find("ziyuanNameView/zyTypePart").transform;
+        for (int i = 0; i < zyTypePart.childCount; i++)
+        {
+            zyTypePart.GetChild(i).gameObject.SetActive(false);
+        }
+
+        int index = -1;
+        switch (type)
+        {
+            case ZiYuanType.Supply:
+                index = 7;
+                break;
+            case ZiYuanType.RescueStation:
+                index = 6;
+                break;
+            case ZiYuanType.Airport:
+                index = 2;
+                break;
+            case ZiYuanType.Hospital:
+                index = 1;
+                break;
+            case ZiYuanType.GoodsPoint:
+                index = 5;
+                break;
+            case ZiYuanType.Waters:
+                index = 0;
+                break;
+            case ZiYuanType.DisasterArea:
+                index = 3;
+                break;
+            case ZiYuanType.SourceOfAFire:
+                index = 4;
+                break;
+        }
+
+        if (index != -1) zyTypePart.GetChild(index).gameObject.SetActive(true);
+    }
+
+    private string getZiyuanInfo(ZiYuanBase _ziYuanItem)
+    {
+        string progressInfo = String.Empty;
+        switch (_ziYuanItem.ZiYuanType)
+        {
+            case ZiYuanType.SourceOfAFire:
+                (_ziYuanItem as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl);
+                progressInfo = $"该火源点需求水量为：{(int)(rsmj < 0 ? 0 : rsmj)}kg";
+                break;
+            case ZiYuanType.RescueStation:
+                (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
+                progressInfo = $"安置点当前安置人员:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
+                break;
+            case ZiYuanType.Hospital:
+                (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum1, out int maxPersonNum1, out float currentGoodsNum1, out float maxGoodsNum1);
+                progressInfo = $"医院当前救治人员:{currentPersonNum1}人，总共可救治：{maxPersonNum1}人\n当前已有物资:{currentGoodsNum1}kg，总共需求物资：{maxGoodsNum1}kg";
+                break;
+            case ZiYuanType.DisasterArea:
+                (_ziYuanItem as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
+                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "轻伤员" : "重伤员";
+                progressInfo = $"{personType}灾区还剩余需转运人数:{currentNum}人，总共受灾人数：{maxNum}人";
+                break;
+            default:
+                progressInfo = _ziYuanItem.ziYuanDescribe;
+                break;
+        }
+
+        return progressInfo;
+    }
+
     public override void HideMe()
     {
         base.HideMe();
@@ -319,5 +532,8 @@ public class UIAttributeView : BasePanel
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
         EventManager.Instance.RemoveEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
         EventManager.Instance.RemoveEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
+        EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
+        EventManager.Instance.RemoveEventListener<ZiYuanBase>(EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
+        // EventManager.Instance.RemoveEventListener<string>(EventType.ChooseEquip.ToString(), OnShowEquipInfo);
     }
 }

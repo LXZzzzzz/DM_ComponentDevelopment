@@ -12,7 +12,7 @@ public class ThreeD_AirIconCell : DMonoBehaviour
     private Slider skillProgressShow;
     private Text skillName;
     private Transform belongtoPart;
-    private Image currentOil;
+    private Slider currentOil;
     private GameObject water, goods, qPerson, zPerson;
     private GameObject airPort;
     private Vector3 initialScale = Vector3.zero;
@@ -24,14 +24,12 @@ public class ThreeD_AirIconCell : DMonoBehaviour
         transform.Find("Root/mainPart/equipName").GetComponent<Text>().text = equipGo.name;
         skillName = transform.Find("Root/skillBg/skillName").GetComponent<Text>();
         belongtoPart = transform.Find("Root/mainPart/belongToPart");
-        currentOil = transform.Find("Root/currentInfoShow/oilPart/oilShow").GetComponent<Image>();
+        currentOil = transform.Find("Root/currentInfoShow/oilPart/oilShow").GetComponent<Slider>();
         water = transform.Find("Root/currentInfoShow/waterPart").gameObject;
         goods = transform.Find("Root/currentInfoShow/goodsPart").gameObject;
         qPerson = transform.Find("Root/currentInfoShow/qPersonPart").gameObject;
         zPerson = transform.Find("Root/currentInfoShow/zPersonPart").gameObject;
-
-        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equipGo.BeLongToCommanderId));
-        skillProgressShow = transform.Find($"Root/progressPart/{comData.progressId}").GetComponent<Slider>();
+        skillProgressShow = transform.Find("Root/skillBg/progressShow").GetComponent<Slider>();
         initialScale = transform.localScale;
     }
 
@@ -65,7 +63,7 @@ public class ThreeD_AirIconCell : DMonoBehaviour
 
     private void changeBelongtoShow()
     {
-        if ((int)MyDataInfo.gameState < 2)
+        if (true)
         {
             if (equipGo.BeLongToCommanderId != belongtoCom)
             {
@@ -75,7 +73,7 @@ public class ThreeD_AirIconCell : DMonoBehaviour
                 belongtoPart.GetChild(1).GetComponent<Image>().color = comData.MyColor;
                 belongtoPart.GetChild(2).GetComponent<Image>().color = comData.IconBgColor;
                 belongtoPart.GetChild(3).GetComponent<Image>().color = comData.IconBgColor;
-                skillProgressShow = transform.Find($"Root/progressPart/{comData.progressId}").GetComponent<Slider>();
+                // skillProgressShow = transform.Find($"Root/progressPart/{comData.progressId}").GetComponent<Slider>();
             }
         }
     }
@@ -141,7 +139,7 @@ public class ThreeD_AirIconCell : DMonoBehaviour
     private void showAllMassInfo()
     {
         equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
-        this.currentOil.fillAmount = currentOil / totalOil;
+        this.currentOil.value = currentOil / totalOil;
         // float aPartOil = totalOil / this.currentOil.childCount;
         // for (int i = 0; i < this.currentOil.childCount; i++)
         // {
@@ -163,13 +161,13 @@ public class ThreeD_AirIconCell : DMonoBehaviour
         Vector2 pointUGUIPos = new Vector2();
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(UIManager.Instance.CurrentCanvans.transform as RectTransform, screenPoint, null, out pointUGUIPos))
             transform.GetComponent<RectTransform>().anchoredPosition = pointUGUIPos;
-
+        return;
         if (Camera.main != null && initialScale != Vector3.zero)
         {
             float distance = Vector3.Distance(equipGo.transform.position, Camera.main.transform.position);
-            if (distance > 500)
+            if (distance > 1000)
             {
-                float scaleFactor = distance / 500;
+                float scaleFactor = distance / 1000;
                 transform.localScale = initialScale / scaleFactor;
             }
             else

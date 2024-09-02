@@ -12,9 +12,9 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
     private float perPersonNeedGoodsWeight;
     private int maxPersonNum;
 
-    public void Init(string id, int zyType, float goodsWeight, int personNum, string colorCode)
+    public void Init(string id, int zyType, float goodsWeight, int personNum, string colorCode, string chooseColoeCode)
     {
-        base.Init(id, 50, colorCode);
+        base.Init(id, 50, colorCode, chooseColoeCode);
         ZiYuanType = (ZiYuanType)zyType;
         firstGoodsTime = 0;
         totalWeight = 0;

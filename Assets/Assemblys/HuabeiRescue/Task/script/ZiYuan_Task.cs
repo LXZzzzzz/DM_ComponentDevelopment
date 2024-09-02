@@ -10,7 +10,7 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
 
     public void Init(string id, string associationId)
     {
-        base.Init(id, 0, "");
+        base.Init(id, 0, "", "");
         ZiYuanType = ZiYuanType.TaskPoint;
         StartCoroutine(getZy(associationId));
     }

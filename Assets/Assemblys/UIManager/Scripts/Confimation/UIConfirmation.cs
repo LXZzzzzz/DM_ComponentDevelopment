@@ -65,7 +65,13 @@ namespace UiManager
 
             GetControl<Button>("cancel").gameObject.SetActive(cinfo.type != showType.tipView);
 
-            if (MyDataInfo.isPlayBack) Close(UIName.UIConfirmation);
+            if (MyDataInfo.isPlayBack) StartCoroutine(closeMe());
+        }
+
+        IEnumerator closeMe()
+        {
+            yield return new WaitForSeconds(3);
+            Close(UIName.UIConfirmation);
         }
 
         private void SelectShowViewLogic(showType st)

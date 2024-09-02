@@ -39,7 +39,7 @@ public class ThreeD_ZiYuanIconCell : DMonoBehaviour
         transform.Find("MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
         for (int i = 0; i < ChoosePart.childCount; i++)
         {
-            if (i == 3) continue;
+            if (i == 1 || i == 3) continue;
             ChoosePart.GetChild(i).GetComponent<Image>().color = ziYuanItem.MyColor;
         }
 
@@ -112,8 +112,14 @@ public class ThreeD_ZiYuanIconCell : DMonoBehaviour
         {
             checkTimer = Time.time + 1 / 25f;
             if (ChoosePart != null && ziYuanItem != null)
-                ChoosePart.GetChild(1).GetComponent<Image>().color = ziYuanItem.isChooseMe ? Color.white : ziYuanItem.MyColor;
-            AirPortShowLogic();
+            {
+                ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+                if (ColorUtility.TryParseHtmlString("#D7D7D7", out Color color))
+                {
+                    ChoosePart.GetChild(1).GetComponent<Image>().color = ziYuanItem.isChooseMe ? Color.white : color;
+                }
+            }
+            // AirPortShowLogic();
             if (ziYuanItem != null) ChangeBelongToShow(_ziYuanItem.beUsedCommanderIds);
         }
 
@@ -169,7 +175,7 @@ public class ThreeD_ZiYuanIconCell : DMonoBehaviour
         Vector2 pointUGUIPos = new Vector2();
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(UIManager.Instance.CurrentCanvans.transform as RectTransform, screenPoint, null, out pointUGUIPos))
             transform.GetComponent<RectTransform>().anchoredPosition = pointUGUIPos;
-
+        return;
         if (Camera.main != null && initialScale != Vector3.zero)
         {
             float distance = Vector3.Distance(ziYuanItem.transform.position, Camera.main.transform.position);

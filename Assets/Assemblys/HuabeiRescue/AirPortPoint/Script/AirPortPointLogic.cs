@@ -8,9 +8,9 @@ public class AirPortPointLogic : ZiYuanBase, IAirPort
     private List<Vector3> prestorePoints;
     public List<string> allDockingAircraft;
 
-    public void Init(int widthSpacing, int heightSpacing, int widthCount, int heightCount, string id,string colorCode)
+    public void Init(int widthSpacing, int heightSpacing, int widthCount, int heightCount, string id, string colorCode, string chooseColoeCode)
     {
-        base.Init(id, 50, colorCode);
+        base.Init(id, 50, colorCode, chooseColoeCode);
         ZiYuanType = ZiYuanType.Airport;
         allDockingAircraft = new List<string>();
         EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), desAir);

@@ -14,14 +14,17 @@ public class ZiYuanIconCell : IconCellBase
     private float checkTimer;
     private Transform zyTypePart;
     private Transform ChoosePart;
-    private Image comPointItem;
+    private Transform comPointItem;
     private Transform comsParent;
+    private RectTransform comsParentRect;
     private List<Transform> currentBelongToInfos;
+    private Transform tipShowPart;
 
     // private GameObject chooseImg;
 
     //todo:后面有时间，把这个单独拆成一个Go，如果机场有飞机，就加载出来
     private GameObject airPortMarkView;
+    private AirPortEquipIconCell aec;
     private Transform equipParent;
     private int currAllEquipInfoCount;
     private int currentPageNum, allPageNum;
@@ -32,6 +35,7 @@ public class ZiYuanIconCell : IconCellBase
     private void Start()
     {
         zyTypePart = transform.Find("MainPart/zyTypePart");
+        tipShowPart = transform.Find("MainPart/TipShowPart");
         for (int i = 0; i < allBObjects.Length; i++)
         {
             if (string.Equals(allBObjects[i].BObject.Id, belongToId))
@@ -50,19 +54,21 @@ public class ZiYuanIconCell : IconCellBase
             transform.Find("MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
             for (int i = 0; i < ChoosePart.childCount; i++)
             {
-                if (i == 3) continue;
+                if (i == 1 || i == 3) continue;
                 ChoosePart.GetChild(i).GetComponent<Image>().color = ziYuanItem.MyColor;
             }
 
-            comPointItem = transform.Find("MainPart/comPointItem").GetComponent<Image>();
+            comPointItem = transform.Find("MainPart/comPointItem");
             comsParent = transform.Find("MainPart/BelongtoShowPart");
+            comsParentRect = comsParent.GetComponent<RectTransform>();
             currentBelongToInfos = new List<Transform>();
         }
 
         #region 机场相关
 
         airPortMarkView = transform.Find("MainPart/airPortMarkView").gameObject;
-        equipParent = airPortMarkView.transform.Find("equipsListView");
+        aec = airPortMarkView.GetComponentInChildren<AirPortEquipIconCell>(true);
+        equipParent = airPortMarkView.transform.Find("equipsParent");
         backBtn = airPortMarkView.transform.Find("back").GetComponent<Button>();
         nextBtn = airPortMarkView.transform.Find("next").GetComponent<Button>();
         backBtn.onClick.AddListener(() => pageTurning(false));
@@ -112,13 +118,88 @@ public class ZiYuanIconCell : IconCellBase
         }
 
         if (index != -1) zyTypePart.GetChild(index).gameObject.SetActive(true);
+
+        switch (type)
+        {
+            case ZiYuanType.SourceOfAFire:
+                tipShowPart.gameObject.SetActive(true);
+                tipShowPart.GetChild(1).gameObject.SetActive(true);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135, 34);
+                break;
+            case ZiYuanType.RescueStation:
+                tipShowPart.gameObject.SetActive(true);
+                tipShowPart.GetChild(5).gameObject.SetActive(true);
+                tipShowPart.GetChild(10).gameObject.SetActive(true);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135 + 21.5f, 34);
+                break;
+            case ZiYuanType.Hospital:
+                tipShowPart.gameObject.SetActive(true);
+                tipShowPart.GetChild(4).gameObject.SetActive(true);
+                tipShowPart.GetChild(10).gameObject.SetActive(true);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135 + 21.5f, 34);
+                break;
+            case ZiYuanType.DisasterArea:
+                tipShowPart.gameObject.SetActive(true);
+                tipShowPart.GetChild((_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? 6 : 7).gameObject.SetActive(true);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135, 34);
+                break;
+            case ZiYuanType.Waters:
+                tipShowPart.gameObject.SetActive(true);
+                tipShowPart.GetChild(2).gameObject.SetActive(true);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135, 34);
+                break;
+            case ZiYuanType.Airport:
+                tipShowPart.gameObject.SetActive(true);
+                tipShowPart.GetChild(3).gameObject.SetActive(true);
+                tipShowPart.GetChild(11).gameObject.SetActive(true);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135 + 21.5f, 34);
+                break;
+            case ZiYuanType.Supply:
+                tipShowPart.gameObject.SetActive(true);
+                tipShowPart.GetChild(8).gameObject.SetActive(true);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135, 34);
+                break;
+            case ZiYuanType.GoodsPoint:
+                tipShowPart.gameObject.SetActive(true);
+                tipShowPart.GetChild(9).gameObject.SetActive(true);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135, 34);
+                break;
+            default:
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(110, 40);
+                break;
+        }
     }
 
     protected override IconInfoData GetBasicInfo()
     {
+        string progressInfo = String.Empty;
+        switch (_ziYuanItem.ZiYuanType)
+        {
+            case ZiYuanType.SourceOfAFire:
+                (_ziYuanItem as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl);
+                progressInfo = $"该火源点需求水量为：{(int)(rsmj < 0 ? 0 : rsmj)}kg";
+                break;
+            case ZiYuanType.RescueStation:
+                (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
+                progressInfo = $"安置点当前安置人员:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
+                break;
+            case ZiYuanType.Hospital:
+                (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum1, out int maxPersonNum1, out float currentGoodsNum1, out float maxGoodsNum1);
+                progressInfo = $"医院当前救治人员:{currentPersonNum1}人，总共可救治：{maxPersonNum1}人\n当前已有物资:{currentGoodsNum1}kg，总共需求物资：{maxGoodsNum1}kg";
+                break;
+            case ZiYuanType.DisasterArea:
+                (_ziYuanItem as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
+                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "轻伤员" : "重伤员";
+                progressInfo = $"{personType}灾区还剩余需转运人数:{currentNum}人，总共受灾人数：{maxNum}人";
+                break;
+            default:
+                progressInfo = _ziYuanItem.ziYuanDescribe;
+                break;
+        }
+
         IconInfoData data = new IconInfoData()
         {
-            entityName = _ziYuanItem.name, entityInfo = _ziYuanItem.ziYuanDescribe, beUseCommanders = _ziYuanItem.beUsedCommanderIds
+            entityName = _ziYuanItem.name, entityInfo = progressInfo, beUseCommanders = _ziYuanItem.beUsedCommanderIds
         };
         return data;
     }
@@ -129,7 +210,14 @@ public class ZiYuanIconCell : IconCellBase
         {
             checkTimer = Time.time + 1 / 25f;
             if (ChoosePart != null && ziYuanItem != null)
-                ChoosePart.GetChild(1).GetComponent<Image>().color = ziYuanItem.isChooseMe ? Color.white : ziYuanItem.MyColor;
+            {
+                ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+                if (ColorUtility.TryParseHtmlString("#D7D7D7", out Color color))
+                {
+                    ChoosePart.GetChild(1).GetComponent<Image>().color = ziYuanItem.isChooseMe ? Color.white : color;
+                }
+            }
+
             AirPortShowLogic();
             if (ziYuanItem != null) ChangeBelongToShow(_ziYuanItem.beUsedCommanderIds);
         }
@@ -143,7 +231,7 @@ public class ZiYuanIconCell : IconCellBase
             if (currentBelongToInfos.Find(x => string.Equals(x.name, coms[i])) == null)
             {
                 var itemCom = Instantiate(comPointItem, comsParent);
-                itemCom.color = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, coms[i])).MyColor;
+                itemCom.GetChild(0).GetComponent<Image>().color = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, coms[i])).MyColor;
                 itemCom.name = coms[i];
                 itemCom.gameObject.SetActive(true);
                 currentBelongToInfos.Add(itemCom.transform);
@@ -163,16 +251,18 @@ public class ZiYuanIconCell : IconCellBase
         if (currentBelongToInfos.Count == 0)
         {
             comsParent.gameObject.SetActive(false);
-            comsParent.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(132, 40);
+            // comsParent.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(110, 40);
         }
         else
         {
             comsParent.gameObject.SetActive(true);
-            comsParent.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(142 + (currentBelongToInfos.Count - 1) * 13, 40);
+            // comsParent.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135 + (currentBelongToInfos.Count - 1) * 21.5f, 34);
         }
     }
 
     #region 机场相关
+
+    private bool isUsePageTurning = false;
 
     private void AirPortShowLogic()
     {
@@ -184,13 +274,39 @@ public class ZiYuanIconCell : IconCellBase
         bool isRefresh = currAllEquipInfoCount != itemInfo.Count;
         if (isRefresh)
         {
+            Debug.LogError("刷新了" + itemInfo.Count);
             currAllEquipInfoCount = itemInfo.Count;
-            currentPageNum = 1;
-            allPageNum = currAllEquipInfoCount / equipParent.childCount + (currAllEquipInfoCount % equipParent.childCount == 0 ? 0 : 1);
-            refreshCurrentPageInfo(1);
+            if (isUsePageTurning)
+            {
+                //翻页逻辑
+                currentPageNum = 1;
+                allPageNum = currAllEquipInfoCount / equipParent.childCount + (currAllEquipInfoCount % equipParent.childCount == 0 ? 0 : 1);
+                refreshCurrentPageInfo(1);
+            }
+            else
+            {
+                //排列逻辑
+                for (int i = 0; i < equipParent.childCount; i++)
+                {
+                    Destroy(equipParent.GetChild(i).gameObject);
+                }
+
+                for (int i = 0; i < itemInfo.Count; i++)
+                {
+                    var itemCell = Instantiate(aec, equipParent);
+                    var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, itemInfo[i]));
+                    itemCell.Init(item);
+                    itemCell.gameObject.SetActive(true);
+                }
+            }
         }
 
         airPortMarkView.SetActive(itemInfo.Count != 0);
+        comsParentRect.anchoredPosition = new Vector2(0, itemInfo.Count != 0 ? -26 : 26);
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Debug.LogError("机场显示" + airPortMarkView.activeSelf);
+        }
     }
 
     private void pageTurning(bool isNext)
