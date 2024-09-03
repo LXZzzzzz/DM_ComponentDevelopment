@@ -34,13 +34,12 @@ public class MapOperate_Normal : MapOperateLogicBase
         showLine.active = true;
         if (mainLogic.dashedLineMat == null)
         {
+            Debug.LogError("虚线材质没找到");
             if (ColorUtility.TryParseHtmlString("#FF0000", out Color color))
                 showLine.color = color;
         }
         else showLine.material = mainLogic.dashedLineMat;
 
-        showLine.Draw();
-        showLine.active = true;
         isShow = false;
 #if UNITY_EDITOR
         isShow = true;
@@ -155,6 +154,7 @@ public class MapOperate_Normal : MapOperateLogicBase
         showLine.Draw();
         float dis = Vector2.Distance(linePoss[0], linePoss[1]);
         mainLogic.dashedLineMat.SetTextureScale("_MainTex", new Vector2(dis, 0));
+        showLine.active = true;
     }
 
     public override void OnLeftClickMap(Vector2 pos)

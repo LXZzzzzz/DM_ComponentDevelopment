@@ -189,7 +189,11 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             }
 
             if (mySkills[i].SkillType == SkillType.AirdropGoods)
-                mySkills[i].isUsable = (myState == HelicopterState.flying || myState == HelicopterState.hover) && amountOfGoods > 1;
+            {
+                ZiYuanType itemType = (ZiYuanType)currentTargetType;
+                bool isArriveTargetType = itemType != ZiYuanType.Hospital;
+                mySkills[i].isUsable = isArriveTargetType &&(myState == HelicopterState.flying || myState == HelicopterState.hover) && amountOfGoods > 1;
+            }
             if (mySkills[i].SkillType == SkillType.Manned)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.DisasterArea;

@@ -57,7 +57,7 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea
 
     public bool getTaskProgress(out int currentNum, out int maxNum)
     {
-        currentNum = allPersonNum - currentRemainingPersonnel;
+        currentNum = currentRemainingPersonnel;
         maxNum = allPersonNum;
         return currentRemainingPersonnel <= 0;
     }

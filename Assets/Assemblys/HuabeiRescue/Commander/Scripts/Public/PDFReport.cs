@@ -428,11 +428,12 @@ namespace ReportGenerate
             tableFire.AddCell(MyCell("物资投放任务完成度"));
             foreach (MaterialData item in resultData.任务结束时各安置点数据)
             {
+                bool isHos = string.Equals(item.Id, "-1");
                 tableFire.AddCell(MyCell(item.Name));
                 tableFire.AddCell(MyCell(item.PersonCount.ToString("0.00")));
-                tableFire.AddCell(MyCell(item.PersonMaterialNeed.ToString("0.00")));
-                tableFire.AddCell(MyCell(item.MaterialWeight.ToString("0.00")));
-                tableFire.AddCell(MyCell(item.MaterialDegree.ToString("0.00000")));
+                tableFire.AddCell(MyCell(isHos ? "--" : item.PersonMaterialNeed.ToString("0.00")));
+                tableFire.AddCell(MyCell(isHos ? "--" : item.MaterialWeight.ToString("0.00")));
+                tableFire.AddCell(MyCell(isHos ? "--" : item.MaterialDegree.ToString("0.00000")));
             }
 
             doc.Add(tableFire);

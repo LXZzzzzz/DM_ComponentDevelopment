@@ -12,7 +12,7 @@ public partial class CommanderController
     public string misName;
     public string misDescription;
     private Dictionary<string, List<string>> playerEquips, playerZiyuans;
-    private List<string> reportPlayers=new List<string>();
+    private List<string> reportPlayers = new List<string>();
 
     private void GenerateFireExtinguishingReport()
     {
@@ -173,7 +173,7 @@ public partial class CommanderController
         if (showAllOperatorInfos == null) Debug.LogError("showAllOperatorInfos");
         if (playerEquips == null) Debug.LogError("playerEquips");
         if (playerZiyuans == null) Debug.LogError("playerZiyuans");
-        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans,reportPlayers.Count);
+        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count);
     }
 
     private void GenerateRescueReport()
@@ -306,7 +306,7 @@ public partial class CommanderController
                 (sceneAllzy[i] as IRescueStation).getResData(out float firstTime, out float totalWeight, out int totalPerson);
                 MaterialData fd1 = new MaterialData
                 {
-                    Id = sceneAllzy[i].BobjectId,
+                    Id = sceneAllzy[i].ZiYuanType == ZiYuanType.Hospital ? "-1" : sceneAllzy[i].BobjectId,
                     Name = sceneAllzy[i].ziYuanName,
                     MaterialWeight = totalWeight,
                     PersonCount = totalPerson
@@ -393,7 +393,7 @@ public partial class CommanderController
         sender.LogError(JsonConvert.SerializeObject(rfsystem));
         ResultMaterialPersonData rfwd = em.EvalMaterialCompute(cfout, rfsystem, personMinTime, goodsMinTime);
 
-        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans,reportPlayers.Count);
+        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count);
     }
 }
 

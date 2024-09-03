@@ -124,21 +124,28 @@ namespace ReportGenerate
             double ZongMaterialWeight = 0f;
             foreach (MaterialData item in outData.任务结束时各安置点数据)
             {
-                item.PersonMaterialNeed = item.PersonCount * sysData.人均救援物资需求;
-                if (item.MaterialWeight >= item.PersonMaterialNeed)
+                bool isHos = string.Equals(item.Id, "-1");
+                item.PersonMaterialNeed = isHos ? 0 : item.PersonCount * sysData.人均救援物资需求;
+                if (!isHos)
                 {
-                    item.MaterialDegree = 1;
-                }
-                else
-                {
-                    item.MaterialDegree = item.MaterialWeight / item.PersonMaterialNeed;
+                    if (item.MaterialWeight >= item.PersonMaterialNeed)
+                    {
+                        item.MaterialDegree = 1;
+                    }
+                    else
+                    {
+                        item.MaterialDegree = item.MaterialWeight / item.PersonMaterialNeed;
+                    }
                 }
 
                 data.任务结束时各安置点数据.Add(item);
 
-                valAwZong += item.MaterialDegree * item.PersonMaterialNeed;
+                if (!isHos)
+                {
+                    valAwZong += item.MaterialDegree * item.PersonMaterialNeed;
 
-                ZongMaterialWeight += item.MaterialWeight;
+                    ZongMaterialWeight += item.MaterialWeight;
+                }
             }
 
             data.物资任务完成度 = valAwZong / data.任务结束时对应的物资投放总需求;

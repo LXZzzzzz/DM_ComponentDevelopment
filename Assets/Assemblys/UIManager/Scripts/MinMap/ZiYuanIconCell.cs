@@ -135,8 +135,7 @@ public class ZiYuanIconCell : IconCellBase
             case ZiYuanType.Hospital:
                 tipShowPart.gameObject.SetActive(true);
                 tipShowPart.GetChild(4).gameObject.SetActive(true);
-                tipShowPart.GetChild(10).gameObject.SetActive(true);
-                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135 + 21.5f, 34);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135, 34);
                 break;
             case ZiYuanType.DisasterArea:
                 tipShowPart.gameObject.SetActive(true);
@@ -181,11 +180,11 @@ public class ZiYuanIconCell : IconCellBase
                 break;
             case ZiYuanType.RescueStation:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
-                progressInfo = $"安置点当前安置人员:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
+                progressInfo = $"安置点当前安置轻伤员:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
                 break;
             case ZiYuanType.Hospital:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum1, out int maxPersonNum1, out float currentGoodsNum1, out float maxGoodsNum1);
-                progressInfo = $"医院当前救治人员:{currentPersonNum1}人，总共可救治：{maxPersonNum1}人\n当前已有物资:{currentGoodsNum1}kg，总共需求物资：{maxGoodsNum1}kg";
+                progressInfo = $"医院当前救治重伤员:{currentPersonNum1}人";
                 break;
             case ZiYuanType.DisasterArea:
                 (_ziYuanItem as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);

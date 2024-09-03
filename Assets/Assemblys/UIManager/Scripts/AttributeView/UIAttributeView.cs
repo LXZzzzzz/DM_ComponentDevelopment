@@ -510,7 +510,7 @@ public class UIAttributeView : BasePanel
                 break;
             case ZiYuanType.Hospital:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum1, out int maxPersonNum1, out float currentGoodsNum1, out float maxGoodsNum1);
-                progressInfo = $"医院当前救治人员:{currentPersonNum1}人，总共可救治：{maxPersonNum1}人\n当前已有物资:{currentGoodsNum1}kg，总共需求物资：{maxGoodsNum1}kg";
+                progressInfo = $"医院当前救治人员:{currentPersonNum1}人";
                 break;
             case ZiYuanType.DisasterArea:
                 (_ziYuanItem as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
