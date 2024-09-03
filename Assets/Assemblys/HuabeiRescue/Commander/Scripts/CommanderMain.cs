@@ -187,6 +187,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.SceneGoParent.position = Vector3.zero;
         MyDataInfo.gameState = GameState.None;
         gameStartTimePoint = -1;
+        if (playback) OnInitPlayBackPlayerInfos();
         float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
         float mapWidth = float.Parse(mDMLonLat.HGetField("TerWidth").ToString());
         mapSizeData = new Vector2(mapLength, mapWidth);
@@ -214,13 +215,69 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "TopMenuView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ThreeDIconView", null);
-        if (MyDataInfo.isPlayBack)
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
+        // if (MyDataInfo.isPlayBack)
+        //     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
 
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
         yield return new WaitForSeconds(1);
         if (myLevel == 1)
             _commanderController.SendTaskSureMsg();
+    }
+
+    private void OnInitPlayBackPlayerInfos()
+    {
+        MyDataInfo.playerInfos = new List<ClientInfo>();
+        for (int i = 0; i < allBObjects.Length; i++)
+        {
+            if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) == null) continue;
+
+            var itemMain = allBObjects[i].GetComponent<ScriptManager>();
+            if (itemMain != null)
+            {
+                int clientLevel = -1;
+                string clientLevelName = allBObjects[i].BObject.Info.Name;
+                Color clientColor = Color.white;
+                Color normalColor = Color.white;
+                Color chooseColor = Color.white;
+                Color iconBgColor = Color.white;
+                string clientColorCode = "";
+                string progrId = "";
+
+                clientLevel = (itemMain.Properties[0] as DropDownProperty).Selected.Enum;
+                progrId = (itemMain.Properties[16] as InputStringProperty).Value;
+
+                clientColorCode = (itemMain.Properties[1] as InputStringProperty).Value;
+                if (ColorUtility.TryParseHtmlString(clientColorCode, out Color color))
+                {
+                    clientColor = color;
+                }
+
+                var itemCodeN = (itemMain.Properties[13] as InputStringProperty).Value;
+                if (ColorUtility.TryParseHtmlString(itemCodeN, out Color colorn))
+                {
+                    normalColor = colorn;
+                }
+
+                var itemCodeC = (itemMain.Properties[14] as InputStringProperty).Value;
+                if (ColorUtility.TryParseHtmlString(itemCodeC, out Color colorc))
+                {
+                    chooseColor = colorc;
+                }
+
+                var itemCodeI = (itemMain.Properties[15] as InputStringProperty).Value;
+                if (ColorUtility.TryParseHtmlString(itemCodeI, out Color colori))
+                {
+                    iconBgColor = colori;
+                }
+
+                MyDataInfo.playerInfos.Add(new ClientInfo()
+                {
+                    PlayerName = "回放空玩家", RoleId = itemMain.BObjectId, UID = "无用ID", ClientLevel = clientLevel,
+                    ClientLevelName = clientLevelName, MyColor = clientColor, ColorCode = clientColorCode,
+                    NormalColor = normalColor, ChooseColor = chooseColor, IconBgColor = iconBgColor, progressId = progrId
+                });
+            }
+        }
     }
 
     public void DeActive(DevType type, bool playback)

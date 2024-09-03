@@ -79,12 +79,13 @@ public partial class CommanderController : DMonoBehaviour
                 }
             }
         }
-        
+
         clouds = GameObject.Find("Expanse Sky/Cumulus Clouds");
     }
 
     private void Update()
     {
+        if (!isMe) return;
         if (clouds)
         {
             clouds.SetActive(Camera.main.gameObject.transform.position.y < 1000);
