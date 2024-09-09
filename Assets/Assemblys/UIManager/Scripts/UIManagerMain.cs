@@ -23,6 +23,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIAirportAircraftShowView UIAirportAircraftShowView;
     public UIChangeControllers UIChangeControllers;
     public UIThreeDIconView UIThreeDIconView;
+    public UICommanderDirector UICommanderDirector;
 
     private UIItem_IconShow itemIcon;
 
@@ -93,6 +94,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIAirportAircraftShowView = transform.Find("UiPrefab/UIAirportAircraftShowView").gameObject.GetComponent<UIAirportAircraftShowView>();
         UIChangeControllers = transform.Find("UiPrefab/UIChangeControllers").gameObject.GetComponent<UIChangeControllers>();
         UIThreeDIconView = transform.Find("UiPrefab/UIThreeDIconView").gameObject.GetComponent<UIThreeDIconView>();
+        UICommanderDirector = transform.Find("UiPrefab/UICommanderDirector").gameObject.GetComponent<UICommanderDirector>();
 
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();
@@ -147,6 +149,9 @@ public class UIManagerMain : ScriptManager, IMesRec
                 break;
             case "ThreeDIconView":
                 UIManager.Instance.ShowPanel<UIThreeDIconView>(UIName.UIThreeDIcon, dataInfo);
+                break;
+            case "CommanderDirector":
+                UIManager.Instance.ShowPanel<UICommanderDirector>(UIName.UICommanderDirector, dataInfo);
                 break;
             default:
                 break;

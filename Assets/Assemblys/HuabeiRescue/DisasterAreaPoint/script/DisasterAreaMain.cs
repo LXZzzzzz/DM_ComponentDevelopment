@@ -30,5 +30,6 @@ public class DisasterAreaMain : ScriptManager
 
         rsl.ziYuanName = GetComponent<BObjectModel>().BObject.Info.Name;
         rsl.ziYuanDescribe = (Properties[1] as InputStringProperty).Value;
+        rsl.ZiyuanIcon = info.PicBObjects[BObjectId];
     }
 }

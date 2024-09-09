@@ -28,5 +28,6 @@ public class AirPortPointMain : ScriptManager
             (Properties[5] as InputStringProperty).Value, (Properties[6] as InputStringProperty).Value);
         apl.ziYuanName = GetComponent<BObjectModel>().BObject.Info.Name;
         apl.ziYuanDescribe = (Properties[4] as InputStringProperty).Value;
+        apl.ZiyuanIcon = info.PicBObjects[BObjectId];
     }
 }

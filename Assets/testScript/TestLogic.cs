@@ -67,7 +67,8 @@ public class TestLogic : MonoBehaviour
             EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "IconShow", null);
             UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, new Vector2(18000, 18000));
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
-            UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
+            // UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
+            UIManager.Instance.ShowPanel<UICommanderDirector>(UIName.UICommanderDirector, null);
             EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "AttributeView", null);
             initLine();
         }
@@ -201,7 +202,7 @@ public class TestLogic : MonoBehaviour
 #endif
         vl.rectTransform.SetParent(can.transform);
         vl.rectTransform.localPosition = Vector3.zero;
-        vl.rectTransform.localScale = Vector3.one;
+        vl.rectTransform.localScale = Vector3.one*10;
         vl.active = true;
         if (ColorUtility.TryParseHtmlString("#FF0000", out Color color))
             vl.color = color;

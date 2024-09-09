@@ -138,6 +138,7 @@ public class UICommanderView : BasePanel
                     //如果这个玩家没有进入房间，就跳过
                     string myRoleId = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).RoleId;
                     if (string.IsNullOrEmpty(myRoleId)) continue;
+                    if (MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).ClientLevel < 0) continue;
                     var itemObj = allBObjects[i];
                     var itemCell = Instantiate(ccPrefab, commanderParent);
                     itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChooseCommander);

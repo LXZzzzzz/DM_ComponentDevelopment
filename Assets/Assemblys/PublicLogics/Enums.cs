@@ -34,6 +34,7 @@ namespace Enums
         ChangeCurrentCom, //更改当前选择的指挥端
         ReceiveTask, //总指挥接收任务
         ChangeObjController, //更改某个对象的控制者
+        CreatZaiQuZy, //创建灾区资源
     }
 
     public enum MessageID
@@ -46,6 +47,7 @@ namespace Enums
         SendChangeSpeed = 1007, //一级指挥端更改运行速度
         SendReceiveTask = 1008, //一级指挥端接收任务，开始计时
         SendChangeController = 1009, //游戏进行中更改控制者
+        SendChangeZaiqu = 1010, //更改场景中的灾区
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

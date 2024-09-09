@@ -22,6 +22,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         commanderLevel = new List<EnumDescription>();
         commanderLevel.Add(new EnumDescription(1, "一级指挥官"));
         commanderLevel.Add(new EnumDescription(2, "二级指挥官"));
+        commanderLevel.Add(new EnumDescription(-1, "导教端"));
         taskType = new List<EnumDescription>();
         taskType.Add(new EnumDescription(1, "灭火"));
         taskType.Add(new EnumDescription(2, "救援"));
@@ -86,7 +87,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.playerInfos = new List<ClientInfo>();
         for (int i = 0; i < info.ClientInfos.Count; i++)
         {
-            int clientLevel = -1;
+            int clientLevel = 0;
             string clientLevelName = "";
             Color clientColor = Color.white;
             Color normalColor = Color.white;
@@ -145,7 +146,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         mDMLonLat = GameObject.Find("DMLonLat").HGetScript("DMLonLat");
         _commanderController.misName = info.MisName;
         _commanderController.misDescription = info.MisDescription;
-        _commanderController.CalculateLatLon = CalcAndSetLonLat;
     }
 
     private void InitRecordData()
@@ -191,7 +191,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
         float mapWidth = float.Parse(mDMLonLat.HGetField("TerWidth").ToString());
         mapSizeData = new Vector2(mapLength, mapWidth);
-        _commanderController.Init();
+        _commanderController.Init(CalcAndSetLonLat);
         StartCoroutine(InitMain());
     }
 
@@ -211,9 +211,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         int myLevel = MyDataInfo.MyLevel = (Properties[0] as DropDownProperty).Selected.Enum;
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "IconShow", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "MinMap", mapSizeData);
-        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
+        if (myLevel == -1) EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderDirector", null);
+        else EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "TopMenuView", myLevel);
-        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
+        if (myLevel != -1) EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ThreeDIconView", null);
         // if (MyDataInfo.isPlayBack)
         //     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
@@ -303,14 +304,20 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     {
         if (type == SendType.SubToMain)
         {
-            sender.RunSend(SendType.MainToAll, senderObj.GetComponent<ScriptManager>().BObjectId, eventType, param);
+            for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+            {
+                sender.LogError("发送给"+MyDataInfo.playerInfos[i].PlayerName);
+                sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, eventType, param);
+            }
+
             return;
         }
+
+        if (MyDataInfo.leadId != BObjectId) return;
 
         switch ((MessageID)eventType)
         {
             case MessageID.SendReceiveTask:
-                if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
                 MyDataInfo.speedMultiplier = 1;
                 MyDataInfo.gameStartTime = 0;
@@ -318,7 +325,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString());
                 break;
             case MessageID.SendProgramme:
-                if (MyDataInfo.leadId != BObjectId) break;
                 int myLevel = (Properties[0] as DropDownProperty).Selected.Enum;
                 sender.LogError(myLevel != 1 ? "我需要接收场景装备数据" : "我就是数据编辑者");
                 MyDataInfo.gameState = GameState.Preparation;
@@ -327,7 +333,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 else _commanderController.Receive_TextMsgRecord("下达二级任务");
                 break;
             case MessageID.SendGameStart:
-                if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStart;
                 if (gameStartTimePoint < 0) gameStartTimePoint = int.Parse(param);
                 MyDataInfo.speedMultiplier = 1;
@@ -342,23 +347,22 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.Receive_MoveEquipToTarget(param);
                 break;
             case MessageID.SendGamePause:
-                if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = int.Parse(param) == 1 ? GameState.GamePause : GameState.GameStart;
                 break;
             case MessageID.SendGameStop:
-                if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.gameState = GameState.GameStop;
                 MyDataInfo.gameStartTime = gameStartTimePoint / 1000.0f;
                 MyDataInfo.speedMultiplier = 1;
                 _commanderController.Receive_GameStop();
                 break;
             case MessageID.SendChangeSpeed:
-                if (MyDataInfo.leadId != BObjectId) break;
                 MyDataInfo.speedMultiplier = float.Parse(param);
                 break;
             case MessageID.SendChangeController:
-                if (MyDataInfo.leadId != BObjectId) break;
                 _commanderController.Receive_ChangeController(param);
+                break;
+            case MessageID.SendChangeZaiqu:
+                _commanderController.Receive_CreatZaiqu(param);
                 break;
         }
 

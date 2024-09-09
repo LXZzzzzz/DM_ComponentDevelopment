@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DM.IFS;
 using Enums;
-using Newtonsoft.Json;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
@@ -21,8 +20,9 @@ public partial class CommanderController : DMonoBehaviour
     private List<string> showAllOperatorInfos;
     private List<ZiYuanBase> sceneAllzy;
     public int gameType;
-    public Func<Vector3, Vector2> CalculateLatLon;
+    private Func<Vector3, Vector2> CalculateLatLon;
     private GameObject clouds;
+    private int zaiquIdNum;
 
     private bool isMe;
 
@@ -31,10 +31,12 @@ public partial class CommanderController : DMonoBehaviour
         clientOperatorInfos = new List<string>();
     }
 
-    public void Init()
+    public void Init(Func<Vector3, Vector2> callback)
     {
         sender.LogError("指挥端组件ID：" + main.BObjectId);
         isMe = true;
+        zaiquIdNum = 1;
+        CalculateLatLon = callback;
         InitZiyuan();
         _pdfReport = new PDFReport();
         MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
@@ -48,6 +50,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.AddEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
+        EventManager.Instance.AddEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnSendCreatZaiQuZy);
     }
 
     public void Terminate()
@@ -62,15 +65,20 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.RemoveEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
+        EventManager.Instance.RemoveEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnSendCreatZaiQuZy);
     }
 
     private void InitZiyuan()
     {
         if (sceneAllzy == null)
         {
+            sender.LogError("正确的资源初始化位置");
             sceneAllzy = new List<ZiYuanBase>();
             for (int i = 0; i < allBObjects.Length; i++)
             {
+                var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+                if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 6) != null) continue;
+
                 if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
                 {
                     var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
@@ -88,7 +96,7 @@ public partial class CommanderController : DMonoBehaviour
         if (!isMe) return;
         if (clouds)
         {
-            clouds.SetActive(Camera.main.gameObject.transform.position.y < 1000);
+            clouds.SetActive(Camera.main != null && Camera.main.gameObject.transform.position.y < 1000);
         }
     }
 
@@ -97,10 +105,12 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misDescription, () =>
         {
             //接收灾情任务，此时计时器开始
-            for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-            {
-                sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)MessageID.SendReceiveTask, "");
-            }
+
+            OnSendSkillInfo((int)MessageID.SendReceiveTask, "");
+            // for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+            // {
+            //     sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)MessageID.SendReceiveTask, "");
+            // }
         });
     }
 
@@ -157,7 +167,8 @@ public partial class CommanderController : DMonoBehaviour
             if (currentChooseEquip != null)
                 currentChooseEquip.isChooseMe = false;
             currentChooseEquip = null;
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
+            if (MyDataInfo.MyLevel != -1)
+                EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
             return;
         }
 
@@ -169,7 +180,8 @@ public partial class CommanderController : DMonoBehaviour
             currentChooseEquip = itemEquip;
             currentChooseEquip.isChooseMe = true;
             currentChooseEquip.CurrentChooseSkillType = SkillType.None;
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", currentChooseEquip);
+            if (MyDataInfo.MyLevel != -1)
+                EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", currentChooseEquip);
         }
         else
         {
@@ -184,21 +196,23 @@ public partial class CommanderController : DMonoBehaviour
             if (currentChooseZiYuan != null)
                 currentChooseZiYuan.isChooseMe = false;
             currentChooseZiYuan = null;
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
+            if (MyDataInfo.MyLevel != -1)
+                EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
             return;
         }
 
-        for (int i = 0; i < allBObjects.Length; i++)
+        for (int i = 0; i < sceneAllzy.Count; i++)
         {
-            if (string.Equals(ziyuanId, allBObjects[i].BObject.Id))
+            if (string.Equals(ziyuanId, sceneAllzy[i].BobjectId))
             {
-                var itemZy = allBObjects[i].GetComponent<ZiYuanBase>();
+                var itemZy = sceneAllzy[i];
                 if (itemZy == null) return;
                 if (currentChooseZiYuan != null) currentChooseZiYuan.isChooseMe = false;
                 currentChooseZiYuan = itemZy;
                 currentChooseZiYuan.isChooseMe = true;
                 OnCameraContral(1, currentChooseZiYuan.transform);
-                EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", currentChooseZiYuan);
+                if (MyDataInfo.MyLevel != -1)
+                    EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", currentChooseZiYuan);
                 break;
             }
         }
@@ -215,7 +229,8 @@ public partial class CommanderController : DMonoBehaviour
 
         if (!currentChooseEquip.OnCheckIsMove()) return;
 
-        sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos, targetId));
+        OnSendSkillInfo((int)MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos, targetId));
+        // sender.RunSend(SendType.SubToMain, main.BObjectId, (int)Enums.MessageID.MoveToTarget, MsgSend_Move(currentChooseEquip.BObjectId, pos, targetId));
     }
 
     private bool isLoad = false;
@@ -231,6 +246,7 @@ public partial class CommanderController : DMonoBehaviour
     {
         if (sceneAllzy == null)
         {
+            sender.LogError("不正确的资源初始化位置");
             sceneAllzy = new List<ZiYuanBase>();
             for (int i = 0; i < allBObjects.Length; i++)
             {
@@ -248,11 +264,11 @@ public partial class CommanderController : DMonoBehaviour
         {
             //找到机场，停机
             string airPortId = ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId;
-            for (int j = 0; j < allBObjects.Length; j++)
+            for (int j = 0; j < sceneAllzy.Count; j++)
             {
-                if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)
+                if (string.Equals(airPortId, sceneAllzy[j].BobjectId))
                 {
-                    myAirPort = allBObjects[j].GetComponent<ZiYuanBase>() as IAirPort;
+                    myAirPort = sceneAllzy[j] as IAirPort;
                     break;
                 }
             }
@@ -324,9 +340,9 @@ public partial class CommanderController : DMonoBehaviour
         MyDataInfo.sceneAllEquips.ForEach(x => x.Destroy());
         MyDataInfo.sceneAllEquips.Clear();
         //对所有资源的归属情况都清零
-        for (int i = 0; i < allBObjects?.Length; i++)
+        for (int i = 0; i < sceneAllzy?.Count; i++)
         {
-            ZiYuanBase itemZy = allBObjects[i].GetComponent<ZiYuanBase>();
+            ZiYuanBase itemZy = sceneAllzy[i];
             if (itemZy == null) continue;
             itemZy.Reset();
             EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
@@ -410,317 +426,76 @@ public partial class CommanderController : DMonoBehaviour
         // EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "成功生成评估报告PDF");
     }
 
-    #region 处理接收的消息
-
-    public void Receive_GameStart()
+    private void OnSendCreatZaiQuZy(string zyId, Vector3 pos)
     {
-        if (sceneAllzy != null)
-            sceneAllzy.ForEach(a => a.OnStart());
-    }
+        if (MyDataInfo.MyLevel > 0) return;
 
-    public void Receive_MoveEquipToTarget(string data)
-    {
-        Debug.LogError("执行移动逻辑");
-        MsgReceive_Move(data, out string equipId, out Vector3 targetPos, out string targetId);
-        MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId)).MoveToTarget(targetPos);
-        Debug.LogError("指定飞机移动目标完成");
-        var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipId));
-        Debug.LogError("找到了指定飞机" + item.name);
-        var playerData = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, item.BeLongToCommanderId));
-        Debug.LogError("知道到指定玩家" + playerData.PlayerName);
-        var targetZy = string.IsNullOrEmpty(targetId) ? null : sceneAllzy.Find(a => string.Equals(a.BobjectId, targetId));
-        Debug.LogError(sceneAllzy.Count + "寻找资源" + targetId);
-        try
+        //先打开属性面板设置属性值，点击确定，把数据和模板id发给所有玩家，在消息接收地方，再执行创建逻辑
+        CreatZaiquData data = new CreatZaiquData()
         {
-            if (EventManager.Instance == null) Debug.LogError("事件系统空");
-            EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(),
-                $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
-            clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e.Message);
-        }
+            tempId = zyId, pos = new JsonVector3() { x = pos.x, y = pos.y, z = pos.z }, zaiquId = zyId + (zaiquIdNum += 1)
+        };
+        var creatDataStr = MsgSend_CreatZaiqu(data);
+
+        OnSendSkillInfo((int)MessageID.SendChangeZaiqu, creatDataStr);
     }
 
-    public void Receive_ProgrammeData(string data)
+    private void OnCreatZaiqu(CreatZaiquData data)
     {
-        var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
-        OnLoadProgrammeDataSuc(programmeData);
-        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "收到上级派发任务，请接收");
-    }
-
-
-    public void Receive_GameStop()
-    {
-        var myInfo = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, MyDataInfo.leadId));
-        if (!MyDataInfo.isPlayBack && myInfo.ClientLevel == 1 && MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) == null)
-            OnGeneratePdf();
+        sender.LogError("走创建逻辑" + data);
+        bool isfind = false;
+        ZiYuanBase templateZaiqu = null;
         for (int i = 0; i < allBObjects.Length; i++)
         {
-            if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) == null) continue;
-            var itemCom = allBObjects[i].GetComponent<CommanderController>();
-            itemCom.clientOperatorInfos.Clear();
+            if (string.Equals(allBObjects[i].BObject.Id, data.tempId))
+            {
+                isfind = true;
+                templateZaiqu = allBObjects[i].GetComponent<ZiYuanBase>();
+                sender.LogError("找到了模板对象" + templateZaiqu.ziYuanName);
+                break;
+            }
         }
 
-        EventManager.Instance.EventTrigger(EventType.ClearMsgBox.ToString());
-        currentChooseEquip = null;
-        OnLoadProgrammeDataSuc(ProgrammeDataManager.Instance.GetCurrentData);
-        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
-        EventManager.Instance.EventTrigger(EventType.GameStop.ToString());
+        if (!isfind)
+        {
+            sender.LogError("创建的目标对象未找到");
+            return;
+        }
+
+        var temporaryZaiqu = Instantiate(templateZaiqu, MyDataInfo.SceneGoParent);
+        temporaryZaiqu.transform.position = new Vector3(data.pos.x, data.pos.y, data.pos.z);
+        float posY = GetCurrentGroundHeight(temporaryZaiqu.transform);
+        var zaiQuPosition = temporaryZaiqu.transform.position;
+        zaiQuPosition = new Vector3(zaiQuPosition.x, posY, zaiQuPosition.z);
+        temporaryZaiqu.transform.position = zaiQuPosition;
+        temporaryZaiqu.Init(data.zaiquId, 50, "366baf", "cb488f");
+        temporaryZaiqu.latAndLon = CalculateLatLon(zaiQuPosition);
+        temporaryZaiqu.gameObject.SetActive(true);
+
+        // EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
+        sceneAllzy.Add(temporaryZaiqu);
     }
 
-    public void Receive_ChangeController(string info)
+    private float GetCurrentGroundHeight(Transform go)
     {
-        if (MyDataInfo.MyLevel == 1) return;
-        Debug.LogError("收到了一级指挥端修改的资源权限修改");
-        string deStr = AESUtils.Decrypt(info);
-        var data = JsonConvert.DeserializeObject<ChangeController>(deStr);
-        if (data.objType == 1)
+        // 射线的起点是当前物体的位置
+        Ray ray = new Ray(go.position + Vector3.up * 10000, Vector3.down);
+
+        // 存储射线碰撞信息的变量
+        RaycastHit hit;
+
+        // 检测射线是否碰撞到任何物体
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
-            var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data.ChangeTargetId));
-            if (itemEquip != null) itemEquip.BeLongToCommanderId = data.currentComs[0];
-            var itemEquipData = ProgrammeDataManager.Instance.GetCurrentData.AllEquipDatas.Find(x => string.Equals(x.myId, data.ChangeTargetId));
-            if (itemEquipData != null) itemEquipData.controllerId = data.currentComs[0];
+            // 打印碰撞点的坐标
+            Debug.Log("Hit Point: " + hit.point);
+            return hit.point.y;
         }
         else
         {
-            //这里是资源的权限更改
-            var itemZy = sceneAllzy.Find(x => string.Equals(x.BobjectId, data.ChangeTargetId));
-            if (itemZy != null) itemZy.SetBeUsedComs(data.currentComs);
-
-            if (ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList.ContainsKey(data.ChangeTargetId))
-            {
-                var itemZyData = ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList[data.ChangeTargetId];
-                if (itemZyData != null)
-                {
-                    itemZyData.Clear();
-                    itemZyData.AddRange(data.currentComs.ToArray());
-                }
-            }
-            else
-            {
-                for (int i = 0; i < data.currentComs.Count; i++)
-                {
-                    ProgrammeDataManager.Instance.ChangeZiYuanData(data.ChangeTargetId, data.currentComs[i], true);
-                }
-            }
+            // 如果没有碰撞到任何物体
+            Debug.Log("No hit");
+            return -1;
         }
-
-        //通知UI层面更改这个对象的控制者的显示
-        EventManager.Instance.EventTrigger(EventType.ChangeObjController.ToString(), data.objType, data.ChangeTargetId);
-    }
-
-    public void Receive_TriggerSkill(MessageID messageID, string data)
-    {
-        if (sceneAllzy == null)
-        {
-            sceneAllzy = new List<ZiYuanBase>();
-            for (int i = 0; i < allBObjects.Length; i++)
-            {
-                if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
-                {
-                    var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
-                    zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
-                    sceneAllzy.Add(zyItem);
-                }
-            }
-        }
-
-        switch (messageID)
-        {
-            case MessageID.TriggerGroundReady:
-                sender.LogError("收到了起飞前准备的指令");
-                var itemAirportId = ProgrammeDataManager.Instance.GetEquipDataById(data).airportId;
-                if (string.IsNullOrEmpty(itemAirportId))
-                {
-                    EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "数据错误，指定的直升机未在机场");
-                    return;
-                }
-
-                var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (item as IGroundReady)?.GroundReady(sceneAllzy.Find(a => string.Equals(a.BobjectId, itemAirportId)) as IAirPort);
-                var playerData = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, item.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行起飞前准备操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行起飞前准备操作");
-                break;
-            case MessageID.TriggerBePutInStorage:
-                sender.LogError("收到了入库的指令");
-                var itema = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itema as IGroundReady)?.BePutInStorage();
-                var playerDataa = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itema.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataa.ColorCode}>{playerDataa.ClientLevelName}</color> {itema.name}执行入库操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataa.ClientLevelName}】{itema.name}执行入库操作");
-                break;
-            case MessageID.TriggerTakeOff:
-                sender.LogError("收到了起飞的指令");
-                var itemb = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itemb as ITakeOffAndLand)?.TakeOff();
-                var playerDatab = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemb.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatab.ColorCode}>{playerDatab.ClientLevelName}</color> {itemb.name}执行起飞操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatab.ClientLevelName}】{itemb.name}执行起飞操作");
-                break;
-            case MessageID.TriggerLanding:
-                sender.LogError("收到了降落的指令");
-                var itemc = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itemc as ITakeOffAndLand)?.Landing();
-                var playerDatac = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemc.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatac.ColorCode}>{playerDatac.ClientLevelName}</color> {itemc.name}执行降落操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatac.ClientLevelName}】{itemc.name}执行降落操作");
-                break;
-            case MessageID.TriggerSupply:
-                sender.LogError("收到了补给的指令");
-                var itemS = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itemS as ISupply)?.Supply();
-                var playerDataS = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemS.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataS.ColorCode}>{playerDataS.ClientLevelName}</color> {itemS.name}执行补给操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataS.ClientLevelName}】{itemS.name}执行补给操作");
-                break;
-            case MessageID.TriggerWaterIntaking:
-                sender.LogError("收到了取水的指令");
-                var itemwi = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itemwi as IWatersOperation)?.WaterIntaking_New();
-                var playerDatawi = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemwi.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatawi.ColorCode}>{playerDatawi.ClientLevelName}</color> {itemwi.name}执行取水操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatawi.ClientLevelName}】{itemwi.name}执行取水操作");
-                break;
-            case MessageID.TriggerWaterPour:
-                sender.LogError("收到了投水的指令");
-                MsgReceive_WaterPour(data, out string id, out Vector3 pos);
-                var itemp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, id));
-                (itemp as IWatersOperation)?.WaterPour(pos);
-                var playerDatap = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemp.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatap.ColorCode}>{playerDatap.ClientLevelName}</color> {itemp.name}执行投水操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatap.ClientLevelName}】{itemp.name}执行投水操作");
-                break;
-            case MessageID.TriggerLadeGoods:
-                sender.LogError("收到了装载资源的指令");
-                var iteml = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (iteml as IGoodsOperation)?.LadeGoods();
-                var playerDatal = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, iteml.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatal.ColorCode}>{playerDatal.ClientLevelName}</color> {iteml.name}执行装载资源的操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatal.ClientLevelName}】{iteml.name}执行装载资源的操作");
-                break;
-            case MessageID.TriggerUnLadeGoods:
-                sender.LogError("收到了卸载资源的指令");
-                var itemu = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itemu as IGoodsOperation)?.UnLadeGoods();
-                var playerDatau = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemu.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatau.ColorCode}>{playerDatau.ClientLevelName}</color> {itemu.name}执行卸载资源的操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatau.ClientLevelName}】{itemu.name}执行卸载资源的操作");
-                break;
-            case MessageID.TriggerAirDropGoods:
-                sender.LogError("收到了空投资源的指令");
-                MsgReceive_WaterPour(data, out string adid, out Vector3 adpos);
-                var itemad = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, adid));
-                (itemad as IGoodsOperation)?.AirdropGoods(adpos);
-                var playerDataad = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemad.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataad.ColorCode}>{playerDataad.ClientLevelName}</color> {itemad.name}执行空投资源的操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataad.ClientLevelName}】{itemad.name}执行空投资源的操作");
-                break;
-            case MessageID.TriggerManned:
-                sender.LogError("收到了装载人员的指令");
-                var itemm = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itemm as IRescuePersonnelOperation)?.Manned();
-                var playerDatam = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemm.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatam.ColorCode}>{playerDatam.ClientLevelName}</color> {itemm.name}执行装载人员的操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatam.ClientLevelName}】{itemm.name}执行装载人员的操作");
-                break;
-            case MessageID.TriggerPlacementOfPersonnel:
-                sender.LogError("收到了安置人员的指令");
-                var itempp = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itempp as IRescuePersonnelOperation)?.PlacementOfPersonnel();
-                var playerDatapp = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itempp.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatapp.ColorCode}>{playerDatapp.ClientLevelName}</color> {itempp.name}执行安置人员的操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatapp.ClientLevelName}】{itempp.name}执行安置人员的操作");
-                break;
-            case MessageID.TriggerCableDescentRescue:
-                sender.LogError("收到了索降救援的指令");
-                var itemcd = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                (itemcd as IRescuePersonnelOperation)?.CableDescentRescue();
-                var playerDatacd = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemcd.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatacd.ColorCode}>{playerDatacd.ClientLevelName}</color> {itemcd.name}执行索降救援操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatacd.ClientLevelName}】{itemcd.name}执行索降救援操作");
-                break;
-            case MessageID.TriggerReturnFlight:
-                sender.LogError("收到了返航的指令");
-                var itemrf = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                itemrf.OnNullCommand(0);
-                var playerDatarf = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemrf.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatarf.ColorCode}>{playerDatarf.ClientLevelName}</color> {itemrf.name}执行返航的操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatarf.ClientLevelName}】{itemrf.name}执行返航的操作");
-                break;
-            case MessageID.TriggerEndTask:
-                sender.LogError("收到了结束任务的指令");
-                var itemet = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                itemet.OnNullCommand(1);
-                var playerDataet = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemet.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataet.ColorCode}>{playerDataet.ClientLevelName}</color> {itemet.name}执行结束任务的操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataet.ClientLevelName}】{itemet.name}执行结束任务的操作");
-                break;
-            case MessageID.TriggerEquipCrash:
-                sender.LogError("收到了坠毁的指令");
-                var itemec = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                itemec.OnCrash();
-                var playerDataec = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemec.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataec.ColorCode}>{playerDataec.ClientLevelName}</color> {itemec.name}油量已耗尽，坠毁");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataec.ClientLevelName}】{itemec.name}油量已耗尽，坠毁");
-                break;
-            case MessageID.TriggerOnlyShow:
-                sender.LogError("收到了文本指令");
-                var showInfo = data.Split('_');
-                var itemes = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, showInfo[0]));
-                var playerDataes = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemes.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataes.ColorCode}>{playerDataes.ClientLevelName}</color> {itemes.name}进行{showInfo[1]}");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataes.ClientLevelName}】{itemes.name}进行{showInfo[1]}");
-                break;
-            case MessageID.TriggerReport:
-                //todo:获取到了指定玩家的报备指令，存起来，生成报告的时候去加分
-                if (reportPlayers == null) reportPlayers = new List<string>();
-                if (!reportPlayers.Contains(data)) reportPlayers.Add(data);
-                break;
-        }
-    }
-
-    public void Receive_TextMsgRecord(string data)
-    {
-        clientOperatorInfos.Add(MyDataInfo.gameStartTime + "--" + data);
-        EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), data);
-    }
-
-    #endregion
-
-    #region 数据转换（消息的打包和解析）
-
-    private string MsgSend_Move(string id, Vector3 pos, string targetId)
-    {
-        return string.Format($"{id}_{pos.x}_{pos.y}_{pos.z}_{targetId}");
-    }
-
-    private void MsgReceive_Move(string data, out string id, out Vector3 pos, out string targetId)
-    {
-        string[] info = data.Split('_');
-        id = info[0];
-        pos = new Vector3(float.Parse(info[1]), float.Parse(info[2]), float.Parse(info[3]));
-        targetId = info[4];
-    }
-
-    private void MsgReceive_WaterPour(string data, out string id, out Vector3 pos)
-    {
-        string[] info = data.Split('_');
-        pos = new Vector3(float.Parse(info[0]), float.Parse(info[1]), float.Parse(info[2]));
-        id = info[3];
-    }
-
-    #endregion
-
-    private string ConvertSecondsToHHMMSS(float seconds)
-    {
-        int hours = (int)(seconds / 3600); // 计算小时数
-        int minutes = (int)(seconds % 3600 / 60); // 计算分钟数
-        float remainingSeconds = seconds % 60; // 计算剩余秒数
-
-        // 格式化为“时：分：秒”字符串
-        return string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, (int)remainingSeconds);
     }
 }

@@ -178,6 +178,9 @@ namespace UiManager
                 case UIName.UIChangeControllers:
                     itemUI = Instantiate((main as UIManagerMain).UIChangeControllers, canvansTran);
                     break;
+                case UIName.UICommanderDirector:
+                    itemUI = Instantiate((main as UIManagerMain).UICommanderDirector, canvansTran);
+                    break;
             }
 
             itemUI.gameObject.SetActive(true);
@@ -229,6 +232,7 @@ namespace UiManager
         UIHangShowInfo,
         UIAirportAircraftShowView,
         UIThreeDIcon,
-        UIChangeControllers
+        UIChangeControllers,
+        UICommanderDirector
     }
 }

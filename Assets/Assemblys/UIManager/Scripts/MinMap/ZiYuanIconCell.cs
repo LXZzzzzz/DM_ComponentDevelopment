@@ -302,10 +302,6 @@ public class ZiYuanIconCell : IconCellBase
 
         airPortMarkView.SetActive(itemInfo.Count != 0);
         comsParentRect.anchoredPosition = new Vector2(0, itemInfo.Count != 0 ? -26 : 26);
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            Debug.LogError("机场显示" + airPortMarkView.activeSelf);
-        }
     }
 
     private void pageTurning(bool isNext)

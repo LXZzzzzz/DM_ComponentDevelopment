@@ -27,5 +27,6 @@ public class FirePointMain : ScriptManager
 
         fpl.ziYuanName = GetComponent<BObjectModel>().BObject.Info.Name;
         fpl.ziYuanDescribe = (Properties[3] as InputStringProperty).Value;
+        fpl.ZiyuanIcon = info.PicBObjects[BObjectId];
     }
 }

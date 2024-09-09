@@ -395,6 +395,17 @@ public partial class CommanderController
 
         report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count);
     }
+    
+    
+    private string ConvertSecondsToHHMMSS(float seconds)
+    {
+        int hours = (int)(seconds / 3600); // 计算小时数
+        int minutes = (int)(seconds % 3600 / 60); // 计算分钟数
+        float remainingSeconds = seconds % 60; // 计算剩余秒数
+
+        // 格式化为“时：分：秒”字符串
+        return string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, (int)remainingSeconds);
+    }
 }
 
 public class ComanderData

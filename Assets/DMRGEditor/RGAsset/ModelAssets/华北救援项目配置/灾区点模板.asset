@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c273b499a08c234388d3c55bea2a556, type: 3}
-  m_Name: AirPortPointPrefab
+  m_Name: "\u672A\u547D\u540D"
   m_EditorClassIdentifier: 
-  Icon: {fileID: 21300000, guid: b56f13df0048ceb449361ca814583699, type: 3}
-  AssetName: "\u673A\u573A"
+  Icon: {fileID: 21300000, guid: 702465f8132a5e140a554faa9e9e3cf6, type: 3}
+  AssetName: "\u707E\u533A\u70B9\u6A21\u677F"
   Description: 
-  Prefab: {fileID: 8406224877322326133, guid: a8b099b808e8f8b42b6da2c151807e18, type: 3}
+  Prefab: {fileID: 2841895979781939166, guid: 7a1596c03679e4f4fb0420ec54a1574d, type: 3}
   Size: 0
   listComponent:
   - BuiltIn: 1
@@ -181,8 +181,12 @@ MonoBehaviour:
       SubName: "\u88C5\u5907\u6A21\u677F"
     - Id: 5
       IsModify: 0
-      IsOn: 1
+      IsOn: 0
       SubName: "\u5176\u4ED6\u7EC4\u4EF6"
+    - Id: 6
+      IsModify: 0
+      IsOn: 1
+      SubName: "\u707E\u533A\u6A21\u677F"
   listTriggers:
   - BuiltIn: 0
     Id: 1000
@@ -225,14 +229,14 @@ MonoBehaviour:
     Id: 2006
     IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C5"
-  IsCreateTag: 0
+  IsCreateTag: 1
   IsCreateScript: 1
-  IsCreateModel: 0
+  IsCreateModel: 1
   IsCompressModel: 0
   isAssignMain: 1
-  MainCalss: AirPortPointMain
+  MainCalss: DisasterAreaMain
   OtherScriptPaths:
-  - D:/UnityProjects/Work/DM_ComponentDevelopment/Assets/Assemblys/HuabeiRescue/AirPortPoint/Script
+  - D:/UnityProjects/Work/DM_ComponentDevelopment/Assets/Assemblys/HuabeiRescue/DisasterAreaPoint/script
   - D:/UnityProjects/Work/DM_ComponentDevelopment/Assets/Assemblys/PublicLogics
   OutputPaths:
   - D:/UnityProjects/Work/DM_ComponentDevelopment/Assets/DMRGEditor/RGOutput

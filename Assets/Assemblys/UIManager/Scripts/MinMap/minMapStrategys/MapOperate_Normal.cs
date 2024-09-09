@@ -6,6 +6,7 @@ using ToolsLibrary.EquipPart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using Vectrosity;
 using EventType = Enums.EventType;
 
@@ -15,10 +16,12 @@ public class MapOperate_Normal : MapOperateLogicBase
     private List<Vector2> linePoss;
     private bool isShow;
     private RectTransform chooseEquip;
+    private string creatTargetTemplate;
 
     public override void OnEnter()
     {
         EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
+        EventManager.Instance.AddEventListener<object>(EventType.TransferEditingInfo.ToString(), OnParsingData);
         linePoss = new List<Vector2>();
         linePoss.Add(Vector2.zero);
         linePoss.Add(Vector2.zero);
@@ -41,9 +44,6 @@ public class MapOperate_Normal : MapOperateLogicBase
         else showLine.material = mainLogic.dashedLineMat;
 
         isShow = false;
-#if UNITY_EDITOR
-        isShow = true;
-#endif
     }
 
     public override void OnLeftClickIcon(IconCellBase targetIconCell)
@@ -143,18 +143,33 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     public override void OnUpdate()
     {
-        if (!isShow) return;
+        showXvLine();
+        showTargetTemplate();
+    }
+
+    private void showXvLine()
+    {
+        if (!isShow|| chooseEquip) return;
 #if UNITY_EDITOR
         linePoss[0] = Vector2.zero;
 #else
-        linePoss[0] = chooseEquip.anchoredPosition;
+                linePoss[0] = chooseEquip.anchoredPosition;
 #endif
         var rectPos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
         linePoss[1] = mainLogic.mousePos2UI(rectPos);
         showLine.Draw();
         float dis = Vector2.Distance(linePoss[0], linePoss[1]);
-        mainLogic.dashedLineMat.SetTextureScale("_MainTex", new Vector2(dis, 0));
+        mainLogic.dashedLineMat.SetTextureScale("_MainTex", new Vector2(dis / 80, 0));
         showLine.active = true;
+    }
+
+    private void showTargetTemplate()
+    {
+        if (!string.IsNullOrEmpty(creatTargetTemplate))
+        {
+            var rectPos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
+            mainLogic.TempIcon.anchoredPosition = mainLogic.mousePos2UI(rectPos);
+        }
     }
 
     public override void OnLeftClickMap(Vector2 pos)
@@ -171,10 +186,21 @@ public class MapOperate_Normal : MapOperateLogicBase
         EventManager.Instance.EventTrigger(EventType.ChooseZiyuan.ToString(), string.Empty);
         isShow = false;
         showLine.active = false;
+
+        //导教端在场景中创建灾区
+        if (string.IsNullOrEmpty(creatTargetTemplate)) return;
+        //通知主角在场景对应位置创建实体
+        EventManager.Instance.EventTrigger(EventType.CreatZaiQuZy.ToString(), creatTargetTemplate, uiPos2WorldPos(pos));
+
+        //这里先去数据管理器里申请创建，然后将数据ID传给创建者
+        // string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, uiPos2WorldPos(pos));
+        // ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = MyDataInfo.leadId;
     }
 
     public override void OnRightClickMap(Vector2 pos)
     {
+        mainLogic.TempIcon.gameObject.SetActive(false);
+        creatTargetTemplate = string.Empty;
         EventManager.Instance.EventTrigger(EventType.MoveToTarget.ToString(), string.Empty, uiPos2WorldPos(pos));
         EventManager.Instance.EventTrigger(EventType.ChooseEquipToZiYuanType.ToString(), -1);
     }
@@ -182,6 +208,7 @@ public class MapOperate_Normal : MapOperateLogicBase
     public override void OnExit()
     {
         EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
+        EventManager.Instance.RemoveEventListener<object>(EventType.TransferEditingInfo.ToString(), OnParsingData);
         showLine.active = false;
         isShow = false;
     }
@@ -190,6 +217,16 @@ public class MapOperate_Normal : MapOperateLogicBase
     {
         if (mainLogic.allIconCells.ContainsKey(id))
             mainLogic.allIconCells[id].RefreshView();
+    }
+
+    private void OnParsingData(object data)
+    {
+        if (data is string)
+        {
+            mainLogic.TempIcon.gameObject.SetActive(true);
+            creatTargetTemplate = (string)data;
+            mainLogic.TempIcon.GetChild(0).GetComponent<Image>().sprite = UIManager.Instance.PicBObjects[creatTargetTemplate];
+        }
     }
 
     public MapOperate_Normal(UIMap mainLogic) : base(mainLogic)

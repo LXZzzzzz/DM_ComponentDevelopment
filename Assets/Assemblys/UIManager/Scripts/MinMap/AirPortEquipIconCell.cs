@@ -44,6 +44,9 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
 
     private void Update()
     {
+        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, eb.BeLongToCommanderId));
+        icon.color = comData.MyColor;
+        
         if (eb == null || eb.currentSkill == SkillType.None)
         {
             if (progress == null)
@@ -66,8 +69,6 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
             zbObj.SetActive(true);
         }
 
-        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, eb.BeLongToCommanderId));
-        icon.color = comData.MyColor;
         progress.value = eb.skillProgress;
     }
 
