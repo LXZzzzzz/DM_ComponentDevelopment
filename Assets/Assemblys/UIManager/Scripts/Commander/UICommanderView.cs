@@ -21,13 +21,16 @@ public class UICommanderView : BasePanel
     private RectTransform equipParent;
     private RectTransform commanderParent;
     private RectTransform ziYuanParent;
+
     private RectTransform disasterParent; //灾区组件所展示的列表
+
     // private RectTransform taskParent;
     private EquipTypeCell etcPrefab;
     private EquipCell ecPrefab;
     private CommanderCell ccPrefab;
     private ZiYuanCell zycPrefab;
-    // private TaskCell taskPrefab;
+    private ZiYuanCell zyZqPrefab;
+    private TaskCell taskPrefab;
     private Text startTime, currentTime;
     private Button btn_ComUnfold, btn_EquipUnfold, btn_ZiyuanUnfold, btn_TaskUnfold;
     private RectTransform CmGo;
@@ -38,7 +41,6 @@ public class UICommanderView : BasePanel
     private Dictionary<string, string> allCommanderIds; //存储所有指挥端Id和 对应的名称
     private List<EquipCell> allEquipCells; //存储所有装备cell
     private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
-    private List<ZiYuanCell> allZyZqCells; //存储所有灾区cell
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
     private Dictionary<string, CommanderCell> allCommanderCells; //存储所有玩家cell
     private bool isMoveCmGo;
@@ -61,9 +63,9 @@ public class UICommanderView : BasePanel
         ccPrefab = GetComponentInChildren<CommanderCell>(true);
         ziYuanParent = GetControl<ScrollRect>("ZiYuanView").content;
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
-        disasterParent = GetControl<ScrollRect>("TaskListView").content;
-        // taskPrefab = GetComponentInChildren<TaskCell>(true);
-        // taskParent = GetControl<ScrollRect>("TaskListView").content;
+        disasterParent = transform.Find("RightPart").GetComponentInChildren<ScrollRect>(true).content;
+        taskPrefab = transform.Find("RightPart").GetComponentInChildren<TaskCell>(true);
+        zyZqPrefab = transform.Find("RightPart").GetComponentInChildren<ZiYuanCell>(true);
         startTime = GetControl<Text>("startTimeShow");
         currentTime = GetControl<Text>("currentTimeShow");
         btn_ComUnfold = GetControl<Button>("btn_ComUnfold");
@@ -95,6 +97,7 @@ public class UICommanderView : BasePanel
         allCommanderIds = new Dictionary<string, string>();
         allEquipCells = new List<EquipCell>();
         allZiYuanCells = new List<ZiYuanCell>();
+        allTaskCells = new List<TaskCell>();
         allCommanderCells = new Dictionary<string, CommanderCell>();
     }
 
@@ -110,6 +113,9 @@ public class UICommanderView : BasePanel
 #endif
         EventManager.Instance.AddEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryEquip.ToString(), OnRemoveEquip);
+        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
+        EventManager.Instance.AddEventListener<string>(EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
+        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.CreatATaskIcon.ToString(), OnAddTask);
         EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
         EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
         isMoveCmGo = false;
@@ -120,6 +126,9 @@ public class UICommanderView : BasePanel
         base.HideMe();
         EventManager.Instance.RemoveEventListener<EquipBase>(Enums.EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
         EventManager.Instance.RemoveEventListener<string>(Enums.EventType.DestoryEquip.ToString(), OnRemoveEquip);
+        EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
+        EventManager.Instance.RemoveEventListener<string>(Enums.EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
+        EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.CreatATaskIcon.ToString(), OnAddTask);
         EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
         EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
     }
@@ -164,24 +173,24 @@ public class UICommanderView : BasePanel
                 }
             }
         }
-
-        //获取场景中的资源，展示
-        for (int i = 0; i < allBObjects.Length; i++)
-        {
-            var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-            if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
-            {
-                var itemObj = allBObjects[i];
-                ZiYuanBase zyObj = itemObj.GetComponent<ZiYuanBase>();
-                bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
-                                  zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
-                if (isDisaster) continue;
-                var itemCell = Instantiate(zycPrefab, isDisaster ? disasterParent : ziYuanParent);
-                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, zyObj, OnChangeZiYuanBelongTo, OnMoveCm);
-                itemCell.gameObject.SetActive(true);
-                allZiYuanCells.Add(itemCell);
-            }
-        }
+        //
+        // //获取场景中的资源，展示
+        // for (int i = 0; i < allBObjects.Length; i++)
+        // {
+        //     var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+        //     if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
+        //     {
+        //         var itemObj = allBObjects[i];
+        //         ZiYuanBase zyObj = itemObj.GetComponent<ZiYuanBase>();
+        //         bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
+        //                           zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
+        //         if (isDisaster) continue;
+        //         var itemCell = Instantiate(zycPrefab, isDisaster ? disasterParent : ziYuanParent);
+        //         itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, zyObj, OnChangeZiYuanBelongTo, OnMoveCm);
+        //         itemCell.gameObject.SetActive(true);
+        //         allZiYuanCells.Add(itemCell);
+        //     }
+        // }
     }
 
     private void Update()
@@ -269,6 +278,7 @@ public class UICommanderView : BasePanel
     }
 
     private string currentSelectComId = "";
+    private bool isRefreshMsgView = true;
 
     private void OnChooseCommander(string id)
     {
@@ -281,8 +291,8 @@ public class UICommanderView : BasePanel
         // else return;
 
         var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
-        //更改了某个对象控制着会调用这个，导致消息列表取消其他内容显示
-        EventManager.Instance.EventTrigger(EventType.ChangeCurrentCom.ToString(), currentCommander.ClientLevelName);
+        if (isRefreshMsgView && MyDataInfo.MyLevel == 1)
+            EventManager.Instance.EventTrigger(EventType.ChangeCurrentCom.ToString(), currentCommander.ClientLevelName);
         if (currentCommander.ClientLevel == 1)
         {
             for (int i = 0; i < allEquipCells.Count; i++)
@@ -293,6 +303,11 @@ public class UICommanderView : BasePanel
             for (int i = 0; i < allZiYuanCells.Count; i++)
             {
                 allZiYuanCells[i].gameObject.SetActive(true);
+            }
+
+            for (int i = 0; i < allTaskCells.Count; i++)
+            {
+                allTaskCells[i].gameObject.SetActive(true);
             }
         }
         else
@@ -307,9 +322,15 @@ public class UICommanderView : BasePanel
                 bool isShow = allZiYuanCells[i].allcoms.Find(x => string.Equals(x.comId, id));
                 allZiYuanCells[i].gameObject.SetActive(isShow);
             }
+
+            for (int i = 0; i < allTaskCells.Count; i++)
+            {
+                bool isShow = allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                allTaskCells[i].gameObject.SetActive(isShow);
+            }
         }
 
-        UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).OnChooseCommander(id);
+        isRefreshMsgView = true;
     }
 
     private void OnAddEquipView(EquipBase equip)
@@ -336,6 +357,66 @@ public class UICommanderView : BasePanel
                 allEquipCells.RemoveAt(i);
                 break;
             }
+        }
+    }
+
+    private void OnAddZyZq(ZiYuanBase zyObj)
+    {
+        Debug.LogError("创建灾区关联的UI控件");
+        bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
+                          zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
+
+        ZiYuanCell itemCell = isDisaster ? Instantiate(zyZqPrefab, disasterParent) : Instantiate(zycPrefab, ziYuanParent);
+        itemCell.Init(zyObj.ziYuanName, zyObj.BobjectId, zyObj, OnChangeZiYuanBelongTo, OnMoveCm);
+        itemCell.gameObject.SetActive(true);
+        allZiYuanCells.Add(itemCell);
+    }
+
+    private void OnRemoveZyZq(string deleId)
+    {
+        for (int i = 0; i < allZiYuanCells.Count; i++)
+        {
+            if (string.Equals(allZiYuanCells[i].myEntityId, deleId))
+            {
+                //这里应该得检测资源下有没有任务，如果有要删除
+                Destroy(allZiYuanCells[i].gameObject);
+                allZiYuanCells.RemoveAt(i);
+                break;
+            }
+        }
+    }
+
+    int taskIndex = 0;
+
+    private void OnAddTask(ZiYuanBase taskObj)
+    {
+        taskIndex++;
+        var itemCell = Instantiate(taskPrefab, disasterParent);
+        itemCell.Init("任务" + taskIndex, taskObj);
+        itemCell.gameObject.SetActive(true);
+        allTaskCells.Add(itemCell);
+
+        string zqId = (taskObj as ITaskProgress)?.getAssociationAssemblyId();
+        // while (string.IsNullOrEmpty(zqId))
+        // {
+        //     zqId = (taskObj as ITaskProgress)?.getAssociationAssemblyId();
+        // }
+
+        int targetIndex = 0;
+        for (int j = 0; j < disasterParent.childCount; j++)
+        {
+            if (string.Equals(zqId, disasterParent.GetChild(j).GetComponent<ZiYuanCell>()?.myEntityId))
+            {
+                disasterParent.GetChild(j).GetComponent<ZiYuanCell>().SetTaskGo(itemCell.gameObject);
+                targetIndex = j + 1;
+                sender.LogError("找到了附加的任务icon" + targetIndex);
+                break;
+            }
+        }
+
+        if (targetIndex >= 0 && targetIndex < disasterParent.childCount)
+        {
+            itemCell.transform.SetSiblingIndex(targetIndex);
         }
     }
 
@@ -370,6 +451,7 @@ public class UICommanderView : BasePanel
             if (itemZyCell != null) itemZyCell.RefreshComShow();
         }
 
+        isRefreshMsgView = false;
         OnChooseCommander(MyDataInfo.leadId);
     }
 

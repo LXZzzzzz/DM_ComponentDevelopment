@@ -65,9 +65,11 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         double mLon = double.Parse(zeroLon.ToString()); //zeroLon.GetType() != typeof(double) ? 116.4 : (double)zeroLon;
         double mLat = double.Parse(zeroLat.ToString()); //zeroLat.GetType() != typeof(double) ? 39.9 : (double)zeroLat;
         int mScaleRate = (int)mDMLonLat.HGetField("ScaleRate");
+        Debug.LogError("mScaleRate:" + mScaleRate);
         //计算并设置经纬度
         double lat = HarvenSin.GetLatByDis(mLat, pos.z);
         double lon = HarvenSin.GetLonByDis(mLon, pos.x, lat);
+        Debug.LogError("Lon:" + (float)lon + "Lat:" + (float)lat);
         return new Vector2((float)lon, (float)lat);
     }
 
@@ -191,7 +193,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
         float mapWidth = float.Parse(mDMLonLat.HGetField("TerWidth").ToString());
         mapSizeData = new Vector2(mapLength, mapWidth);
-        _commanderController.Init(CalcAndSetLonLat);
         StartCoroutine(InitMain());
     }
 
@@ -219,6 +220,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         // if (MyDataInfo.isPlayBack)
         //     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
 
+        yield return 1;
+        _commanderController.Init(CalcAndSetLonLat);
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
         yield return new WaitForSeconds(1);
         if (myLevel == 1)
@@ -306,7 +309,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         {
             for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
             {
-                sender.LogError("发送给"+MyDataInfo.playerInfos[i].PlayerName);
+                sender.LogError(MyDataInfo.playerInfos.Count + "发送给" + MyDataInfo.playerInfos[i].PlayerName);
                 sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, eventType, param);
             }
 
@@ -362,6 +365,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.Receive_ChangeController(param);
                 break;
             case MessageID.SendChangeZaiqu:
+                sender.LogError("收到创建灾区的消息");
                 _commanderController.Receive_CreatZaiqu(param);
                 break;
         }

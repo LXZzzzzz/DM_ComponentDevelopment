@@ -35,6 +35,10 @@ namespace Enums
         ReceiveTask, //总指挥接收任务
         ChangeObjController, //更改某个对象的控制者
         CreatZaiQuZy, //创建灾区资源
+        DestoryZaiQuzy, //删除一个灾区资源
+        CreatAZiyuanIcon, //创建指定资源的UI标识
+        DestoryZiyuanIcon, //删除指定资源的UI标识
+        CreatATaskIcon, //创建指定任务的UI标识
     }
 
     public enum MessageID

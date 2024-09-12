@@ -284,7 +284,7 @@ public partial class CommanderController
     public void Receive_CreatZaiqu(string data)
     {
         var itemdata = MsgReceive_CreatZaiqu(data);
-        OnCreatZaiqu(itemdata);
+        OnChangeZaiqu(itemdata);
     }
 
     #endregion
@@ -333,4 +333,5 @@ public class CreatZaiquData
     public string tempId;
     public string zaiquId;
     public JsonVector3 pos;
+    public int isDele;
 }

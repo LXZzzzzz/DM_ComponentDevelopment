@@ -30,6 +30,7 @@ public class UIChangeControllers : BasePanel
 
         for (int i = 0; i < MyDataInfo.playerInfos?.Count; i++)
         {
+            if (MyDataInfo.playerInfos[i].ClientLevel < 0) continue;
             var ccitem = Instantiate(cccell, menusParent);
             ccitem.Init(MyDataInfo.playerInfos[i].RoleId, MyDataInfo.playerInfos[i].ClientLevelName, MyDataInfo.playerInfos[i].MyColor);
             ccitem.gameObject.SetActive(true);

@@ -56,9 +56,6 @@ public class UIAttributeView : BasePanel
         EventManager.Instance.AddEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
         EventManager.Instance.AddEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
         EventManager.Instance.AddEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
-        EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
-        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
-        // EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnShowEquipInfo);
         allMsgCells = new List<msgCell>();
     }
 
@@ -66,7 +63,6 @@ public class UIAttributeView : BasePanel
     {
         base.ShowMe(userData);
         Debug.LogError("Attribute界面逻辑");
-        StartCoroutine(ShowTaskView());
 
         if (userData == null)
         {
@@ -124,6 +120,15 @@ public class UIAttributeView : BasePanel
             ziYuanInfoView.gameObject.SetActive(true);
             ziYuanInfoView.Init(userData as ZiYuanBase);
         }
+    }
+
+    public override void HideMe()
+    {
+        base.HideMe();
+        EventManager.Instance.RemoveEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
+        EventManager.Instance.RemoveEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
+        EventManager.Instance.RemoveEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
+        EventManager.Instance.RemoveEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
     }
 
     IEnumerator ShowTaskView()
@@ -523,17 +528,5 @@ public class UIAttributeView : BasePanel
         }
 
         return progressInfo;
-    }
-
-    public override void HideMe()
-    {
-        base.HideMe();
-        EventManager.Instance.RemoveEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
-        EventManager.Instance.RemoveEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
-        EventManager.Instance.RemoveEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
-        EventManager.Instance.RemoveEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
-        EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
-        EventManager.Instance.RemoveEventListener<ZiYuanBase>(EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
-        // EventManager.Instance.RemoveEventListener<string>(EventType.ChooseEquip.ToString(), OnShowEquipInfo);
     }
 }

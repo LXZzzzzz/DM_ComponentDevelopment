@@ -12,7 +12,7 @@ public class ZaiQuTemplateCell : DMonoBehaviour
         _ziYuan = ziyuan;
         transform.Find("Text_name").GetComponent<Text>().text = _ziYuan.ziYuanName;
         transform.Find("Text_describe").GetComponent<Text>().text = _ziYuan.ziYuanDescribe;
-        GetComponent<Button>().onClick.AddListener(() =>
+        GetComponentInChildren<Button>().onClick.AddListener(() =>
             EventManager.Instance.EventTrigger<object>(Enums.EventType.TransferEditingInfo.ToString(), _ziYuan.BobjectId));
     }
 }

@@ -13,39 +13,27 @@ public class UIThreeDIconView : BasePanel
     private Dictionary<string, ThreeD_AirIconCell> allIconCells;
     private ThreeD_ZiYuanIconCell tzic;
 
+    private List<ThreeD_ZiYuanIconCell> allZiYuanCells;
+
     public override void Init()
     {
         base.Init();
-        EventManager.Instance.AddEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
-        EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), desAir);
     }
 
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
+        EventManager.Instance.AddEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
+        EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), desAir);
+        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
+        EventManager.Instance.AddEventListener<string>(EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
+        
         parent = transform.Find("IconObjParent");
         tdic = transform.Find("IconPrefabs/ThreeD_AirIconCell").GetComponent<ThreeD_AirIconCell>();
         tzic = transform.Find("IconPrefabs/ThreeD_ZiYuanIconCell").GetComponent<ThreeD_ZiYuanIconCell>();
         allIconCells = new Dictionary<string, ThreeD_AirIconCell>();
-        StartCoroutine(InitZiYuanIcon());
+        allZiYuanCells = new List<ThreeD_ZiYuanIconCell>();
     }
-
-    IEnumerator InitZiYuanIcon()
-    {
-        yield return new WaitForSeconds(1);
-        for (int i = 0; i < allBObjects.Length; i++)
-        {
-            //找到场景中所有资源，显示到地图上
-            var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-            if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 5) != null)
-            {
-                var itemIcon = Instantiate(tzic, parent);
-                itemIcon.Init(allBObjects[i].GetComponent<ZiYuanBase>());
-                itemIcon.gameObject.SetActive(true);
-            }
-        }
-    }
-
     private void creatAirCell(EquipBase equip)
     {
         var itemIcon = Instantiate(tdic, parent);
@@ -66,11 +54,33 @@ public class UIThreeDIconView : BasePanel
             }
         }
     }
+    private void OnAddZyZq(ZiYuanBase zyObj)
+    {
+        var itemIcon = Instantiate(tzic, parent);
+        itemIcon.Init(zyObj);
+        itemIcon.gameObject.SetActive(true);
+        allZiYuanCells.Add(itemIcon);
+    }
+    private void OnRemoveZyZq(string deleId)
+    {
+        for (int i = 0; i < allZiYuanCells.Count; i++)
+        {
+            if (string.Equals(allZiYuanCells[i].ziYuanItem.BobjectId, deleId))
+            {
+                //这里应该得检测资源下有没有任务，如果有要删除
+                Destroy(allZiYuanCells[i].gameObject);
+                allZiYuanCells.RemoveAt(i);
+                break;
+            }
+        }
+    }
 
     public override void HideMe()
     {
         base.HideMe();
         EventManager.Instance.RemoveEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
         EventManager.Instance.RemoveEventListener<string>(Enums.EventType.DestoryEquip.ToString(), desAir);
+        EventManager.Instance.RemoveEventListener<ZiYuanBase>(EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
+        EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
     }
 }

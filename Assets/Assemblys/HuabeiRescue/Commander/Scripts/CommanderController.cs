@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using DM.IFS;
 using Enums;
@@ -51,6 +52,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.AddEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
         EventManager.Instance.AddEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnSendCreatZaiQuZy);
+        EventManager.Instance.AddEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
     }
 
     public void Terminate()
@@ -66,29 +68,57 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.RemoveEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
         EventManager.Instance.RemoveEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnSendCreatZaiQuZy);
+        EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
     }
 
     private void InitZiyuan()
     {
         if (sceneAllzy == null)
         {
-            sender.LogError("正确的资源初始化位置");
             sceneAllzy = new List<ZiYuanBase>();
             for (int i = 0; i < allBObjects.Length; i++)
             {
                 var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-                if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 6) != null) continue;
+                if (tagItem == null || tagItem.SubTags.Find(y => y.Id == 6 || y.Id == 3 || y.Id == 4) != null)
+                {
+                    if (tagItem != null)
+                    {
+                        allBObjects[i].transform.GetChild(0).gameObject.SetActive(false);
+                    }
+
+                    continue;
+                }
 
                 if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
                 {
                     var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
                     zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
+                    EventManager.Instance.EventTrigger(EventType.CreatAZiyuanIcon.ToString(), zyItem);
                     sceneAllzy.Add(zyItem);
                 }
             }
+
+            StartCoroutine(showTask());
         }
 
         clouds = GameObject.Find("Expanse Sky/Cumulus Clouds");
+    }
+
+    IEnumerator showTask()
+    {
+        yield return new WaitForSeconds(1);
+        for (int i = 0; i < allBObjects.Length; i++)
+        {
+            var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+            //任务列表展示
+            if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 3) != null)
+            {
+                var itemObj = allBObjects[i];
+                var itemzy = itemObj.gameObject.GetComponent<ZiYuanBase>();
+                EventManager.Instance.EventTrigger(EventType.CreatATaskIcon.ToString(), itemzy);
+                yield return 1;
+            }
+        }
     }
 
     private void Update()
@@ -244,21 +274,6 @@ public partial class CommanderController : DMonoBehaviour
 
     private void OnCreatEquipEntity(string templateId, string myId)
     {
-        if (sceneAllzy == null)
-        {
-            sender.LogError("不正确的资源初始化位置");
-            sceneAllzy = new List<ZiYuanBase>();
-            for (int i = 0; i < allBObjects.Length; i++)
-            {
-                if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
-                {
-                    var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
-                    zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
-                    sceneAllzy.Add(zyItem);
-                }
-            }
-        }
-
         IAirPort myAirPort = null;
         if (!string.IsNullOrEmpty(ProgrammeDataManager.Instance.GetEquipDataById(myId).airportId))
         {
@@ -433,16 +448,43 @@ public partial class CommanderController : DMonoBehaviour
         //先打开属性面板设置属性值，点击确定，把数据和模板id发给所有玩家，在消息接收地方，再执行创建逻辑
         CreatZaiquData data = new CreatZaiquData()
         {
-            tempId = zyId, pos = new JsonVector3() { x = pos.x, y = pos.y, z = pos.z }, zaiquId = zyId + (zaiquIdNum += 1)
+            tempId = zyId, pos = new JsonVector3() { x = pos.x, y = pos.y, z = pos.z }, zaiquId = zyId + (zaiquIdNum += 1), isDele = 0
         };
         var creatDataStr = MsgSend_CreatZaiqu(data);
-
+        sender.LogError("发送创建灾区的消息" + creatDataStr);
         OnSendSkillInfo((int)MessageID.SendChangeZaiqu, creatDataStr);
     }
 
-    private void OnCreatZaiqu(CreatZaiquData data)
+    private void OnSendDeleZaiQuzy(string zyid)
     {
-        sender.LogError("走创建逻辑" + data);
+        if (MyDataInfo.MyLevel > 0) return;
+
+        CreatZaiquData data = new CreatZaiquData()
+        {
+            zaiquId = zyid, isDele = 1
+        };
+        var creatDataStr = MsgSend_CreatZaiqu(data);
+        OnSendSkillInfo((int)MessageID.SendChangeZaiqu, creatDataStr);
+    }
+
+    private void OnChangeZaiqu(CreatZaiquData data)
+    {
+        if (data.isDele == 1)
+        {
+            for (int i = 0; i < sceneAllzy.Count; i++)
+            {
+                if (string.Equals(sceneAllzy[i].BobjectId, data.zaiquId))
+                {
+                    EventManager.Instance.EventTrigger(EventType.DestoryZiyuanIcon.ToString(), data.zaiquId);
+                    Destroy(sceneAllzy[i].gameObject);
+                    sceneAllzy.RemoveAt(i);
+                    break;
+                }
+            }
+
+            return;
+        }
+
         bool isfind = false;
         ZiYuanBase templateZaiqu = null;
         for (int i = 0; i < allBObjects.Length; i++)
@@ -451,7 +493,6 @@ public partial class CommanderController : DMonoBehaviour
             {
                 isfind = true;
                 templateZaiqu = allBObjects[i].GetComponent<ZiYuanBase>();
-                sender.LogError("找到了模板对象" + templateZaiqu.ziYuanName);
                 break;
             }
         }
@@ -468,11 +509,12 @@ public partial class CommanderController : DMonoBehaviour
         var zaiQuPosition = temporaryZaiqu.transform.position;
         zaiQuPosition = new Vector3(zaiQuPosition.x, posY, zaiQuPosition.z);
         temporaryZaiqu.transform.position = zaiQuPosition;
-        temporaryZaiqu.Init(data.zaiquId, 50, "366baf", "cb488f");
+        temporaryZaiqu.Init(data.zaiquId, 50, string.Empty, string.Empty);
         temporaryZaiqu.latAndLon = CalculateLatLon(zaiQuPosition);
-        temporaryZaiqu.gameObject.SetActive(true);
+        temporaryZaiqu.transform.GetChild(0).gameObject.SetActive(true);
+        // temporaryZaiqu.Reset();
 
-        // EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), temporaryEquip);
+        EventManager.Instance.EventTrigger(EventType.CreatAZiyuanIcon.ToString(), temporaryZaiqu);
         sceneAllzy.Add(temporaryZaiqu);
     }
 
