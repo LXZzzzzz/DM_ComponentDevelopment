@@ -119,7 +119,7 @@ namespace ReportGenerate
 
             #region 物资投放完成度
 
-            data.任务结束时对应的物资投放总需求 = sysData.受灾需转运总人数 * sysData.人均救援物资需求;
+            data.任务结束时对应的物资投放总需求 = (sysData.受灾需转运总人数 - sysData.所有不需要物资的人员数量) * sysData.人均救援物资需求;
             double valAwZong = 0f;
             double ZongMaterialWeight = 0f;
             foreach (MaterialData item in outData.任务结束时各安置点数据)
@@ -177,7 +177,7 @@ namespace ReportGenerate
                 for (int i = 0; i < item.Value.Count; i++)
                 {
                     double zPtime = item.Value[i].PersonEndTime - item.Value[i].PersonFirstTime;
-                    if (zPtime > 0) zPtime += +item.Key.PersonTime; //这个是确保该架次确实安置人员了，就把安置人员动作所需时间加进去
+                    if (zPtime > 0) zPtime += +item.Key.PersonTime * item.Value[i].PersonCount; //这个是确保该架次确实安置人员了，就把安置人员动作所需时间加进去
                     if (zPtime < 0) continue;
                     item.Value[i].ZongPersonMissionTime = zPtime;
                     ZongPersonMissionTime += zPtime;
@@ -191,7 +191,8 @@ namespace ReportGenerate
                     ZongPersonTotalCost += (item.Key.Price * 0.00029453 + item.Key.Consumption * 0.00087035 + 0.965) * zPtime;
                     ZongMaterialTotalCost += (item.Key.Price * 0.00029453 + item.Key.Consumption * 0.00087035 + 0.965) * zMtime;
 
-                    double MaxPersonCount = (zPtime / (item.Value[i].PersonAToBDistance / item.Key.Speed + item.Key.PersonTime)) * item.Key.PersonMaxCount;
+                    //这个算法看不懂了
+                    double MaxPersonCount = (zPtime / (item.Value[i].PersonAToBDistance / item.Key.Speed + item.Key.PersonTime * item.Key.PersonMaxCount)) * item.Key.PersonMaxCount;
                     item.Key.单机人员转运效率.Add(item.Value[i].PersonCount / MaxPersonCount);
                     double MaxMaterialWeight = (zMtime / (item.Value[i].MaterialAToBDistance / item.Key.Speed + item.Key.MaterialTime)) * item.Key.MaterialMaxCount;
                     item.Key.单机物资投放效率.Add(item.Value[i].MaterialWeight / MaxMaterialWeight);

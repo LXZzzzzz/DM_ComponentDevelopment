@@ -375,9 +375,9 @@ public class UIAttributeView : BasePanel
             oilSlider.value = currentOil / totalOil;
             oilValue.text = (int)(currentOil / totalOil * 100) + "%";
             waterSlider.value = water / float.Parse(currentEquip.AttributeInfos[15]);
-            waterText.text = water + "/" + currentEquip.AttributeInfos[15] + "Kg";
+            waterText.text = $"{water / 1000:0.0}" + "/" + $"{float.Parse(currentEquip.AttributeInfos[15]) / 1000:0.0}" + "吨";
             goodsSlider.value = goods / float.Parse(currentEquip.AttributeInfos[4]);
-            goodsText.text = goods + "/" + currentEquip.AttributeInfos[4] + "Kg";
+            goodsText.text = $"{goods / 1000:0.0}" + "/" + $"{float.Parse(currentEquip.AttributeInfos[4]) / 1000:0.0}" + "吨";
             zsySlider.value = (personType == 1 ? 0 : person) / float.Parse(currentEquip.AttributeInfos[6]);
             zsyText.text = (personType == 1 ? 0 : person) + "/" + currentEquip.AttributeInfos[6] + "人";
             qsySlider.value = (personType == 1 ? person : 0) / float.Parse(currentEquip.AttributeInfos[6]);
@@ -414,8 +414,8 @@ public class UIAttributeView : BasePanel
         equipObj.Find("equipParameter/parameterInfo/hangcPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[3] + "Km";
         equipObj.Find("equipParameter/parameterInfo/speedPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[9] + "km/h";
         equipObj.Find("equipParameter/parameterInfo/oilPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[5] + "Kg";
-        equipObj.Find("equipParameter/parameterInfo/waterPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[15] + "Kg";
-        equipObj.Find("equipParameter/parameterInfo/goodsPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[4] + "Kg";
+        equipObj.Find("equipParameter/parameterInfo/waterPart").GetComponentInChildren<Text>().text = $"{float.Parse(equip.AttributeInfos[15]) / 1000:0.0}" + "吨";
+        equipObj.Find("equipParameter/parameterInfo/goodsPart").GetComponentInChildren<Text>().text = $"{float.Parse(equip.AttributeInfos[4]) / 1000:0.0}" + "吨";
         //机载携带
         if (waterSlider == null) waterSlider = equipObj.Find("carryParameter/parameterInfo/waterPart").GetComponentInChildren<Slider>();
         if (waterText == null) waterText = equipObj.Find("carryParameter/parameterInfo/waterPart").GetComponentInChildren<Text>();
@@ -426,9 +426,9 @@ public class UIAttributeView : BasePanel
         if (qsySlider == null) qsySlider = equipObj.Find("carryParameter/parameterInfo/qsyPart").GetComponentInChildren<Slider>();
         if (qsyText == null) qsyText = equipObj.Find("carryParameter/parameterInfo/qsyPart").GetComponentInChildren<Text>();
         waterSlider.value = water / float.Parse(equip.AttributeInfos[15]);
-        waterText.text = water + "/" + equip.AttributeInfos[15] + "Kg";
+        waterText.text = $"{water / 1000:0.0}" + "/" + $"{float.Parse(equip.AttributeInfos[15]) / 1000:0.0}" + "吨";
         goodsSlider.value = goods / float.Parse(equip.AttributeInfos[4]);
-        goodsText.text = goods + "/" + equip.AttributeInfos[4] + "Kg";
+        goodsText.text = $"{goods / 1000:0.0}" + "/" + $"{float.Parse(equip.AttributeInfos[4]) / 1000:0.0}" + "吨";
         zsySlider.value = (personType == 1 ? 0 : person) / float.Parse(equip.AttributeInfos[6]);
         zsyText.text = (personType == 1 ? 0 : person) + "/" + equip.AttributeInfos[6] + "人";
         qsySlider.value = (personType == 1 ? person : 0) / float.Parse(equip.AttributeInfos[6]);

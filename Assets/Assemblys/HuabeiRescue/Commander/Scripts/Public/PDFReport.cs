@@ -317,7 +317,8 @@ namespace ReportGenerate
                     userInfos[equip.Key][0] += equip.Value[i] + '、';
                 }
 
-                userInfos[equip.Key][0] = userInfos[equip.Key][0].Remove(userInfos[equip.Key][0].Length - 1);
+                if (!string.IsNullOrEmpty(userInfos[equip.Key][0]) && userInfos[equip.Key][0].Length > 1)
+                    userInfos[equip.Key][0] = userInfos[equip.Key][0].Remove(userInfos[equip.Key][0].Length - 1);
             }
 
             foreach (var ziyuan in usersZiyuans)
@@ -328,7 +329,8 @@ namespace ReportGenerate
                     userInfos[ziyuan.Key][1] += ziyuan.Value[i] + '、';
                 }
 
-                userInfos[ziyuan.Key][1] = userInfos[ziyuan.Key][1].Remove(userInfos[ziyuan.Key][1].Length - 1);
+                if (!string.IsNullOrEmpty(userInfos[ziyuan.Key][1]) && userInfos[ziyuan.Key][1].Length > 1)
+                    userInfos[ziyuan.Key][1] = userInfos[ziyuan.Key][1].Remove(userInfos[ziyuan.Key][1].Length - 1);
             }
 
             foreach (var item in userInfos)

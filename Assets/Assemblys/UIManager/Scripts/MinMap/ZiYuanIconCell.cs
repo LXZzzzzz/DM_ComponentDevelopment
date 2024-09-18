@@ -210,7 +210,11 @@ public class ZiYuanIconCell : IconCellBase
             checkTimer = Time.time + 1 / 25f;
             if (ChoosePart != null && ziYuanItem != null)
             {
-                ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+                if (ziYuanItem.ZiYuanType == ZiYuanType.SourceOfAFire && (ziYuanItem as ISourceOfAFire).getTaskProgress())
+                    ChoosePart.GetChild(0).GetComponent<Image>().color = Color.gray;
+                else
+                    ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+
                 if (ColorUtility.TryParseHtmlString("#D7D7D7", out Color color))
                 {
                     ChoosePart.GetChild(1).GetComponent<Image>().color = ziYuanItem.isChooseMe ? Color.white : color;

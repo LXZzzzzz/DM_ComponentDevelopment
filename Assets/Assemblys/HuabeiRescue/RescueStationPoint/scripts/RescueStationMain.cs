@@ -13,7 +13,7 @@ public class RescueStationMain : ScriptManager
             new InputIntUnitProperty("可安置人数", 100, "人"),
             new InputStringProperty("组件描述", "安置点，需要给这里安排轻伤员和物资"),
             new InputStringProperty("组件icon色值", "#0E4FAF"),
-            new InputStringProperty("组件icon色值", "#366baf"),
+            new InputStringProperty("组件icon选中色值", "#366baf"),
         };
     }
 

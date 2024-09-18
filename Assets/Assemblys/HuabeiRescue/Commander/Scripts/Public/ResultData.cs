@@ -244,7 +244,7 @@ namespace ReportGenerate
         public double WatersMaxCoune;
 
         /// <summary>
-        /// 人员吊救时间
+        /// 人员吊救时间(单人)
         /// </summary>
         public double PersonTime;
 
@@ -379,6 +379,7 @@ namespace ReportGenerate
     {
         public double 人均救援物资需求;
         public double 受灾需转运总人数;
+        public double 所有不需要物资的人员数量;
         public double 最大巡航速度;
         public double 单次人员吊救时间;
         public double 单次物资投放时间;

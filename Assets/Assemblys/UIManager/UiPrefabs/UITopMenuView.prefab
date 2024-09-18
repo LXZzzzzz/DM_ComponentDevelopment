@@ -6840,6 +6840,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3827760835002743539}
   - component: {fileID: 1285362111386129230}
+  - component: {fileID: 4847334901047351169}
   m_Layer: 5
   m_Name: tog_Zszh
   m_TagString: Untagged
@@ -6931,6 +6932,19 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_IsOn: 0
+--- !u!114 &4847334901047351169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8408871364077165153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62704df28c912554188067a0a020fd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  go: {fileID: 3810266661436281102}
 --- !u!1 &8505836489267024318
 GameObject:
   m_ObjectHideFlags: 0

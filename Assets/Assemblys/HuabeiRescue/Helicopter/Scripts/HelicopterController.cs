@@ -164,13 +164,13 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             if (mySkills[i].SkillType == SkillType.Supply)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.Supply;
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing && amountOfOil < myAttributeInfo.zyl;
             }
 
             if (mySkills[i].SkillType == SkillType.WaterIntaking)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.Waters;
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover && amountOfWater == 0;
             }
 
             if (mySkills[i].SkillType == SkillType.WaterPour)
@@ -616,12 +616,12 @@ public class HelicopterInfo
     public float ktwzsj;
 
     /// <summary>
-    /// 落地装载人员时间
+    /// 落地装载人员时间(单人)
     /// </summary>
     public float ldzzrysj;
 
     /// <summary>
-    /// 索降救人时间
+    /// 索降救人时间（单人）
     /// </summary>
     public float sjjrsj;
 
@@ -636,7 +636,7 @@ public class HelicopterInfo
     public string jcsfsd;
 
     /// <summary>
-    /// 安置伤员时间
+    /// 安置伤员时间（单人）
     /// </summary>
     public float azsysj;
 

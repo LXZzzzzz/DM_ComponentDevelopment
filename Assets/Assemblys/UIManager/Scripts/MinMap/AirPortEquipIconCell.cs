@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
+public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler,IPointerEnterHandler
 {
     private EquipBase eb;
     private Image icon;
@@ -99,9 +99,15 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        return;
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             openRightClickView();
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        openRightClickView();
     }
 }

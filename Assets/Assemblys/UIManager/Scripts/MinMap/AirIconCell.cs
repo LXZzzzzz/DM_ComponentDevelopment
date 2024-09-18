@@ -28,6 +28,7 @@ public class AirIconCell : IconCellBase
     private Slider currentOil;
     private GameObject water, goods, qPerson, zPerson;
     private GameObject airPort;
+    private GameObject onGround;
 
     public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc, UnityAction<bool, Vector2, Vector2> setRouteCb)
     {
@@ -48,6 +49,7 @@ public class AirIconCell : IconCellBase
         qPerson = transform.Find("Root/currentInfoShow/qPersonPart").gameObject;
         zPerson = transform.Find("Root/currentInfoShow/zPersonPart").gameObject;
         skillProgressShow = transform.Find("Root/skillBg/progressShow").GetComponent<Slider>();
+        onGround = transform.Find("Root/mainPart/onGround").gameObject;
         initLine();
     }
 
@@ -189,9 +191,11 @@ public class AirIconCell : IconCellBase
                 break;
             case SkillType.TakeOff:
                 skillName.text = "正在起飞...";
+                onGround.SetActive(false);
                 break;
             case SkillType.Landing:
                 skillName.text = "正在降落...";
+                onGround.SetActive(true);
                 break;
             case SkillType.Supply:
                 skillName.text = "正在补给...";
