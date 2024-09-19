@@ -62,12 +62,12 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
                 break;
             case ZiYuanType.RescueStation:
                 isComplete = (associationGo as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
-                progressInfo = $"安置轻伤员:{currentPersonNum}人/{maxPersonNum}人\n所需物资:{currentGoodsNum}kg/{maxGoodsNum}kg";
+                progressInfo = $"安置受灾群众:{currentPersonNum}人/{maxPersonNum}人\n所需物资:{currentGoodsNum}kg/{maxGoodsNum}kg";
                 break;
             case ZiYuanType.Hospital:
                 isComplete = (associationGo as IRescueStation).getTaskProgress(out int currentPersonNum1,
                     out int maxPersonNum1, out float currentGoodsNum1, out float maxGoodsNum1);
-                progressInfo = $"救治重伤员:{currentPersonNum1}人";
+                progressInfo = $"救治伤员:{currentPersonNum1}人";
                 break;
             case ZiYuanType.DisasterArea:
                 isComplete = (associationGo as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);

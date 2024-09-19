@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using ToolsLibrary;
 using UiManager;
@@ -28,13 +29,17 @@ public class UIChangeControllers : BasePanel
     {
         base.ShowMe(userData);
 
+        ccCells.Clear();
         for (int i = 0; i < MyDataInfo.playerInfos?.Count; i++)
         {
+            if (MyDataInfo.playerInfos[i].ClientLevel <= 1) continue;
             var ccitem = Instantiate(cccell, menusParent);
             ccitem.Init(MyDataInfo.playerInfos[i].RoleId, MyDataInfo.playerInfos[i].ClientLevelName, MyDataInfo.playerInfos[i].MyColor);
             ccitem.gameObject.SetActive(true);
             ccCells.Add(ccitem);
         }
+
+        if (ccCells.Count == 0) StartCoroutine(waitClose());
 
         ZyComsInfo data = (ZyComsInfo)userData;
         viewPoint.position = data.pos;
@@ -44,6 +49,12 @@ public class UIChangeControllers : BasePanel
         {
             ccCells[i].ChangeState(data.coms?.Find(x => string.Equals(x, ccCells[i].comId)) != null);
         }
+    }
+
+    IEnumerator waitClose()
+    {
+        yield return 1;
+        Close(UIName.UIChangeControllers);
     }
 
     private void OnSure()

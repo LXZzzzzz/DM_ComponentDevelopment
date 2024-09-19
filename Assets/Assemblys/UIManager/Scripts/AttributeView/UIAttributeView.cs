@@ -409,6 +409,13 @@ public class UIAttributeView : BasePanel
         equip.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
         oilSlider.value = currentOil / totalOil;
         oilValue.text = (int)(currentOil / totalOil * 100) + "%";
+        
+        Transform itemAirFun = equipObj.Find("equipNameView/myFunction");
+        itemAirFun.GetChild(0).gameObject.SetActive(equip.isTS);
+        itemAirFun.GetChild(1).gameObject.SetActive(equip.isYSWZ);
+        itemAirFun.GetChild(2).gameObject.SetActive(equip.isYSRY);
+        itemAirFun.GetChild(3).gameObject.SetActive(equip.isSJJY);
+
         //飞机参数
         equipObj.Find("equipParameter/parameterInfo/personPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[6] + "人";
         equipObj.Find("equipParameter/parameterInfo/hangcPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[3] + "Km";
@@ -514,7 +521,7 @@ public class UIAttributeView : BasePanel
                 break;
             case ZiYuanType.DisasterArea:
                 (_ziYuanItem as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
-                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "轻伤员" : "重伤员";
+                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "受灾群众" : "伤员";
                 progressInfo = $"{personType}灾区还剩余需转运人数:{currentNum}人，总共受灾人数：{maxNum}人";
                 break;
             default:

@@ -28,7 +28,7 @@ public partial class HelicopterController
                 int disPersonType = (items[i] as IDisasterArea).getWoundedPersonnelType();
                 if (personType != -1 && disPersonType != personType)
                 {
-                    EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "轻伤员" : "重伤员")}");
+                    EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "受灾群众" : "伤员")}");
                     return;
                 }
 
@@ -111,7 +111,7 @@ public partial class HelicopterController
                 int disPersonType = (items[i] as IDisasterArea).getWoundedPersonnelType();
                 if (personType != -1 && disPersonType != personType)
                 {
-                    EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "轻伤员" : "重伤员")}");
+                    EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "受灾群众" : "伤员")}");
                     return;
                 }
 
@@ -144,7 +144,7 @@ public partial class HelicopterController
         switch (aa)
         {
             case 0:
-                stageInfo = "索降救援";
+                stageInfo = "吊运救援";
                 break;
             case 1:
                 stageInfo = "伤情评估";

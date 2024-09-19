@@ -232,8 +232,8 @@ public partial class CommanderController
                 var itemcd = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemcd as IRescuePersonnelOperation)?.CableDescentRescue();
                 var playerDatacd = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemcd.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatacd.ColorCode}>{playerDatacd.ClientLevelName}</color> {itemcd.name}执行索降救援操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatacd.ClientLevelName}】{itemcd.name}执行索降救援操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatacd.ColorCode}>{playerDatacd.ClientLevelName}</color> {itemcd.name}执行吊运救援操作");
+                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatacd.ClientLevelName}】{itemcd.name}执行吊运救援操作");
                 break;
             case MessageID.TriggerReturnFlight:
                 sender.LogError("收到了返航的指令");

@@ -12,7 +12,6 @@ using EventType = Enums.EventType;
 public partial class HelicopterController : EquipBase, IWatersOperation, IGroundReady, ITakeOffAndLand, IGoodsOperation, IRescuePersonnelOperation, ISupply
 {
     private bool isWaitArrive;
-    [HideInInspector] public bool isTS, isYSWZ, isYSRY, isSJJY;
     public HelicopterInfo myAttributeInfo;
     private List<SkillData> mySkills;
     private HelicopterState myState;
@@ -81,7 +80,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
         if (isSJJY)
         {
-            mySkills.Add(new SkillData() { SkillType = SkillType.CableDescentRescue, isUsable = false, skillName = "索降救援" });
+            mySkills.Add(new SkillData() { SkillType = SkillType.CableDescentRescue, isUsable = false, skillName = "吊运救援" });
             if (mySkills.Find(x => x.SkillType == SkillType.PlacementOfPersonnel) == null)
                 mySkills.Add(new SkillData() { SkillType = SkillType.PlacementOfPersonnel, isUsable = false, skillName = "安置人员" });
         }

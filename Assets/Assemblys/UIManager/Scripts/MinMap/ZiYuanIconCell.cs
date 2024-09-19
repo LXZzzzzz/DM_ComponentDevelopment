@@ -180,15 +180,15 @@ public class ZiYuanIconCell : IconCellBase
                 break;
             case ZiYuanType.RescueStation:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
-                progressInfo = $"安置点当前安置轻伤员:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
+                progressInfo = $"安置点当前安置受灾群众:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
                 break;
             case ZiYuanType.Hospital:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum1, out int maxPersonNum1, out float currentGoodsNum1, out float maxGoodsNum1);
-                progressInfo = $"医院当前救治重伤员:{currentPersonNum1}人";
+                progressInfo = $"医院当前救治伤员:{currentPersonNum1}人";
                 break;
             case ZiYuanType.DisasterArea:
                 (_ziYuanItem as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
-                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "轻伤员" : "重伤员";
+                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "受灾群众" : "伤员";
                 progressInfo = $"{personType}灾区还剩余需转运人数:{currentNum}人，总共受灾人数：{maxNum}人";
                 break;
             default:
