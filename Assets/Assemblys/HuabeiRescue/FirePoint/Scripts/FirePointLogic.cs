@@ -10,11 +10,23 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
     private float allWeight;
     private bool isStart;
 
+    public void fireInit(float fs, float pd, float csrsmj, string id, string colorCode, string chooseColoeCode)
+    {
+        Debug.LogError("没初始化的颜色：" + MyColor + "+" + ChooseColor);
+        Debug.LogError("风速：" + this.fs);
+        fm = gameObject.GetComponent<FireManage>();
+        Init(fs, pd, csrsmj, id, colorCode, chooseColoeCode);
+    }
+
     public void Init(float fs, float pd, float csrsmj, string id, string colorCode, string chooseColoeCode)
     {
         base.Init(id, 50, colorCode, chooseColoeCode);
+
+        Debug.LogError("系统初始化的颜色：" + MyColor + "+" + ChooseColor);
+        if (csrsmj < 1) return;
         ZiYuanType = ZiYuanType.SourceOfAFire;
-        fm = gameObject.AddComponent<FireManage>();
+        if (fm == null)
+            fm = gameObject.AddComponent<FireManage>();
 
         fm.Init(fs, pd, csrsmj);
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.Events;
@@ -54,6 +55,12 @@ public class ZiYuanCell : DraggingFunction
     private void OnOpenChangeCom()
     {
         //打开选择权限的视图
+        if (ProgrammeDataManager.Instance.GetCurrentData == null)
+        {
+            ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "请先创建方案再进行编辑！" };
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
+            return;
+        }
         var surePos = UIManager.Instance.GetUIPanel<UIMap>(UIName.UIMap).resolutionRatioNormalized_size(myRect.sizeDelta / 2 + (isRight ? new Vector2(-90, -myRect.sizeDelta.y) : Vector2.zero));
         ZyComsInfo zci = new ZyComsInfo() { pos = (Vector2)myRect.position + surePos, coms = _ziYuan.beUsedCommanderIds, changeComs = OnChangeComs };
         UIManager.Instance.ShowPanel<UIChangeControllers>(UIName.UIChangeControllers, zci);

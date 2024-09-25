@@ -72,7 +72,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
         //刚开始切换为编辑模式，并通知初始化场景
         SwitchMapLogic(OperatorState.CreatAndEditor);
-        EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allBObjects);
+        // EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allBObjects);
         EventManager.Instance.AddEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
         // 当前UI对象的局部Y轴
         localYAxis = middlePoint.transform.up;

@@ -35,7 +35,7 @@ public class TaskCell : DMonoBehaviour
     private void LateUpdate()
     {
         if (tp == null) return;
-        isComplete.isOn = tp.getTaskProgress(out string progressInfo);
+        isComplete.isOn = tp.getTaskProgress(out string progressInfo,out float progressNum);
         taskProgress.text = progressInfo;
         if (ProgrammeDataManager.Instance.GetCurrentData != null && ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList.ContainsKey(tp.getAssociationAssemblyId()))
             ChangeComsView(ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList[tp.getAssociationAssemblyId()]);

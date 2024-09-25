@@ -20,6 +20,8 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         EventManager.Instance.AddEventListener<string>(EventType.DestoryEquip.ToString(), destroyAirCell);
         EventManager.Instance.AddEventListener<object>(EventType.TransferEditingInfo.ToString(), parsingData);
         EventManager.Instance.AddEventListener(EventType.CloseCreatTarget.ToString(), closeCreatTarget);
+        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
+        EventManager.Instance.AddEventListener<string>(EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
     }
 
 
@@ -27,17 +29,17 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
     {
         if (data is BObjectModel[])
         {
-            var initData = data as BObjectModel[];
-            //场景初始化逻辑,走完切回默认模式
-            for (int i = 0; i < initData.Length; i++)
-            {
-                //找到场景中所有资源，显示到地图上
-                var tagItem = initData[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-                if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
-                {
-                    creatZiYuanCell(initData[i].BObject.Id, initData[i].gameObject.transform.position);
-                }
-            }
+            // var initData = data as BObjectModel[];
+            // //场景初始化逻辑,走完切回默认模式
+            // for (int i = 0; i < initData.Length; i++)
+            // {
+            //     //找到场景中所有资源，显示到地图上
+            //     var tagItem = initData[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+            //     if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
+            //     {
+            //         creatZiYuanCell(initData[i].BObject.Id, initData[i].gameObject.transform.position);
+            //     }
+            // }
 
             mainLogic.SwitchMapLogic(OperatorState.Normal);
         }
@@ -98,6 +100,11 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
 
     public override void OnLeftClickMap(Vector2 pos)
     {
+        //导教端在场景中创建灾区
+        if (string.IsNullOrEmpty(creatTargetTemplate)) return;
+        //通知主角在场景对应位置创建实体
+        EventManager.Instance.EventTrigger(EventType.CreatZaiQuZy.ToString(), creatTargetTemplate, uiPos2WorldPos(pos));
+        
         return;
         if (string.IsNullOrEmpty(creatTargetTemplate)) return;
         //这里先去数据管理器里申请创建，然后将数据ID传给创建者
@@ -119,12 +126,33 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         creatTargetTemplate = String.Empty;
     }
 
+    private void OnAddZyZq(ZiYuanBase zyObj)
+    {
+        var itemCell = Object.Instantiate(mainLogic.ziYuanIconPrefab, mainLogic.iconCellParent);
+        itemCell.gameObject.SetActive(true);
+        //传入这个组件的基本信息，和选择后的回调
+        itemCell.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(zyObj.transform.position);
+        (itemCell as ZiYuanIconCell).Init(zyObj, mainLogic.OnChooseObj);
+        mainLogic.allIconCells.Add(zyObj.BobjectId, itemCell);
+    }
+
+    private void OnRemoveZyZq(string deleId)
+    {
+        if (mainLogic.allIconCells.ContainsKey(deleId))
+        {
+            Object.Destroy(mainLogic.allIconCells[deleId].gameObject);
+            mainLogic.allIconCells.Remove(deleId);
+        }
+    }
+
     public override void OnExit()
     {
         EventManager.Instance.RemoveEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), creatAirCell);
         EventManager.Instance.RemoveEventListener<string>(EventType.DestoryEquip.ToString(), destroyAirCell);
         EventManager.Instance.RemoveEventListener<object>(EventType.TransferEditingInfo.ToString(), parsingData);
         EventManager.Instance.RemoveEventListener(EventType.CloseCreatTarget.ToString(), closeCreatTarget);
+        EventManager.Instance.RemoveEventListener<ZiYuanBase>(EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
+        EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
     }
 
     private void creatAirCell(EquipBase equip)

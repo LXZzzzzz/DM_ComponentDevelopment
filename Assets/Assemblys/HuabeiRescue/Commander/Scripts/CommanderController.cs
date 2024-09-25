@@ -101,6 +101,9 @@ public partial class CommanderController : DMonoBehaviour
             StartCoroutine(showTask());
         }
 
+        //这里在测试完创建删除后要放开，改为导教端控制游戏暂停，修改灾区数据
+        // EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+
         clouds = GameObject.Find("Expanse Sky/Cumulus Clouds");
     }
 
@@ -492,14 +495,14 @@ public partial class CommanderController : DMonoBehaviour
             if (string.Equals(allBObjects[i].BObject.Id, data.tempId))
             {
                 isfind = true;
-                templateZaiqu = allBObjects[i].GetComponent<ZiYuanBase>();
+                templateZaiqu = allBObjects[i].transform.GetChild(0).GetComponent<ZiYuanBase>();
                 break;
             }
         }
 
-        if (!isfind)
+        if (!isfind || templateZaiqu == null)
         {
-            sender.LogError("创建的目标对象未找到");
+            Debug.LogError("创建的目标对象未找到");
             return;
         }
 
@@ -509,9 +512,14 @@ public partial class CommanderController : DMonoBehaviour
         var zaiQuPosition = temporaryZaiqu.transform.position;
         zaiQuPosition = new Vector3(zaiQuPosition.x, posY, zaiQuPosition.z);
         temporaryZaiqu.transform.position = zaiQuPosition;
-        temporaryZaiqu.Init(data.zaiquId, 50, string.Empty, string.Empty);
         temporaryZaiqu.latAndLon = CalculateLatLon(zaiQuPosition);
-        temporaryZaiqu.transform.GetChild(0).gameObject.SetActive(true);
+        temporaryZaiqu.gameObject.SetActive(true);
+        switch (temporaryZaiqu.ZiYuanType)
+        {
+            case ZiYuanType.SourceOfAFire:
+                (temporaryZaiqu as ISourceOfAFire).fireInit(5, 5, 10000, data.zaiquId, "#800049", "#cb488f");
+                break;
+        }
         // temporaryZaiqu.Reset();
 
         EventManager.Instance.EventTrigger(EventType.CreatAZiyuanIcon.ToString(), temporaryZaiqu);

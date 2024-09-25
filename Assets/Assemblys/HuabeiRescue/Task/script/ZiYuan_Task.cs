@@ -47,9 +47,10 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
         return associationGo.BobjectId;
     }
 
-    public bool getTaskProgress(out string progressInfo)
+    public bool getTaskProgress(out string progressInfo,out float progressNum)
     {
         progressInfo = "";
+        progressNum = 0;
         bool isComplete = false;
         if (associationGo == null)
             return false;

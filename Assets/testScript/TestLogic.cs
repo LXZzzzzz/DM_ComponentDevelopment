@@ -41,12 +41,14 @@ public class TestLogic : MonoBehaviour
         testDic = new Dictionary<string, string>();
 
         to.test = new testClass() { aaa = 20, bbb = 30 };
-        fp.Init(5, 10, 30000, "1111111","","");
+        fp.Init(5, 10, 30000, "1111111", "", "");
 
         myass = new List<AudioSource>();
         mywms = new List<WingMark>();
 
         mywms = fj.transform.GetComponentsInChildren<WingMark>(true).ToList();
+        
+        ttl.Init(4949);
     }
 
     public FirePointLogic fp;
@@ -55,6 +57,8 @@ public class TestLogic : MonoBehaviour
     public GameObject fj;
 
     public string aa, bb;
+
+    public testTemplateLogic ttl;
 
     private List<AudioSource> myass;
     private List<WingMark> mywms;
@@ -80,7 +84,7 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            fp.Init(5, 10, 30000, "1111111","","");
+            fp.Init(5, 10, 30000, "1111111", "", "");
             float aa = 400 / mj;
         }
 
@@ -154,6 +158,11 @@ public class TestLogic : MonoBehaviour
             EventManager.Instance.EventTrigger(Enums.EventType.ShowAMsgInfo.ToString(), "执行装载资源的操作");
         }
 
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Instantiate(ttl, transform);
+        }
+
         if (isRunTimer) runTimer();
 
         if (routePoints != null)
@@ -202,7 +211,7 @@ public class TestLogic : MonoBehaviour
 #endif
         vl.rectTransform.SetParent(can.transform);
         vl.rectTransform.localPosition = Vector3.zero;
-        vl.rectTransform.localScale = Vector3.one*10;
+        vl.rectTransform.localScale = Vector3.one * 10;
         vl.active = true;
         if (ColorUtility.TryParseHtmlString("#FF0000", out Color color))
             vl.color = color;

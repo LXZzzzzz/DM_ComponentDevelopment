@@ -362,7 +362,6 @@ public class UICommanderView : BasePanel
 
     private void OnAddZyZq(ZiYuanBase zyObj)
     {
-        Debug.LogError("创建灾区关联的UI控件");
         bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
                           zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
 

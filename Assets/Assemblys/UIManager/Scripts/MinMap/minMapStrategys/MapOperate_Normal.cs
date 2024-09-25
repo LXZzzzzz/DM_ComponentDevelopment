@@ -187,11 +187,6 @@ public class MapOperate_Normal : MapOperateLogicBase
         isShow = false;
         showLine.active = false;
 
-        //导教端在场景中创建灾区
-        if (string.IsNullOrEmpty(creatTargetTemplate)) return;
-        //通知主角在场景对应位置创建实体
-        EventManager.Instance.EventTrigger(EventType.CreatZaiQuZy.ToString(), creatTargetTemplate, uiPos2WorldPos(pos));
-
         //这里先去数据管理器里申请创建，然后将数据ID传给创建者
         // string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, uiPos2WorldPos(pos));
         // ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = MyDataInfo.leadId;
@@ -221,6 +216,8 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     private void OnParsingData(object data)
     {
+        Debug.LogError("该模式下不允许对场景进行编辑");
+        return;
         if (data is string)
         {
             mainLogic.TempIcon.gameObject.SetActive(true);

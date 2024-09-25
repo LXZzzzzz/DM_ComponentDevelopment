@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ZiYuanIconCell : IconCellBase
@@ -32,37 +34,68 @@ public class ZiYuanIconCell : IconCellBase
 
     public ZiYuanBase ziYuanItem => _ziYuanItem;
 
-    private void Start()
+
+    public void Init(ZiYuanBase zyObj,UnityAction<string, PointerEventData.InputButton> cb)
     {
+        base.Init(zyObj.BobjectId, cb);
         zyTypePart = transform.Find("MainPart/zyTypePart");
         tipShowPart = transform.Find("MainPart/TipShowPart");
-        for (int i = 0; i < allBObjects.Length; i++)
+
+        _ziYuanItem = zyObj;
+        if (_ziYuanItem == null) return;
+        changeIcon(_ziYuanItem.ZiYuanType);
+        
+        ChoosePart = transform.Find("MainPart/belongToPart");
+        transform.Find("MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
+        for (int i = 0; i < ChoosePart.childCount; i++)
         {
-            if (string.Equals(allBObjects[i].BObject.Id, belongToId))
-            {
-                _ziYuanItem = allBObjects[i].GetComponent<ZiYuanBase>();
-                if (_ziYuanItem == null) return;
-                changeIcon(_ziYuanItem.ZiYuanType);
-                break;
-            }
+            if (i == 1 || i == 3) continue;
+            ChoosePart.GetChild(i).GetComponent<Image>().color = ziYuanItem.MyColor;
         }
 
-        if (ziYuanItem != null)
-        {
-            // chooseImg = transform.Find("Choose").gameObject;
-            ChoosePart = transform.Find("MainPart/belongToPart");
-            transform.Find("MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
-            for (int i = 0; i < ChoosePart.childCount; i++)
-            {
-                if (i == 1 || i == 3) continue;
-                ChoosePart.GetChild(i).GetComponent<Image>().color = ziYuanItem.MyColor;
-            }
-
-            comPointItem = transform.Find("MainPart/comPointItem");
-            comsParent = transform.Find("MainPart/BelongtoShowPart");
-            comsParentRect = comsParent.GetComponent<RectTransform>();
-            currentBelongToInfos = new List<Transform>();
-        }
+        comPointItem = transform.Find("MainPart/comPointItem");
+        comsParent = transform.Find("MainPart/BelongtoShowPart");
+        comsParentRect = comsParent.GetComponent<RectTransform>();
+        currentBelongToInfos = new List<Transform>();
+    }
+    
+    private void Start()
+    {
+        // return;
+        // zyTypePart = transform.Find("MainPart/zyTypePart");
+        // tipShowPart = transform.Find("MainPart/TipShowPart");
+        // for (int i = 0; i < allBObjects.Length; i++)
+        // {
+        //     Debug.LogError(allBObjects[i].gameObject.name + (allBObjects[i].BObject == null));
+        //     if (string.Equals(allBObjects[i].BObject.Id, belongToId))
+        //     {
+        //         _ziYuanItem = allBObjects[i].GetComponent<ZiYuanBase>();
+        //         if (_ziYuanItem == null) return;
+        //         changeIcon(_ziYuanItem.ZiYuanType);
+        //         break;
+        //     }
+        // }
+        //
+        // if (ziYuanItem != null)
+        // {
+        //     // chooseImg = transform.Find("Choose").gameObject;
+        //     ChoosePart = transform.Find("MainPart/belongToPart");
+        //     transform.Find("MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
+        //     for (int i = 0; i < ChoosePart.childCount; i++)
+        //     {
+        //         if (i == 1 || i == 3) continue;
+        //         ChoosePart.GetChild(i).GetComponent<Image>().color = ziYuanItem.MyColor;
+        //     }
+        //
+        //     comPointItem = transform.Find("MainPart/comPointItem");
+        //     comsParent = transform.Find("MainPart/BelongtoShowPart");
+        //     comsParentRect = comsParent.GetComponent<RectTransform>();
+        //     currentBelongToInfos = new List<Transform>();
+        // }
+        // else
+        // {
+        //     Debug.LogError("未找到指定的资源");
+        // }
 
         #region 机场相关
 
@@ -172,6 +205,7 @@ public class ZiYuanIconCell : IconCellBase
     protected override IconInfoData GetBasicInfo()
     {
         string progressInfo = String.Empty;
+        if (_ziYuanItem == null) return null;
         switch (_ziYuanItem.ZiYuanType)
         {
             case ZiYuanType.SourceOfAFire:

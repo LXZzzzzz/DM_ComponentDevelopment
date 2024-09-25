@@ -52,9 +52,9 @@ public class UICommanderDirector : BasePanel
             var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
             if (tagItem == null || tagItem.SubTags.Find(y => y.Id == 6) == null) continue;
 
-            if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
+            if (allBObjects[i].transform.GetChild(0).GetComponent<ZiYuanBase>() != null)
             {
-                var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
+                var zyItem = allBObjects[i].transform.GetChild(0).GetComponent<ZiYuanBase>();
                 var zqitem = Instantiate(zqc, mbParent);
                 zqitem.Init(zyItem);
                 zqitem.gameObject.SetActive(true);

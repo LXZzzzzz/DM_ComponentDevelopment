@@ -12,7 +12,6 @@ using EventType = Enums.EventType;
 public partial class HelicopterController : EquipBase, IWatersOperation, IGroundReady, ITakeOffAndLand, IGoodsOperation, IRescuePersonnelOperation, ISupply
 {
     private bool isWaitArrive;
-    [HideInInspector] public bool isTS, isYSWZ, isYSRY, isSJJY;
     public HelicopterInfo myAttributeInfo;
     private List<SkillData> mySkills;
     private HelicopterState myState;
