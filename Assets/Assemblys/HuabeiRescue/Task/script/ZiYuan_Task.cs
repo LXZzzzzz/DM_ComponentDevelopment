@@ -47,9 +47,10 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
         return associationGo.BobjectId;
     }
 
-    public bool getTaskProgress(out string progressInfo)
+    public bool getTaskProgress(out string progressInfo, out float progressNum)
     {
         progressInfo = "";
+        progressNum = 0;
         bool isComplete = false;
         if (associationGo == null)
             return false;
@@ -59,10 +60,12 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
                 isComplete = (associationGo as ISourceOfAFire).getTaskProgress();
                 (associationGo as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl);
                 progressInfo = $"需求水量：{(int)(rsmj < 0 ? 0 : rsmj)}kg";
+                progressNum = Mathf.Clamp((csrsmj - rsmj) / csrsmj, 0, 1);
                 break;
             case ZiYuanType.RescueStation:
                 isComplete = (associationGo as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
                 progressInfo = $"安置受灾群众:{currentPersonNum}人/{maxPersonNum}人\n所需物资:{currentGoodsNum}kg/{maxGoodsNum}kg";
+                progressNum = maxGoodsNum == 0 ? 0 : Mathf.Clamp(currentGoodsNum / maxGoodsNum, 0, 1);
                 break;
             case ZiYuanType.Hospital:
                 isComplete = (associationGo as IRescueStation).getTaskProgress(out int currentPersonNum1,
@@ -72,6 +75,7 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
             case ZiYuanType.DisasterArea:
                 isComplete = (associationGo as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
                 progressInfo = $"转运人员:{currentNum}人/{maxNum}人";
+                progressNum = Mathf.Clamp((maxNum - currentNum) / (float)maxNum, 0, 1);
                 break;
         }
 

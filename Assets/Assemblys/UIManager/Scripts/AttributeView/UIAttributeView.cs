@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using DM.Core.Map;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
@@ -31,6 +32,8 @@ public class UIAttributeView : BasePanel
     private RectTransform taskParent;
     private List<ZiYuanCell> allZyZqCells;
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
+    private bool isShowWarn;
+    private Tweener currentTweener;
 
     public override void Init()
     {
@@ -322,6 +325,7 @@ public class UIAttributeView : BasePanel
     private EquipBase currentEquip;
     private Slider oilSlider;
     private Text oilValue;
+    private Image oilPic;
     private Slider waterSlider, goodsSlider, zsySlider, qsySlider;
     private Text waterText, goodsText, zsyText, qsyText;
 
@@ -382,6 +386,26 @@ public class UIAttributeView : BasePanel
             zsyText.text = (personType == 1 ? 0 : person) + "/" + currentEquip.AttributeInfos[6] + "人";
             qsySlider.value = (personType == 1 ? person : 0) / float.Parse(currentEquip.AttributeInfos[6]);
             qsyText.text = (personType == 1 ? person : 0) + "/" + currentEquip.AttributeInfos[6] + "人";
+            if (oilPic == null) return;
+            if (isShowWarn)
+            {
+                float itemOil = currentOil / totalOil;
+                if (itemOil > .2f)
+                {
+                    isShowWarn = false;
+                    currentTweener?.Kill();
+                    oilPic.color = Color.white;
+                }
+            }
+            else
+            {
+                float itemOil = currentOil / totalOil;
+                if (itemOil < .2f)
+                {
+                    isShowWarn = true;
+                    currentTweener = oilPic.DOColor(Color.red, 1).SetLoops(-1, LoopType.Yoyo);
+                }
+            }
         }
     }
 
@@ -406,6 +430,7 @@ public class UIAttributeView : BasePanel
         equipObj.Find("equipNameView/AirTypeBg").GetComponent<Image>().color = comData.MyColor;
         if (oilSlider == null) oilSlider = equipObj.Find("equipNameView/oilPart/oilShow").GetComponent<Slider>();
         if (oilValue == null) oilValue = equipObj.Find("equipNameView/oilPart/oilValue").GetComponent<Text>();
+        if (oilPic == null) oilPic = equipObj.Find("equipNameView/oilPart/pic").GetComponent<Image>();
         equip.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
         oilSlider.value = currentOil / totalOil;
         oilValue.text = (int)(currentOil / totalOil * 100) + "%";

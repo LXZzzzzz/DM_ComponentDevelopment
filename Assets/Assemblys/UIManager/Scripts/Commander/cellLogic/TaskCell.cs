@@ -13,6 +13,7 @@ public class TaskCell : DMonoBehaviour
     private Toggle isComplete;
     private ITaskProgress tp;
     private Text taskProgress;
+    private Slider slider_Progress;
     private RectTransform comShowParent;
     private ZiYuan_ComanderCell commanderShowCell;
     private List<ZiYuan_ComanderCell> _allcoms;
@@ -26,6 +27,7 @@ public class TaskCell : DMonoBehaviour
         tp = ziYuan as ITaskProgress;
         transform.Find("RootInfo/Text_taskIndex").GetComponentInChildren<Text>().text = taskIndex;
         taskProgress = transform.Find("RootInfo/Text_taskName").GetComponentInChildren<Text>();
+        slider_Progress = transform.Find("RootInfo/Slider_Progress").GetComponentInChildren<Slider>();
         transform.Find("describe/Text_taskDescribe").GetComponentInChildren<Text>().text = ziYuan.ziYuanDescribe;
         GetComponentInChildren<Button>().onClick.AddListener(() =>
             EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), tp.getAssociationAssemblyId()));
@@ -35,8 +37,9 @@ public class TaskCell : DMonoBehaviour
     private void LateUpdate()
     {
         if (tp == null) return;
-        isComplete.isOn = tp.getTaskProgress(out string progressInfo);
+        isComplete.isOn = tp.getTaskProgress(out string progressInfo, out float progressNum);
         taskProgress.text = progressInfo;
+        slider_Progress.value = progressNum;
         if (ProgrammeDataManager.Instance.GetCurrentData != null && ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList.ContainsKey(tp.getAssociationAssemblyId()))
             ChangeComsView(ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList[tp.getAssociationAssemblyId()]);
     }

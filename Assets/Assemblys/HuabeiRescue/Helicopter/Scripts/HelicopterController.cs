@@ -359,7 +359,18 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerEquipCrash, BObjectId);
             isSendCrash = true;
         }
+
+        if (!currentIsCrash)
+        {
+            if (isCrash)
+            {
+                OnLandSuc();
+                currentIsCrash = true;
+            }
+        }
     }
+
+    private bool currentIsCrash;
 
     private void switchMyState()
     {

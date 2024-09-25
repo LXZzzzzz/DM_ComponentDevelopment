@@ -35,6 +35,9 @@ namespace Enums
         ReceiveTask, //总指挥接收任务
         ChangeObjController, //更改某个对象的控制者
         CreatZaiQuZy, //创建灾区资源
+        MarkMapPoints, //标记地图点请求
+        ShowMarkMapPoint, //显示标记点
+        crashIcon, //坠毁后通知Ui
     }
 
     public enum MessageID
@@ -48,6 +51,7 @@ namespace Enums
         SendReceiveTask = 1008, //一级指挥端接收任务，开始计时
         SendChangeController = 1009, //游戏进行中更改控制者
         SendChangeZaiqu = 1010, //更改场景中的灾区
+        SendMarkMapPoint = 1011, //发送标记场景点的请求
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作
