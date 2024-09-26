@@ -38,7 +38,7 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
     {
         if (HasParent(eventData.pointerEnter, "airPortMarkView")) return;
         var data = GetBasicInfo();
-        if (data != null)
+        if (false)
         {
             data.pointPos = GetComponent<RectTransform>().anchoredPosition + new Vector2(30, 30);
             UIManager.Instance.ShowPanel<UIHangShowInfo>(UIName.UIHangShowInfo, data);

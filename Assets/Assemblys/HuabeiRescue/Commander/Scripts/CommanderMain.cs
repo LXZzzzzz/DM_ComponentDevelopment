@@ -193,6 +193,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
         float mapWidth = float.Parse(mDMLonLat.HGetField("TerWidth").ToString());
         mapSizeData = new Vector2(mapLength, mapWidth);
+        cameraObject = GetComponentInChildren<Camera>(true).gameObject;
+        cameraObject?.gameObject.SetActive(true);
         StartCoroutine(InitMain());
     }
 
@@ -205,8 +207,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         // cameraObject.tag = "MainCamera";
         // cameraObject.transform.position = transform.position+Vector3.up*10;
         // cameraObject.AddComponent<Camera>();
-        cameraObject = GetComponentInChildren<Camera>(true).gameObject;
-        cameraObject?.gameObject.SetActive(true);
+        // cameraObject = GetComponentInChildren<Camera>(true).gameObject;
+        // cameraObject?.gameObject.SetActive(true);
 
         yield return 1;
         int myLevel = MyDataInfo.MyLevel = (Properties[0] as DropDownProperty).Selected.Enum;
@@ -367,6 +369,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendChangeZaiqu:
                 sender.LogError("收到创建灾区的消息");
                 _commanderController.Receive_CreatZaiqu(param);
+                break;
+            case MessageID.SendMarkMapPoint:
+                _commanderController.Receive_ShowMarkPoint(param);
                 break;
         }
 

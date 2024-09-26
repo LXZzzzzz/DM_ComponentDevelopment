@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using DG.Tweening;
 using Newtonsoft.Json;
 using ReportGenerate;
 using ToolsLibrary;
@@ -9,6 +10,7 @@ using UiManager;
 using UnityEngine;
 using Vectrosity;
 using ToolsLibrary.ProgrammePart;
+using UnityEngine.UI;
 
 public class TestLogic : MonoBehaviour
 {
@@ -108,7 +110,7 @@ public class TestLogic : MonoBehaviour
 
 
             EvalManage em = new EvalManage();
-            em.EvalMaterialCompute(JsonConvert.DeserializeObject<ResultMaterialPersonOutData>(aa), JsonConvert.DeserializeObject<ResultRescueSystemData>(bb), 19.14555f, 8.2088f);
+            em.EvalWaterCompute(JsonConvert.DeserializeObject<ResultFireWaterOutData>(aa), JsonConvert.DeserializeObject<ResultFireWaterSystemData>(bb));
         }
 
         if (Input.GetKeyDown(KeyCode.F))

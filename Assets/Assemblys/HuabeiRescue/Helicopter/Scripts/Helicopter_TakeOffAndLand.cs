@@ -33,7 +33,7 @@ public partial class HelicopterController
         {
             anis[i].Play();
         }
-        myass.ForEach(x=>x.gameObject.SetActive(true));
+        myass.ForEach(x=>x.gameObject.SetActive(false));
     }
 
     private void OnTOSuc()
@@ -52,11 +52,6 @@ public partial class HelicopterController
         if (myState != HelicopterState.hover) return;
         currentSkill = SkillType.Landing;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnLandSuc);
-
-        for (int i = 0; i < anis.Length; i++)
-        {
-            anis[i].Stop();
-        }
         
         if (myass.Count == 0)
         {
@@ -67,7 +62,6 @@ public partial class HelicopterController
             }
         }
         myass.ForEach(x=>x.gameObject.SetActive(false));
-        mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
     }
 
     private void OnLandSuc()
@@ -80,6 +74,12 @@ public partial class HelicopterController
         var itemPosition = transform.position;
         itemPosition = new Vector3(itemPosition.x, GetCurrentGroundHeight() < 0 ? flyHight : GetCurrentGroundHeight(), itemPosition.z);
         transform.position = itemPosition;
+        
+        for (int i = 0; i < anis.Length; i++)
+        {
+            anis[i].Stop();
+        }
+        mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
     }
 
     public void Supply()

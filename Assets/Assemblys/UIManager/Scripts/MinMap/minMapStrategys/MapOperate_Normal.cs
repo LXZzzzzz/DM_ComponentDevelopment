@@ -17,11 +17,14 @@ public class MapOperate_Normal : MapOperateLogicBase
     private bool isShow;
     private RectTransform chooseEquip;
     private string creatTargetTemplate;
+    private bool isPressDownCtrl;
 
     public override void OnEnter()
     {
         EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
         EventManager.Instance.AddEventListener<object>(EventType.TransferEditingInfo.ToString(), OnParsingData);
+        EventManager.Instance.AddEventListener<Vector2>(EventType.ShowMarkMapPoint.ToString(), OnShowMarkPoint);
+        EventManager.Instance.AddEventListener<string>(EventType.crashIcon.ToString(), OnCrash);
         linePoss = new List<Vector2>();
         linePoss.Add(Vector2.zero);
         linePoss.Add(Vector2.zero);
@@ -145,11 +148,12 @@ public class MapOperate_Normal : MapOperateLogicBase
     {
         showXvLine();
         showTargetTemplate();
+        isPressDownCtrl = Input.GetKey(KeyCode.LeftControl);
     }
 
     private void showXvLine()
     {
-        if (!isShow|| chooseEquip) return;
+        if (!isShow || chooseEquip) return;
 #if UNITY_EDITOR
         linePoss[0] = Vector2.zero;
 #else
@@ -174,6 +178,16 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     public override void OnLeftClickMap(Vector2 pos)
     {
+        if (isPressDownCtrl)
+        {
+            EventManager.Instance.EventTrigger(EventType.MarkMapPoints.ToString(), pos);
+
+#if UNITY_EDITOR
+            OnShowMarkPoint(pos);
+#endif
+            return;
+        }
+
 #if UNITY_EDITOR
         var itemPoint = GameObject.Instantiate(mainLogic.pointIconPrefab, mainLogic.iconCellParent);
         itemPoint.enabled = false;
@@ -204,6 +218,8 @@ public class MapOperate_Normal : MapOperateLogicBase
     {
         EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
         EventManager.Instance.RemoveEventListener<object>(EventType.TransferEditingInfo.ToString(), OnParsingData);
+        EventManager.Instance.RemoveEventListener<Vector2>(EventType.ShowMarkMapPoint.ToString(), OnShowMarkPoint);
+        EventManager.Instance.RemoveEventListener<string>(EventType.crashIcon.ToString(), OnCrash);
         showLine.active = false;
         isShow = false;
     }
@@ -224,6 +240,19 @@ public class MapOperate_Normal : MapOperateLogicBase
             creatTargetTemplate = (string)data;
             mainLogic.TempIcon.GetChild(0).GetComponent<Image>().sprite = UIManager.Instance.PicBObjects[creatTargetTemplate];
         }
+    }
+
+    private void OnShowMarkPoint(Vector2 pos)
+    {
+        GameObject markPointGo = GameObject.Instantiate(mainLogic.markPointPrefab, mainLogic.iconCellParent);
+        markPointGo.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(uiPos2WorldPos(pos));
+        markPointGo.SetActive(true);
+        GameObject.Destroy(markPointGo, 5);
+    }
+
+    private void OnCrash(string id)
+    {
+        mainLogic.allIconCells[id].gameObject.SetActive(false);
     }
 
     public MapOperate_Normal(UIMap mainLogic) : base(mainLogic)

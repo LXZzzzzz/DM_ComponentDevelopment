@@ -28,7 +28,7 @@ public partial class HelicopterController
                 int disPersonType = (items[i] as IDisasterArea).getWoundedPersonnelType();
                 if (personType != -1 && disPersonType != personType)
                 {
-                    EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "轻伤员" : "重伤员")}");
+                    EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "受灾群众" : "伤员")}");
                     return;
                 }
 
@@ -38,7 +38,7 @@ public partial class HelicopterController
                 // int itemperson = Mathf.Min(myAttributeInfo.zdzkl, (int)Mathf.Floor(itemgoods / myAttributeInfo.cnrpjtz));
                 itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl - amountOfPerson);
                 Debug.LogError(myAttributeInfo.ldzzrysj * 3600f);
-                openTimer(myAttributeInfo.ldzzrysj * 3600f, OnZZRYSuc);
+                openTimer(myAttributeInfo.ldzzrysj * 3600f * itemPersonNum, OnZZRYSuc);
 
                 myRecordedData.eachSortieData.Add(new SingleSortieData());
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime < 1)
@@ -80,7 +80,7 @@ public partial class HelicopterController
                 // Debug.LogError(amountOfPerson / myAttributeInfo.azsysl * 60);
                 myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].personDistance = Vector3.Distance(PickupPoint, items[i].transform.position);
                 myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].placementOfPersonTime = MyDataInfo.gameStartTime;
-                openTimer(myAttributeInfo.azsysj * 3600f, OnAZSYSuc);
+                openTimer(myAttributeInfo.azsysj * 3600f * itemPersonNum, OnAZSYSuc);
                 return;
             }
         }
@@ -111,7 +111,7 @@ public partial class HelicopterController
                 int disPersonType = (items[i] as IDisasterArea).getWoundedPersonnelType();
                 if (personType != -1 && disPersonType != personType)
                 {
-                    EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "轻伤员" : "重伤员")}");
+                    EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "受灾群众" : "伤员")}");
                     return;
                 }
 
@@ -122,7 +122,7 @@ public partial class HelicopterController
                 itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl - amountOfPerson);
                 // Debug.LogError(itemPersonNum / myAttributeInfo.sjjrsl * 60);
                 //索降救援、伤情评估与地面人员配合救援
-                openTimer(myAttributeInfo.sjjrsj * 3600f, OnZZRYSuc, 3, OnCDRStageComplete);
+                openTimer(myAttributeInfo.sjjrsj * 3600f * itemPersonNum, OnZZRYSuc, 3, OnCDRStageComplete);
 
                 myRecordedData.eachSortieData.Add(new SingleSortieData());
                 if (myRecordedData.eachSortieData[myRecordedData.eachSortieData.Count - 1].firstRescuePersonTime < 1)
@@ -144,7 +144,7 @@ public partial class HelicopterController
         switch (aa)
         {
             case 0:
-                stageInfo = "索降救援";
+                stageInfo = "吊运救援";
                 break;
             case 1:
                 stageInfo = "伤情评估";

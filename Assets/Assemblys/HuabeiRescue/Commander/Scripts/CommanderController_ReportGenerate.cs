@@ -17,7 +17,7 @@ public partial class CommanderController
     private void GenerateFireExtinguishingReport()
     {
         PDFReport report = new PDFReport();
-        var playerInfo = MyDataInfo.playerInfos.Find(a => a.RoleId == MyDataInfo.leadId);
+        var playerInfo = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId));
         string mName = playerInfo.PlayerName, mId = playerInfo.RoleId, mAbstract = misDescription;
         MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[30]).CompareTo(float.Parse(b.AttributeInfos[30])));
         float minRyxhl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[30]);
@@ -179,7 +179,7 @@ public partial class CommanderController
     private void GenerateRescueReport()
     {
         PDFReport report = new PDFReport();
-        var playerInfo = MyDataInfo.playerInfos.Find(a => a.RoleId == MyDataInfo.leadId);
+        var playerInfo = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId));
         string mName = playerInfo.PlayerName, mId = playerInfo.RoleId, mAbstract = misDescription;
         MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(a.AttributeInfos[30]).CompareTo(float.Parse(b.AttributeInfos[30])));
         float minRyxhl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[30]);
@@ -191,7 +191,9 @@ public partial class CommanderController
         float maxYzRs = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[6]);
         MyDataInfo.sceneAllEquips.Sort((a, b) => float.Parse(b.AttributeInfos[4]).CompareTo(float.Parse(a.AttributeInfos[4])));
         float maxYzzl = float.Parse(MyDataInfo.sceneAllEquips[0].AttributeInfos[4]);
+        //灾区需转运总人数
         float zqxzyzrs = 0;
+        int totalNoGoodsPerson = 0;
 
         for (int i = 0; i < sceneAllzy.Count; i++)
         {
@@ -199,13 +201,16 @@ public partial class CommanderController
             {
                 (sceneAllzy[i] as IDisasterArea).getTaskProgress(out int currentNuma, out int maxNuma);
                 zqxzyzrs += maxNuma;
+                if ((sceneAllzy[i] as IDisasterArea).getWoundedPersonnelType() == 2)
+                    totalNoGoodsPerson += maxNuma;
             }
         }
 
         float minPersonTime = float.MaxValue, minGoodsTime = float.MaxValue;
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
-            float itemPersonTime = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[22]) + float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[26]);
+            float itemPersonTime = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[22]) * float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[6]) +
+                                   float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[26]) * float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[6]);
             if (itemPersonTime < minPersonTime) minPersonTime = itemPersonTime;
             float itemGoodsTime = float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[19]) + float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[20]);
             if (itemGoodsTime < minGoodsTime) minGoodsTime = itemGoodsTime;
@@ -218,6 +223,7 @@ public partial class CommanderController
         {
             人均救援物资需求 = cdata.dwrsmjtsxq,
             受灾需转运总人数 = zqxzyzrs,
+            所有不需要物资的人员数量 = totalNoGoodsPerson,
             最大巡航速度 = maxSpeed,
             单次人员吊救时间 = minPersonTime,
             单次物资投放时间 = minGoodsTime,
@@ -294,7 +300,7 @@ public partial class CommanderController
             所有飞机总架次 = zjc,
             受灾地点数量 = sceneAllzy.FindAll(a => a.ZiYuanType == ZiYuanType.DisasterArea).Count,
             临时安置点数量 = sceneAllzy.FindAll(a => a.ZiYuanType == ZiYuanType.RescueStation).Count,
-            任务结束时转运总人数 = totalPersona,
+            任务结束时转运总人数 = zqxzyzrs - totalPersona,
             救援点到安置点的最短路径 = minDisasterArea2RescueStationDis / 1000
         };
         cfout.任务结束时各安置点数据 = new List<MaterialData>();
@@ -366,7 +372,8 @@ public partial class CommanderController
 
                 if (itemDatas[j].personDistance > 1)
                 {
-                    float itempersonMinTime = (float)((itemDatas[j].personDistance / 1000f / float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[8]) + hd1.PersonTime) * (zqxzyzrs / hd1.PersonMaxCount));
+                    float itempersonMinTime = (float)((itemDatas[j].personDistance / 1000f / float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[8]) + hd1.PersonTime * float.Parse(MyDataInfo.sceneAllEquips[i].AttributeInfos[6])) *
+                                                      (zqxzyzrs / hd1.PersonMaxCount));
                     if (itempersonMinTime < personMinTime) personMinTime = itempersonMinTime;
                     sender.LogError("itemPerson值：" + itempersonMinTime);
                 }
@@ -395,8 +402,8 @@ public partial class CommanderController
 
         report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count);
     }
-    
-    
+
+
     private string ConvertSecondsToHHMMSS(float seconds)
     {
         int hours = (int)(seconds / 3600); // 计算小时数

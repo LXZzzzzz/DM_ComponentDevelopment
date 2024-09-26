@@ -214,15 +214,15 @@ public class ZiYuanIconCell : IconCellBase
                 break;
             case ZiYuanType.RescueStation:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
-                progressInfo = $"安置点当前安置轻伤员:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
+                progressInfo = $"安置点当前安置受灾群众:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
                 break;
             case ZiYuanType.Hospital:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum1, out int maxPersonNum1, out float currentGoodsNum1, out float maxGoodsNum1);
-                progressInfo = $"医院当前救治重伤员:{currentPersonNum1}人";
+                progressInfo = $"医院当前救治伤员:{currentPersonNum1}人";
                 break;
             case ZiYuanType.DisasterArea:
                 (_ziYuanItem as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
-                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "轻伤员" : "重伤员";
+                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "受灾群众" : "伤员";
                 progressInfo = $"{personType}灾区还剩余需转运人数:{currentNum}人，总共受灾人数：{maxNum}人";
                 break;
             default:
@@ -244,7 +244,11 @@ public class ZiYuanIconCell : IconCellBase
             checkTimer = Time.time + 1 / 25f;
             if (ChoosePart != null && ziYuanItem != null)
             {
-                ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+                if (ziYuanItem.ZiYuanType == ZiYuanType.SourceOfAFire && (ziYuanItem as ISourceOfAFire).getTaskProgress())
+                    ChoosePart.GetChild(0).GetComponent<Image>().color = Color.gray;
+                else
+                    ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+
                 if (ColorUtility.TryParseHtmlString("#D7D7D7", out Color color))
                 {
                     ChoosePart.GetChild(1).GetComponent<Image>().color = ziYuanItem.isChooseMe ? Color.white : color;
@@ -300,7 +304,7 @@ public class ZiYuanIconCell : IconCellBase
     private void AirPortShowLogic()
     {
         if (ziYuanItem?.ZiYuanType != ZiYuanType.Airport) return;
-        if (MyDataInfo.MyLevel != 1 &&
+        if (MyDataInfo.MyLevel > 1 &&
             (ziYuanItem.beUsedCommanderIds == null || ziYuanItem.beUsedCommanderIds.Find(x => string.Equals(x, MyDataInfo.leadId)) == null)) return;
 
         var itemInfo = (ziYuanItem as IAirPort)?.GetAllEquips();

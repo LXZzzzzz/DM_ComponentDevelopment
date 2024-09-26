@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
@@ -26,8 +27,10 @@ public class AirIconCell : IconCellBase
     private Text skillName;
     private Transform belongtoPart;
     private Slider currentOil;
+    private Image oilPic;
     private GameObject water, goods, qPerson, zPerson;
     private GameObject airPort;
+    private GameObject onGround;
 
     public void Init(EquipBase equipGo, string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb, Func<Vector3, Vector2> worldPosMapPosFunc, UnityAction<bool, Vector2, Vector2> setRouteCb)
     {
@@ -43,11 +46,13 @@ public class AirIconCell : IconCellBase
         skillName = transform.Find("Root/skillBg/skillName").GetComponent<Text>();
         belongtoPart = transform.Find("Root/mainPart/belongToPart");
         currentOil = transform.Find("Root/currentInfoShow/oilPart/oilShow").GetComponent<Slider>();
+        oilPic = transform.Find("Root/currentInfoShow/oilPart/pic").GetComponent<Image>();
         water = transform.Find("Root/currentInfoShow/waterPart").gameObject;
         goods = transform.Find("Root/currentInfoShow/goodsPart").gameObject;
         qPerson = transform.Find("Root/currentInfoShow/qPersonPart").gameObject;
         zPerson = transform.Find("Root/currentInfoShow/zPersonPart").gameObject;
         skillProgressShow = transform.Find("Root/skillBg/progressShow").GetComponent<Slider>();
+        onGround = transform.Find("Root/mainPart/onGround").gameObject;
         initLine();
     }
 
@@ -87,6 +92,7 @@ public class AirIconCell : IconCellBase
         changeBelongtoShow();
         showSkillState();
         showAllMassInfo();
+        showOilWarn();
     }
 
     private GameObject getAirPort()
@@ -189,9 +195,11 @@ public class AirIconCell : IconCellBase
                 break;
             case SkillType.TakeOff:
                 skillName.text = "正在起飞...";
+                onGround.SetActive(false);
                 break;
             case SkillType.Landing:
                 skillName.text = "正在降落...";
+                onGround.SetActive(true);
                 break;
             case SkillType.Supply:
                 skillName.text = "正在补给...";
@@ -239,6 +247,33 @@ public class AirIconCell : IconCellBase
         this.goods.SetActive(goods > 1);
         qPerson.SetActive(personType == 1 && person > 1);
         zPerson.SetActive(personType == 2 && person > 1);
+    }
+
+    private bool isShowWarn;
+    private Tweener currentTweener;
+    private void showOilWarn()
+    {
+        if (isShowWarn)
+        {
+            equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
+            float itemOil = currentOil / totalOil;
+            if (itemOil > .2f)
+            {
+                isShowWarn = false;
+                currentTweener?.Kill();
+                oilPic.color = Color.white;
+            }
+        }
+        else
+        {
+            equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
+            float itemOil = currentOil / totalOil;
+            if (itemOil < .2f)
+            {
+                isShowWarn = true;
+                currentTweener = oilPic.DOColor(Color.red, 1).SetLoops(-1, LoopType.Yoyo);
+            }
+        }
     }
 
     public override void DestroyMe()

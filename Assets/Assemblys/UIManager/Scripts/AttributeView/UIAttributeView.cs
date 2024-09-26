@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using DM.Core.Map;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
@@ -31,6 +32,8 @@ public class UIAttributeView : BasePanel
     private RectTransform taskParent;
     private List<ZiYuanCell> allZyZqCells;
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
+    private bool isShowWarn;
+    private Tweener currentTweener;
 
     public override void Init()
     {
@@ -327,6 +330,7 @@ public class UIAttributeView : BasePanel
     private EquipBase currentEquip;
     private Slider oilSlider;
     private Text oilValue;
+    private Image oilPic;
     private Slider waterSlider, goodsSlider, zsySlider, qsySlider;
     private Text waterText, goodsText, zsyText, qsyText;
 
@@ -380,13 +384,33 @@ public class UIAttributeView : BasePanel
             oilSlider.value = currentOil / totalOil;
             oilValue.text = (int)(currentOil / totalOil * 100) + "%";
             waterSlider.value = water / float.Parse(currentEquip.AttributeInfos[15]);
-            waterText.text = water + "/" + currentEquip.AttributeInfos[15] + "Kg";
+            waterText.text = $"{water / 1000:0.0}" + "/" + $"{float.Parse(currentEquip.AttributeInfos[15]) / 1000:0.0}" + "吨";
             goodsSlider.value = goods / float.Parse(currentEquip.AttributeInfos[4]);
-            goodsText.text = goods + "/" + currentEquip.AttributeInfos[4] + "Kg";
+            goodsText.text = $"{goods / 1000:0.0}" + "/" + $"{float.Parse(currentEquip.AttributeInfos[4]) / 1000:0.0}" + "吨";
             zsySlider.value = (personType == 1 ? 0 : person) / float.Parse(currentEquip.AttributeInfos[6]);
             zsyText.text = (personType == 1 ? 0 : person) + "/" + currentEquip.AttributeInfos[6] + "人";
             qsySlider.value = (personType == 1 ? person : 0) / float.Parse(currentEquip.AttributeInfos[6]);
             qsyText.text = (personType == 1 ? person : 0) + "/" + currentEquip.AttributeInfos[6] + "人";
+            if (oilPic == null) return;
+            if (isShowWarn)
+            {
+                float itemOil = currentOil / totalOil;
+                if (itemOil > .2f)
+                {
+                    isShowWarn = false;
+                    currentTweener?.Kill();
+                    oilPic.color = Color.white;
+                }
+            }
+            else
+            {
+                float itemOil = currentOil / totalOil;
+                if (itemOil < .2f)
+                {
+                    isShowWarn = true;
+                    currentTweener = oilPic.DOColor(Color.red, 1).SetLoops(-1, LoopType.Yoyo);
+                }
+            }
         }
     }
 
@@ -411,16 +435,24 @@ public class UIAttributeView : BasePanel
         equipObj.Find("equipNameView/AirTypeBg").GetComponent<Image>().color = comData.MyColor;
         if (oilSlider == null) oilSlider = equipObj.Find("equipNameView/oilPart/oilShow").GetComponent<Slider>();
         if (oilValue == null) oilValue = equipObj.Find("equipNameView/oilPart/oilValue").GetComponent<Text>();
+        if (oilPic == null) oilPic = equipObj.Find("equipNameView/oilPart/pic").GetComponent<Image>();
         equip.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
         oilSlider.value = currentOil / totalOil;
         oilValue.text = (int)(currentOil / totalOil * 100) + "%";
+        
+        Transform itemAirFun = equipObj.Find("equipNameView/myFunction");
+        itemAirFun.GetChild(0).gameObject.SetActive(equip.isTS);
+        itemAirFun.GetChild(1).gameObject.SetActive(equip.isYSWZ);
+        itemAirFun.GetChild(2).gameObject.SetActive(equip.isYSRY);
+        itemAirFun.GetChild(3).gameObject.SetActive(equip.isSJJY);
+
         //飞机参数
         equipObj.Find("equipParameter/parameterInfo/personPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[6] + "人";
         equipObj.Find("equipParameter/parameterInfo/hangcPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[3] + "Km";
         equipObj.Find("equipParameter/parameterInfo/speedPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[9] + "km/h";
         equipObj.Find("equipParameter/parameterInfo/oilPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[5] + "Kg";
-        equipObj.Find("equipParameter/parameterInfo/waterPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[15] + "Kg";
-        equipObj.Find("equipParameter/parameterInfo/goodsPart").GetComponentInChildren<Text>().text = equip.AttributeInfos[4] + "Kg";
+        equipObj.Find("equipParameter/parameterInfo/waterPart").GetComponentInChildren<Text>().text = $"{float.Parse(equip.AttributeInfos[15]) / 1000:0.0}" + "吨";
+        equipObj.Find("equipParameter/parameterInfo/goodsPart").GetComponentInChildren<Text>().text = $"{float.Parse(equip.AttributeInfos[4]) / 1000:0.0}" + "吨";
         //机载携带
         if (waterSlider == null) waterSlider = equipObj.Find("carryParameter/parameterInfo/waterPart").GetComponentInChildren<Slider>();
         if (waterText == null) waterText = equipObj.Find("carryParameter/parameterInfo/waterPart").GetComponentInChildren<Text>();
@@ -431,9 +463,9 @@ public class UIAttributeView : BasePanel
         if (qsySlider == null) qsySlider = equipObj.Find("carryParameter/parameterInfo/qsyPart").GetComponentInChildren<Slider>();
         if (qsyText == null) qsyText = equipObj.Find("carryParameter/parameterInfo/qsyPart").GetComponentInChildren<Text>();
         waterSlider.value = water / float.Parse(equip.AttributeInfos[15]);
-        waterText.text = water + "/" + equip.AttributeInfos[15] + "Kg";
+        waterText.text = $"{water / 1000:0.0}" + "/" + $"{float.Parse(equip.AttributeInfos[15]) / 1000:0.0}" + "吨";
         goodsSlider.value = goods / float.Parse(equip.AttributeInfos[4]);
-        goodsText.text = goods + "/" + equip.AttributeInfos[4] + "Kg";
+        goodsText.text = $"{goods / 1000:0.0}" + "/" + $"{float.Parse(equip.AttributeInfos[4]) / 1000:0.0}" + "吨";
         zsySlider.value = (personType == 1 ? 0 : person) / float.Parse(equip.AttributeInfos[6]);
         zsyText.text = (personType == 1 ? 0 : person) + "/" + equip.AttributeInfos[6] + "人";
         qsySlider.value = (personType == 1 ? person : 0) / float.Parse(equip.AttributeInfos[6]);
@@ -519,7 +551,7 @@ public class UIAttributeView : BasePanel
                 break;
             case ZiYuanType.DisasterArea:
                 (_ziYuanItem as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
-                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "轻伤员" : "重伤员";
+                string personType = (_ziYuanItem as IDisasterArea).getWoundedPersonnelType() == 1 ? "受灾群众" : "伤员";
                 progressInfo = $"{personType}灾区还剩余需转运人数:{currentNum}人，总共受灾人数：{maxNum}人";
                 break;
             default:

@@ -39,6 +39,9 @@ namespace Enums
         CreatAZiyuanIcon, //创建指定资源的UI标识
         DestoryZiyuanIcon, //删除指定资源的UI标识
         CreatATaskIcon, //创建指定任务的UI标识
+		MarkMapPoints, //标记地图点请求
+        ShowMarkMapPoint, //显示标记点
+        crashIcon, //坠毁后通知Ui
     }
 
     public enum MessageID
@@ -52,6 +55,7 @@ namespace Enums
         SendReceiveTask = 1008, //一级指挥端接收任务，开始计时
         SendChangeController = 1009, //游戏进行中更改控制者
         SendChangeZaiqu = 1010, //更改场景中的灾区
+        SendMarkMapPoint = 1011, //发送标记场景点的请求
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

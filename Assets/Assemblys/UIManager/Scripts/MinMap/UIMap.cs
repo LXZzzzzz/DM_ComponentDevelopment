@@ -20,6 +20,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     [HideInInspector] public RectTransform mapView;
     [HideInInspector] public Transform iconCellParent;
     [HideInInspector] public IconCellBase airIconPrefab, pointIconPrefab, ziYuanIconPrefab;
+    [HideInInspector] public GameObject markPointPrefab;
 
     private Vector2 uiCameraSize;
     public List<EquipBase> allObjModels;
@@ -42,6 +43,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         airIconPrefab = transform.Find("prefabs/airCell").GetComponent<AirIconCell>();
         pointIconPrefab = transform.Find("prefabs/pointCell").GetComponent<PointIconCell>();
         ziYuanIconPrefab = transform.Find("prefabs/ziyuanCell").GetComponent<ZiYuanIconCell>();
+        markPointPrefab = transform.Find("prefabs/markPoint").gameObject;
         TempIcon = transform.Find("maxMap/TempIcon").GetComponent<RectTransform>();
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
         routeDecorateGo = transform.Find("maxMap/objects/routeDecorate").gameObject;

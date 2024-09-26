@@ -80,7 +80,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
         if (isSJJY)
         {
-            mySkills.Add(new SkillData() { SkillType = SkillType.CableDescentRescue, isUsable = false, skillName = "索降救援" });
+            mySkills.Add(new SkillData() { SkillType = SkillType.CableDescentRescue, isUsable = false, skillName = "吊运救援" });
             if (mySkills.Find(x => x.SkillType == SkillType.PlacementOfPersonnel) == null)
                 mySkills.Add(new SkillData() { SkillType = SkillType.PlacementOfPersonnel, isUsable = false, skillName = "安置人员" });
         }
@@ -163,13 +163,13 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             if (mySkills[i].SkillType == SkillType.Supply)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.Supply;
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.Landing && amountOfOil < myAttributeInfo.zyl;
             }
 
             if (mySkills[i].SkillType == SkillType.WaterIntaking)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.Waters;
-                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover;
+                mySkills[i].isUsable = isArriveTargetType && myState == HelicopterState.hover && amountOfWater == 0;
             }
 
             if (mySkills[i].SkillType == SkillType.WaterPour)
@@ -359,7 +359,18 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerEquipCrash, BObjectId);
             isSendCrash = true;
         }
+
+        if (!currentIsCrash)
+        {
+            if (isCrash)
+            {
+                OnLandSuc();
+                currentIsCrash = true;
+            }
+        }
     }
+
+    private bool currentIsCrash;
 
     private void switchMyState()
     {
@@ -615,12 +626,12 @@ public class HelicopterInfo
     public float ktwzsj;
 
     /// <summary>
-    /// 落地装载人员时间
+    /// 落地装载人员时间(单人)
     /// </summary>
     public float ldzzrysj;
 
     /// <summary>
-    /// 索降救人时间
+    /// 索降救人时间（单人）
     /// </summary>
     public float sjjrsj;
 
@@ -635,7 +646,7 @@ public class HelicopterInfo
     public string jcsfsd;
 
     /// <summary>
-    /// 安置伤员时间
+    /// 安置伤员时间（单人）
     /// </summary>
     public float azsysj;
 

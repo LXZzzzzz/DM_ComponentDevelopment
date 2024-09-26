@@ -232,8 +232,8 @@ public partial class CommanderController
                 var itemcd = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (itemcd as IRescuePersonnelOperation)?.CableDescentRescue();
                 var playerDatacd = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemcd.BeLongToCommanderId));
-                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatacd.ColorCode}>{playerDatacd.ClientLevelName}</color> {itemcd.name}执行索降救援操作");
-                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatacd.ClientLevelName}】{itemcd.name}执行索降救援操作");
+                EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDatacd.ColorCode}>{playerDatacd.ClientLevelName}</color> {itemcd.name}执行吊运救援操作");
+                clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDatacd.ClientLevelName}】{itemcd.name}执行吊运救援操作");
                 break;
             case MessageID.TriggerReturnFlight:
                 sender.LogError("收到了返航的指令");
@@ -255,6 +255,7 @@ public partial class CommanderController
                 sender.LogError("收到了坠毁的指令");
                 var itemec = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 itemec.OnCrash();
+                EventManager.Instance.EventTrigger(EventType.crashIcon.ToString(), data);
                 var playerDataec = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, itemec.BeLongToCommanderId));
                 EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerDataec.ColorCode}>{playerDataec.ClientLevelName}</color> {itemec.name}油量已耗尽，坠毁");
                 clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerDataec.ClientLevelName}】{itemec.name}油量已耗尽，坠毁");
@@ -285,6 +286,13 @@ public partial class CommanderController
     {
         var itemdata = MsgReceive_CreatZaiqu(data);
         OnChangeZaiqu(itemdata);
+    }
+
+    public void Receive_ShowMarkPoint(string data)
+    {
+        string[] strPos = data.Split('_');
+        Vector2 itempos = new Vector2(float.Parse(strPos[0]), float.Parse(strPos[1]));
+        EventManager.Instance.EventTrigger(EventType.ShowMarkMapPoint.ToString(), itempos);
     }
 
     #endregion

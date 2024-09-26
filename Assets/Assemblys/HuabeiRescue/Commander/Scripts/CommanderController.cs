@@ -52,6 +52,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.AddEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
         EventManager.Instance.AddEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnSendCreatZaiQuZy);
+		EventManager.Instance.AddEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
     }
 
@@ -68,6 +69,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.RemoveEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
         EventManager.Instance.RemoveEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnSendCreatZaiQuZy);
+		EventManager.Instance.RemoveEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
     }
 
@@ -129,7 +131,7 @@ public partial class CommanderController : DMonoBehaviour
         if (!isMe) return;
         if (clouds)
         {
-            clouds.SetActive(Camera.main != null && Camera.main.gameObject.transform.position.y < 1000);
+            clouds.SetActive(Camera.main != null && Camera.main.gameObject.transform.position.y < 2000);
         }
     }
 
@@ -470,6 +472,11 @@ public partial class CommanderController : DMonoBehaviour
         OnSendSkillInfo((int)MessageID.SendChangeZaiqu, creatDataStr);
     }
 
+    private void OnSendMarkMapPoint(Vector2 mapPoint)
+    {
+        string itemData = mapPoint.x + "_" + mapPoint.y;
+        OnSendSkillInfo((int)MessageID.SendMarkMapPoint, itemData);
+    }
     private void OnChangeZaiqu(CreatZaiquData data)
     {
         if (data.isDele == 1)

@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
+public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 {
     private EquipBase eb;
     private Image icon;
@@ -46,7 +46,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
     {
         var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, eb.BeLongToCommanderId));
         icon.color = comData.MyColor;
-        
+
         if (eb == null || eb.currentSkill == SkillType.None)
         {
             if (progress == null)
@@ -54,6 +54,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
                 Debug.LogError("进度条空");
                 return;
             }
+
             if (progress.gameObject.activeSelf)
             {
                 progress.gameObject.SetActive(false);
@@ -74,6 +75,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
 
     private void openRightClickView()
     {
+        if (MyDataInfo.gameState != GameState.GameStart) return;
         if (eb?.currentSkill != SkillType.None) return;
         if (!string.Equals(MyDataInfo.leadId, eb.BeLongToCommanderId)) return;
 #if UNITY_EDITOR
@@ -87,7 +89,6 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
         UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info1);
         return;
 #endif
-        EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), eb.BObjectId);
         RightClickShowInfo info = new RightClickShowInfo()
         {
             PointPos = GetComponent<RectTransform>().position,
@@ -99,9 +100,14 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (eventData.button == PointerEventData.InputButton.Right)
+        if (eventData.button == PointerEventData.InputButton.Left)
         {
-            openRightClickView();
+            EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), eb.BObjectId);
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        openRightClickView();
     }
 }

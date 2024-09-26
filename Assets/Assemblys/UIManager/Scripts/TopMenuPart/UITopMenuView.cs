@@ -212,6 +212,8 @@ public class UITopMenuView : BasePanel
             UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
             return;
         }
+        string packedData = ProgrammeDataManager.Instance.PackedData();
+        sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendProgramme, packedData);
 
         sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
 

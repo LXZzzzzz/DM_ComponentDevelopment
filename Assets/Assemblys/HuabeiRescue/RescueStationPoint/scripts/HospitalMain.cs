@@ -12,7 +12,7 @@ public class HospitalMain : ScriptManager
             new InputIntUnitProperty("可救治人数", 100, "人"),
             new InputStringProperty("组件描述", "医院，需要给这里安排重伤员和物资"),
             new InputStringProperty("组件icon色值", "#0B2D5F"),
-            new InputStringProperty("组件icon色值", "#366baf"),
+            new InputStringProperty("组件icon选中色值", "#366baf"),
         };
     }
 
