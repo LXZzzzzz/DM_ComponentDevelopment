@@ -295,6 +295,18 @@ public partial class CommanderController
         EventManager.Instance.EventTrigger(EventType.ShowMarkMapPoint.ToString(), itempos);
     }
 
+    public void Receive_GetChangeZiyPower()
+    {
+        MyDataInfo.gameState = GameState.GamePause;
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
+    }
+
+    public void Receive_LoseChangeZiyPower()
+    {
+        MyDataInfo.gameState = GameState.GameStart;
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+    }
+
     #endregion
 
     #region 数据转换（消息的打包和解析）

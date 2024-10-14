@@ -327,7 +327,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.speedMultiplier = 1;
                 MyDataInfo.gameStartTime = 0;
                 _commanderController.Receive_TextMsgRecord("总指挥接受了任务，开始指定方案");
-                EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString());
+                EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString(), "总指挥制定方案中");
                 break;
             case MessageID.SendProgramme:
                 int myLevel = (Properties[0] as DropDownProperty).Selected.Enum;
@@ -346,6 +346,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.Receive_TextMsgRecord("推演开始！");
                 EventManager.Instance.EventTrigger(EventType.SetMyEquipIconLayer.ToString());
                 _commanderController.Receive_GameStart();
+                if (MyDataInfo.MyLevel != 1)
+                    EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString(), "实时指挥 > 联机");
                 break;
             case MessageID.MoveToTarget:
                 sender.LogError("收到了移动的指令" + type);
@@ -372,6 +374,14 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendMarkMapPoint:
                 _commanderController.Receive_ShowMarkPoint(param);
+                break;
+            case MessageID.SendGetChangeZQPower:
+                //暂停进度，并打开地图编辑模式
+                _commanderController.Receive_GetChangeZiyPower();
+                break;
+            case MessageID.SendLoseChangeZQPower:
+                //恢复进度，并关闭地图编辑模式
+                _commanderController.Receive_LoseChangeZiyPower();
                 break;
         }
 

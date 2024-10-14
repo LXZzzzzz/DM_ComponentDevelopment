@@ -26,7 +26,7 @@ public partial class HelicopterController
             if (Vector3.Distance(transform.position, zyPos) < 10)
             {
                 int disPersonType = (items[i] as IDisasterArea).getWoundedPersonnelType();
-                if (personType != -1 && disPersonType != personType)
+                if (personType != -1 && disPersonType != personType && string.Equals(MyDataInfo.leadId, BeLongToCommanderId))
                 {
                     EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "受灾群众" : "伤员")}");
                     return;
@@ -109,7 +109,7 @@ public partial class HelicopterController
             if (Vector3.Distance(transform.position, zyPos) < 10)
             {
                 int disPersonType = (items[i] as IDisasterArea).getWoundedPersonnelType();
-                if (personType != -1 && disPersonType != personType)
+                if (personType != -1 && disPersonType != personType && string.Equals(MyDataInfo.leadId, BeLongToCommanderId))
                 {
                     EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), $"此刻该装备只能营救{(personType == 1 ? "受灾群众" : "伤员")}");
                     return;

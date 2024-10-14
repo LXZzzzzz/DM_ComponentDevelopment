@@ -18,9 +18,10 @@ public class UITopMenuView : BasePanel
     private Text currentState, currentTime;
     private Button btn_start, btn_pause;
     private Dropdown speedChange;
+    private Button getBtn, loseBtn;
     private List<float> dropdownValue;
     private Transform menuView;
-    private GameObject zongPart, otherPart;
+    private GameObject zongPart, otherPart, directorPart;
     private Text currentSpeed;
 
 
@@ -31,6 +32,7 @@ public class UITopMenuView : BasePanel
         menuView = transform.Find("menuView");
         zongPart = transform.Find("SpeedChange/zongPart").gameObject;
         otherPart = transform.Find("SpeedChange/otherPart").gameObject;
+        directorPart = transform.Find("SpeedChange/directorPart").gameObject;
         ProgrammName = GetControl<Text>("text_PName");
         speedChangePart = transform.Find("SpeedChange").gameObject;
         currentState = GetControl<Text>("currentState");
@@ -38,6 +40,8 @@ public class UITopMenuView : BasePanel
         btn_start = GetControl<Button>("btn_start");
         btn_pause = GetControl<Button>("btn_pause");
         speedChange = GetControl<Dropdown>("speedChange");
+        getBtn = GetControl<Button>("btn_get");
+        loseBtn = GetControl<Button>("btn_lose");
         GetControl<Button>("btn_NewBuild").onClick.AddListener(newBuild);
         GetControl<Button>("btn_Save").onClick.AddListener(save);
         GetControl<Button>("btn_SaveAs").onClick.AddListener(saveAs);
@@ -53,6 +57,8 @@ public class UITopMenuView : BasePanel
 
         btn_start.onClick.AddListener(() => OnControlStartAndPause(false));
         btn_pause.onClick.AddListener(() => OnControlStartAndPause(true));
+        getBtn.onClick.AddListener(() => getAndLosePower(true));
+        loseBtn.onClick.AddListener(() => getAndLosePower(false));
         GetControl<Button>("btn_stop").onClick.AddListener(OnContolStop);
         GetControl<Button>("btn_pdf").onClick.AddListener(OnGeneratePdf);
         GetControl<Button>("btn_upload").onClick.AddListener(OnUpLoad);
@@ -82,7 +88,7 @@ public class UITopMenuView : BasePanel
         GetControl<Toggle>("Tog_Zhpg").transform.parent.gameObject.SetActive(mainLevel == 1);
         speedChangePart.SetActive(mainLevel == 1);
         EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
-        EventManager.Instance.AddEventListener(EventType.ReceiveTask.ToString(), ReceiveTask);
+        EventManager.Instance.AddEventListener<string>(EventType.ReceiveTask.ToString(), ReceiveTask);
         ProgrammName.text = UIManager.Instance.MisName;
 
         dropdownValue = new List<float>() { 0.5f, 1.0f, 1.5f, 2.0f, 5.0f, 10.0f, 20.0f, 50.0f };
@@ -100,7 +106,7 @@ public class UITopMenuView : BasePanel
     {
         base.HideMe();
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
-        EventManager.Instance.RemoveEventListener(EventType.ReceiveTask.ToString(), ReceiveTask);
+        EventManager.Instance.RemoveEventListener<string>(EventType.ReceiveTask.ToString(), ReceiveTask);
     }
 
     private void clickReport()
@@ -125,9 +131,9 @@ public class UITopMenuView : BasePanel
         ProgrammName.text = $"{UIManager.Instance.MisName}（{pName}）";
     }
 
-    private void ReceiveTask()
+    private void ReceiveTask(string info)
     {
-        currentState.text = "总指挥制定方案中";
+        currentState.text = info;
     }
 
     private void newBuild()
@@ -212,6 +218,7 @@ public class UITopMenuView : BasePanel
             UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
             return;
         }
+
         string packedData = ProgrammeDataManager.Instance.PackedData();
         sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendProgramme, packedData);
 
@@ -323,6 +330,13 @@ public class UITopMenuView : BasePanel
         }
     }
 
+    private void getAndLosePower(bool isGet)
+    {
+        getBtn.gameObject.SetActive(!isGet);
+        loseBtn.gameObject.SetActive(isGet);
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)(isGet ? Enums.MessageID.SendGetChangeZQPower : Enums.MessageID.SendLoseChangeZQPower), "");
+    }
+
     private void Update()
     {
         if (MyDataInfo.gameState != GameState.None && MyDataInfo.gameState != GameState.GamePause && MyDataInfo.gameState != GameState.GameStop)
@@ -334,8 +348,18 @@ public class UITopMenuView : BasePanel
         //速度页签要在时间进行阶段显示，zongPart要在总指挥开始推演阶段显示，otherPart要在其他指挥开始推演阶段显示
         speedChangePart.SetActive(MyDataInfo.gameState > GameState.None && MyDataInfo.gameState < GameState.GameStop);
 
-        if (mainLevel == 1) zongPart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
-        else otherPart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
+        if (MyDataInfo.isPlayBack)
+        {
+            zongPart.SetActive(false);
+            otherPart.SetActive(false);
+            directorPart.SetActive(false);
+        }
+        else
+        {
+            if (mainLevel == 1) zongPart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
+            else if (mainLevel == -1) directorPart.SetActive(MyDataInfo.gameState >= GameState.Preparation);
+            else otherPart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
+        }
 
         currentSpeed.text = $"{MyDataInfo.speedMultiplier:0.0} X";
     }

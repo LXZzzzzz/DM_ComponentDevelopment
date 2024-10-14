@@ -52,7 +52,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.AddEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
         EventManager.Instance.AddEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnSendCreatZaiQuZy);
-		EventManager.Instance.AddEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
+        EventManager.Instance.AddEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
     }
 
@@ -69,7 +69,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.RemoveEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
         EventManager.Instance.RemoveEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnSendCreatZaiQuZy);
-		EventManager.Instance.RemoveEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
+        EventManager.Instance.RemoveEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
     }
 
@@ -348,8 +348,8 @@ public partial class CommanderController : DMonoBehaviour
             EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
 
-        if (MyDataInfo.MyLevel != 1) //一级指挥端当前还开放编辑模式
-            EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+        // if (MyDataInfo.MyLevel != 1) //一级指挥端当前还开放编辑模式
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
         EventManager.Instance.EventTrigger(EventType.ShowProgrammeName.ToString(), data.programmeName);
     }
 
@@ -477,6 +477,7 @@ public partial class CommanderController : DMonoBehaviour
         string itemData = mapPoint.x + "_" + mapPoint.y;
         OnSendSkillInfo((int)MessageID.SendMarkMapPoint, itemData);
     }
+
     private void OnChangeZaiqu(CreatZaiquData data)
     {
         if (data.isDele == 1)
@@ -520,13 +521,15 @@ public partial class CommanderController : DMonoBehaviour
         zaiQuPosition = new Vector3(zaiQuPosition.x, posY, zaiQuPosition.z);
         temporaryZaiqu.transform.position = zaiQuPosition;
         temporaryZaiqu.latAndLon = CalculateLatLon(zaiQuPosition);
+        Debug.LogError("类型类型" + temporaryZaiqu.ZiYuanType);
+        Debug.LogError("名字名字" + temporaryZaiqu.GetType());
         temporaryZaiqu.gameObject.SetActive(true);
-        switch (temporaryZaiqu.ZiYuanType)
-        {
-            case ZiYuanType.SourceOfAFire:
-                (temporaryZaiqu as ISourceOfAFire).fireInit(5, 5, 10000, data.zaiquId, "#800049", "#cb488f");
-                break;
-        }
+        
+        if (temporaryZaiqu is ISourceOfAFire)
+            (temporaryZaiqu as ISourceOfAFire).fireInit(5, 5, 10000, data.zaiquId, "#800049", "#cb488f");
+        
+        if (temporaryZaiqu is IDisasterArea)
+            (temporaryZaiqu as IDisasterArea).disasterInit(data.zaiquId, 50, 2, "#800049", "#cb488f");
         // temporaryZaiqu.Reset();
 
         EventManager.Instance.EventTrigger(EventType.CreatAZiyuanIcon.ToString(), temporaryZaiqu);

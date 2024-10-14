@@ -34,6 +34,7 @@ public class UIMap : BasePanel, IPointerClickHandler
     public RectTransform TempIcon;
     private GameObject routeDecorateGo;
     private RectTransform startPoint, middlePoint, endPoint;
+    public OperatorState CurrentState;
 
     public override void Init()
     {
@@ -159,6 +160,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         currentMapLogic?.OnExit();
         currentMapLogic = mapLogics[targetState];
         currentMapLogic?.OnEnter();
+        CurrentState = targetState;
     }
 
     private void OnCloseMap(bool isShowMap)

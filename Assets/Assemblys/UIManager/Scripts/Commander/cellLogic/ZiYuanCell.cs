@@ -68,6 +68,11 @@ public class ZiYuanCell : DraggingFunction
 
     private void OnDeleZiYuan()
     {
+        if (UIManager.Instance.GetUIPanel<UIMap>(UIName.UIMap).CurrentState != OperatorState.CreatAndEditor)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "请先获取资源修改权限！");
+            return;
+        }
         EventManager.Instance.EventTrigger(EventType.DestoryZaiQuzy.ToString(), myEntityId);
     }
 

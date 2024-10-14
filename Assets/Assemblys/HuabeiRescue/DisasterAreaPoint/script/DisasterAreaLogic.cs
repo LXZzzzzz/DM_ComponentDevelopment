@@ -10,6 +10,11 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea
     //1:轻伤员；2：重伤员
     private int woundedPersonnelType;
 
+    public void disasterInit(string id, int personNum, int type, string colorCode, string chooseColoeCode)
+    {
+        Init(id, personNum, type, colorCode, chooseColoeCode);
+    }
+
     public void Init(string id, int personNum, int type, string colorCode, string chooseColoeCode)
     {
         base.Init(id, 50, colorCode, chooseColoeCode);

@@ -232,7 +232,8 @@ public class MapOperate_Normal : MapOperateLogicBase
 
     private void OnParsingData(object data)
     {
-        Debug.LogError("该模式下不允许对场景进行编辑");
+        
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "请先获取资源修改权限！");
         return;
         if (data is string)
         {
