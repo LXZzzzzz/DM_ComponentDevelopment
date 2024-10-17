@@ -194,10 +194,7 @@ public class UITopMenuView : BasePanel
         putAwayMenu();
         string packedData = ProgrammeDataManager.Instance.PackedData();
 
-        for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-        {
-            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendProgramme, packedData);
-        }
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendProgramme, packedData);
 
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
         // for (int i = 0; i < allBObjects.Length; i++)
@@ -250,10 +247,8 @@ public class UITopMenuView : BasePanel
         }
 
         //只有在准备阶段才能发送开始
-        for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-        {
-            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
-        }
+        
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
 
         currentState.text = "实时指挥 > 联机";
         btn_start.gameObject.SetActive(false);
@@ -272,10 +267,8 @@ public class UITopMenuView : BasePanel
         btn_pause.gameObject.SetActive(!isPause);
         btn_start.gameObject.SetActive(isPause);
         //执行逻辑传给所有人
-        for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-        {
-            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGamePause, (isPause ? 1 : 0).ToString());
-        }
+        
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGamePause, (isPause ? 1 : 0).ToString());
     }
 
     private void OnContolStop()
@@ -294,10 +287,8 @@ public class UITopMenuView : BasePanel
         {
             EventManager.Instance.EventTrigger<string, UnityAction<bool>>(EventType.ShowConfirmUI.ToString(), "当前有飞机未入库机场，数据将无法生成报告，是否确认丢弃本次推演数据？", (a) =>
             {
-                for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-                {
-                    sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStop, "");
-                }
+                
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStop, "");
             });
             return;
         }
@@ -305,10 +296,8 @@ public class UITopMenuView : BasePanel
         btn_start.gameObject.SetActive(true);
         btn_pause.gameObject.SetActive(false);
         speedChange.value = 1;
-        for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-        {
-            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendGameStop, "");
-        }
+        
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStop, "");
     }
 
     private void OnGeneratePdf()
@@ -324,10 +313,8 @@ public class UITopMenuView : BasePanel
     {
         float changeSpeed = dropdownValue[index];
         if ((int)(changeSpeed * 100) == (int)(MyDataInfo.speedMultiplier * 100)) return;
-        for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-        {
-            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendChangeSpeed, changeSpeed.ToString());
-        }
+        
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, changeSpeed.ToString());
     }
 
     private void getAndLosePower(bool isGet)

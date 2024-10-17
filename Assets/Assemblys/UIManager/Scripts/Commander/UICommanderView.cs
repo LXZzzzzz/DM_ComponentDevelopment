@@ -468,10 +468,7 @@ public class UICommanderView : BasePanel
             string jsonData = JsonConvert.SerializeObject(ccData);
             string sendData = AESUtils.Encrypt(jsonData);
             //游戏进行中修改的话，发送给所有人
-            for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-            {
-                sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)Enums.MessageID.SendChangeController, sendData);
-            }
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeController, sendData);
         }
     }
 
@@ -500,10 +497,8 @@ public class UICommanderView : BasePanel
                         string jsonData = JsonConvert.SerializeObject(ccData);
                         string sendData = AESUtils.Encrypt(jsonData);
                         //游戏进行中修改的话，发送给所有人
-                        for (int j = 0; j < MyDataInfo.playerInfos.Count; j++)
-                        {
-                            sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[j].RoleId, (int)Enums.MessageID.SendChangeController, sendData);
-                        }
+                        
+                        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeController, sendData);
                     }
 
                     #endregion

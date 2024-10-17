@@ -66,7 +66,7 @@ public partial class CommanderController
 
     public void Receive_ChangeController(string info)
     {
-        if (MyDataInfo.MyLevel == 1) return;
+        if (MyDataInfo.MyLevel == 1 && !MyDataInfo.isPlayBack) return;
         string deStr = AESUtils.Decrypt(info);
         var data = JsonConvert.DeserializeObject<ChangeController>(deStr);
         if (data.objType == 1)
