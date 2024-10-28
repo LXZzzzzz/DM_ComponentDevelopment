@@ -191,8 +191,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             {
                 ZiYuanType itemType = (ZiYuanType)currentTargetType;
                 bool isArriveTargetType = itemType != ZiYuanType.Hospital;
-                mySkills[i].isUsable = isArriveTargetType &&(myState == HelicopterState.flying || myState == HelicopterState.hover) && amountOfGoods > 1;
+                mySkills[i].isUsable = isArriveTargetType && (myState == HelicopterState.flying || myState == HelicopterState.hover) && amountOfGoods > 1;
             }
+
             if (mySkills[i].SkillType == SkillType.Manned)
             {
                 bool isArriveTargetType = currentTargetType != -1 && isArrive && (ZiYuanType)currentTargetType == ZiYuanType.DisasterArea;
@@ -405,6 +406,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     private void DrawLine()
     {
+        if (positions == null || positions.Length == 0) return;
         Vector3 myUpPos = transform.position + transform.up * 1.5f;
         positions[0] = myUpPos; // 起点
         positions[1] = TargetPos == Vector3.zero ? myUpPos : TargetPos; // 终点

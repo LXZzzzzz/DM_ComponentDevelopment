@@ -211,7 +211,7 @@ namespace OldLogic
                     var toBeCreatPoint = (targetIconCell.gameObject.transform.position);
                     attachedObjectId = targetIconCell.belongToId;
                     //添加一个点（具体逻辑交给他去处理，我只关注应用层的逻辑处理）
-                    PathPointManager.Instance.AddPoint(currentChooseEquip, toBeCreatPoint, AddPointSuccess);
+                    // PathPointManager.Instance.AddPoint(currentChooseEquip, toBeCreatPoint, AddPointSuccess);
                     break;
                 case OperatorState.NoPlanningRoute:
 #if !UNITY_EDITOR
@@ -228,7 +228,7 @@ namespace OldLogic
             if (isWaitCreat) return;
             isWaitCreat = true;
             attachedObjectId = String.Empty;
-            PathPointManager.Instance.AddPoint(currentChooseEquip, mapPoint, AddPointSuccess);
+            // PathPointManager.Instance.AddPoint(currentChooseEquip, mapPoint, AddPointSuccess);
         }
 
         private bool isWaitCreat;

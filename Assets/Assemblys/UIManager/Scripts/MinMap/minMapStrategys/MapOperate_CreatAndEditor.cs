@@ -51,7 +51,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         }
         else if (data is List<EquipBase>)
         {
-            Debug.LogError("这里应该不会走了");
+            Debug.LogError("这里只会在编辑器测试阶段走");
             //传过来装备列表，说明这是一级发布了方案，做一个初始化后，直接切回普通模式
             var allObjModels = data as List<EquipBase>;
             for (int i = 0; i < allObjModels?.Count; i++)

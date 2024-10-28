@@ -23,7 +23,6 @@ public class UIMap : BasePanel, IPointerClickHandler
     [HideInInspector] public GameObject markPointPrefab;
 
     private Vector2 uiCameraSize;
-    public List<EquipBase> allObjModels;
     public Dictionary<string, IconCellBase> allIconCells; //存储地图上的所有点
     [HideInInspector] public float mapBLx, mapBLz;
     public Material dashedLineMat;
@@ -54,7 +53,6 @@ public class UIMap : BasePanel, IPointerClickHandler
         dashedLineMat = transform.Find("Cube").GetComponent<MeshRenderer>().material;
 
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
-        allObjModels = new List<EquipBase>();
         allIconCells = new Dictionary<string, IconCellBase>();
     }
 
@@ -140,6 +138,8 @@ public class UIMap : BasePanel, IPointerClickHandler
     {
 #if !UNITY_EDITOR
      sender.LogError("当前地图模式："+targetState);
+#else
+        Debug.LogError("当前地图模式：" + targetState);
 #endif
         bool isCreat = !mapLogics.ContainsKey(targetState);
         switch (targetState)
@@ -174,25 +174,25 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     private void Start()
     {
-        return;
 #if UNITY_EDITOR
         mapBLx = 3600f / mapView.sizeDelta.x;
-        allObjModels = new List<EquipBase>();
+        MyDataInfo.sceneAllEquips = new List<EquipBase>();
         // uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
         Debug.Log("uiCameraSize：" + uiCameraSize);
         sceneAllObjs = GameObject.FindObjectsOfType<EquipBase>();
+        Debug.LogError("场景中有：" + sceneAllObjs.Length);
         for (int i = 0; i < sceneAllObjs?.Length; i++)
         {
             var item = sceneAllObjs[i];
             item.BObjectId = ((i + 1) * 11111111).ToString();
-            allObjModels.Add(item);
+            MyDataInfo.sceneAllEquips.Add(item);
         }
 
         allIconCells = new Dictionary<string, IconCellBase>();
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
 
         SwitchMapLogic(OperatorState.CreatAndEditor);
-        EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allObjModels);
+        EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), MyDataInfo.sceneAllEquips);
 #endif
     }
 

@@ -24,6 +24,8 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIChangeControllers UIChangeControllers;
     public UIThreeDIconView UIThreeDIconView;
     public UICommanderDirector UICommanderDirector;
+    public UIChangePointDataInfo UIChangePointDataInfo;
+    public UIPathPointsShow UIPathPointsShow;
 
     private UIItem_IconShow itemIcon;
 
@@ -95,6 +97,8 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIChangeControllers = transform.Find("UiPrefab/UIChangeControllers").gameObject.GetComponent<UIChangeControllers>();
         UIThreeDIconView = transform.Find("UiPrefab/UIThreeDIconView").gameObject.GetComponent<UIThreeDIconView>();
         UICommanderDirector = transform.Find("UiPrefab/UICommanderDirector").gameObject.GetComponent<UICommanderDirector>();
+        UIChangePointDataInfo = transform.Find("UiPrefab/UIChangePointDataInfo").gameObject.GetComponent<UIChangePointDataInfo>();
+        UIPathPointsShow = transform.Find("UiPrefab/UIPathPointsShow").gameObject.GetComponent<UIPathPointsShow>();
 
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();

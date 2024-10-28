@@ -89,10 +89,12 @@ public class AirIconCell : IconCellBase
         }
 
         selectChange(equipGo.isChooseMe);
+#if !UNITY_EDITOR
         changeBelongtoShow();
         showSkillState();
         showAllMassInfo();
         showOilWarn();
+#endif
     }
 
     private GameObject getAirPort()

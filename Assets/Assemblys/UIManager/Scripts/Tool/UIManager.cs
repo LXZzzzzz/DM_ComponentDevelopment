@@ -57,6 +57,8 @@ namespace UiManager
             uiPanelWhereLayer.Add(UIName.UIAirportAircraftShowView, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIThreeDIcon, BasePanel.UIType.below);
             uiPanelWhereLayer.Add(UIName.UIChangeControllers, BasePanel.UIType.upper);
+            uiPanelWhereLayer.Add(UIName.UIChangePointDataInfo, BasePanel.UIType.upper);
+            uiPanelWhereLayer.Add(UIName.UIPathPointsShow, BasePanel.UIType.upper);
         }
 
         /// <summary>
@@ -74,6 +76,8 @@ namespace UiManager
                 }
                 else
                 {
+                    if (!panelDic[panelName.ToString()][0].IsShow)
+                        panelDic[panelName.ToString()][0].gameObject.SetActive(true);
                     panelDic[panelName.ToString()][0].ShowMe(infoData);
                     return;
                 }
@@ -96,10 +100,12 @@ namespace UiManager
             {
                 int index = 0;
                 panelDic[panelName][index].HideMe();
-                Destroy(panelDic[panelName][index].gameObject);
-                panelDic[panelName].RemoveAt(index);
-                if (panelDic[panelName].Count == 0)
-                    panelDic.Remove(panelName);
+                panelDic[panelName][index].IsShow = false;
+                panelDic[panelName][index].gameObject.SetActive(false);
+                // Destroy(panelDic[panelName][index].gameObject);
+                // panelDic[panelName].RemoveAt(index);
+                // if (panelDic[panelName].Count == 0)
+                //     panelDic.Remove(panelName);
             }
         }
 
@@ -181,6 +187,12 @@ namespace UiManager
                 case UIName.UICommanderDirector:
                     itemUI = Instantiate((main as UIManagerMain).UICommanderDirector, canvansTran);
                     break;
+                case UIName.UIChangePointDataInfo:
+                    itemUI = Instantiate((main as UIManagerMain).UIChangePointDataInfo, canvansTran);
+                    break;
+                case UIName.UIPathPointsShow:
+                    itemUI = Instantiate((main as UIManagerMain).UIPathPointsShow, canvansTran);
+                    break;
             }
 
             itemUI.gameObject.SetActive(true);
@@ -233,6 +245,8 @@ namespace UiManager
         UIAirportAircraftShowView,
         UIThreeDIcon,
         UIChangeControllers,
-        UICommanderDirector
+        UICommanderDirector,
+        UIChangePointDataInfo,
+        UIPathPointsShow
     }
 }

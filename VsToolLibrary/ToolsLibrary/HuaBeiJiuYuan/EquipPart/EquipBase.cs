@@ -15,6 +15,11 @@ namespace ToolsLibrary.EquipPart
 
         //记录最后一个路径点Id
         [HideInInspector] public string lastPointId;
+
+        //记录下一个路径点Id
+        [HideInInspector] public string nextPointId;
+
+        
         [HideInInspector] public bool isChooseMe;
 
         //当前是否停靠在机场

@@ -48,9 +48,9 @@ public class TestLogic : MonoBehaviour
         myass = new List<AudioSource>();
         mywms = new List<WingMark>();
 
-        mywms = fj.transform.GetComponentsInChildren<WingMark>(true).ToList();
+        // mywms = fj.transform.GetComponentsInChildren<WingMark>(true).ToList();
         
-        ttl.Init(4949);
+        // ttl.Init(4949);
     }
 
     public FirePointLogic fp;
@@ -60,7 +60,7 @@ public class TestLogic : MonoBehaviour
 
     public string aa, bb;
 
-    public testTemplateLogic ttl;
+    // public testTemplateLogic ttl;
 
     private List<AudioSource> myass;
     private List<WingMark> mywms;
@@ -73,10 +73,11 @@ public class TestLogic : MonoBehaviour
             EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "IconShow", null);
             UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, new Vector2(18000, 18000));
             UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
-            // UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
-            UIManager.Instance.ShowPanel<UICommanderDirector>(UIName.UICommanderDirector, null);
+            UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
+            // UIManager.Instance.ShowPanel<UICommanderDirector>(UIName.UICommanderDirector, null);
             EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "AttributeView", null);
-            initLine();
+            // initLine();
+            
         }
 
         if (Input.GetKeyDown(KeyCode.B))
@@ -162,7 +163,7 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            Instantiate(ttl, transform);
+            EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
         }
 
         if (isRunTimer) runTimer();
