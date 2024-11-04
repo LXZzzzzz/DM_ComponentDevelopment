@@ -4,6 +4,7 @@ using Enums;
 using Newtonsoft.Json;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.PathPart;
 using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using EventType = Enums.EventType;
@@ -102,6 +103,12 @@ public partial class CommanderController
 
         //通知UI层面更改这个对象的控制者的显示
         EventManager.Instance.EventTrigger(EventType.ChangeObjController.ToString(), data.objType, data.ChangeTargetId);
+    }
+
+    public void Receive_PathPlanningData(string data)
+    {
+        var pathPlanningData = PathPointManager.Instance.UnPackingData(data);
+        
     }
 
     public void Receive_TriggerSkill(MessageID messageID, string data)

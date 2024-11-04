@@ -6,11 +6,13 @@ using Newtonsoft.Json;
 using ReportGenerate;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.PathPart;
 using UiManager;
 using UnityEngine;
 using Vectrosity;
 using ToolsLibrary.ProgrammePart;
 using UnityEngine.UI;
+using EventType = Enums.EventType;
 
 public class TestLogic : MonoBehaviour
 {
@@ -27,6 +29,8 @@ public class TestLogic : MonoBehaviour
 
     public testObjData to;
     public RectTransform testPoint;
+
+    public string pathPlanningData;
 
     void Start()
     {
@@ -164,6 +168,16 @@ public class TestLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.LogError(PathPointManager.Instance.PackedData());
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            EventManager.Instance.EventTrigger(EventType.LoadPathPlanningData.ToString(),pathPlanningData);
         }
 
         if (isRunTimer) runTimer();

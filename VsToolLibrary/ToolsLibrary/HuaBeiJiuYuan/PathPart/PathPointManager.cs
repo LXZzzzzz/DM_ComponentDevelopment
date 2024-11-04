@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,7 +36,8 @@ namespace ToolsLibrary.PathPart
             PathPoint item = new PathPoint()
             {
                 pointId = pointId, belongToEquipId = targetEquip.BObjectId, PreviousPointId = targetEquip.lastPointId,
-                currentPoint = currentPointPos, tasks = new List<TaskBase>(), NextPointId = null,
+                currentPoint = new JsonVector3() { x = currentPointPos.x, y = currentPointPos.y, z = currentPointPos.z },
+                tasks = new List<TaskBase>(), NextPointId = null,
                 belongToIconId = string.IsNullOrEmpty(currentPointBelongtoIconId) ? pointId : currentPointBelongtoIconId
             };
             //创建新点，把上一个点的下一个点设为自己 ; 如果是第一个点，把飞机的下一个点设为自己
@@ -113,10 +116,19 @@ namespace ToolsLibrary.PathPart
             PathPoint item = new PathPoint()
             {
                 pointId = pointId, belongToEquipId = targetEquip.BObjectId, PreviousPointId = GetPointDataById(beInsertPointId).PreviousPointId,
-                currentPoint = currentPointPos, tasks = new List<TaskBase>(), NextPointId = beInsertPointId,
+                currentPoint = new JsonVector3() { x = currentPointPos.x, y = currentPointPos.y, z = currentPointPos.z },
+                tasks = new List<TaskBase>(), NextPointId = beInsertPointId,
                 belongToIconId = string.IsNullOrEmpty(currentPointBelongtoIconId) ? pointId : currentPointBelongtoIconId
             };
             GetPointDataById(beInsertPointId).PreviousPointId = pointId;
+            if (GetPointDataById(item.PreviousPointId) != null)
+            {
+                GetPointDataById(item.PreviousPointId).NextPointId = pointId;
+            }
+            else
+            {
+                targetEquip.nextPointId = pointId;
+            }
 
             allPathPoints.Add(item);
             addPointCb?.Invoke(item);
@@ -124,6 +136,7 @@ namespace ToolsLibrary.PathPart
 
         public PathPoint GetPointDataById(string pointId)
         {
+            if (string.IsNullOrEmpty(pointId)) return null;
             for (int i = 0; i < allPathPoints.Count; i++)
             {
                 if (allPathPoints[i].pointId == pointId)
@@ -147,7 +160,38 @@ namespace ToolsLibrary.PathPart
         //装备组件通过自己的Id获取自己的路径起点
         public PathPoint GetPointDataByBObjectId(string bObjectId)
         {
-            return null;
+            var itemPathPoint = allPathPoints.Find(x => string.Equals(x.belongToEquipId, bObjectId));
+            if (itemPathPoint == null) return null;
+            while (!string.IsNullOrEmpty(itemPathPoint.PreviousPointId))
+            {
+                itemPathPoint = GetPointDataById(itemPathPoint.PreviousPointId);
+            }
+
+            return itemPathPoint;
+        }
+
+        public string PackedData()
+        {
+            //把数据组装成字符串
+            string jsonData = JsonConvert.SerializeObject(allPathPoints, Formatting.Indented, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+            return AESUtils.Encrypt(jsonData);
+        }
+
+        public List<PathPoint> UnPackingData(string dataStr)
+        {
+            //把字符串解析为数据
+            string deStr = AESUtils.Decrypt(dataStr);
+            allPathPoints = JsonConvert.DeserializeObject<List<PathPoint>>(deStr, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
+
+            allPathPoints.Sort((a, b) => int.Parse(a.pointId) > int.Parse(b.pointId) ? -1 : 1);
+            testID = int.Parse(allPathPoints[0].pointId) + 1;
+            return allPathPoints;
         }
 
         public void GetAllPointDatas()

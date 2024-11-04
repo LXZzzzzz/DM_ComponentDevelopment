@@ -383,6 +383,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 //恢复进度，并关闭地图编辑模式
                 _commanderController.Receive_LoseChangeZiyPower();
                 break;
+            case MessageID.SendPathPlanningData:
+                //收到规划数据，展示到界面上，
+                _commanderController.Receive_PathPlanningData(param);
+                break;
         }
 
         if (eventType >= 1100)

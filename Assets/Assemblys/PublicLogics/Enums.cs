@@ -42,6 +42,8 @@ namespace Enums
         MarkMapPoints, //标记地图点请求
         ShowMarkMapPoint, //显示标记点
         crashIcon, //坠毁后通知Ui
+        LoadPathPlanningData, //加载规划点数据
+        MoveToTarget_AutoRun, //自动执行移动到目标点
     }
 
     public enum MessageID
@@ -58,6 +60,7 @@ namespace Enums
         SendMarkMapPoint = 1011, //发送标记场景点的请求
         SendGetChangeZQPower = 1012, //请求获取修改灾区权限
         SendLoseChangeZQPower = 1013, //请求释放修改灾区权限
+        SendPathPlanningData = 1014, //发送路径规划数据
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

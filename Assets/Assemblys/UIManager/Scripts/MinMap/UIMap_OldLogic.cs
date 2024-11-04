@@ -245,7 +245,7 @@ namespace OldLogic
                 attachedObjectId = String.Empty;
                 //数据上加完点后，把点插入到线段倒数第二个位置
                 int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
-                equipPathDatas[currentChooseEquip.BObjectId].Insert(itemCount, uiPos2LinePos(pointData.currentPoint));
+                // equipPathDatas[currentChooseEquip.BObjectId].Insert(itemCount, uiPos2LinePos(pointData.currentPoint));
             }
         }
 
@@ -259,7 +259,7 @@ namespace OldLogic
                 var itemPoint = Instantiate(pointIconPrefab, iconCellParent);
                 itemPoint.gameObject.SetActive(true);
                 //传入这个组件的基本信息，和选择后的回调
-                itemPoint.transform.position = worldPos2UiPos(pointData.currentPoint);
+                // itemPoint.transform.position = worldPos2UiPos(pointData.currentPoint);
                 itemPoint.Init(belongToPointCellId, OnChooseObj);
                 allIconCells.Add(belongToPointCellId, itemPoint);
             }

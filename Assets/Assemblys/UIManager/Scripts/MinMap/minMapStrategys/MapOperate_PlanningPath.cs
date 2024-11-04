@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Vectrosity;
 using Object = UnityEngine.Object;
+using EventType = Enums.EventType;
 
 public class MapOperate_PlanningPath : MapOperateLogicBase
 {
@@ -36,6 +37,37 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         attachedObjectId = String.Empty;
         if (equipPathLines == null) equipPathLines = new Dictionary<string, VectorLine>();
         if (equipPathDatas == null) equipPathDatas = new Dictionary<string, List<Vector2>>();
+        EventManager.Instance.AddEventListener<string>(EventType.LoadPathPlanningData.ToString(), OnLoadPathPlanningData);
+    }
+
+    private void OnLoadPathPlanningData(string data)
+    {
+        var pathPoints = PathPointManager.Instance.UnPackingData(data);
+        for (int i = 0; i < pathPoints.Count; i++)
+        {
+            if (!equipPathLines.ContainsKey(pathPoints[i].belongToEquipId))
+                InitLineByObjId(pathPoints[i].belongToEquipId);
+            creatPathPoint(pathPoints[i].belongToIconId, pathPoints[i]);
+        }
+
+        foreach (var equipPathData in equipPathDatas)
+        {
+            var startPoint = PathPointManager.Instance.GetPointDataByBObjectId(equipPathData.Key);
+            if (startPoint == null) continue;
+            PathPoint itemPoint = startPoint;
+            PathPoint lastPoint = startPoint;
+            do
+            {
+                equipPathData.Value.Add(worldPos2UiPos(new Vector3(itemPoint.currentPoint.x, itemPoint.currentPoint.y, itemPoint.currentPoint.z)));
+                itemPoint = PathPointManager.Instance.GetPointDataById(itemPoint.NextPointId);
+                if (itemPoint != null) lastPoint = itemPoint;
+            } while (itemPoint != null);
+
+            var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, equipPathData.Key));
+            itemEquip.nextPointId = startPoint.pointId;
+            itemEquip.lastPointId = lastPoint.pointId;
+            equipPathLines[equipPathData.Key].Draw();
+        }
     }
 
     private void InitLineByObjId(string objId)
@@ -185,6 +217,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
     public override void OnExit()
     {
         isCreatPathPoint = false;
+        EventManager.Instance.RemoveEventListener<string>(EventType.LoadPathPlanningData.ToString(), OnLoadPathPlanningData);
     }
 
     private void OnAddPointSuc(PathPoint pointData)
@@ -197,7 +230,10 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
             attachedObjectId = String.Empty;
             //数据上加完点后，把点插入到线段倒数第二个位置
             int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
-            equipPathDatas[currentChooseEquip.BObjectId].Insert(itemCount, worldPos2UiPos(pointData.currentPoint));
+            equipPathDatas[currentChooseEquip.BObjectId].Insert(itemCount, worldPos2UiPos(new Vector3(pointData.currentPoint.x, pointData.currentPoint.y, pointData.currentPoint.z)));
+
+            //打开编辑页面
+            UIManager.Instance.ShowPanel<UIChangePointDataInfo>(UIName.UIChangePointDataInfo, pointData);
         }
     }
 
@@ -210,8 +246,11 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
             isWaitCreat = false;
             attachedObjectId = String.Empty;
             //数据上加完点后，把点插入到记录的插入下标位置，并将下标后移
-            equipPathDatas[currentChooseEquip.BObjectId].Insert(insertIndex, worldPos2UiPos(pointData.currentPoint));
+            equipPathDatas[currentChooseEquip.BObjectId].Insert(insertIndex, worldPos2UiPos(new Vector3(pointData.currentPoint.x, pointData.currentPoint.y, pointData.currentPoint.z)));
             insertIndex++;
+
+            //打开编辑页面
+            UIManager.Instance.ShowPanel<UIChangePointDataInfo>(UIName.UIChangePointDataInfo, pointData);
         }
     }
 
@@ -242,7 +281,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
 
         UIManager.Instance.HidePanel(UIName.UIPathPointsShow.ToString());
 
-        beInsertPointId = pointId;
+        beInsertPointId = isInFront ? pointId : itemPoint.NextPointId;
         currentChooseEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, itemPoint.belongToEquipId));
 
         //找到这个点的下标记录起来，
@@ -273,7 +312,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
             var itemPoint = Object.Instantiate(mainLogic.pointIconPrefab, mainLogic.iconCellParent);
             itemPoint.gameObject.SetActive(true);
             //传入这个组件的基本信息，和选择后的回调
-            itemPoint.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(pointData.currentPoint);
+            itemPoint.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(new Vector3(pointData.currentPoint.x, pointData.currentPoint.y, pointData.currentPoint.z));
             itemPoint.Init(belongToPointCellId, mainLogic.OnChooseObj);
             mainLogic.allIconCells.Add(belongToPointCellId, itemPoint);
         }
@@ -281,10 +320,6 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         //给已存在的点附加
         (mainLogic.allIconCells[belongToPointCellId] as PointIconCell).AddAttachedPoint(pointData.pointId);
         mainLogic.allIconCells[belongToPointCellId].RefreshView();
-
-        //打开编辑页面
-
-        UIManager.Instance.ShowPanel<UIChangePointDataInfo>(UIName.UIChangePointDataInfo, pointData);
     }
 
 

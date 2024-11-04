@@ -345,7 +345,10 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     private void LateUpdate()
     {
-        if (MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
+        if (MyDataInfo.gameState < GameState.GameStart || MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
+
+        //如果是支队前线指挥员，并且属于自己支队的直升机才执行指令
+        if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId)) OnRunInstructionUpdate();
 
         if (isRunTimer) runTimer();
 
@@ -365,6 +368,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         {
             if (isCrash)
             {
+                //如果直升机坠毁了，就让他降落
                 OnLandSuc();
                 currentIsCrash = true;
             }

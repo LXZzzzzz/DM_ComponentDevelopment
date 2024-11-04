@@ -29,7 +29,7 @@ public class UIChangePointDataInfo : BasePanel
         var itemTask = Instantiate(taskCell, tasksParent);
         itemTask.transform.GetComponentInChildren<Text>().text = $"第{currentTasks.Count + 1}个操作：";
         itemTask.gameObject.SetActive(true);
-        currentTasks.Add(new taskTest() { orderNumber = currentTasks.Count });
+        currentTasks.Add(new taskTest() { orderNumber = currentTasks.Count, testStr = "啦啦啦啦"});
     }
 
     private void OnSure()
@@ -66,9 +66,5 @@ public class UIChangePointDataInfo : BasePanel
         {
             Destroy(tasksParent.GetChild(i).gameObject);
         }
-    }
-
-    public class taskTest : TaskBase
-    {
     }
 }

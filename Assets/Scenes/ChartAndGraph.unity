@@ -763,6 +763,7 @@ MonoBehaviour:
   BObjectId: 
   BeLongToCommanderId: 
   lastPointId: 
+  nextPointId: 
   isChooseMe: 0
   isDockingAtTheAirport: 0
   EquipIcon: {fileID: 0}
@@ -1015,6 +1016,8 @@ MonoBehaviour:
   UIChangeControllers: {fileID: 0}
   UIThreeDIconView: {fileID: 0}
   UICommanderDirector: {fileID: 0}
+  UIChangePointDataInfo: {fileID: 0}
+  UIPathPointsShow: {fileID: 0}
 --- !u!1001 &783700336
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1301,6 +1304,7 @@ MonoBehaviour:
   BObjectId: 
   BeLongToCommanderId: 
   lastPointId: 
+  nextPointId: 
   isChooseMe: 0
   isDockingAtTheAirport: 0
   EquipIcon: {fileID: 0}
@@ -1436,6 +1440,7 @@ MonoBehaviour:
   BObjectId: 
   BeLongToCommanderId: 
   lastPointId: 
+  nextPointId: 
   isChooseMe: 0
   isDockingAtTheAirport: 0
   EquipIcon: {fileID: 0}
@@ -1867,13 +1872,13 @@ MonoBehaviour:
   speed: 1
   to: {fileID: 1946693854}
   testPoint: {fileID: 0}
+  pathPlanningData: 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
   fp: {fileID: 2507100108240095231}
   waterTime: 10
   mj: 4200
   fj: {fileID: 410259264}
   aa: "{\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u6295\u6C34\u603B\u91CF\":0.0,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u8FC7\u706B\u603B\u9762\u79EF\":170596.15625,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u71C3\u70E7\u9762\u79EF\":39018.078125,\"\u4EFB\u52A1\u521D\u59CB\u8FC7\u706B\u603B\u9762\u79EF\":170506.09375,\"\u4EFB\u52A1\u521D\u59CB\u71C3\u70E7\u9762\u79EF\":39000.0,\"\u5F00\u59CB\u6295\u6C34\u65F6\u523B\":\"00:00:00\",\"\u53D6\u6C34\u70B9\u5230\u6295\u6C34\u70B9\u7684\u6700\u77ED\u8DEF\u5F84\":1.37932861328125,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u523B\":0.0,\"\u603B\u822A\u7A0B\":0.0,\"\u76F4\u5347\u673A\u603B\u67B6\u6B21\":0,\"\u706B\u573A\u6570\u91CF\":3,\"\u53D6\u6C34\u70B9\u6570\u91CF\":3,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u706B\u573A\u6295\u6C34\u603B\u91CD\u91CF\":0.0,\"HeliSortieWaterDataList\":{\"{\\\"Id\\\":\\\"133640551154477175972\\\",\\\"Name\\\":\\\"MI26_002\\\",\\\"Price\\\":13000.0,\\\"Consumption\\\":880.79998779296875,\\\"Speed\\\":255.0,\\\"TakeOffTime\\\":0.0,\\\"EndMissonTime\\\":0.0,\\\"WatersTime\\\":0.041666666666666664,\\\"WatersMaxCoune\\\":8000.0,\\\"PersonTime\\\":0.0,\\\"PersonMaxCount\\\":0.0,\\\"MaterialTime\\\":0.0,\\\"MaterialMaxCount\\\":0.0,\\\"IsCrash\\\":false,\\\"\u5355\u673A\u4EFB\u52A1\u6210\u672C\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u91CD\u91CF\u6548\u7387\\\":[],\\\"\u5355\u4F4D\u65F6\u95F4\u5355\u673A\u6295\u6C34\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u603B\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u7269\u8D44\u6295\u653E\u6548\u7387\\\":[],\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u9700\u6C42\\\":0.0,\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u5355\u673A\u6295\u9001\u7269\u8D44\u603B\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u6295\u653E\u7269\u8D44\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u8F6C\u8FD0\u4EBA\u6570\\\":0.0,\\\"\u5355\u673A\u4EBA\u5458\u8F6C\u8FD0\u6548\u7387\\\":[]}\":[],\"{\\\"Id\\\":\\\"133640550587125600951\\\",\\\"Name\\\":\\\"Z8_001\\\",\\\"Price\\\":13000.0,\\\"Consumption\\\":597.5999755859375,\\\"Speed\\\":232.0,\\\"TakeOffTime\\\":0.0,\\\"EndMissonTime\\\":0.0,\\\"WatersTime\\\":0.025,\\\"WatersMaxCoune\\\":5000.0,\\\"PersonTime\\\":0.0,\\\"PersonMaxCount\\\":0.0,\\\"MaterialTime\\\":0.0,\\\"MaterialMaxCount\\\":0.0,\\\"IsCrash\\\":false,\\\"\u5355\u673A\u4EFB\u52A1\u6210\u672C\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u91CD\u91CF\u6548\u7387\\\":[],\\\"\u5355\u4F4D\u65F6\u95F4\u5355\u673A\u6295\u6C34\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u603B\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u7269\u8D44\u6295\u653E\u6548\u7387\\\":[],\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u9700\u6C42\\\":0.0,\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u5355\u673A\u6295\u9001\u7269\u8D44\u603B\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u6295\u653E\u7269\u8D44\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u8F6C\u8FD0\u4EBA\u6570\\\":0.0,\\\"\u5355\u673A\u4EBA\u5458\u8F6C\u8FD0\u6548\u7387\\\":[]}\":[]},\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u706B\u573A\u6570\u636E\":[{\"Id\":\"13364124699425266298\",\"Name\":\"\u706B\u6E90A\",\"WaterWeight\":0.0,\"initBurnedArea\":71780.25,\"initBurnArea\":16000.0,\"burnArea\":16006.0263671875,\"burnedArea\":71810.2734375,\"WaterNeed\":0.0,\"Degree\":0.0},{\"Id\":\"133641247377979550100\",\"Name\":\"\u706B\u6E90B\",\"WaterWeight\":0.0,\"initBurnedArea\":41890.48046875,\"initBurnArea\":10000.0,\"burnArea\":10006.0263671875,\"burnedArea\":41920.5,\"WaterNeed\":0.0,\"Degree\":0.0},{\"Id\":\"133641247731845467102\",\"Name\":\"\u706B\u6E90C\",\"WaterWeight\":0.0,\"initBurnedArea\":56835.3671875,\"initBurnArea\":13000.0,\"burnArea\":13006.0263671875,\"burnedArea\":56865.38671875,\"WaterNeed\":0.0,\"Degree\":0.0}]}"
   bb: "{\"\u5355\u4F4D\u71C3\u70E7\u9762\u79EF\u6295\u6C34\u9700\u6C42\":1.0,\"\u6700\u5927\u5DE1\u822A\u901F\u5EA6\":255.0,\"\u5355\u6B21\u53D6\u6C34\u548C\u6295\u6C34\u65F6\u95F4\":0.025,\"\u540A\u6876\u5355\u6B21\u6700\u5927\u88C5\u8F7D\u91CF\":8000.0,\"\u76F4\u5347\u673A\u6BCF\u98DE\u884C\u5C0F\u65F6\u8017\u6CB9\u7387\":0.0,\"\u6700\u4F4E\u5C0F\u65F6\u71C3\u6CB9\u6D88\u8017\u7387\":597.5999755859375,\"\u6700\u4F4E\u76F4\u5347\u673A\u5355\u4EF7\":13000.0}"
-  ttl: {fileID: 0}
 --- !u!1 &1823688464
 GameObject:
   m_ObjectHideFlags: 0

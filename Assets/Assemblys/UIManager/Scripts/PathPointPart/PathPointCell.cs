@@ -11,12 +11,16 @@ public class PathPointCell : DMonoBehaviour
     private UnityAction<string> removeCb;
     private UnityAction<string, bool> insertCb;
 
+    public string previousPointId, nextPointId;
+
     public void Init(string pointId, UnityAction<string> removeCb, UnityAction<string, bool> insertCb)
     {
         //四个按钮的功能绑定
         this.removeCb = removeCb;
         this.insertCb = insertCb;
         showInfo.text = $"{pointId}路径点";
+        previousPointId = PathPointManager.Instance.GetPointDataById(pointId).PreviousPointId;
+        nextPointId = PathPointManager.Instance.GetPointDataById(pointId).NextPointId;
         editBtn.onClick.AddListener(() =>
         {
             var pathPointData = PathPointManager.Instance.GetPointDataById(pointId);

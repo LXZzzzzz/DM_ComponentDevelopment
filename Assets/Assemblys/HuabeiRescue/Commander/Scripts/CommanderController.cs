@@ -133,6 +133,11 @@ public partial class CommanderController : DMonoBehaviour
         {
             clouds.SetActive(Camera.main != null && Camera.main.gameObject.transform.position.y < 2000);
         }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
+        }
     }
 
     public void SendTaskSureMsg()
@@ -524,10 +529,10 @@ public partial class CommanderController : DMonoBehaviour
         Debug.LogError("类型类型" + temporaryZaiqu.ZiYuanType);
         Debug.LogError("名字名字" + temporaryZaiqu.GetType());
         temporaryZaiqu.gameObject.SetActive(true);
-        
+
         if (temporaryZaiqu is ISourceOfAFire)
             (temporaryZaiqu as ISourceOfAFire).fireInit(5, 5, 10000, data.zaiquId, "#800049", "#cb488f");
-        
+
         if (temporaryZaiqu is IDisasterArea)
             (temporaryZaiqu as IDisasterArea).disasterInit(data.zaiquId, 50, 2, "#800049", "#cb488f");
         // temporaryZaiqu.Reset();

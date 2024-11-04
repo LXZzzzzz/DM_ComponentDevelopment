@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.ProgrammePart;
 using UnityEngine;
 
 namespace ToolsLibrary.PathPart
@@ -10,7 +11,7 @@ namespace ToolsLibrary.PathPart
         public string PreviousPointId;
         public string NextPointId;
 
-        public Vector3 currentPoint;
+        public JsonVector3 currentPoint;
 
         //该点属于哪个飞机的
         public string belongToEquipId;
@@ -27,5 +28,11 @@ namespace ToolsLibrary.PathPart
     {
         public int orderNumber;
         public SkillType runSkillType;
+        public bool isRuned;
+    }
+
+    public class taskTest : TaskBase
+    {
+        public string testStr;
     }
 }
