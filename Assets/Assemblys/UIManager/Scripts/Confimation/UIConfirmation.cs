@@ -50,6 +50,8 @@ namespace UiManager
             //根据传过来的数据类型，决定以哪种显示模型进行显示
             ConfirmatonInfo cinfo = (ConfirmatonInfo)userData;
 
+            newSchemePart.SetActive(false);
+            tipsPart.SetActive(false);
             SelectShowViewLogic(cinfo.type);
             currentShowView?.OnShow(cinfo.showStrInfo);
 
@@ -141,6 +143,7 @@ namespace UiManager
         {
             mainLogic.titleText.text = "新建方案";
             mainLogic.newSchemePart.SetActive(true);
+            mainLogic.newSchemePart.GetComponentInChildren<InputField>().text = "";
         }
 
         public override bool OnSure(out object cbObj)

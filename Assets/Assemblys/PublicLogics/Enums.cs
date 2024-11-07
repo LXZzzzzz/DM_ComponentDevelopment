@@ -61,6 +61,7 @@ namespace Enums
         SendGetChangeZQPower = 1012, //请求获取修改灾区权限
         SendLoseChangeZQPower = 1013, //请求释放修改灾区权限
         SendPathPlanningData = 1014, //发送路径规划数据
+        SendSkillConfirmation = 1015, //发送技能确认，随技能指令发送，收到服务器反馈标志技能使用成功
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

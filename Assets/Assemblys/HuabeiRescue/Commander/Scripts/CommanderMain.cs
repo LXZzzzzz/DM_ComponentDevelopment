@@ -225,6 +225,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         yield return 1;
         _commanderController.Init(CalcAndSetLonLat);
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
+        MyDataInfo.SkillsToBeConfirmed = new List<string>();
         yield return new WaitForSeconds(1);
         if (myLevel == 1)
             _commanderController.SendTaskSureMsg();
@@ -386,6 +387,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendPathPlanningData:
                 //收到规划数据，展示到界面上，
                 _commanderController.Receive_PathPlanningData(param);
+                break;
+            case MessageID.SendSkillConfirmation:
+                MyDataInfo.SkillsToBeConfirmed.Add(param);
                 break;
         }
 

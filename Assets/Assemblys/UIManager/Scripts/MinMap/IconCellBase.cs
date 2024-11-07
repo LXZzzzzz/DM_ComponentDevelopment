@@ -13,6 +13,12 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
     private UnityAction<string, PointerEventData.InputButton> chooseCb;
 
     public string belongToId => _belongToId;
+    
+    
+    //记录所有经过我的点
+    private List<string> _allViaPointIds;
+
+    public List<string> allViaPointIds => _allViaPointIds;
 
 
     public void Init(string belongToId, UnityAction<string, PointerEventData.InputButton> chooseCb)
@@ -49,6 +55,18 @@ public abstract class IconCellBase : DMonoBehaviour, IPointerClickHandler, IPoin
     public void OnPointerExit(PointerEventData eventData)
     {
         UIManager.Instance.HidePanel(UIName.UIHangShowInfo.ToString());
+    }
+    public void AddAttachedPoint(string pointId)
+    {
+        if (_allViaPointIds == null)
+            _allViaPointIds = new List<string>();
+        _allViaPointIds.Add(pointId);
+    }
+
+    public void RemoveAttachedPoint(string pointId)
+    {
+        if (_allViaPointIds == null) return;
+        _allViaPointIds.Remove(pointId);
     }
 
     public virtual void DestroyMe()

@@ -261,11 +261,6 @@ public partial class CommanderController : DMonoBehaviour
     private void OnChangeTarget(string targetId, Vector3 pos)
     {
         if (MyDataInfo.gameState != GameState.GameStart || currentChooseEquip == null) return;
-        if (currentChooseEquip.isDockingAtTheAirport)
-        {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前装备在机场未出库");
-            return;
-        }
 
         if (!currentChooseEquip.OnCheckIsMove()) return;
 

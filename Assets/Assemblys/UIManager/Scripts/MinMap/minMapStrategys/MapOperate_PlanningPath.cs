@@ -73,7 +73,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
     private void InitLineByObjId(string objId)
     {
         equipPathDatas.Add(objId, new List<Vector2>() { mainLogic.allIconCells[objId].GetComponent<RectTransform>().anchoredPosition });
-        var itemLine = new VectorLine("Line" + objId, equipPathDatas[objId], 10, LineType.Continuous);
+        var itemLine = new VectorLine("Line" + objId, equipPathDatas[objId], 2, LineType.Continuous);
 #if UNITY_EDITOR
         itemLine.SetCanvas(mainLogic.gameObject.GetComponentInParent<Canvas>());
 #else
@@ -136,7 +136,9 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
             if (isWaitCreat) return;
             isWaitCreat = true;
 
-            var toBeCreatPoint = uiPos2WorldPos(clickIcon.gameObject.transform.position);
+            Vector3 toBeCreatPoint = Vector3.zero;
+            if (clickIcon is ZiYuanIconCell itemZy) toBeCreatPoint = itemZy.ziYuanItem.gameObject.transform.position;
+            if (clickIcon is PointIconCell itemPoint) toBeCreatPoint = uiPos2WorldPos(itemPoint.GetComponent<RectTransform>().anchoredPosition);
             attachedObjectId = clickIcon.belongToId;
             switch (currentCreatModel)
             {
@@ -159,17 +161,18 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
     public override void OnUpdate()
     {
         if (!isCreatPathPoint) return;
-
+        
+        var mousePos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
         switch (currentCreatModel)
         {
             case CreatModel.AddPoint:
                 int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
                 //实时设置鼠标位置为线段终点，并刷新线段显示
-                equipPathDatas[currentChooseEquip.BObjectId][itemCount] = mainLogic.mousePos2UI(Input.mousePosition);
+                equipPathDatas[currentChooseEquip.BObjectId][itemCount] = mainLogic.mousePos2UI(mousePos);
                 equipPathLines[currentChooseEquip.BObjectId].Draw();
                 break;
             case CreatModel.InsertPoint:
-                equipPathDatas[currentChooseEquip.BObjectId][insertIndex] = mainLogic.mousePos2UI(Input.mousePosition);
+                equipPathDatas[currentChooseEquip.BObjectId][insertIndex] = mainLogic.mousePos2UI(mousePos);
                 equipPathLines[currentChooseEquip.BObjectId].Draw();
                 break;
         }
@@ -262,7 +265,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         int pointIndex = PathPointManager.Instance.RemovePoint(pointId);
         if (equipPathDatas.ContainsKey(equipId) && equipPathDatas[equipId].Count > pointIndex)
             equipPathDatas[equipId].RemoveAt(pointIndex);
-        (mainLogic.allIconCells[iconId] as PointIconCell).RemoveAttachedPoint(pointId);
+        mainLogic.allIconCells[iconId].RemoveAttachedPoint(pointId);
         mainLogic.allIconCells[iconId].RefreshView();
         equipPathLines[equipId].Draw();
     }
@@ -318,7 +321,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         }
 
         //给已存在的点附加
-        (mainLogic.allIconCells[belongToPointCellId] as PointIconCell).AddAttachedPoint(pointData.pointId);
+        mainLogic.allIconCells[belongToPointCellId].AddAttachedPoint(pointData.pointId);
         mainLogic.allIconCells[belongToPointCellId].RefreshView();
     }
 

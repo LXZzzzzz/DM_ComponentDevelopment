@@ -18,6 +18,7 @@ namespace ToolsLibrary
         public static List<ClientInfo> playerInfos;
         public static float speedMultiplier; //场景运行速度
         public static float gameStartTime; //记录本局游戏开始时刻
+        public static List<string> SkillsToBeConfirmed; //待确认技能列表
     }
 
     public enum GameState

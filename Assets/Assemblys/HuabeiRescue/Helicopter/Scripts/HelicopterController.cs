@@ -43,6 +43,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     private Vector3 initialScale = Vector3.zero;
 
+    private bool isStartAutoRun;
+
 
     public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
     {
@@ -88,7 +90,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         // mySkills.Add(new SkillData() { SkillType = SkillType.EndTask, isUsable = true, skillName = "结束任务" });
 
         currentSkill = SkillType.None;
-        myState = HelicopterState.NotReady;
+        myState = HelicopterState.Landing;
         isWaitArrive = false;
         isRunTimer = false;
         currentTargetType = -1;
@@ -129,6 +131,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         isSendCrash = false;
         myass = new List<AudioSource>();
         mywms = new List<WingMark>();
+        isStartAutoRun = false;
 
         mywms.AddRange(transform.GetComponentsInChildren<WingMark>(true));
     }
@@ -293,6 +296,11 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         //     currentSkill = SkillType.None;
         //     isRunTimer = false;
         // }
+        if (isDockingAtTheAirport)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前装备在机场未出库");
+            return false;
+        }
 
         bool ismove = myState == HelicopterState.flying || myState == HelicopterState.hover;
 
@@ -347,9 +355,6 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     {
         if (MyDataInfo.gameState < GameState.GameStart || MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
 
-        //如果是支队前线指挥员，并且属于自己支队的直升机才执行指令
-        if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId)) OnRunInstructionUpdate();
-
         if (isRunTimer) runTimer();
 
         switchMyState();
@@ -373,6 +378,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
                 currentIsCrash = true;
             }
         }
+
+        //如果是支队前线指挥员，并且属于自己支队的直升机才执行指令
+        if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId)) OnRunInstructionUpdate();
     }
 
     private bool currentIsCrash;
