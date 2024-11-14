@@ -9,11 +9,18 @@ public partial class HelicopterController
 {
     private float amountOfOil;
 
+    private float currentFlyHight; //记录当前直升机飞行高度
+    private float correctGroundHight; //记录正确的地面高度
+
     public void TakeOff()
     {
         if (myState != HelicopterState.Landing) return;
         currentSkill = SkillType.TakeOff;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnTOSuc);
+        float itemHight = GetCurrentGroundHeight(out bool isHit);
+        if (isHit) correctGroundHight = itemHight;
+        currentFlyHight = isHit ? itemHight : correctGroundHight;
+        updateEvent += OnRunTakeOff;
 
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
         for (int i = 0; i < items.Count; i++)
@@ -33,17 +40,27 @@ public partial class HelicopterController
         {
             anis[i].Play();
         }
-        myass.ForEach(x=>x.gameObject.SetActive(false));
+
+        myass.ForEach(x => x.gameObject.SetActive(false));
     }
 
     private void OnTOSuc()
     {
+        updateEvent -= OnRunTakeOff;
         myState = HelicopterState.hover;
         Vector3 startPos = new Vector3(transform.position.x, 0, transform.position.z);
         Vector3 endPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd, transform.position.z);
         amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, myAttributeInfo.psyh);
         var itemPosition = transform.position;
-        itemPosition = new Vector3(itemPosition.x, flyHight, itemPosition.z);
+        float toHight = GetCurrentGroundHeight(out bool isHit);
+        itemPosition = new Vector3(itemPosition.x, (isHit ? toHight : correctGroundHight) + myAttributeInfo.zsjxhgd / 5, itemPosition.z);
+        transform.position = itemPosition;
+    }
+
+    private void OnRunTakeOff()
+    {
+        var itemPosition = transform.position;
+        itemPosition = new Vector3(itemPosition.x, currentFlyHight += (myAttributeInfo.psl * 3.6f / 5) * Time.deltaTime * MyDataInfo.speedMultiplier, itemPosition.z);
         transform.position = itemPosition;
     }
 
@@ -52,7 +69,11 @@ public partial class HelicopterController
         if (myState != HelicopterState.hover) return;
         currentSkill = SkillType.Landing;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnLandSuc);
-        
+        float itemHight = GetCurrentGroundHeight(out bool isHit);
+        if (isHit) correctGroundHight = itemHight;
+        currentFlyHight = (isHit ? itemHight : correctGroundHight) + myAttributeInfo.zsjxhgd / 5;
+        updateEvent += OnRunLand;
+
         if (myass.Count == 0)
         {
             var ass = transform.GetComponentsInChildren<AudioSource>();
@@ -61,25 +82,36 @@ public partial class HelicopterController
                 if (ass[i].enabled) myass.Add(ass[i]);
             }
         }
-        myass.ForEach(x=>x.gameObject.SetActive(false));
+
+        myass.ForEach(x => x.gameObject.SetActive(false));
     }
 
     private void OnLandSuc()
     {
+        updateEvent -= OnRunLand;
         myState = HelicopterState.Landing;
         //降落就不用耗油了吧
         Vector3 startPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd, transform.position.z);
         Vector3 endPos = new Vector3(transform.position.x, 0, transform.position.z);
         // amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, myAttributeInfo.psyh);
         var itemPosition = transform.position;
-        itemPosition = new Vector3(itemPosition.x, GetCurrentGroundHeight() < 0 ? flyHight : GetCurrentGroundHeight(), itemPosition.z);
+        float toHight = GetCurrentGroundHeight(out bool isHit);
+        itemPosition = new Vector3(itemPosition.x, isHit ? toHight : correctGroundHight, itemPosition.z);
         transform.position = itemPosition;
-        
+
         for (int i = 0; i < anis.Length; i++)
         {
             anis[i].Stop();
         }
+
         mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
+    }
+
+    private void OnRunLand()
+    {
+        var itemPosition = transform.position;
+        itemPosition = new Vector3(itemPosition.x, currentFlyHight -= (myAttributeInfo.psl * 3.6f / 5) * Time.deltaTime * MyDataInfo.speedMultiplier, itemPosition.z);
+        transform.position = itemPosition;
     }
 
     public void Supply()
@@ -112,10 +144,10 @@ public partial class HelicopterController
     /// 获取当前位置地面的高度
     /// </summary>
     /// <returns></returns>
-    private float GetCurrentGroundHeight()
+    private float GetCurrentGroundHeight(out bool isHit)
     {
         // 射线的起点是当前物体的位置
-        Ray ray = new Ray(transform.position, Vector3.down);
+        Ray ray = new Ray(transform.position + transform.up, Vector3.down);
 
         // 存储射线碰撞信息的变量
         RaycastHit hit;
@@ -125,12 +157,14 @@ public partial class HelicopterController
         {
             // 打印碰撞点的坐标
             Debug.Log("Hit Point: " + hit.point);
+            isHit = true;
             return hit.point.y;
         }
         else
         {
             // 如果没有碰撞到任何物体
             Debug.Log("No hit");
+            isHit = false;
             return -1;
         }
     }

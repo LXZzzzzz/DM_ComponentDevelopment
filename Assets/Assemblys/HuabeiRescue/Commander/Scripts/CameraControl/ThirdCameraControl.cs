@@ -35,7 +35,7 @@ namespace DMCameraControl
             yMovement = 30;
         }
 
-        void Update()
+        void LateUpdate()
         {
             if (Target == null)
             {

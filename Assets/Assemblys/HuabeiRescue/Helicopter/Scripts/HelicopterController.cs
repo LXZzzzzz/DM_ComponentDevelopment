@@ -33,7 +33,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     private bool isSendCrash; //记录是否已经发送过坠毁信息
 
-    private float flyHight;
+    private UnityAction updateEvent;
 
     private List<AudioSource> myass;
     private List<WingMark> mywms;
@@ -95,8 +95,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         isRunTimer = false;
         currentTargetType = -1;
         var position = transform.position;
-        flyHight = position.y;
-        position = new Vector3(position.x, GetCurrentGroundHeight() < 0 ? flyHight : GetCurrentGroundHeight(), position.z);
+        var defaultFlyHight = position.y;
+        float itemGroundHight = GetCurrentGroundHeight(out bool isHit);
+        position = new Vector3(position.x, isHit ? itemGroundHight : defaultFlyHight, position.z);
         transform.position = position;
         anis = transform.GetComponentsInChildren<Animation>();
         for (int i = 0; i < anis.Length; i++)
@@ -351,9 +352,11 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         EventManager.Instance.RemoveEventListener<int>(EventType.ChooseEquipToZiYuanType.ToString(), OnSetTargetType);
     }
 
-    private void LateUpdate()
+    protected override void OnUpdate()
     {
         if (MyDataInfo.gameState < GameState.GameStart || MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
+
+        updateEvent?.Invoke();
 
         if (isRunTimer) runTimer();
 

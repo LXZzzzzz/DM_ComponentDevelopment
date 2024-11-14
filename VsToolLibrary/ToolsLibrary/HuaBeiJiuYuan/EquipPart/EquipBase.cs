@@ -114,6 +114,7 @@ namespace ToolsLibrary.EquipPart
 
         void Update()
         {
+            OnUpdate();
             if (MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
             MoveLogic();
         }
@@ -128,6 +129,8 @@ namespace ToolsLibrary.EquipPart
             OnClose();
             Destroy(gameObject);
         }
+
+        protected abstract void OnUpdate();
 
         protected abstract void OnClose();
     }

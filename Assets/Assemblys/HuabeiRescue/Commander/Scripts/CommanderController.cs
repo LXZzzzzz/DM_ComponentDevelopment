@@ -24,6 +24,7 @@ public partial class CommanderController : DMonoBehaviour
     private Func<Vector3, Vector2> CalculateLatLon;
     private GameObject clouds;
     private int zaiquIdNum;
+    private GameObject cameraFllowGo;
 
     private bool isMe;
 
@@ -166,12 +167,11 @@ public partial class CommanderController : DMonoBehaviour
         cvm.enabled = isMove;
         mo.enabled = isMove;
         tc.enabled = isMove;
-        if (tc.enabled && tc.Target != null)
+        if (!isMove) return;
+        if (cameraFllowGo != null)
         {
-            tc.Target = tc.Target;
-            cvm.enabled = false;
-            mo.enabled = false;
-        }
+            OnCameraContral(2, cameraFllowGo.transform);
+        }else tc.enabled = false;
     }
 
 
@@ -189,12 +189,13 @@ public partial class CommanderController : DMonoBehaviour
                 Camera.main.transform.position = target.position + target.up * 200;
                 Camera.main.transform.rotation = Quaternion.LookRotation(target.forward);
                 Camera.main.transform.LookAt(target);
+                cameraFllowGo = null;
                 break;
             case 2:
                 cvm.enabled = false;
                 mo.enabled = false;
                 tc.enabled = true;
-                tc.Target = target.gameObject;
+                tc.Target = cameraFllowGo = target.gameObject;
                 break;
         }
     }

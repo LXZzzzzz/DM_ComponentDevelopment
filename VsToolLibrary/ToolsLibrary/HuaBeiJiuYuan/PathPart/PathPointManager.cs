@@ -160,7 +160,7 @@ namespace ToolsLibrary.PathPart
         //装备组件通过自己的Id获取自己的路径起点
         public PathPoint GetPointDataByBObjectId(string bObjectId)
         {
-            var itemPathPoint = allPathPoints.Find(x => string.Equals(x.belongToEquipId, bObjectId));
+            var itemPathPoint = allPathPoints?.Find(x => string.Equals(x.belongToEquipId, bObjectId));
             if (itemPathPoint == null) return null;
             while (!string.IsNullOrEmpty(itemPathPoint.PreviousPointId))
             {
