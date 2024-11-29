@@ -1,9 +1,10 @@
+using System;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
 //安置点和医院共用，逻辑一样
-public class RescueStationLogic : ZiYuanBase, IRescueStation
+public class RescueStationLogic : ZiYuanBase, IRescueStation,ITaskProgress
 {
     private float firstGoodsTime;
     private float totalWeight;
@@ -79,5 +80,18 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation
         maxGoodsNum = perPersonNeedGoodsWeight * totalPerson;
 
         return totalPerson >= this.maxPersonNum && totalWeight >= perPersonNeedGoodsWeight * this.maxPersonNum;
+    }
+
+    public string getAssociationAssemblyId()
+    {
+        return String.Empty;
+    }
+
+    public bool getTaskProgress(out string progressInfo, out float progressNum)
+    {
+        bool isComplete = getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
+        progressInfo = $"安置受灾群众:{currentPersonNum}人/{maxPersonNum}人\n所需物资:{currentGoodsNum}kg/{maxGoodsNum}kg";
+        progressNum = maxGoodsNum == 0 ? 0 : Mathf.Clamp(currentGoodsNum / maxGoodsNum, 0, 1);
+        return isComplete;
     }
 }

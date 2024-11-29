@@ -19,7 +19,7 @@ namespace ToolsLibrary.EquipPart
         //记录下一个路径点Id
         [HideInInspector] public string nextPointId;
 
-        
+
         [HideInInspector] public bool isChooseMe;
 
         //当前是否停靠在机场
@@ -64,12 +64,12 @@ namespace ToolsLibrary.EquipPart
             //初始化飞机基本属性
             _isArrive = true;
             isCrash = false;
-            EquipIcon = baseData.EquipIcon;
-            AttributeInfos = new List<string>();
-            for (int i = 0; i < baseData.AttributeInfos.Count; i++)
-            {
-                AttributeInfos.Add(baseData.AttributeInfos[i]);
-            }
+            // EquipIcon = baseData.EquipIcon;
+            // AttributeInfos = new List<string>();
+            // for (int i = 0; i < baseData.AttributeInfos.Count; i++)
+            // {
+            //     AttributeInfos.Add(baseData.AttributeInfos[i]);
+            // }
         }
 
         public abstract List<SkillData> GetSkillsData();
@@ -133,5 +133,13 @@ namespace ToolsLibrary.EquipPart
         protected abstract void OnUpdate();
 
         protected abstract void OnClose();
+    }
+
+    public interface DqChangePart
+    {
+        //直升机变成想定预制，所以在初始化时ID、机场ID和控制者信息就已知了，直接赋值
+        void InitData(string id, string airPortId, string ctrlId);
+
+        string GetStopAtAirPort();
     }
 }

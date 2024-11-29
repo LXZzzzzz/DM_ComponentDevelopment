@@ -418,13 +418,4 @@ public partial class CommanderController
 public class ComanderData
 {
     public float dwrsmjtsxq;
-    public int zqxzyzrs;
-    public float zdxhsd;
-    public float dcqshtssj;
-    public float dcwzzzsj;
-    public float dcwztfsj;
-    public float dcrydjsj;
-    public int dczdyzrs;
-    public float dtdczdzzl;
-    public float zsjmfxxshyl;
 }

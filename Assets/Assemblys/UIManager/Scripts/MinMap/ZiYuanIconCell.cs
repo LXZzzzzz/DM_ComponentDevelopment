@@ -304,8 +304,8 @@ public class ZiYuanIconCell : IconCellBase
     private void AirPortShowLogic()
     {
         if (ziYuanItem?.ZiYuanType != ZiYuanType.Airport) return;
-        if (MyDataInfo.MyLevel > 1 &&
-            (ziYuanItem.beUsedCommanderIds == null || ziYuanItem.beUsedCommanderIds.Find(x => string.Equals(x, MyDataInfo.leadId)) == null)) return;
+        // if (MyDataInfo.MyLevel > 1 &&
+        //     (ziYuanItem.beUsedCommanderIds == null || ziYuanItem.beUsedCommanderIds.Find(x => string.Equals(x, MyDataInfo.leadId)) == null)) return;
 
         var itemInfo = (ziYuanItem as IAirPort)?.GetAllEquips();
         bool isRefresh = currAllEquipInfoCount != itemInfo.Count;

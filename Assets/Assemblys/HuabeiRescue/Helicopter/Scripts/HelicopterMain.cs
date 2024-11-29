@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DM.Entity;
 using DM.IFS;
+using ToolsLibrary.EquipPart;
 using UnityEngine;
 
 public class HelicopterMain : ScriptManager
@@ -51,7 +52,9 @@ public class HelicopterMain : ScriptManager
             new InputFloatUnitProperty("补给时间", 20, "min"),
             new InputFloatUnitProperty("成年人平均重量", 70, "kg"),
             new InputFloatUnitProperty("直升机价格", 13000, "万元"),
-            new InputFloatUnitProperty("最低每小时耗油量", 100, "kg/h")
+            new InputFloatUnitProperty("最低每小时耗油量", 100, "kg/h"),
+            new DropDownSceneBObjectsProperty("绑定所属机场"),
+            new DropDownSceneBObjectsProperty("绑定所控机长")
         };
     }
 
@@ -88,6 +91,23 @@ public class HelicopterMain : ScriptManager
             }
         }
 
+        ((DqChangePart)logic).InitData(BObjectId, (Properties[35] as DropDownSceneBObjectsProperty).Value, (Properties[36] as DropDownSceneBObjectsProperty).Value);
         logic.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.LogError("输出直升机信息");
+            var tagItem = GetComponent<DM.Core.Map.BObjectModel>().BObject.Info.Tags.Find(x => x.Id == 1010);
+            if (tagItem != null)
+            {
+                for (int i = 0; i < tagItem.SubTags.Count; i++)
+                {
+                    Debug.LogError($"直升机名字{name},标签：{tagItem.SubTags[i]}");
+                }
+            }
+        }
     }
 }

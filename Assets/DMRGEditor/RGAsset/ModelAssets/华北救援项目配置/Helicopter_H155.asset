@@ -177,12 +177,20 @@ MonoBehaviour:
       SubName: "\u4EFB\u52A1\u70B9"
     - Id: 4
       IsModify: 0
-      IsOn: 1
+      IsOn: 0
       SubName: "\u88C5\u5907\u6A21\u677F"
     - Id: 5
       IsModify: 0
       IsOn: 0
       SubName: "\u5176\u4ED6\u7EC4\u4EF6"
+    - Id: 6
+      IsModify: 0
+      IsOn: 0
+      SubName: "\u707E\u533A\u6A21\u677F"
+    - Id: 7
+      IsModify: 0
+      IsOn: 1
+      SubName: "\u76F4\u5347\u673A"
   listTriggers:
   - BuiltIn: 0
     Id: 1000
@@ -225,9 +233,9 @@ MonoBehaviour:
     Id: 2006
     IsOn: 1
     Name: "\u89E6\u53D1\u5668\u6548\u679C5"
-  IsCreateTag: 0
+  IsCreateTag: 1
   IsCreateScript: 1
-  IsCreateModel: 0
+  IsCreateModel: 1
   IsCompressModel: 0
   isAssignMain: 1
   MainCalss: HelicopterMain

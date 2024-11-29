@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using EventType = Enums.EventType;
 
-public partial class HelicopterController : EquipBase, IWatersOperation, IGroundReady, ITakeOffAndLand, IGoodsOperation, IRescuePersonnelOperation, ISupply
+public partial class HelicopterController : EquipBase, IWatersOperation, IGroundReady, ITakeOffAndLand, IGoodsOperation, IRescuePersonnelOperation, ISupply,DqChangePart
 {
     private bool isWaitArrive;
     public HelicopterInfo myAttributeInfo;
@@ -50,7 +50,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     {
         base.Init(baseData, sceneAllZiyuan);
         this.sceneAllZiyuan = sceneAllZiyuan;
-        InitData(baseData);
+        InitData();
         EventManager.Instance.AddEventListener<int>(EventType.ChooseEquipToZiYuanType.ToString(), OnSetTargetType);
         myRecordedData = new RecordedData();
         myRecordedData.eachSortieData = new List<SingleSortieData>();
@@ -90,7 +90,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         // mySkills.Add(new SkillData() { SkillType = SkillType.EndTask, isUsable = true, skillName = "结束任务" });
 
         currentSkill = SkillType.None;
-        myState = HelicopterState.Landing;
+        myState = HelicopterState.NotReady;
         isWaitArrive = false;
         isRunTimer = false;
         currentTargetType = -1;
@@ -117,13 +117,13 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         initialScale = transform.localScale;
     }
 
-    private void InitData(EquipBase baseData)
+    private void InitData()
     {
-        isTS = (baseData as HelicopterController).isTS;
-        isYSWZ = (baseData as HelicopterController).isYSWZ;
-        isYSRY = (baseData as HelicopterController).isYSRY;
-        isSJJY = (baseData as HelicopterController).isSJJY;
-        myAttributeInfo = JsonUtility.FromJson<HelicopterInfo>(JsonUtility.ToJson((baseData as HelicopterController).myAttributeInfo));
+        // isTS = (baseData as HelicopterController).isTS;
+        // isYSWZ = (baseData as HelicopterController).isYSWZ;
+        // isYSRY = (baseData as HelicopterController).isYSRY;
+        // isSJJY = (baseData as HelicopterController).isSJJY;
+        // myAttributeInfo = JsonUtility.FromJson<HelicopterInfo>(JsonUtility.ToJson((baseData as HelicopterController).myAttributeInfo));
         amountOfOil = myAttributeInfo.zyl;
         amountOfWater = 0;
         amountOfGoods = 0;

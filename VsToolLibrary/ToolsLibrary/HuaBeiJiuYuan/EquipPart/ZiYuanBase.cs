@@ -150,4 +150,16 @@ namespace ToolsLibrary.EquipPart
         /// </summary>
         TaskPoint
     }
+
+    public class ZyVariableDataBase
+    {
+    }
+
+    public class FireVariableData : ZyVariableDataBase
+    {
+        //风速、坡度、初始燃烧面积
+        public float fs;
+        public float pd;
+        public float csrsmj;
+    }
 }

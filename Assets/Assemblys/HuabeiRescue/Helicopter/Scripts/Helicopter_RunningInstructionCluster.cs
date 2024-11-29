@@ -13,6 +13,19 @@ public partial class HelicopterController
     private bool isAutoRunEnd;
     private string skillConfirmationStr;
     private TaskBase currentRunTask;
+    private string stopAtAirPortId; //停靠机场Id
+
+    public void InitData(string id, string airPortId, string ctrlId)
+    {
+        BObjectId = id;
+        stopAtAirPortId = airPortId;
+        BeLongToCommanderId = ctrlId;
+    }
+
+    public string GetStopAtAirPort()
+    {
+        return stopAtAirPortId;
+    }
 
     private void OnRunInstructionUpdate()
     {
@@ -25,6 +38,7 @@ public partial class HelicopterController
         {
             if (MyDataInfo.SkillsToBeConfirmed.Find(a => string.Equals(a, skillConfirmationStr)) != null)
             {
+                //代表接收到了技能回调，说明技能发送完成
                 MyDataInfo.SkillsToBeConfirmed.Remove(skillConfirmationStr);
                 skillConfirmationStr = String.Empty;
                 if (currentRunTask != null) currentRunTask.isRuned = true;
@@ -33,19 +47,31 @@ public partial class HelicopterController
             return;
         }
 
+        //如果正在执行指令或正在飞行，就等待
+        if (currentSkill != SkillType.None || !isArrive) return;
+
         //如果直升机还没开始运行，就先起飞
         if (!isStartAutoRun)
         {
-            //起飞操作
-            OnSelectSkill(SkillType.TakeOff);
-            isStartAutoRun = true;
-            skillConfirmationStr = BObjectId + SkillType.TakeOff;
+            Debug.LogError("当前的状态" + myState);
+            //准备操作
+            switch (myState)
+            {
+                case HelicopterState.NotReady:
+                    Debug.LogError("发送起飞前准备");
+                    OnSelectSkill(SkillType.GroundReady);
+                    skillConfirmationStr = BObjectId + SkillType.GroundReady;
+                    break;
+                case HelicopterState.Landing:
+                    Debug.LogError("发送起飞");
+                    OnSelectSkill(SkillType.TakeOff);
+                    skillConfirmationStr = BObjectId + SkillType.TakeOff;
+                    isStartAutoRun = true;
+                    break;
+            }
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendSkillConfirmation, skillConfirmationStr);
             return;
         }
-
-        //如果正在执行指令或正在飞行，就等待
-        if (isDockingAtTheAirport || currentSkill != SkillType.None || !isArrive) return;
 
         currentRunTask = getNextRunTask();
         if (currentRunTask != null)

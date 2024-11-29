@@ -59,6 +59,7 @@ namespace UiManager
             uiPanelWhereLayer.Add(UIName.UIChangeControllers, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIChangePointDataInfo, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIPathPointsShow, BasePanel.UIType.upper);
+            uiPanelWhereLayer.Add(UIName.UIChangeZyData, BasePanel.UIType.upper);
         }
 
         /// <summary>
@@ -193,6 +194,9 @@ namespace UiManager
                 case UIName.UIPathPointsShow:
                     itemUI = Instantiate((main as UIManagerMain).UIPathPointsShow, canvansTran);
                     break;
+                case UIName.UIChangeZyData:
+                    itemUI = Instantiate((main as UIManagerMain).UIChangeZyData, canvansTran);
+                    break;
             }
 
             itemUI.gameObject.SetActive(true);
@@ -247,6 +251,7 @@ namespace UiManager
         UIChangeControllers,
         UICommanderDirector,
         UIChangePointDataInfo,
-        UIPathPointsShow
+        UIPathPointsShow,
+        UIChangeZyData
     }
 }

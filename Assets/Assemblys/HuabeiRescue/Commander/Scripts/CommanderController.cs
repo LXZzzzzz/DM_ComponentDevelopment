@@ -25,6 +25,7 @@ public partial class CommanderController : DMonoBehaviour
     private GameObject clouds;
     private int zaiquIdNum;
     private GameObject cameraFllowGo;
+    private List<ZiYuanBase> sceneAlltempzy;
 
     private bool isMe;
 
@@ -87,6 +88,8 @@ public partial class CommanderController : DMonoBehaviour
                     if (tagItem != null)
                     {
                         allBObjects[i].transform.GetChild(0).gameObject.SetActive(false);
+                        if (sceneAlltempzy == null) sceneAlltempzy = new List<ZiYuanBase>();
+                        sceneAlltempzy.Add(allBObjects[i].transform.GetChild(0).GetComponent<ZiYuanBase>());
                     }
 
                     continue;
@@ -98,6 +101,8 @@ public partial class CommanderController : DMonoBehaviour
                     zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
                     EventManager.Instance.EventTrigger(EventType.CreatAZiyuanIcon.ToString(), zyItem);
                     sceneAllzy.Add(zyItem);
+                    
+                    //初始化资源的时候，如果遇到灾区类，同时创建
                 }
             }
 
@@ -171,7 +176,8 @@ public partial class CommanderController : DMonoBehaviour
         if (cameraFllowGo != null)
         {
             OnCameraContral(2, cameraFllowGo.transform);
-        }else tc.enabled = false;
+        }
+        else tc.enabled = false;
     }
 
 
@@ -452,6 +458,19 @@ public partial class CommanderController : DMonoBehaviour
         if (MyDataInfo.MyLevel > 0) return;
 
         //先打开属性面板设置属性值，点击确定，把数据和模板id发给所有玩家，在消息接收地方，再执行创建逻辑
+        var tempZy = sceneAlltempzy.Find(x => string.Equals(x.BobjectId, zyId));
+
+        ZyVariableDataBase zyVData = null;
+        switch (tempZy.ZiYuanType)
+        {
+            case ZiYuanType.SourceOfAFire:
+                zyVData = new FireVariableData();
+                break;
+        }
+
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ChangeZyData", zyVData);
+        //这里注册一个回调事件，在窗口编辑完数据后，返回，将数据塞入创建数据中，发送出去
+
         CreatZaiquData data = new CreatZaiquData()
         {
             tempId = zyId, pos = new JsonVector3() { x = pos.x, y = pos.y, z = pos.z }, zaiquId = zyId + (zaiquIdNum += 1), isDele = 0

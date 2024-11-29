@@ -53,7 +53,8 @@ namespace ToolsLibrary.EquipPart
     //任务点功能
     public interface ITaskProgress
     {
+        //现在把任务组件去掉，包含任务的组件继承我即可
         string getAssociationAssemblyId();
-        bool getTaskProgress(out string progressInfo,out float progressNum);
+        bool getTaskProgress(out string progressInfo, out float progressNum);
     }
 }

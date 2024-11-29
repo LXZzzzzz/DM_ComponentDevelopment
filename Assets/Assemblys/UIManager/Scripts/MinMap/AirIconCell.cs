@@ -85,7 +85,8 @@ public class AirIconCell : IconCellBase
             else
                 meRect.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(getAirPort().transform.position);
 
-            rootObj.SetActive(!equipGo.isDockingAtTheAirport);
+            if (!string.Equals(equipGo.BeLongToCommanderId, MyDataInfo.leadId))
+                rootObj.SetActive(!equipGo.isDockingAtTheAirport);
         }
 
         selectChange(equipGo.isChooseMe);
@@ -100,7 +101,7 @@ public class AirIconCell : IconCellBase
     private GameObject getAirPort()
     {
         if (airPort != null) return airPort;
-        string airPortId = ProgrammeDataManager.Instance.GetEquipDataById(equipGo.BObjectId).airportId;
+        string airPortId = (equipGo as DqChangePart).GetStopAtAirPort();
         for (int j = 0; j < allBObjects.Length; j++)
         {
             if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)
@@ -253,6 +254,7 @@ public class AirIconCell : IconCellBase
 
     private bool isShowWarn;
     private Tweener currentTweener;
+
     private void showOilWarn()
     {
         if (isShowWarn)

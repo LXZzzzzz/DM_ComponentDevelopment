@@ -100,12 +100,12 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
 
     public override void OnLeftClickMap(Vector2 pos)
     {
-        // //导教端在场景中创建灾区
-        // if (string.IsNullOrEmpty(creatTargetTemplate)) return;
-        // //通知主角在场景对应位置创建实体
-        // EventManager.Instance.EventTrigger(EventType.CreatZaiQuZy.ToString(), creatTargetTemplate, uiPos2WorldPos(pos));
+        //导教端在场景中创建灾区
+        if (string.IsNullOrEmpty(creatTargetTemplate)) return;
+        //通知主角在场景对应位置创建实体
+        EventManager.Instance.EventTrigger(EventType.CreatZaiQuZy.ToString(), creatTargetTemplate, uiPos2WorldPos(pos));
         
-        // return;
+        return;
         if (string.IsNullOrEmpty(creatTargetTemplate)) return;
         //这里先去数据管理器里申请创建，然后将数据ID传给创建者
         string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, uiPos2WorldPos(pos));

@@ -56,6 +56,7 @@ public class ZiYuan_Task : ZiYuanBase, ITaskProgress
             return false;
         switch (associationGo.ZiYuanType)
         {
+            //把这些get进度的逻辑否别写道灾区自己的逻辑中，把任务组件去除，界面上直接通过统一接口直接get，使用多态方式
             case ZiYuanType.SourceOfAFire:
                 isComplete = (associationGo as ISourceOfAFire).getTaskProgress();
                 (associationGo as ISourceOfAFire).getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl);

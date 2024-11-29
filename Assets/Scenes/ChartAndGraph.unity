@@ -938,7 +938,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &597214295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1018,6 +1018,7 @@ MonoBehaviour:
   UICommanderDirector: {fileID: 0}
   UIChangePointDataInfo: {fileID: 0}
   UIPathPointsShow: {fileID: 0}
+  UIChangeZyData: {fileID: 0}
 --- !u!1001 &783700336
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1160,6 +1161,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5467000729574461711, guid: 7ce94dfc2103d5741b6288bba89f1160,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8056713718229582192, guid: 7ce94dfc2103d5741b6288bba89f1160,
         type: 3}
@@ -1749,7 +1755,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1537503641
 Transform:
   m_ObjectHideFlags: 0
@@ -2703,7 +2709,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2507100108240095230
 Transform:
   m_ObjectHideFlags: 0

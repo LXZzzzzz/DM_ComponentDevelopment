@@ -29,6 +29,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
     private CreatModel currentCreatModel;
     private string beInsertPointId;
     private int insertIndex;
+    public GameObject chooseEquipIconGo;
 
     public override void OnEnter()
     {
@@ -114,18 +115,20 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
 
                 currentCreatModel = CreatModel.AddPoint;
                 isCreatPathPoint = true;
+                chooseEquipIconGo = clickIcon.transform.GetChild(0).gameObject;
+                chooseEquipIconGo?.SetActive(false);
             }
 
-            if (clickIcon is PointIconCell)
+            else
             {
                 //选中的是标点
 #if UNITY_EDITOR
                 Debug.Log("选中的标点是" + clickIcon.belongToId + "的点；" + "名字是：" + clickIcon.name);
-                Debug.Log($"经过了{(clickIcon as PointIconCell).allViaPointIds?.Count}个点");
+                Debug.Log($"经过了{clickIcon.allViaPointIds?.Count}个点");
 #else
                     mainLogic.sender.LogError("选中的标点是" + clickIcon.belongToId + "的点；" + "名字是：" + clickIcon.name);
 #endif
-                ShowPathPointsData sppd = new ShowPathPointsData() { allViaPointData = (clickIcon as PointIconCell).allViaPointIds, RemoveAction = RemovePoint, InsertAction = InsertAPoint };
+                ShowPathPointsData sppd = new ShowPathPointsData() { allViaPointData = clickIcon.allViaPointIds, RemoveAction = RemovePoint, InsertAction = InsertAPoint };
                 UIManager.Instance.ShowPanel<UIPathPointsShow>(UIName.UIPathPointsShow, sppd);
             }
         }
@@ -161,7 +164,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
     public override void OnUpdate()
     {
         if (!isCreatPathPoint) return;
-        
+
         var mousePos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
         switch (currentCreatModel)
         {
@@ -215,6 +218,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         }
 
         currentChooseEquip = null;
+        chooseEquipIconGo?.SetActive(true);
     }
 
     public override void OnExit()

@@ -3,7 +3,7 @@ using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
-public class FirePointLogic : ZiYuanBase, ISourceOfAFire
+public class FirePointLogic : ZiYuanBase, ISourceOfAFire,ITaskProgress
 {
     private FireManage fm;
     private float fs, pd, csrsmj;
@@ -75,5 +75,18 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire
         fm.Init(fs, pd, csrsmj);
         allWeight = 0;
         isStart = false;
+    }
+
+    public string getAssociationAssemblyId()
+    {
+        return String.Empty;
+    }
+
+    public bool getTaskProgress(out string progressInfo, out float progressNum)
+    {
+        getFireData(out float ghmj, out float rsmj, out float csghmj, out float csrsmj, out float tszl);
+        progressInfo = $"需求水量：{(int)(rsmj < 0 ? 0 : rsmj)}kg";
+        progressNum = Mathf.Clamp((csrsmj - rsmj) / csrsmj, 0, 1);
+        return fm.IsFire;
     }
 }

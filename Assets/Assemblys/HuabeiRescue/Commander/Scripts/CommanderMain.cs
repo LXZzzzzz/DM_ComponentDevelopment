@@ -20,8 +20,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     private void Awake()
     {
         commanderLevel = new List<EnumDescription>();
-        commanderLevel.Add(new EnumDescription(1, "一级指挥官"));
-        commanderLevel.Add(new EnumDescription(2, "二级指挥官"));
+        commanderLevel.Add(new EnumDescription(1, "总指挥端"));
+        commanderLevel.Add(new EnumDescription(2, "前线指挥端"));
+        commanderLevel.Add(new EnumDescription(3, "机长端"));
+        commanderLevel.Add(new EnumDescription(4, "态势端"));
         commanderLevel.Add(new EnumDescription(-1, "导教端"));
         taskType = new List<EnumDescription>();
         taskType.Add(new EnumDescription(1, "灭火"));
@@ -37,15 +39,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             new DropDownProperty("任务类型", taskType, 0),
 
             new InputFloatUnitProperty("单位燃烧面积投水需求/人均救援物资需求", 2.5f, "kg/㎡(kg/人)"),
-            new InputIntUnitProperty("无用--受灾需转运总人数(救援)", 10, "kg/㎡"),
-            new InputFloatUnitProperty("无用--最大巡航速度", 255, "km/h"),
-            new InputFloatUnitProperty("无用--单次取水和投水时间", 0.05f, "h"),
-            new InputFloatUnitProperty("无用--单次物资装载时间", 0.008f, "h"),
-            new InputFloatUnitProperty("无用--单次物资投放时间", 0.0014f, "h"),
-            new InputFloatUnitProperty("无用--单次人员吊救时间(救援)", 0.0014f, "h"),
-            new InputIntUnitProperty("无用--单次最大运载人数(救援)", 10, "人"),
-            new InputFloatUnitProperty("无用--吊桶单次最大装载量/单次最大运载物资重量", 5000, "kg"),
-            new InputFloatUnitProperty("无用--直升机每飞行小时耗油量", 1000, "kg"),
             new InputStringProperty("默认色号", "#5B52FF"),
             new InputStringProperty("选中色号", "#5B52FF"),
             new InputStringProperty("icon底色色号", "#3C387D"),
@@ -104,7 +97,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 {
                     clientLevel = (itemMain.Properties[0] as DropDownProperty).Selected.Enum;
                     clientLevelName = allBObjects[j].BObject.Info.Name;
-                    progrId = (itemMain.Properties[16] as InputStringProperty).Value;
+                    progrId = (itemMain.Properties[7] as InputStringProperty).Value;
 
                     clientColorCode = (itemMain.Properties[1] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(clientColorCode, out Color color))
@@ -112,19 +105,19 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                         clientColor = color;
                     }
 
-                    var itemCodeN = (itemMain.Properties[13] as InputStringProperty).Value;
+                    var itemCodeN = (itemMain.Properties[4] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(itemCodeN, out Color colorn))
                     {
                         normalColor = colorn;
                     }
 
-                    var itemCodeC = (itemMain.Properties[14] as InputStringProperty).Value;
+                    var itemCodeC = (itemMain.Properties[5] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(itemCodeC, out Color colorc))
                     {
                         chooseColor = colorc;
                     }
 
-                    var itemCodeI = (itemMain.Properties[15] as InputStringProperty).Value;
+                    var itemCodeI = (itemMain.Properties[6] as InputStringProperty).Value;
                     if (ColorUtility.TryParseHtmlString(itemCodeI, out Color colori))
                     {
                         iconBgColor = colori;
@@ -153,20 +146,22 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     private void InitRecordData()
     {
         _commanderController.cdata = new ComanderData();
-        var fields = _commanderController.cdata.GetType().GetFields();
-        for (int i = 3; i < 12; i++)
-        {
-            if (fields[i - 3].FieldType == typeof(Int32))
-            {
-                fields[i - 3].SetValue(_commanderController.cdata, (Properties[i] as InputIntUnitProperty).Value);
-            }
-            else
-            {
-                fields[i - 3].SetValue(_commanderController.cdata, (Properties[i] as InputFloatUnitProperty).Value);
-            }
-        }
-
+        _commanderController.cdata.dwrsmjtsxq = (Properties[3] as InputFloatUnitProperty).Value;
         _commanderController.gameType = (Properties[2] as DropDownProperty).Selected.Enum;
+        
+        // var fields = _commanderController.cdata.GetType().GetFields();
+        // for (int i = 3; i < 12; i++)
+        // {
+        //     if (fields[i - 3].FieldType == typeof(Int32))
+        //     {
+        //         fields[i - 3].SetValue(_commanderController.cdata, (Properties[i] as InputIntUnitProperty).Value);
+        //     }
+        //     else
+        //     {
+        //         fields[i - 3].SetValue(_commanderController.cdata, (Properties[i] as InputFloatUnitProperty).Value);
+        //     }
+        // }
+
     }
 
     public override void PropertiesChanged(DynamicProperty[] pros)
@@ -188,6 +183,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.SceneGoParent = transform.Find("AllGoParent");
         MyDataInfo.SceneGoParent.position = Vector3.zero;
         MyDataInfo.gameState = GameState.None;
+        MyDataInfo.sceneAllEquips = new List<EquipBase>();
+        MyDataInfo.SkillsToBeConfirmed = new List<string>();
         gameStartTimePoint = -1;
         if (playback) OnInitPlayBackPlayerInfos();
         float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
@@ -224,8 +221,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
 
         yield return 1;
         _commanderController.Init(CalcAndSetLonLat);
-        MyDataInfo.sceneAllEquips = new List<EquipBase>();
-        MyDataInfo.SkillsToBeConfirmed = new List<string>();
+        //大庆版本下的初始化，为了适应改变后的直升机创建模式
+        _commanderController.Init();
+        if (myLevel == 3)
+            _commanderController.Init(BObjectId);
         yield return new WaitForSeconds(1);
         if (myLevel == 1)
             _commanderController.SendTaskSureMsg();
@@ -251,7 +250,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 string progrId = "";
 
                 clientLevel = (itemMain.Properties[0] as DropDownProperty).Selected.Enum;
-                progrId = (itemMain.Properties[16] as InputStringProperty).Value;
+                progrId = (itemMain.Properties[7] as InputStringProperty).Value;
 
                 clientColorCode = (itemMain.Properties[1] as InputStringProperty).Value;
                 if (ColorUtility.TryParseHtmlString(clientColorCode, out Color color))
@@ -259,19 +258,19 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                     clientColor = color;
                 }
 
-                var itemCodeN = (itemMain.Properties[13] as InputStringProperty).Value;
+                var itemCodeN = (itemMain.Properties[4] as InputStringProperty).Value;
                 if (ColorUtility.TryParseHtmlString(itemCodeN, out Color colorn))
                 {
                     normalColor = colorn;
                 }
 
-                var itemCodeC = (itemMain.Properties[14] as InputStringProperty).Value;
+                var itemCodeC = (itemMain.Properties[5] as InputStringProperty).Value;
                 if (ColorUtility.TryParseHtmlString(itemCodeC, out Color colorc))
                 {
                     chooseColor = colorc;
                 }
 
-                var itemCodeI = (itemMain.Properties[15] as InputStringProperty).Value;
+                var itemCodeI = (itemMain.Properties[6] as InputStringProperty).Value;
                 if (ColorUtility.TryParseHtmlString(itemCodeI, out Color colori))
                 {
                     iconBgColor = colori;

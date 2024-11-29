@@ -229,22 +229,22 @@ public class UITopMenuView : BasePanel
     private void onLine()
     {
         putAwayMenu();
-        switch (MyDataInfo.gameState)
-        {
-            case GameState.FirstLevelCommanderEditor:
-                ConfirmatonInfo infoa = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "请先发布方案，再通知开始" };
-                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
-                return;
-            case GameState.GameStart:
-            case GameState.GamePause:
-                ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "推演已经开始！！！" };
-                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
-                return;
-            // case GameState.GameStop:
-            //     ConfirmatonInfo infoc = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "方案已经停止！！！" };
-            //     UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoc);
-            //     break;
-        }
+        // switch (MyDataInfo.gameState)
+        // {
+        //     case GameState.FirstLevelCommanderEditor:
+        //         ConfirmatonInfo infoa = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "请先发布方案，再通知开始" };
+        //         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
+        //         return;
+        //     case GameState.GameStart:
+        //     case GameState.GamePause:
+        //         ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "推演已经开始！！！" };
+        //         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
+        //         return;
+        //     // case GameState.GameStop:
+        //     //     ConfirmatonInfo infoc = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "方案已经停止！！！" };
+        //     //     UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoc);
+        //     //     break;
+        // }
 
         //只有在准备阶段才能发送开始
         

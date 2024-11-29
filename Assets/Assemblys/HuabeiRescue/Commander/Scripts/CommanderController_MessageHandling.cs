@@ -131,14 +131,14 @@ public partial class CommanderController
         {
             case MessageID.TriggerGroundReady:
                 sender.LogError("收到了起飞前准备的指令");
-                var itemAirportId = ProgrammeDataManager.Instance.GetEquipDataById(data).airportId;
+                var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
+                var itemAirportId = (item as DqChangePart).GetStopAtAirPort();
                 if (string.IsNullOrEmpty(itemAirportId))
                 {
                     EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "数据错误，指定的直升机未在机场");
                     return;
                 }
 
-                var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
                 (item as IGroundReady)?.GroundReady(sceneAllzy.Find(a => string.Equals(a.BobjectId, itemAirportId)) as IAirPort);
                 var playerData = MyDataInfo.playerInfos.Find(a => string.Equals(a.RoleId, item.BeLongToCommanderId));
                 EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(), $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行起飞前准备操作");
