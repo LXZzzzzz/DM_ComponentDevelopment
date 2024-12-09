@@ -42,7 +42,6 @@ public partial class CommanderController
     {
         var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
         OnLoadProgrammeDataSuc(programmeData);
-        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "收到上级派发任务，请接收");
     }
 
 
@@ -67,48 +66,47 @@ public partial class CommanderController
 
     public void Receive_ChangeController(string info)
     {
-        if (MyDataInfo.MyLevel == 1 && !MyDataInfo.isPlayBack) return;
-        string deStr = AESUtils.Decrypt(info);
-        var data = JsonConvert.DeserializeObject<ChangeController>(deStr);
-        if (data.objType == 1)
-        {
-            var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data.ChangeTargetId));
-            if (itemEquip != null) itemEquip.BeLongToCommanderId = data.currentComs[0];
-            var itemEquipData = ProgrammeDataManager.Instance.GetCurrentData.AllEquipDatas.Find(x => string.Equals(x.myId, data.ChangeTargetId));
-            if (itemEquipData != null) itemEquipData.controllerId = data.currentComs[0];
-        }
-        else
-        {
-            //这里是资源的权限更改
-            var itemZy = sceneAllzy.Find(x => string.Equals(x.BobjectId, data.ChangeTargetId));
-            if (itemZy != null) itemZy.SetBeUsedComs(data.currentComs);
-
-            if (ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList.ContainsKey(data.ChangeTargetId))
-            {
-                var itemZyData = ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList[data.ChangeTargetId];
-                if (itemZyData != null)
-                {
-                    itemZyData.Clear();
-                    itemZyData.AddRange(data.currentComs.ToArray());
-                }
-            }
-            else
-            {
-                for (int i = 0; i < data.currentComs.Count; i++)
-                {
-                    ProgrammeDataManager.Instance.ChangeZiYuanData(data.ChangeTargetId, data.currentComs[i], true);
-                }
-            }
-        }
-
-        //通知UI层面更改这个对象的控制者的显示
-        EventManager.Instance.EventTrigger(EventType.ChangeObjController.ToString(), data.objType, data.ChangeTargetId);
+        // if (MyDataInfo.MyLevel == 1 && !MyDataInfo.isPlayBack) return;
+        // string deStr = AESUtils.Decrypt(info);
+        // var data = JsonConvert.DeserializeObject<ChangeController>(deStr);
+        // if (data.objType == 1)
+        // {
+        //     var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data.ChangeTargetId));
+        //     if (itemEquip != null) itemEquip.BeLongToCommanderId = data.currentComs[0];
+        //     var itemEquipData = ProgrammeDataManager.Instance.GetCurrentData.AllEquipDatas.Find(x => string.Equals(x.myId, data.ChangeTargetId));
+        //     if (itemEquipData != null) itemEquipData.controllerId = data.currentComs[0];
+        // }
+        // else
+        // {
+        //     //这里是资源的权限更改
+        //     var itemZy = sceneAllzy.Find(x => string.Equals(x.BobjectId, data.ChangeTargetId));
+        //     if (itemZy != null) itemZy.SetBeUsedComs(data.currentComs);
+        //
+        //     if (ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList.ContainsKey(data.ChangeTargetId))
+        //     {
+        //         var itemZyData = ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList[data.ChangeTargetId];
+        //         if (itemZyData != null)
+        //         {
+        //             itemZyData.Clear();
+        //             itemZyData.AddRange(data.currentComs.ToArray());
+        //         }
+        //     }
+        //     else
+        //     {
+        //         for (int i = 0; i < data.currentComs.Count; i++)
+        //         {
+        //             ProgrammeDataManager.Instance.ChangeZiYuanData(data.ChangeTargetId, data.currentComs[i], true);
+        //         }
+        //     }
+        // }
+        //
+        // //通知UI层面更改这个对象的控制者的显示
+        // EventManager.Instance.EventTrigger(EventType.ChangeObjController.ToString(), data.objType, data.ChangeTargetId);
     }
 
     public void Receive_PathPlanningData(string data)
     {
         var pathPlanningData = PathPointManager.Instance.UnPackingData(data);
-        
     }
 
     public void Receive_TriggerSkill(MessageID messageID, string data)
@@ -314,6 +312,31 @@ public partial class CommanderController
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
     }
 
+    public void Receive_ChangeEquipBindings(string data)
+    {
+        var infos = data.Split('_');
+        var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, infos[0]));
+        item.currentBindingZy = new List<string>();
+        for (int i = 1; i < infos.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(infos[i]))
+                item.currentBindingZy.Add(infos[i]);
+        }
+        OnChangeJizhangView(item.currentBindingZy);
+    }
+
+    public void Receive_ChangeEquipState(string data)
+    {
+        var infos = data.Split('_');
+        for (int i = 0; i < infos.Length; i++)
+        {
+            if (string.IsNullOrEmpty(infos[i])) continue;
+            var itemData = infos[i].Split(':');
+            var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, itemData[0]));
+            item.currentState = int.Parse(itemData[1]);
+        }
+    }
+
     #endregion
 
     #region 数据转换（消息的打包和解析）
@@ -341,6 +364,7 @@ public partial class CommanderController
     private string MsgSend_CreatZaiqu(CreatZaiquData data)
     {
         string jsonData = JsonConvert.SerializeObject(data);
+        sender.LogError("发出的数据" + jsonData);
         return AESUtils.Encrypt(jsonData);
     }
 
@@ -348,7 +372,9 @@ public partial class CommanderController
     {
         string deStr = AESUtils.Decrypt(dataStr);
         sender.LogError("解析收到的数据" + deStr);
-        var currentData = JsonConvert.DeserializeObject<CreatZaiquData>(deStr);
+        JsonSerializerSettings settings = new JsonSerializerSettings();
+        settings.Converters.Add(new PolymorphicConverter_ZyVariableDataBase());
+        var currentData = JsonConvert.DeserializeObject<CreatZaiquData>(deStr, settings);
         return currentData;
     }
 
@@ -361,4 +387,5 @@ public class CreatZaiquData
     public string zaiquId;
     public JsonVector3 pos;
     public int isDele;
+    public ZyVariableDataBase vData;
 }

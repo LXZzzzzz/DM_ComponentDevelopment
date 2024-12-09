@@ -20,4 +20,8 @@ public class OtherZiYuan : ZiYuanBase
     protected override void OnReset()
     {
     }
+
+    protected override void OnSetVariableData()
+    {
+    }
 }

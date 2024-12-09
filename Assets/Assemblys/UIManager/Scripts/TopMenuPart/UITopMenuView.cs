@@ -54,6 +54,11 @@ public class UITopMenuView : BasePanel
             putAwayMenu();
             EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
         });
+        
+        GetControl<Button>("btn_FaStart").onClick.AddListener(OnFaStart);
+        GetControl<Button>("btn_FaPause").onClick.AddListener(OnFaPause);
+        GetControl<Button>("btn_FaTurnBack").onClick.AddListener(OnFaTurnBack);
+        GetControl<Button>("applyForExecute").onClick.AddListener(OnApplyForExecute);
 
         btn_start.onClick.AddListener(() => OnControlStartAndPause(false));
         btn_pause.onClick.AddListener(() => OnControlStartAndPause(true));
@@ -83,9 +88,12 @@ public class UITopMenuView : BasePanel
         base.ShowMe(userData);
         mainLevel = (int)userData;
         GetControl<Toggle>("Tog_Fazd").isOn = false;
-        GetControl<Toggle>("Tog_Fazd").transform.parent.gameObject.SetActive(mainLevel == 1);
-        GetControl<Toggle>("Tog_Zhty").transform.parent.gameObject.SetActive(mainLevel == 1);
-        GetControl<Toggle>("Tog_Zhpg").transform.parent.gameObject.SetActive(mainLevel == 1);
+        menuView.Find("PlanFormulation").gameObject.SetActive(mainLevel == 1);
+        menuView.Find("CommandDeduction").gameObject.SetActive(mainLevel == 2);
+        menuView.Find("ComprehensiveEvaluation").gameObject.SetActive(mainLevel == 1);
+        menuView.Find("DisasterInfo").gameObject.SetActive(mainLevel == 1);
+        menuView.Find("AirLine").gameObject.SetActive(mainLevel == 1);
+        menuView.Find("applyForExecute").gameObject.SetActive(mainLevel == 2);
         speedChangePart.SetActive(mainLevel == 1);
         EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
         EventManager.Instance.AddEventListener<string>(EventType.ReceiveTask.ToString(), ReceiveTask);
@@ -147,8 +155,9 @@ public class UITopMenuView : BasePanel
     {
         string schemeName = (string)_info;
         ProgrammeDataManager.Instance.CreatProgramme(schemeName);
-        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
-        EventManager.Instance.EventTrigger(EventType.ClearProgramme.ToString());
+        //这个版本新建方案后，只是直升机状态、机组和资源数据的修改
+        // EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
+        // EventManager.Instance.EventTrigger(EventType.ClearProgramme.ToString());
         MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         ShowName(schemeName);
     }
@@ -196,7 +205,8 @@ public class UITopMenuView : BasePanel
 
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendProgramme, packedData);
 
-        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
+        //目前设想，各个端地图模式应都是默认，只有导教端要新增灾区时，才都切换成create，机长端是plan模式，特情时切换为create
+        // EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
         // for (int i = 0; i < allBObjects.Length; i++)
         // {
         //     if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
@@ -253,6 +263,26 @@ public class UITopMenuView : BasePanel
         currentState.text = "实时指挥 > 联机";
         btn_start.gameObject.SetActive(false);
         btn_pause.gameObject.SetActive(true);
+    }
+
+    private void OnFaStart()
+    {
+        //这里只触发操作指令吧，数据的修改放到资源和任务分配的页面触发，实时同步多端数据
+    }
+
+    private void OnFaPause()
+    {
+        
+    }
+
+    private void OnFaTurnBack()
+    {
+        
+    }
+
+    private void OnApplyForExecute()
+    {
+        
     }
 
     private void OnControlStartAndPause(bool isPause)
@@ -328,7 +358,6 @@ public class UITopMenuView : BasePanel
     {
         if (MyDataInfo.gameState != GameState.None && MyDataInfo.gameState != GameState.GamePause && MyDataInfo.gameState != GameState.GameStop)
         {
-            MyDataInfo.gameStartTime += Time.deltaTime * MyDataInfo.speedMultiplier;
             currentTime.text = ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime);
         }
 

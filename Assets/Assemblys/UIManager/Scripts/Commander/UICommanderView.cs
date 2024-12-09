@@ -14,111 +14,66 @@ using EventType = Enums.EventType;
 
 public class UICommanderView : BasePanel
 {
-    private RectTransform commanderViewGo;
-    private RectTransform goListViewGo;
-    private GameObject equipViewGo, ziYuanViewGo, taskViewGo;
-    private RectTransform equipTypeParent;
+    private GameObject equipViewGo, ziYuanViewGo;
     private RectTransform equipParent;
-    private RectTransform commanderParent;
     private RectTransform ziYuanParent;
+    private RectTransform taskParent; //灾区组件所展示的列表
 
-    private RectTransform disasterParent; //灾区组件所展示的列表
-
-    // private RectTransform taskParent;
-    private EquipTypeCell etcPrefab;
     private EquipCell ecPrefab;
-    private CommanderCell ccPrefab;
     private ZiYuanCell zycPrefab;
-    private ZiYuanCell zyZqPrefab;
     private TaskCell taskPrefab;
     private Text startTime, currentTime;
-    private Button btn_ComUnfold, btn_EquipUnfold, btn_ZiyuanUnfold, btn_TaskUnfold;
-    private RectTransform CmGo;
-
-    private MyCommanderView myCommanderInfoShow;
+    private Button btn_EquipUnfold, btn_ZiyuanUnfold;
 
     private int level;
     private Dictionary<string, string> allCommanderIds; //存储所有指挥端Id和 对应的名称
     private List<EquipCell> allEquipCells; //存储所有装备cell
     private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
-    private Dictionary<string, CommanderCell> allCommanderCells; //存储所有玩家cell
-    private bool isMoveCmGo;
 
 
     public override void Init()
     {
         base.Init();
-        commanderViewGo = transform.Find("LeftPart/CommandersView").GetComponent<RectTransform>();
-        goListViewGo = transform.Find("LeftPart/GoListViews").GetComponent<RectTransform>();
         equipViewGo = transform.Find("LeftPart/GoListViews/EquipListView").gameObject;
         ziYuanViewGo = transform.Find("LeftPart/GoListViews/ZiYuanListView").gameObject;
-        taskViewGo = transform.Find("LeftPart/GoListViews/tasksListView").gameObject;
-        CmGo = transform.Find("CopyMoverPart").GetComponent<RectTransform>();
-        equipTypeParent = GetControl<ScrollRect>("EquipsTypes").content;
-        etcPrefab = GetComponentInChildren<EquipTypeCell>(true);
         equipParent = GetControl<ScrollRect>("EquipsView").content;
         ecPrefab = GetComponentInChildren<EquipCell>(true);
-        commanderParent = GetControl<ScrollRect>("CommandersView").content;
-        ccPrefab = GetComponentInChildren<CommanderCell>(true);
         ziYuanParent = GetControl<ScrollRect>("ZiYuanView").content;
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
-        disasterParent = transform.Find("RightPart").GetComponentInChildren<ScrollRect>(true).content;
+        taskParent = transform.Find("RightPart").GetComponentInChildren<ScrollRect>(true).content;
         taskPrefab = transform.Find("RightPart").GetComponentInChildren<TaskCell>(true);
-        zyZqPrefab = transform.Find("RightPart").GetComponentInChildren<ZiYuanCell>(true);
         startTime = GetControl<Text>("startTimeShow");
         currentTime = GetControl<Text>("currentTimeShow");
-        btn_ComUnfold = GetControl<Button>("btn_ComUnfold");
         btn_EquipUnfold = GetControl<Button>("btn_EquipUnfold");
         btn_ZiyuanUnfold = GetControl<Button>("btn_ZiyuanUnfold");
-        btn_TaskUnfold = GetControl<Button>("btn_TaskUnfold");
-        GetControl<Button>("X").onClick.AddListener(() =>
-        {
-            GetControl<Toggle>("tog_CtrlEquipTypeView").isOn = false;
-            EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
-        });
-        GetControl<Toggle>("tog_CtrlEquipTypeView").onValueChanged.AddListener(a =>
-        {
-            if (!a) EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
-        });
 
-        btn_ComUnfold.onClick.AddListener(() => retractOrUnfold(true, 0));
         btn_EquipUnfold.onClick.AddListener(() => retractOrUnfold(true, 1));
         btn_ZiyuanUnfold.onClick.AddListener(() => retractOrUnfold(true, 2));
-        btn_TaskUnfold.onClick.AddListener(() => retractOrUnfold(true, 3));
-        GetControl<Button>("btn_ComRecover").onClick.AddListener(() => retractOrUnfold(false, 0));
         GetControl<Button>("btn_EquipRecover").onClick.AddListener(() => retractOrUnfold(false, 1));
         GetControl<Button>("btn_ZiyuanRecover").onClick.AddListener(() => retractOrUnfold(false, 2));
         GetControl<Button>("btn_TaskRecover").onClick.AddListener(() => retractOrUnfold(false, 3));
 
 
-        myCommanderInfoShow = GetComponentInChildren<MyCommanderView>(true);
-
         allCommanderIds = new Dictionary<string, string>();
         allEquipCells = new List<EquipCell>();
         allZiYuanCells = new List<ZiYuanCell>();
         allTaskCells = new List<TaskCell>();
-        allCommanderCells = new Dictionary<string, CommanderCell>();
     }
 
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
         level = (int)userData;
-        GetControl<Toggle>("tog_CtrlEquipTypeView").interactable = level == 1;
-        if (level != 1)
-            retractOrUnfold(false, 0);
-#if !UNITY_EDITOR
-        showView();
-#endif
+
         EventManager.Instance.AddEventListener<EquipBase>(EventType.CreatEquipCorrespondingIcon.ToString(), OnAddEquipView);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryEquip.ToString(), OnRemoveEquip);
         EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
-        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.CreatATaskIcon.ToString(), OnAddTask);
-        EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
-        EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
-        isMoveCmGo = false;
+        // EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.CreatATaskIcon.ToString(), OnAddTask);
+        EventManager.Instance.AddEventListener<AEquipData>(EventType.InitEquipData.ToString(), OnInitEquipData);
+        // EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);//修改权限后，更新页面
+        EventManager.Instance.AddEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
     }
 
     public override void HideMe()
@@ -128,82 +83,48 @@ public class UICommanderView : BasePanel
         EventManager.Instance.RemoveEventListener<string>(Enums.EventType.DestoryEquip.ToString(), OnRemoveEquip);
         EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
         EventManager.Instance.RemoveEventListener<string>(Enums.EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
-        EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.CreatATaskIcon.ToString(), OnAddTask);
-        EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.InitZiYuanBeUsed.ToString(), OnInitZiYuanBeUsed);
-        EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
+        // EventManager.Instance.RemoveEventListener<ZiYuanBase>(Enums.EventType.CreatATaskIcon.ToString(), OnAddTask);
+        EventManager.Instance.RemoveEventListener<AEquipData>(EventType.InitEquipData.ToString(), OnInitEquipData);
+        // EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
+        EventManager.Instance.RemoveEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
     }
 
     private void showView()
     {
-        myCommanderInfoShow.Init(MyDataInfo.leadId, OnChooseCommander);
+        //设置自己的信息
+        // myCommanderInfoShow.Init(MyDataInfo.leadId, OnChooseCommander);
         //获取子指挥官,一级指挥端才需要显示，只显示别人
         if (level == 1)
         {
             for (int i = 0; i < allBObjects.Length; i++)
             {
-                //找到了主角,并且不是自己，就要展示
-                if (!string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id) && allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
-                {
-                    //如果这个玩家没有进入房间，就跳过
-                    string myRoleId = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).RoleId;
-                    if (string.IsNullOrEmpty(myRoleId)) continue;
-                    if (MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).ClientLevel < 0) continue;
-                    var itemObj = allBObjects[i];
-                    var itemCell = Instantiate(ccPrefab, commanderParent);
-                    itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChooseCommander);
-                    itemCell.gameObject.SetActive(true);
-                    allCommanderIds.Add(itemObj.BObject.Id, itemObj.BObject.Info.Name);
-                    allCommanderCells.Add(itemObj.BObject.Id, itemCell);
-                }
+                //找到了主角,并且不是自己，就要展示,展示所有占席位玩家
+                // if (!string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id) && allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
+                // {
+                //     //如果这个玩家没有进入房间，就跳过
+                //     string myRoleId = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).RoleId;
+                //     if (string.IsNullOrEmpty(myRoleId)) continue;
+                //     if (MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).ClientLevel < 0) continue;
+                //     var itemObj = allBObjects[i];
+                //     var itemCell = Instantiate(ccPrefab, commanderParent);
+                //     itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChooseCommander);
+                //     itemCell.gameObject.SetActive(true);
+                //     allCommanderIds.Add(itemObj.BObject.Id, itemObj.BObject.Info.Name);
+                //     allCommanderCells.Add(itemObj.BObject.Id, itemCell);
+                // }
 
                 if (string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id))
                     allCommanderIds.Add(allBObjects[i].BObject.Id, allBObjects[i].BObject.Info.Name);
             }
-
-            //获取场景中标识了模板的对象，展示出来
-            for (int i = 0; i < allBObjects.Length; i++)
-            {
-                var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-                if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 4) != null)
-                {
-                    var itemObj = allBObjects[i];
-                    var itemCell = Instantiate(etcPrefab, equipTypeParent);
-                    itemCell.Init(itemObj.name, itemObj.BObject.Id, OnChooseEquipType);
-                    itemCell.gameObject.SetActive(true);
-                }
-            }
         }
-        //
-        // //获取场景中的资源，展示
-        // for (int i = 0; i < allBObjects.Length; i++)
-        // {
-        //     var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-        //     if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
-        //     {
-        //         var itemObj = allBObjects[i];
-        //         ZiYuanBase zyObj = itemObj.GetComponent<ZiYuanBase>();
-        //         bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
-        //                           zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
-        //         if (isDisaster) continue;
-        //         var itemCell = Instantiate(zycPrefab, isDisaster ? disasterParent : ziYuanParent);
-        //         itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, zyObj, OnChangeZiYuanBelongTo, OnMoveCm);
-        //         itemCell.gameObject.SetActive(true);
-        //         allZiYuanCells.Add(itemCell);
-        //     }
-        // }
     }
 
     private void Update()
     {
+        //这个是在游戏开始第一帧才更新“开始时间”
         if (MyDataInfo.gameStartTime > 0 && MyDataInfo.gameStartTime < 1)
             startTime.text = "开始时间 " + DateTime.Now.ToString("HH:mm:ss");
         currentTime.text = "当前时间 " + DateTime.Now.ToString("HH:mm:ss");
-
-        if (isMoveCmGo)
-        {
-            var rectPos = UIManager.Instance.GetUIPanel<UIMap>(UIName.UIMap).resolutionRatioNormalized(Input.mousePosition);
-            CmGo.anchoredPosition = UIManager.Instance.GetUIPanel<UIMap>(UIName.UIMap).mousePos2UI(rectPos);
-        }
     }
 
     private void retractOrUnfold(bool isRetract, int type)
@@ -211,17 +132,18 @@ public class UICommanderView : BasePanel
         switch (type)
         {
             case 0:
-                btn_ComUnfold.gameObject.SetActive(!isRetract);
-                if (!isRetract)
-                {
-                    commanderViewGo.anchoredPosition = new Vector2(commanderViewGo.anchoredPosition.x - 104, commanderViewGo.anchoredPosition.y);
-                    goListViewGo.anchoredPosition = new Vector2(goListViewGo.anchoredPosition.x - 90, commanderViewGo.anchoredPosition.y);
-                }
-                else
-                {
-                    commanderViewGo.anchoredPosition = new Vector2(commanderViewGo.anchoredPosition.x + 104, commanderViewGo.anchoredPosition.y);
-                    goListViewGo.anchoredPosition = new Vector2(goListViewGo.anchoredPosition.x + 90, commanderViewGo.anchoredPosition.y);
-                }
+                //隐藏和显示玩家列表
+                // btn_ComUnfold.gameObject.SetActive(!isRetract);
+                // if (!isRetract)
+                // {
+                //     commanderViewGo.anchoredPosition = new Vector2(commanderViewGo.anchoredPosition.x - 104, commanderViewGo.anchoredPosition.y);
+                //     goListViewGo.anchoredPosition = new Vector2(goListViewGo.anchoredPosition.x - 90, commanderViewGo.anchoredPosition.y);
+                // }
+                // else
+                // {
+                //     commanderViewGo.anchoredPosition = new Vector2(commanderViewGo.anchoredPosition.x + 104, commanderViewGo.anchoredPosition.y);
+                //     goListViewGo.anchoredPosition = new Vector2(goListViewGo.anchoredPosition.x + 90, commanderViewGo.anchoredPosition.y);
+                // }
 
                 break;
             case 1:
@@ -238,112 +160,20 @@ public class UICommanderView : BasePanel
                 btn_ZiyuanUnfold.gameObject.SetActive(!isRetract);
                 ziYuanViewGo.SetActive(isRetract);
                 break;
-            case 3:
-                btn_TaskUnfold.gameObject.SetActive(!isRetract);
-                taskViewGo.SetActive(isRetract);
-                break;
-        }
-    }
-
-    private void OnChooseEquipType(string id)
-    {
-        if (ProgrammeDataManager.Instance.GetCurrentData == null)
-        {
-            ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "请先创建方案再进行编辑！" };
-            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
-            return;
-        }
-
-        if (MyDataInfo.gameState != GameState.FirstLevelCommanderEditor)
-        {
-            ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "当前阶段不可更改场景中的装备！" };
-            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
-            return;
-        }
-
-        BObjectModel chooseObject = null;
-        for (int i = 0; i < allBObjects.Length; i++)
-        {
-            if (string.Equals(id, allBObjects[i].BObject.Id))
-            {
-                chooseObject = allBObjects[i];
-                break;
-            }
-        }
-
-        if (chooseObject != null)
-        {
-            EventManager.Instance.EventTrigger<object>(Enums.EventType.TransferEditingInfo.ToString(), chooseObject.BObject.Id);
         }
     }
 
     private string currentSelectComId = "";
     private bool isRefreshMsgView = true;
 
-    private void OnChooseCommander(string id)
-    {
-        if (!string.Equals(currentSelectComId, id))
-        {
-            if (allCommanderCells.ContainsKey(currentSelectComId)) allCommanderCells[currentSelectComId].SetSelect(false);
-            if (allCommanderCells.ContainsKey(id)) allCommanderCells[id].SetSelect(true);
-            currentSelectComId = id;
-        }
-        // else return;
-
-        var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
-        if (isRefreshMsgView && MyDataInfo.MyLevel == 1)
-            EventManager.Instance.EventTrigger(EventType.ChangeCurrentCom.ToString(), currentCommander.ClientLevelName);
-        if (currentCommander.ClientLevel == 1)
-        {
-            for (int i = 0; i < allEquipCells.Count; i++)
-            {
-                allEquipCells[i].gameObject.SetActive(true);
-            }
-
-            for (int i = 0; i < allZiYuanCells.Count; i++)
-            {
-                allZiYuanCells[i].gameObject.SetActive(true);
-            }
-
-            for (int i = 0; i < allTaskCells.Count; i++)
-            {
-                allTaskCells[i].gameObject.SetActive(true);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < allEquipCells.Count; i++)
-            {
-                allEquipCells[i].gameObject.SetActive(string.Equals(allEquipCells[i].equipBeUseCommander, id));
-            }
-
-            for (int i = 0; i < allZiYuanCells.Count; i++)
-            {
-                bool isShow = allZiYuanCells[i].allcoms.Find(x => string.Equals(x.comId, id));
-                allZiYuanCells[i].gameObject.SetActive(isShow);
-            }
-
-            for (int i = 0; i < allTaskCells.Count; i++)
-            {
-                bool isShow = allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
-                allTaskCells[i].gameObject.SetActive(isShow);
-            }
-        }
-
-        isRefreshMsgView = true;
-    }
-
     private void OnAddEquipView(EquipBase equip)
     {
+        if (MyDataInfo.MyLevel == 3 && !string.Equals(equip.BeLongToCommanderId, MyDataInfo.leadId)) return;
         var itemObj = equip;
         var itemCell = Instantiate(ecPrefab, equipParent);
-        itemCell.Init(itemObj, allCommanderIds, OnChangeEquipBelongTo);
+        itemCell.Init(level, itemObj, allCommanderIds, OnChangeEquipData);
         itemCell.gameObject.SetActive(true);
         allEquipCells.Add(itemCell);
-        if (MyDataInfo.MyLevel != 1)
-        {
-            itemCell.gameObject.SetActive(string.Equals(equip.BeLongToCommanderId, MyDataInfo.leadId));
-        }
     }
 
 
@@ -360,15 +190,27 @@ public class UICommanderView : BasePanel
         }
     }
 
+    int taskIndex = 0;
+
     private void OnAddZyZq(ZiYuanBase zyObj)
     {
-        bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
-                          zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
+        bool isDisaster = zyObj.ZiYuanType == ZiYuanType.RescueStation || zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
 
-        ZiYuanCell itemCell = isDisaster ? Instantiate(zyZqPrefab, disasterParent) : Instantiate(zycPrefab, ziYuanParent);
-        itemCell.Init(zyObj.ziYuanName, zyObj.BobjectId, zyObj, OnChangeZiYuanBelongTo, OnMoveCm);
-        itemCell.gameObject.SetActive(true);
-        allZiYuanCells.Add(itemCell);
+        if (isDisaster)
+        {
+            taskIndex++;
+            TaskCell itemCell = Instantiate(taskPrefab, taskParent);
+            itemCell.Init("任务" + taskIndex, zyObj);
+            itemCell.gameObject.SetActive(true);
+            allTaskCells.Add(itemCell);
+        }
+        else
+        {
+            ZiYuanCell itemCell = Instantiate(zycPrefab, ziYuanParent);
+            itemCell.Init(level, zyObj, OnChangeZiYuanData);
+            itemCell.gameObject.SetActive(true);
+            allZiYuanCells.Add(itemCell);
+        }
     }
 
     private void OnRemoveZyZq(string deleId)
@@ -385,139 +227,82 @@ public class UICommanderView : BasePanel
         }
     }
 
-    int taskIndex = 0;
-
-    private void OnAddTask(ZiYuanBase taskObj)
+    private void OnInitEquipData(AEquipData aeData)
     {
-        taskIndex++;
-        var itemCell = Instantiate(taskPrefab, disasterParent);
-        itemCell.Init("任务" + taskIndex, taskObj);
-        itemCell.gameObject.SetActive(true);
-        allTaskCells.Add(itemCell);
+        allEquipCells.Find(x => string.Equals(x.equipObjectId, aeData.myId)).RefreshComShow(aeData);
+    }
 
-        string zqId = (taskObj as ITaskProgress)?.getAssociationAssemblyId();
-        // while (string.IsNullOrEmpty(zqId))
+    private void OnChangeZyShow(List<string> showZys)
+    {
+        allZiYuanCells.ForEach(x =>
+            x.gameObject.SetActive(showZys.Find(y => string.Equals(x.myEntityId, y)) != null)
+        );
+        allTaskCells.ForEach(x =>
+            x.gameObject.SetActive(showZys.Find(y => string.Equals(x.myEntityId, y)) != null)
+        );
+    }
+
+    private void OnChangeEquipData(AEquipData edata)
+    {
+        //这里考虑删掉这个回调，在cell中直接调用
+        ProgrammeDataManager.Instance.ChangeEquipData(edata);
+
+        // //修改数据中的信息
+        // ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = commanderId;
+        //
+        // if (MyDataInfo.gameState >= GameState.Preparation)
         // {
-        //     zqId = (taskObj as ITaskProgress)?.getAssociationAssemblyId();
+        //     ChangeController ccData = new ChangeController()
+        //     {
+        //         objType = 1, ChangeTargetId = equipId, currentComs = new List<string> { commanderId }
+        //     };
+        //     string jsonData = JsonConvert.SerializeObject(ccData);
+        //     string sendData = AESUtils.Encrypt(jsonData);
+        //     //游戏进行中修改的话，发送给所有人
+        //     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeController, sendData);
         // }
-
-        int targetIndex = 0;
-        for (int j = 0; j < disasterParent.childCount; j++)
-        {
-            if (string.Equals(zqId, disasterParent.GetChild(j).GetComponent<ZiYuanCell>()?.myEntityId))
-            {
-                disasterParent.GetChild(j).GetComponent<ZiYuanCell>().SetTaskGo(itemCell.gameObject);
-                targetIndex = j + 1;
-                sender.LogError("找到了附加的任务icon" + targetIndex);
-                break;
-            }
-        }
-
-        if (targetIndex >= 0 && targetIndex < disasterParent.childCount)
-        {
-            itemCell.transform.SetSiblingIndex(targetIndex);
-        }
     }
 
-    private void OnInitZiYuanBeUsed(ZiYuanBase data)
+    public void OnChangeZiYuanData(AZiYuanData zdata)
     {
-        var itemZiyuan = allZiYuanCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId));
-        itemZiyuan?.ShowComCtrls(data.beUsedCommanderIds);
-        // var itemTask = allTaskCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId));
-        // itemTask?.ShowComCtrls(data.beUsedCommanderIds);
+        //这个方法要改成修改资源数据
+        ProgrammeDataManager.Instance.ChangeZiyuanData(zdata);
 
 
-        if (MyDataInfo.MyLevel != 1)
-        {
-            if (itemZiyuan != null)
-            {
-                bool isShow = itemZiyuan.allcoms.Find(x => string.Equals(x.comId, MyDataInfo.leadId));
-                itemZiyuan.gameObject.SetActive(isShow);
-            }
-        }
-    }
+        // bool isChangeSuc = ProgrammeDataManager.Instance.ChangeZiYuanData(ziYuanId, commanderId, addOrRemove);
 
-    private void OnRunningChangeObjCom(int objType, string id)
-    {
-        if (objType == 1)
-        {
-            var itemEquipCell = allEquipCells.Find(x => string.Equals(x.equipObjectId, id));
-            if (itemEquipCell != null) itemEquipCell.RefreshComShow();
-        }
-        else
-        {
-            var itemZyCell = allZiYuanCells.Find(x => string.Equals(x.myEntityId, id));
-            if (itemZyCell != null) itemZyCell.RefreshComShow();
-        }
-
-        isRefreshMsgView = false;
-        OnChooseCommander(MyDataInfo.leadId);
-    }
-
-    private void OnChangeEquipBelongTo(string equipId, string commanderId)
-    {
-        //修改数据中的信息
-        ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = commanderId;
-
-        if (MyDataInfo.gameState >= GameState.Preparation)
-        {
-            ChangeController ccData = new ChangeController()
-            {
-                objType = 1, ChangeTargetId = equipId, currentComs = new List<string> { commanderId }
-            };
-            string jsonData = JsonConvert.SerializeObject(ccData);
-            string sendData = AESUtils.Encrypt(jsonData);
-            //游戏进行中修改的话，发送给所有人
-            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeController, sendData);
-        }
-    }
-
-    public bool OnChangeZiYuanBelongTo(string ziYuanId, string commanderId, bool addOrRemove)
-    {
-        bool isChangeSuc = ProgrammeDataManager.Instance.ChangeZiYuanData(ziYuanId, commanderId, addOrRemove);
-
-        if (isChangeSuc)
-        {
-            for (int i = 0; i < allBObjects.Length; i++)
-            {
-                if (string.Equals(ziYuanId, allBObjects[i].BObject.Id))
-                {
-                    var zyObj = allBObjects[i].GetComponent<ZiYuanBase>();
-                    if (addOrRemove) zyObj.AddBeUsdCom(commanderId);
-                    else zyObj.RemoveBeUsedCom(commanderId);
-
-                    #region 发送给所有人
-
-                    if (MyDataInfo.gameState >= GameState.Preparation)
-                    {
-                        ChangeController ccData = new ChangeController()
-                        {
-                            objType = 2, ChangeTargetId = zyObj.BobjectId, currentComs = zyObj.beUsedCommanderIds
-                        };
-                        string jsonData = JsonConvert.SerializeObject(ccData);
-                        string sendData = AESUtils.Encrypt(jsonData);
-                        //游戏进行中修改的话，发送给所有人
-                        
-                        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeController, sendData);
-                    }
-
-                    #endregion
-
-                    break;
-                }
-            }
-        }
-
-        return isChangeSuc;
-    }
-
-    private void OnMoveCm(bool isShow, string showName)
-    {
-        CmGo.gameObject.SetActive(isShow);
-        isMoveCmGo = isShow;
-        if (isShow)
-        {
-            CmGo.GetComponentInChildren<Text>().text = showName;
-        }
+        // if (isChangeSuc)
+        // {
+        //     for (int i = 0; i < allBObjects.Length; i++)
+        //     {
+        //         if (string.Equals(ziYuanId, allBObjects[i].BObject.Id))
+        //         {
+        //             var zyObj = allBObjects[i].GetComponent<ZiYuanBase>();
+        //             if (addOrRemove) zyObj.AddBeUsdCom(commanderId);
+        //             else zyObj.RemoveBeUsedCom(commanderId);
+        //
+        //             #region 发送给所有人
+        //
+        //             if (MyDataInfo.gameState >= GameState.Preparation)
+        //             {
+        //                 ChangeController ccData = new ChangeController()
+        //                 {
+        //                     objType = 2, ChangeTargetId = zyObj.BobjectId, currentComs = zyObj.beUsedCommanderIds
+        //                 };
+        //                 string jsonData = JsonConvert.SerializeObject(ccData);
+        //                 string sendData = AESUtils.Encrypt(jsonData);
+        //                 //游戏进行中修改的话，发送给所有人
+        //
+        //                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeController, sendData);
+        //             }
+        //
+        //             #endregion
+        //
+        //             break;
+        //         }
+        //     }
+        // }
+        //
+        // return isChangeSuc;
     }
 }

@@ -97,7 +97,7 @@ public class HelicopterMain : ScriptManager
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        if (false)
         {
             Debug.LogError("输出直升机信息");
             var tagItem = GetComponent<DM.Core.Map.BObjectModel>().BObject.Info.Tags.Find(x => x.Id == 1010);

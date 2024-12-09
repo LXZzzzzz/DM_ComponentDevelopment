@@ -17,4 +17,9 @@ public class ZiYuan_WaterPoinnt : ZiYuanBase
     {
         
     }
+
+    protected override void OnSetVariableData()
+    {
+        throw new System.NotImplementedException();
+    }
 }

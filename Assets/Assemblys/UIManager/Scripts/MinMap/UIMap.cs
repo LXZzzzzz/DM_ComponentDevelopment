@@ -35,6 +35,8 @@ public class UIMap : BasePanel, IPointerClickHandler
     private RectTransform startPoint, middlePoint, endPoint;
     public OperatorState CurrentState;
 
+    private List<ZiYuanBase> zaiquTemplates;
+
     public override void Init()
     {
         base.Init();
@@ -46,6 +48,13 @@ public class UIMap : BasePanel, IPointerClickHandler
         markPointPrefab = transform.Find("prefabs/markPoint").gameObject;
         TempIcon = transform.Find("maxMap/TempIcon").GetComponent<RectTransform>();
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
+        GetControl<Toggle>("Tog_PeculiarSetting").gameObject.SetActive(MyDataInfo.MyLevel == -1);
+        GetControl<Toggle>("Tog_PeculiarSetting").onValueChanged.AddListener(OnSwitchMode);
+        GetControl<Button>("Btn_CreatFirePoint").onClick.AddListener(() => OnOpenCreatZaiqu(1));
+        GetControl<Button>("Btn_CreatDisaster").onClick.AddListener(() => OnOpenCreatZaiqu(2));
+        GetControl<Button>("Btn_ChangeTQ").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 1));
+        GetControl<Button>("Btn_Malfunction").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 2));
+
         routeDecorateGo = transform.Find("maxMap/objects/routeDecorate").gameObject;
         startPoint = transform.Find("maxMap/objects/routeDecorate/startPoint").GetComponent<RectTransform>();
         middlePoint = transform.Find("maxMap/objects/routeDecorate/middlePoint").GetComponent<RectTransform>();
@@ -54,6 +63,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
         allIconCells = new Dictionary<string, IconCellBase>();
+        zaiquTemplates = new List<ZiYuanBase>();
     }
 
     public override void ShowMe(object userData)
@@ -75,8 +85,28 @@ public class UIMap : BasePanel, IPointerClickHandler
         SwitchMapLogic(OperatorState.CreatAndEditor);
         // EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allBObjects);
         EventManager.Instance.AddEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
+        EventManager.Instance.AddEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
         // 当前UI对象的局部Y轴
         localYAxis = middlePoint.transform.up;
+
+        GetAllZaiquTemplate();
+    }
+
+    private void GetAllZaiquTemplate()
+    {
+        if (zaiquTemplates?.Count != 0) return;
+        //获取场景全部组件，并找到灾区模板
+        for (int i = 0; i < allBObjects.Length; i++)
+        {
+            var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
+            if (tagItem == null || tagItem.SubTags.Find(y => y.Id == 6 || y.Id == 4) == null) continue;
+
+            if (allBObjects[i].transform.GetChild(0).GetComponent<ZiYuanBase>() != null)
+            {
+                var zyItem = allBObjects[i].transform.GetChild(0).GetComponent<ZiYuanBase>();
+                zaiquTemplates.Add(zyItem);
+            }
+        }
     }
 
     private Texture2D m_Tex;
@@ -116,6 +146,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         currentMapLogic?.OnExit();
         EventManager.Instance.RemoveEventListener<int>(EventType.SwitchMapModel.ToString(), SwithMode);
         EventManager.Instance.RemoveEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
+        EventManager.Instance.RemoveEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
     }
 
     private void SwithMode(int mode)
@@ -169,6 +200,45 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.EventTrigger(EventType.CameraSwitch.ToString(), !isShowMap);
         // UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).gameObject.SetActive(isShowMap);
     }
+
+    private void OnSwitchMode(bool isCreat)
+    {
+        if (isCreat)
+        {
+            //将所有客户端都切换为创建模式
+        }
+        else
+        {
+            //将所有客户端都切换回自己的模式
+        }
+    }
+
+    private void OnOpenCreatZaiqu(int type)
+    {
+        for (int i = 0; i < zaiquTemplates.Count; i++)
+        {
+            switch (type)
+            {
+                case 1:
+                    //找到火灾
+                    if (zaiquTemplates[i].ZiYuanType == ZiYuanType.SourceOfAFire)
+                    {
+                        EventManager.Instance.EventTrigger<object>(Enums.EventType.TransferEditingInfo.ToString(), zaiquTemplates[i].BobjectId);
+                    }
+
+                    break;
+                case 2:
+                    //找到灾区
+                    if (zaiquTemplates[i].ZiYuanType == ZiYuanType.DisasterArea)
+                    {
+                        EventManager.Instance.EventTrigger<object>(Enums.EventType.TransferEditingInfo.ToString(), zaiquTemplates[i].BobjectId);
+                    }
+
+                    break;
+            }
+        }
+    }
+
 
     private EquipBase[] sceneAllObjs;
 
@@ -259,6 +329,15 @@ public class UIMap : BasePanel, IPointerClickHandler
             {
                 iconCell.Value.transform.SetAsLastSibling();
             }
+        }
+    }
+
+    private void OnChangeZyShow(List<string> showZys)
+    {
+        foreach (var iconCell in allIconCells)
+        {
+            if (iconCell.Value is AirIconCell) continue;
+            iconCell.Value.gameObject.SetActive(showZys.Find(x => string.Equals(x, iconCell.Key)) != null);
         }
     }
 

@@ -77,9 +77,14 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire,ITaskProgress
         isStart = false;
     }
 
+    protected override void OnSetVariableData()
+    {
+        throw new NotImplementedException();
+    }
+
     public string getAssociationAssemblyId()
     {
-        return String.Empty;
+        return BobjectId;
     }
 
     public bool getTaskProgress(out string progressInfo, out float progressNum)

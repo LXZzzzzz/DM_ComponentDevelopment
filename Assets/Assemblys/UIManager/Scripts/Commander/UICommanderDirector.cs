@@ -69,7 +69,7 @@ public class UICommanderDirector : BasePanel
         if (!isDisaster) return;
 
         ZiYuanCell itemCell = Instantiate(zyZqPrefab, zyParent);
-        itemCell.Init(zyObj.ziYuanName, zyObj.BobjectId, zyObj, null, null);
+        // itemCell.Init(zyObj, null);
         itemCell.gameObject.SetActive(true);
         allZiYuanCells.Add(itemCell);
     }

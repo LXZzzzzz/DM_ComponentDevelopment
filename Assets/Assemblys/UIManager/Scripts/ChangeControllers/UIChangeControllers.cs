@@ -41,14 +41,14 @@ public class UIChangeControllers : BasePanel
 
         if (ccCells.Count == 0) StartCoroutine(waitClose());
 
-        ZyComsInfo data = (ZyComsInfo)userData;
-        viewPoint.position = data.pos;
-        sureCb = data.changeComs;
-        dataComs = data.coms;
-        for (int i = 0; i < ccCells.Count; i++)
-        {
-            ccCells[i].ChangeState(data.coms?.Find(x => string.Equals(x, ccCells[i].comId)) != null);
-        }
+        // ZyComsInfo data = (ZyComsInfo)userData;
+        // viewPoint.position = data.pos;
+        // sureCb = data.changeComs;
+        // dataComs = data.coms;
+        // for (int i = 0; i < ccCells.Count; i++)
+        // {
+        //     ccCells[i].ChangeState(data.coms?.Find(x => string.Equals(x, ccCells[i].comId)) != null);
+        // }
     }
 
     IEnumerator waitClose()

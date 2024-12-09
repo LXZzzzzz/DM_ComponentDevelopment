@@ -13,6 +13,7 @@ namespace ToolsLibrary
         public static bool isPlayBack;
         public static FrameSync.FrameSyncLogicBase netLogic;
         public static List<EquipBase> sceneAllEquips;
+        public static List<ZiYuanBase> sceneAllZiYuan;
         public static int MyLevel; //我的角色级别
         public static GameState gameState;
         public static List<ClientInfo> playerInfos;

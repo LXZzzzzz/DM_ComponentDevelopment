@@ -35,6 +35,11 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation,ITaskProgress
         totalPerson = 0;
     }
 
+    protected override void OnSetVariableData()
+    {
+        throw new NotImplementedException();
+    }
+
     public void goodsPour(float weight)
     {
         if (firstGoodsTime < 1)
@@ -84,7 +89,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation,ITaskProgress
 
     public string getAssociationAssemblyId()
     {
-        return String.Empty;
+        return BobjectId;
     }
 
     public bool getTaskProgress(out string progressInfo, out float progressNum)

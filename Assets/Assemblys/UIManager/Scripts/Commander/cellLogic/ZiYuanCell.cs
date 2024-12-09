@@ -10,46 +10,36 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using EventType = Enums.EventType;
 
-public class ZiYuanCell : DraggingFunction
+public class ZiYuanCell : DMonoBehaviour
 {
-    public bool isRight;
     private ZiYuanBase _ziYuan;
     private float checkTimer;
     private GameObject chooseImg;
-    private GameObject taskGo;
-    private RectTransform myRect;
+    private UnityAction<AZiYuanData> changeDataCb;
 
-    public void Init(string pointName, string entityId, ZiYuanBase ziyuan, Func<string, string, bool, bool> changeDataCallBack, UnityAction<bool, string> ctrlCmCb)
+
+    public string myEntityId => _ziYuan.BobjectId;
+
+    public void Init(int myLevel, ZiYuanBase ziyuan, UnityAction<AZiYuanData> changeDataCallBack)
     {
-        base.Init(entityId, changeDataCallBack, ctrlCmCb);
-
         _ziYuan = ziyuan;
-        myRect = GetComponent<RectTransform>();
+        changeDataCb = changeDataCallBack;
         chooseImg = transform.Find("ChooseImg").gameObject;
         transform.Find("Text_name").GetComponent<Text>().text = _ziYuan.ziYuanName;
         transform.Find("Text_describe").GetComponent<Text>().text = _ziYuan.ziYuanDescribe;
-        transform.Find("btn_change").GetComponent<Button>().onClick.AddListener(OnOpenChangeCom);
-        transform.Find("btn_change").gameObject.SetActive(MyDataInfo.MyLevel == 1);
-        transform.Find("btn_delete")?.GetComponent<Button>().onClick.AddListener(OnDeleZiYuan);
-        transform.Find("btn_delete")?.gameObject.SetActive(MyDataInfo.MyLevel == -1);
-        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), entityId));
+        transform.Find("btn_changeData").GetComponent<Button>().onClick.AddListener(OnOpenChangeCom);
+        transform.Find("btn_changeData").gameObject.SetActive(myLevel == 1 && (_ziYuan.ZiYuanType == ZiYuanType.Supply || _ziYuan.ZiYuanType == ZiYuanType.GoodsPoint));
+        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), myEntityId));
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         if (_ziYuan == null) return;
         if (Time.time > checkTimer)
         {
             checkTimer = Time.time + 1 / 25f;
             chooseImg.SetActive(_ziYuan.isChooseMe);
-            if (taskGo != null && taskGo.activeSelf != gameObject.activeSelf)
-                taskGo.SetActive(gameObject.activeSelf);
         }
-    }
-
-    public override string GetMyName()
-    {
-        return _ziYuan.ziYuanName;
     }
 
     private void OnOpenChangeCom()
@@ -61,40 +51,29 @@ public class ZiYuanCell : DraggingFunction
             UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
             return;
         }
-        var surePos = UIManager.Instance.GetUIPanel<UIMap>(UIName.UIMap).resolutionRatioNormalized_size(myRect.sizeDelta / 2 + (isRight ? new Vector2(-90, -myRect.sizeDelta.y) : Vector2.zero));
-        ZyComsInfo zci = new ZyComsInfo() { pos = (Vector2)myRect.position + surePos, coms = _ziYuan.beUsedCommanderIds, changeComs = OnChangeComs };
-        UIManager.Instance.ShowPanel<UIChangeControllers>(UIName.UIChangeControllers, zci);
+
+        Debug.LogError("资源类型：" + _ziYuan.ZiYuanType);
+
+        ZyComsInfo zci = new ZyComsInfo() { zyType = _ziYuan.ZiYuanType, currentData = _ziYuan.GetVariableData(), changeComs = OnSendChangeData };
+        UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, zci);
     }
 
-    private void OnDeleZiYuan()
-    {
-        if (UIManager.Instance.GetUIPanel<UIMap>(UIName.UIMap).CurrentState != OperatorState.CreatAndEditor)
-        {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "请先获取资源修改权限！");
-            return;
-        }
-        EventManager.Instance.EventTrigger(EventType.DestoryZaiQuzy.ToString(), myEntityId);
-    }
+    private AZiYuanData itemZyData;
 
-    private void OnChangeComs(List<string> data)
+    private void OnSendChangeData(ZyVariableDataBase data)
     {
-        ShowComCtrls(data, false);
-    }
+        if (itemZyData == null) itemZyData = new AZiYuanData();
+        itemZyData.myId = myEntityId;
 
-    public void RefreshComShow()
-    {
-        ShowComCtrls(_ziYuan.beUsedCommanderIds);
-    }
-
-    public void SetTaskGo(GameObject go)
-    {
-        taskGo = go;
+        if (_ziYuan.ZiYuanType == ZiYuanType.Supply) itemZyData.zyNum = ((SupplyVariableData)data).oilNum;
+        if (_ziYuan.ZiYuanType == ZiYuanType.GoodsPoint) itemZyData.zyNum = ((GoodsPointVariableData)data).goodsNum;
+        changeDataCb?.Invoke(itemZyData);
     }
 }
 
-public struct ZyComsInfo
+public class ZyComsInfo
 {
-    public Vector2 pos;
-    public List<string> coms;
-    public UnityAction<List<string>> changeComs;
+    public ZiYuanType zyType;
+    public ZyVariableDataBase currentData;
+    public UnityAction<ZyVariableDataBase> changeComs;
 }

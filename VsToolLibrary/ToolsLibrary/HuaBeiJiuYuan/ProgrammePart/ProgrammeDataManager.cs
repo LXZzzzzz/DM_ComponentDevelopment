@@ -20,9 +20,7 @@ namespace ToolsLibrary.ProgrammePart
             currentData = new ProgrammeData();
             currentData.programmeName = name;
             currentData.AllEquipDatas = new List<AEquipData>();
-            currentData.CommanderControlList = new Dictionary<string, List<string>>();
-            currentData.ZiYuanControlledList = new Dictionary<string, List<string>>();
-            currentData.TaskControlledList = new Dictionary<string, List<string>>();
+            currentData.AllZiYuanDatas = new List<AZiYuanData>();
             equipIdNum = 0;
         }
 
@@ -54,32 +52,11 @@ namespace ToolsLibrary.ProgrammePart
                 FileOperator.SaveData(currentData, path);
         }
 
-        public string AddEquip(string templateId, Vector3 initPos)
+        public void ChangeEquipData(AEquipData edata)
         {
-            JsonVector3 itemPos = new JsonVector3() { x = initPos.x, y = initPos.y, z = initPos.z };
-            AEquipData itemData = new AEquipData()
-                { templateId = templateId, pos = itemPos, myId = templateId + (equipIdNum += 1) };
-            currentData.AllEquipDatas.Add(itemData);
-            return itemData.myId;
-        }
-
-        public bool DeleEquip(string equipId)
-        {
-            if (currentData != null && currentData.AllEquipDatas != null)
-            {
-                for (int i = 0; i < currentData.AllEquipDatas.Count; i++)
-                {
-                    if (string.Equals(equipId, currentData.AllEquipDatas[i].myId))
-                    {
-                        currentData.AllEquipDatas.RemoveAt(i);
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            return false;
+            var itemData = currentData.AllEquipDatas.Find(x => string.Equals(x.myId, edata.myId));
+            if (itemData != null) currentData.AllEquipDatas.Remove(itemData);
+            currentData.AllEquipDatas.Add(edata);
         }
 
         public AEquipData GetEquipDataById(string targetId)
@@ -89,43 +66,18 @@ namespace ToolsLibrary.ProgrammePart
             return itemData;
         }
 
-        public bool ChangeZiYuanData(string ziYuanId, string commanderId, bool isAdd)
+        public void ChangeZiyuanData(AZiYuanData zdata)
         {
-            if (!currentData.ZiYuanControlledList.ContainsKey(ziYuanId))
-                currentData.ZiYuanControlledList.Add(ziYuanId, new List<string>());
-            if (isAdd)
-            {
-                if (currentData.ZiYuanControlledList[ziYuanId].Find(x => string.Equals(x, commanderId)) == null)
-                    currentData.ZiYuanControlledList[ziYuanId].Add(commanderId);
-                else return false;
-            }
-            else
-            {
-                int removeIndex = -1;
-                for (int i = 0; i < currentData.ZiYuanControlledList[ziYuanId].Count; i++)
-                {
-                    if (string.Equals(commanderId, currentData.ZiYuanControlledList[ziYuanId][i]))
-                    {
-                        removeIndex = i;
-                        break;
-                    }
-                }
-
-                if (removeIndex != -1)
-                    currentData.ZiYuanControlledList[ziYuanId].RemoveAt(removeIndex);
-                else return false;
-            }
-
-            return true;
+            var itemData = currentData.AllZiYuanDatas.Find(x => string.Equals(x.myId, zdata.myId));
+            if (itemData != null) currentData.AllZiYuanDatas.Remove(itemData);
+            currentData.AllZiYuanDatas.Add(zdata);
         }
-
-
-        public List<string> GetZiYuanData(string ziYuanId)
+        
+        public AZiYuanData GetZiyuanDataById(string targetId)
         {
-            if (currentData.ZiYuanControlledList.ContainsKey(ziYuanId))
-                return currentData.ZiYuanControlledList[ziYuanId];
-            else
-                return null;
+            AZiYuanData itemData = currentData.AllZiYuanDatas.Find(x => string.Equals(x.myId, targetId));
+
+            return itemData;
         }
 
         public string PackedData()

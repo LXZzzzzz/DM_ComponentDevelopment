@@ -81,6 +81,11 @@ public class AirPortPointLogic : ZiYuanBase, IAirPort
         allDockingAircraft.Clear();
         EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), desAir);
     }
+
+    protected override void OnSetVariableData()
+    {
+        throw new System.NotImplementedException();
+    }
 }
 
 

@@ -35,6 +35,7 @@ namespace Enums
         ReceiveTask, //总指挥接收任务
         ChangeObjController, //更改某个对象的控制者
         CreatZaiQuZy, //创建灾区资源
+        CreatZaiQuZyRun, //创建灾区资源执行
         DestoryZaiQuzy, //删除一个灾区资源
         CreatAZiyuanIcon, //创建指定资源的UI标识
         DestoryZiyuanIcon, //删除指定资源的UI标识
@@ -44,6 +45,9 @@ namespace Enums
         crashIcon, //坠毁后通知Ui
         LoadPathPlanningData, //加载规划点数据
         MoveToTarget_AutoRun, //自动执行移动到目标点
+
+        InitEquipData, //加载方案时初始化直升机数据
+        ChangeJiZhangView, //机长端通知页面修改
     }
 
     public enum MessageID
@@ -62,6 +66,8 @@ namespace Enums
         SendLoseChangeZQPower = 1013, //请求释放修改灾区权限
         SendPathPlanningData = 1014, //发送路径规划数据
         SendSkillConfirmation = 1015, //发送技能确认，随技能指令发送，收到服务器反馈标志技能使用成功
+        SendEquipBindingZiyuan = 1016, //发送直升机绑定资源数据
+        SendEquipState = 1017, //发送所有直升机当前状态
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

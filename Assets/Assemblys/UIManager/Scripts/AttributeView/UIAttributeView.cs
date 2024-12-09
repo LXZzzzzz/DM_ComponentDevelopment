@@ -133,94 +133,6 @@ public class UIAttributeView : BasePanel
         EventManager.Instance.RemoveEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
         EventManager.Instance.RemoveEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
     }
-
-    IEnumerator ShowTaskView()
-    {
-        if (allZyZqCells != null) yield break;
-        yield return new WaitForSeconds(1);
-        allZyZqCells = new List<ZiYuanCell>();
-        allTaskCells = new List<TaskCell>();
-
-        for (int i = 0; i < allBObjects.Length; i++)
-        {
-            var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-            if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 1 || y.Id == 5) != null)
-            {
-                var itemObj = allBObjects[i];
-                ZiYuanBase zyObj = itemObj.GetComponent<ZiYuanBase>();
-                bool isDisaster = zyObj.ZiYuanType == ZiYuanType.Hospital || zyObj.ZiYuanType == ZiYuanType.RescueStation ||
-                                  zyObj.ZiYuanType == ZiYuanType.DisasterArea || zyObj.ZiYuanType == ZiYuanType.SourceOfAFire;
-                if (!isDisaster) continue;
-                var itemCell = Instantiate(zycPrefab, taskParent);
-                itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, zyObj, UIManager.Instance.GetUIPanel<UICommanderView>(UIName.UICommanderView).OnChangeZiYuanBelongTo, null);
-                itemCell.gameObject.SetActive(true);
-                allZyZqCells.Add(itemCell);
-            }
-        }
-
-        yield return new WaitForSeconds(1);
-        int taskIndex = 0;
-        for (int i = 0; i < allBObjects.Length; i++)
-        {
-            var tagItem = allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 1010);
-            //任务列表展示
-            if (tagItem != null && tagItem.SubTags.Find(y => y.Id == 3) != null)
-            {
-                taskIndex++;
-                //任务与资源逻辑应该是一样的
-                var itemObj = allBObjects[i];
-                var itemzy = itemObj.gameObject.GetComponent<ZiYuanBase>();
-                var itemCell = Instantiate(taskPrefab, taskParent);
-                itemCell.Init("任务" + taskIndex, itemzy);
-                itemCell.gameObject.SetActive(true);
-                allTaskCells.Add(itemCell);
-
-                yield return 1;
-                string zqId = String.Empty;
-                while (string.IsNullOrEmpty(zqId))
-                {
-                    zqId = (itemzy as ITaskProgress)?.getAssociationAssemblyId();
-                    yield return 1;
-                }
-
-                int targetIndex = 0;
-                for (int j = 0; j < taskParent.childCount; j++)
-                {
-                    if (string.Equals(zqId, taskParent.GetChild(j).GetComponent<ZiYuanCell>()?.myEntityId))
-                    {
-                        taskParent.GetChild(j).GetComponent<ZiYuanCell>().SetTaskGo(itemCell.gameObject);
-                        targetIndex = j + 1;
-                        break;
-                    }
-                }
-
-                if (targetIndex >= 0 && targetIndex < taskParent.childCount)
-                {
-                    itemCell.transform.SetSiblingIndex(targetIndex);
-                }
-            }
-        }
-    }
-
-    private void OnInitZiYuanBeUsed(ZiYuanBase data)
-    {
-        var itemZiyuan = allZyZqCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId));
-        itemZiyuan?.ShowComCtrls(data.beUsedCommanderIds);
-        // var itemTask = allTaskCells.Find(x => string.Equals(x.myEntityId, data.main.BObjectId));
-        // itemTask?.ShowComCtrls(data.beUsedCommanderIds);
-
-        if (MyDataInfo.MyLevel != 1)
-        {
-            if (itemZiyuan != null)
-            {
-                bool isShow = itemZiyuan.allcoms.Find(x => string.Equals(x.comId, MyDataInfo.leadId));
-                itemZiyuan.gameObject.SetActive(isShow);
-            }
-        }
-
-        StartCoroutine(dalayCall());
-    }
-
     public void OnChooseCommander(string id)
     {
         var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
@@ -240,22 +152,22 @@ public class UIAttributeView : BasePanel
         {
             for (int i = 0; i < allZyZqCells.Count; i++)
             {
-                bool isShow = allZyZqCells[i].allcoms.Find(x => string.Equals(x.comId, id));
-                allZyZqCells[i].gameObject.SetActive(isShow);
+                // bool isShow = allZyZqCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                // allZyZqCells[i].gameObject.SetActive(isShow);
             }
 
             for (int i = 0; i < allTaskCells.Count; i++)
             {
-                bool isShow = allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
-                allTaskCells[i].gameObject.SetActive(isShow);
+                // bool isShow = allTaskCells[i].allcoms.Find(x => string.Equals(x.comId, id));
+                // allTaskCells[i].gameObject.SetActive(isShow);
             }
         }
     }
 
     private void OnRunningChangeObjCom(int type, string id)
     {
-        var itemZyCell = allZyZqCells.Find(x => string.Equals(x.myEntityId, id));
-        if (itemZyCell != null) itemZyCell.RefreshComShow();
+        // var itemZyCell = allZyZqCells.Find(x => string.Equals(x.myEntityId, id));
+        // if (itemZyCell != null) itemZyCell.RefreshComShow();
 
         StartCoroutine(dalayCall());
     }

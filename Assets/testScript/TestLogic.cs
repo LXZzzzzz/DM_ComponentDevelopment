@@ -47,13 +47,13 @@ public class TestLogic : MonoBehaviour
         testDic = new Dictionary<string, string>();
 
         to.test = new testClass() { aaa = 20, bbb = 30 };
-        fp.Init(5, 10, 30000, "1111111", "", "");
+        fp?.Init(5, 10, 30000, "1111111", "", "");
 
         myass = new List<AudioSource>();
         mywms = new List<WingMark>();
 
         // mywms = fj.transform.GetComponentsInChildren<WingMark>(true).ToList();
-        
+
         // ttl.Init(4949);
     }
 
@@ -81,7 +81,6 @@ public class TestLogic : MonoBehaviour
             // UIManager.Instance.ShowPanel<UICommanderDirector>(UIName.UICommanderDirector, null);
             EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "AttributeView", null);
             // initLine();
-            
         }
 
         if (Input.GetKeyDown(KeyCode.B))
@@ -177,7 +176,12 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            EventManager.Instance.EventTrigger(EventType.LoadPathPlanningData.ToString(),pathPlanningData);
+            Msg_testPlan(pathPlanningData);
+        }
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            MsgReceive_CreatZaiqu(asldfjlsdj);
         }
 
         if (isRunTimer) runTimer();
@@ -186,6 +190,27 @@ public class TestLogic : MonoBehaviour
         {
             // testPoint.anchoredPosition = routePoints[1];
         }
+    }
+
+    private void Msg_testPlan(string dataStr)
+    {
+        //把字符串解析为数据
+        string deStr = AESUtils.Decrypt(dataStr);
+        var allPathPoints = JsonConvert.DeserializeObject<List<PathPoint>>(deStr, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto
+        });
+        Debug.Log(allPathPoints.Count);
+    }
+
+    public string asldfjlsdj;
+
+    private void MsgReceive_CreatZaiqu(string dataStr)
+    {
+        JsonSerializerSettings settings = new JsonSerializerSettings();
+        settings.Converters.Add(new PolymorphicConverter_ZyVariableDataBase());
+        var currentData = JsonConvert.DeserializeObject<CreatZaiquData>(dataStr, settings);
+        Debug.Log(currentData.tempId);
     }
 
     private float timer, timeDuration, skillProgress;

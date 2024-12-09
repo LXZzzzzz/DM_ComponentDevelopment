@@ -65,23 +65,23 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
 
     public override void OnLeftClickIcon(IconCellBase clickIcon)
     {
-        if (string.IsNullOrEmpty(creatTargetTemplate)) return;
-        //检测当前对象是否是机场属性，是的话才能执行创建
-        if (clickIcon is ZiYuanIconCell)
-        {
-            ZiYuanBase itemZiYuan = (clickIcon as ZiYuanIconCell).ziYuanItem;
-            string itemObjId = clickIcon.belongToId;
-
-            if (itemZiYuan != null && itemZiYuan.ZiYuanType == ZiYuanType.Airport)
-            {
-                //这里先去数据管理器里申请创建，然后将数据ID传给创建者
-                string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, itemZiYuan.transform.position);
-                ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = MyDataInfo.leadId;
-                ProgrammeDataManager.Instance.GetEquipDataById(equipId).airportId = itemObjId;
-                //通知主角在场景对应位置创建实体
-                EventManager.Instance.EventTrigger(EventType.CreatEquipEntity.ToString(), creatTargetTemplate, equipId);
-            }
-        }
+        // if (string.IsNullOrEmpty(creatTargetTemplate)) return;
+        // //检测当前对象是否是机场属性，是的话才能执行创建
+        // if (clickIcon is ZiYuanIconCell)
+        // {
+        //     ZiYuanBase itemZiYuan = (clickIcon as ZiYuanIconCell).ziYuanItem;
+        //     string itemObjId = clickIcon.belongToId;
+        //
+        //     if (itemZiYuan != null && itemZiYuan.ZiYuanType == ZiYuanType.Airport)
+        //     {
+        //         //这里先去数据管理器里申请创建，然后将数据ID传给创建者
+        //         string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, itemZiYuan.transform.position);
+        //         ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = MyDataInfo.leadId;
+        //         ProgrammeDataManager.Instance.GetEquipDataById(equipId).airportId = itemObjId;
+        //         //通知主角在场景对应位置创建实体
+        //         EventManager.Instance.EventTrigger(EventType.CreatEquipEntity.ToString(), creatTargetTemplate, equipId);
+        //     }
+        // }
     }
 
     public override void OnRightClickIcon(IconCellBase clickIcon)
@@ -105,13 +105,14 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         //通知主角在场景对应位置创建实体
         EventManager.Instance.EventTrigger(EventType.CreatZaiQuZy.ToString(), creatTargetTemplate, uiPos2WorldPos(pos));
         
+        
         return;
-        if (string.IsNullOrEmpty(creatTargetTemplate)) return;
-        //这里先去数据管理器里申请创建，然后将数据ID传给创建者
-        string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, uiPos2WorldPos(pos));
-        ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = MyDataInfo.leadId;
-        //通知主角在场景对应位置创建实体
-        EventManager.Instance.EventTrigger(EventType.CreatEquipEntity.ToString(), creatTargetTemplate, equipId);
+        // if (string.IsNullOrEmpty(creatTargetTemplate)) return;
+        // //这里先去数据管理器里申请创建，然后将数据ID传给创建者
+        // string equipId = ProgrammeDataManager.Instance.AddEquip(creatTargetTemplate, uiPos2WorldPos(pos));
+        // ProgrammeDataManager.Instance.GetEquipDataById(equipId).controllerId = MyDataInfo.leadId;
+        // //通知主角在场景对应位置创建实体
+        // EventManager.Instance.EventTrigger(EventType.CreatEquipEntity.ToString(), creatTargetTemplate, equipId);
     }
 
     public override void OnRightClickMap(Vector2 pos)

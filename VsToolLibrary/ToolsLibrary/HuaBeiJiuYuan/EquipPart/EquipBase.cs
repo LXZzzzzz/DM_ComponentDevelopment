@@ -49,6 +49,9 @@ namespace ToolsLibrary.EquipPart
 
         public bool isTS, isYSWZ, isYSRY, isSJJY; //直升机是否包含这些装备技能
 
+        public List<string> currentBindingZy; //当前直升机绑定的资源，其中也包括任务，由于任务与资源合并，只从接口区分
+
+        public int currentState; //当前直升机状态（可用状态：可用、不可用、返修）
         protected bool isArrive => _isArrive;
 
         public Vector3 TargetPos => targetPos;

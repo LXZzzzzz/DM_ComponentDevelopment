@@ -34,6 +34,11 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea,ITaskProgress
         currentRemainingPersonnel = allPersonNum;
     }
 
+    protected override void OnSetVariableData()
+    {
+        throw new NotImplementedException();
+    }
+
     public void airdropGoods(float time, float squareMeasure)
     {
         //灾区接收物资，目前不用，物资给救助站
@@ -70,7 +75,7 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea,ITaskProgress
 
     public string getAssociationAssemblyId()
     {
-        return String.Empty;
+        return BobjectId;
     }
 
     public bool getTaskProgress(out string progressInfo, out float progressNum)

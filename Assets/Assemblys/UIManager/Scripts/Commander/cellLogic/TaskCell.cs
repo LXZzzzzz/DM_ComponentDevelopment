@@ -14,71 +14,27 @@ public class TaskCell : DMonoBehaviour
     private ITaskProgress tp;
     private Text taskProgress;
     private Slider slider_Progress;
-    private RectTransform comShowParent;
-    private ZiYuan_ComanderCell commanderShowCell;
-    private List<ZiYuan_ComanderCell> _allcoms;
-    public List<ZiYuan_ComanderCell> allcoms => _allcoms;
+
+    public string myEntityId => tp.getAssociationAssemblyId();
 
     public void Init(string taskIndex, ZiYuanBase ziYuan)
     {
-        isComplete = transform.Find("RootInfo/Tog_status").GetComponent<Toggle>();
-        comShowParent = GetComponentInChildren<ScrollRect>(true).content;
-        commanderShowCell = GetComponentInChildren<ZiYuan_ComanderCell>(true);
         tp = ziYuan as ITaskProgress;
+        isComplete = transform.Find("RootInfo/Tog_status").GetComponent<Toggle>();
+        transform.Find("RootInfo/Text_zaiQuName").GetComponent<Text>().text = ziYuan.ziYuanName;
         transform.Find("RootInfo/Text_taskIndex").GetComponentInChildren<Text>().text = taskIndex;
         taskProgress = transform.Find("RootInfo/Text_taskName").GetComponentInChildren<Text>();
         slider_Progress = transform.Find("RootInfo/Slider_Progress").GetComponentInChildren<Slider>();
-        transform.Find("describe/Text_taskDescribe").GetComponentInChildren<Text>().text = ziYuan.ziYuanDescribe;
+        // transform.Find("describe/Text_taskDescribe").GetComponentInChildren<Text>().text = ziYuan.ziYuanDescribe;
         GetComponentInChildren<Button>().onClick.AddListener(() =>
             EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), tp.getAssociationAssemblyId()));
-        _allcoms = new List<ZiYuan_ComanderCell>();
     }
 
-    private void LateUpdate()
+    private void Update()
     {
         if (tp == null) return;
         isComplete.isOn = tp.getTaskProgress(out string progressInfo, out float progressNum);
         taskProgress.text = progressInfo;
         slider_Progress.value = progressNum;
-        if (ProgrammeDataManager.Instance.GetCurrentData != null && ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList.ContainsKey(tp.getAssociationAssemblyId()))
-            ChangeComsView(ProgrammeDataManager.Instance.GetCurrentData.ZiYuanControlledList[tp.getAssociationAssemblyId()]);
-    }
-
-    private void ChangeComsView(List<string> coms)
-    {
-        if (coms.Count == allcoms.Count) return;
-        for (int i = 0; i < coms.Count; i++)
-        {
-            if (allcoms.Find(x => string.Equals(x.comId, coms[i])) == null)
-            {
-                var itemCom = Instantiate(commanderShowCell, comShowParent);
-                itemCom.Init(getComName(coms[i]), coms[i], null);
-                itemCom.gameObject.SetActive(true);
-                allcoms.Add(itemCom);
-            }
-        }
-
-        for (int i = 0; i < allcoms.Count; i++)
-        {
-            if (coms.Find(x => string.Equals(x, allcoms[i].comId)) == null)
-            {
-                Destroy(allcoms[i].gameObject);
-                allcoms.Remove(allcoms[i]);
-                i--;
-            }
-        }
-    }
-
-    private string getComName(string id)
-    {
-        for (int i = 0; i < allBObjects.Length; i++)
-        {
-            if (string.Equals(allBObjects[i].BObject.Id, id))
-            {
-                return allBObjects[i].BObject.Info.Name;
-            }
-        }
-
-        return "无";
     }
 }

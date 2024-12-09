@@ -11,39 +11,44 @@ namespace ToolsLibrary.ProgrammePart
         //场景所有装备数据
         public List<AEquipData> AllEquipDatas;
 
-        //每个指挥端所控算子列表
-        public Dictionary<string, List<string>> CommanderControlList;
-
-        //每个资源组件都可被哪些指挥端所用
-        public Dictionary<string, List<string>> ZiYuanControlledList;
-
-        //每个任务都可被哪些指挥端所见
-        public Dictionary<string, List<string>> TaskControlledList;
+        public List<AZiYuanData> AllZiYuanDatas;
     }
 
     //
     public class AEquipData
     {
-        //模板ID
-        public string templateId;
-
-        //机场ID
-        public string airportId;
-
-        //控制者ID
-        public string controllerId;
-
         public string myId;
 
-        //位置信息，测试阶段可用，实际要依附于机场
-        public JsonVector3 pos;
+        //是否出动
+        public int isSetOut;
 
-        //名字
-        public string myName;
+        //机组信息
+        public int jiZuInfo;
+    }
+
+    public class AZiYuanData
+    {
+        public string myId;
+
+        //当前能想到的资源是 补给点油量和物资点物资量，所以都用这个记录
+        //后期数据有扩展的话，这里改成VBase数据结构
+        public float zyNum;
     }
 
     public struct JsonVector3
     {
         public float x, y, z;
+    }
+
+    //前指所控数据结构
+    public class QianZhiData
+    {
+        public string equipId;
+
+        //可用资源列表
+        public List<string> useZyList;
+
+        //可用灾区列表
+        public List<string> useTaskList;
     }
 }

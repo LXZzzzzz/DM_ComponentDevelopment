@@ -148,7 +148,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         _commanderController.cdata = new ComanderData();
         _commanderController.cdata.dwrsmjtsxq = (Properties[3] as InputFloatUnitProperty).Value;
         _commanderController.gameType = (Properties[2] as DropDownProperty).Selected.Enum;
-        
+
         // var fields = _commanderController.cdata.GetType().GetFields();
         // for (int i = 3; i < 12; i++)
         // {
@@ -161,7 +161,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         //         fields[i - 3].SetValue(_commanderController.cdata, (Properties[i] as InputFloatUnitProperty).Value);
         //     }
         // }
-
     }
 
     public override void PropertiesChanged(DynamicProperty[] pros)
@@ -211,10 +210,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         int myLevel = MyDataInfo.MyLevel = (Properties[0] as DropDownProperty).Selected.Enum;
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "IconShow", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "MinMap", mapSizeData);
-        if (myLevel == -1) EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderDirector", null);
-        else EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
+        // if (myLevel == -1) EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderDirector", null);
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "TopMenuView", myLevel);
-        if (myLevel != -1) EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ThreeDIconView", null);
         // if (MyDataInfo.isPlayBack)
         //     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
@@ -226,8 +225,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         if (myLevel == 3)
             _commanderController.Init(BObjectId);
         yield return new WaitForSeconds(1);
-        if (myLevel == 1)
-            _commanderController.SendTaskSureMsg();
+        // if (myLevel == 1)
+        //     _commanderController.SendTaskSureMsg();
     }
 
     private void OnInitPlayBackPlayerInfos()
@@ -330,12 +329,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString(), "总指挥制定方案中");
                 break;
             case MessageID.SendProgramme:
-                int myLevel = (Properties[0] as DropDownProperty).Selected.Enum;
-                sender.LogError(myLevel != 1 ? "我需要接收场景装备数据" : "我就是数据编辑者");
                 MyDataInfo.gameState = GameState.Preparation;
-                if (myLevel != 1 || MyDataInfo.isPlayBack)
-                    _commanderController.Receive_ProgrammeData(param);
-                else _commanderController.Receive_TextMsgRecord("下达二级任务");
+                _commanderController.Receive_ProgrammeData(param);
                 break;
             case MessageID.SendGameStart:
                 MyDataInfo.gameState = GameState.GameStart;
@@ -389,6 +384,12 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendSkillConfirmation:
                 MyDataInfo.SkillsToBeConfirmed.Add(param);
+                break;
+            case MessageID.SendEquipBindingZiyuan:
+                _commanderController.Receive_ChangeEquipBindings(param);
+                break;
+            case MessageID.SendEquipState:
+                _commanderController.Receive_ChangeEquipState(param);
                 break;
         }
 

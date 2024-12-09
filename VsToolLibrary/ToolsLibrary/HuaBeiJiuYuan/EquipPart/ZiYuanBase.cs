@@ -16,6 +16,8 @@ namespace ToolsLibrary.EquipPart
 
         private Color myColor, chooseColor;
 
+        private ZyVariableDataBase variableData;
+
         [HideInInspector] public bool isChooseMe;
 
         public List<string> beUsedCommanderIds => _beUsedCommanderIds;
@@ -101,58 +103,55 @@ namespace ToolsLibrary.EquipPart
                 _beUsedCommanderIds.Remove(comId);
             }
         }
+
+        public void SetVariableData(ZyVariableDataBase data)
+        {
+            variableData = data;
+            OnSetVariableData();
+        }
+
+        protected abstract void OnSetVariableData();
+
+        public ZyVariableDataBase GetVariableData()
+        {
+            return variableData;
+        }
     }
 
     public enum ZiYuanType
     {
-        /// <summary>
-        /// 火源点
-        /// </summary>
+        // 火源点
         SourceOfAFire,
 
-        /// <summary>
-        /// 水源点
-        /// </summary>
+        // 水源点
         Waters,
 
-        /// <summary>
-        /// 机场
-        /// </summary>
+        // 机场
         Airport,
 
-        /// <summary>
-        /// 医院
-        /// </summary>
+        // 医院
         Hospital,
 
-        /// <summary>
-        /// 救助站
-        /// </summary>
+        // 救助站
         RescueStation,
 
-        /// <summary>
-        /// 灾区点
-        /// </summary>
+        // 灾区点
         DisasterArea,
 
-        /// <summary>
-        /// 补给点
-        /// </summary>
+        // 补给点
         Supply,
 
-        /// <summary>
-        /// 物资点
-        /// </summary>
+        // 物资点
         GoodsPoint,
 
-        /// <summary>
-        /// 任务点
-        /// </summary>
+        // 任务点
         TaskPoint
     }
 
-    public class ZyVariableDataBase
+    public abstract class ZyVariableDataBase
     {
+        public string ZyName;
+        public ZiYuanType ZyType;
     }
 
     public class FireVariableData : ZyVariableDataBase
@@ -161,5 +160,21 @@ namespace ToolsLibrary.EquipPart
         public float fs;
         public float pd;
         public float csrsmj;
+    }
+
+    public class DisasterVariableData : ZyVariableDataBase
+    {
+        public int personNum; //需救助人数
+        public int type; //人员类型
+    }
+
+    public class SupplyVariableData : ZyVariableDataBase
+    {
+        public float oilNum; //油量
+    }
+
+    public class GoodsPointVariableData : ZyVariableDataBase
+    {
+        public float goodsNum; //物资量
     }
 }

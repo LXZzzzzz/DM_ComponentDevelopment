@@ -16,6 +16,7 @@ public partial class CommanderController
 
                 //1.把飞机记录到静态变量,把飞机放到指定节点下
                 itemObj.transform.parent = MyDataInfo.SceneGoParent;
+                itemObj.gameObject.name = allBObjects[i].BObject.Info.Name;
                 itemObj.Init(itemObj, sceneAllzy);
                 itemObj.gameObject.SetActive(true);
                 EventManager.Instance.EventTrigger(EventType.CreatEquipCorrespondingIcon.ToString(), itemObj);
