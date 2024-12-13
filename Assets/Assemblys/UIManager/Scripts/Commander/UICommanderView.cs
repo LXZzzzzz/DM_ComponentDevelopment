@@ -168,12 +168,13 @@ public class UICommanderView : BasePanel
 
     private void OnAddEquipView(EquipBase equip)
     {
-        if (MyDataInfo.MyLevel == 3 && !string.Equals(equip.BeLongToCommanderId, MyDataInfo.leadId)) return;
         var itemObj = equip;
         var itemCell = Instantiate(ecPrefab, equipParent);
         itemCell.Init(level, itemObj, allCommanderIds, OnChangeEquipData);
         itemCell.gameObject.SetActive(true);
         allEquipCells.Add(itemCell);
+        if (MyDataInfo.MyLevel == 3 && !string.Equals(equip.BeLongToCommanderId, MyDataInfo.leadId))
+            itemCell.gameObject.SetActive(false);
     }
 
 
@@ -229,6 +230,13 @@ public class UICommanderView : BasePanel
 
     private void OnInitEquipData(AEquipData aeData)
     {
+        if (MyDataInfo.MyLevel == 3)
+        {
+            Debug.LogError(allEquipCells == null);
+            Debug.LogError(allEquipCells?.Count);
+            Debug.LogError(aeData);
+        }
+
         allEquipCells.Find(x => string.Equals(x.equipObjectId, aeData.myId)).RefreshComShow(aeData);
     }
 

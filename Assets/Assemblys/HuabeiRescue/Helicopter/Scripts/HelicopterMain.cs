@@ -91,7 +91,7 @@ public class HelicopterMain : ScriptManager
             }
         }
 
-        ((DqChangePart)logic).InitData(BObjectId, (Properties[35] as DropDownSceneBObjectsProperty).Value, (Properties[36] as DropDownSceneBObjectsProperty).Value);
+        ((IDqChangePart)logic).InitData(BObjectId, (Properties[35] as DropDownSceneBObjectsProperty).Value, (Properties[36] as DropDownSceneBObjectsProperty).Value);
         logic.gameObject.SetActive(false);
     }
 

@@ -10,8 +10,8 @@ using EventType = Enums.EventType;
 
 public class EquipCell : DMonoBehaviour
 {
-    private Text showName;
-    public GameObject zongPart, qianPart;
+    private Text showName, equipState;
+    public GameObject zongPart, qianPart, otherPart;
     public Dropdown changeEnable, changeJizu;
     public Button zyfp, rwfp; //资源分配和任务分配按钮
     private EquipBase _equip;
@@ -27,7 +27,9 @@ public class EquipCell : DMonoBehaviour
     {
         zongPart.SetActive(myLevel == 1);
         qianPart.SetActive(myLevel == 2);
-        showName = GetComponentInChildren<Text>();
+        otherPart.SetActive(myLevel != 1 && myLevel != 2);
+        showName = GetComponentInChildren<Text>(true);
+        equipState = otherPart.GetComponentInChildren<Text>(true);
         chooseImg = transform.Find("ChooseImg").gameObject;
         transform.Find("btn_track").GetComponent<Button>().onClick.AddListener(onTrack);
         changeCallBack = changeCb;
@@ -67,7 +69,8 @@ public class EquipCell : DMonoBehaviour
         {
             checkTimer = Time.time + 1 / 25f;
             chooseImg.SetActive(_equip.isChooseMe);
-            changeEnable.interactable = (int)MyDataInfo.gameState < 2;
+            changeEnable.interactable = (int)MyDataInfo.gameState < 1;
+            showEquipState();
         }
     }
 
@@ -76,13 +79,57 @@ public class EquipCell : DMonoBehaviour
         //这里只需要显示是否出动就可以了
         changeEnable.value = aed.isSetOut;
         changeJizu.value = aed.jiZuInfo;
+        showName.text = _equip.name + (aed.isSetOut == 0 ? "(不出动)" : "(出动)");
         switch (MyDataInfo.MyLevel)
         {
-            case -1:
-                showName.text = _equip.name + (aed.isSetOut == 0 ? "(不出动)" : "(出动)");
-                break;
             case 2:
                 zyfp.interactable = rwfp.interactable = aed.isSetOut == 1;
+                break;
+        }
+    }
+
+    private void showEquipState()
+    {
+        switch (_equip.currentSkill)
+        {
+            case SkillType.GroundReady:
+                equipState.text = "起飞前准备";
+                break;
+            case SkillType.BePutInStorage:
+                equipState.text = "入库";
+                break;
+            case SkillType.TakeOff:
+                equipState.text = "起飞";
+                break;
+            case SkillType.Landing:
+                equipState.text = "降落";
+                break;
+            case SkillType.Supply:
+                equipState.text = "补给";
+                break;
+            case SkillType.WaterIntaking:
+                equipState.text = "取水";
+                break;
+            case SkillType.WaterPour:
+                equipState.text = "投水";
+                break;
+            case SkillType.LadeGoods:
+                equipState.text = "装载物资";
+                break;
+            case SkillType.UnLadeGoods:
+                equipState.text = "卸载物资";
+                break;
+            case SkillType.AirdropGoods:
+                equipState.text = "空投物资";
+                break;
+            case SkillType.Manned:
+                equipState.text = "装载人员";
+                break;
+            case SkillType.PlacementOfPersonnel:
+                equipState.text = "安置人员";
+                break;
+            case SkillType.CableDescentRescue:
+                equipState.text = "索降救援";
                 break;
         }
     }

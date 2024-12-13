@@ -18,10 +18,9 @@ public class UITopMenuView : BasePanel
     private Text currentState, currentTime;
     private Button btn_start, btn_pause;
     private Dropdown speedChange;
-    private Button getBtn, loseBtn;
     private List<float> dropdownValue;
     private Transform menuView;
-    private GameObject zongPart, otherPart, directorPart;
+    private GameObject zongPart, otherPart;
     private Text currentSpeed;
 
 
@@ -32,7 +31,6 @@ public class UITopMenuView : BasePanel
         menuView = transform.Find("menuView");
         zongPart = transform.Find("SpeedChange/zongPart").gameObject;
         otherPart = transform.Find("SpeedChange/otherPart").gameObject;
-        directorPart = transform.Find("SpeedChange/directorPart").gameObject;
         ProgrammName = GetControl<Text>("text_PName");
         speedChangePart = transform.Find("SpeedChange").gameObject;
         currentState = GetControl<Text>("currentState");
@@ -40,8 +38,6 @@ public class UITopMenuView : BasePanel
         btn_start = GetControl<Button>("btn_start");
         btn_pause = GetControl<Button>("btn_pause");
         speedChange = GetControl<Dropdown>("speedChange");
-        getBtn = GetControl<Button>("btn_get");
-        loseBtn = GetControl<Button>("btn_lose");
         GetControl<Button>("btn_NewBuild").onClick.AddListener(newBuild);
         GetControl<Button>("btn_Save").onClick.AddListener(save);
         GetControl<Button>("btn_SaveAs").onClick.AddListener(saveAs);
@@ -54,22 +50,17 @@ public class UITopMenuView : BasePanel
             putAwayMenu();
             EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
         });
-        
+
         GetControl<Button>("btn_FaStart").onClick.AddListener(OnFaStart);
-        GetControl<Button>("btn_FaPause").onClick.AddListener(OnFaPause);
         GetControl<Button>("btn_FaTurnBack").onClick.AddListener(OnFaTurnBack);
-        GetControl<Button>("applyForExecute").onClick.AddListener(OnApplyForExecute);
 
         btn_start.onClick.AddListener(() => OnControlStartAndPause(false));
         btn_pause.onClick.AddListener(() => OnControlStartAndPause(true));
-        getBtn.onClick.AddListener(() => getAndLosePower(true));
-        loseBtn.onClick.AddListener(() => getAndLosePower(false));
         GetControl<Button>("btn_stop").onClick.AddListener(OnContolStop);
         GetControl<Button>("btn_pdf").onClick.AddListener(OnGeneratePdf);
         GetControl<Button>("btn_upload").onClick.AddListener(OnUpLoad);
         GetControl<Button>("btn_CLose").onClick.AddListener(putAwayMenu);
         currentSpeed = GetControl<Text>("txt_speed");
-        GetControl<Button>("btn_report").onClick.AddListener(clickReport);
 
         GetControl<Toggle>("Tog_Zhty").onValueChanged.AddListener(a =>
         {
@@ -91,13 +82,10 @@ public class UITopMenuView : BasePanel
         menuView.Find("PlanFormulation").gameObject.SetActive(mainLevel == 1);
         menuView.Find("CommandDeduction").gameObject.SetActive(mainLevel == 2);
         menuView.Find("ComprehensiveEvaluation").gameObject.SetActive(mainLevel == 1);
-        menuView.Find("DisasterInfo").gameObject.SetActive(mainLevel == 1);
-        menuView.Find("AirLine").gameObject.SetActive(mainLevel == 1);
-        menuView.Find("applyForExecute").gameObject.SetActive(mainLevel == 2);
         speedChangePart.SetActive(mainLevel == 1);
-        EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
+        // EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
         EventManager.Instance.AddEventListener<string>(EventType.ReceiveTask.ToString(), ReceiveTask);
-        ProgrammName.text = UIManager.Instance.MisName;
+        ShowName();
 
         dropdownValue = new List<float>() { 0.5f, 1.0f, 1.5f, 2.0f, 5.0f, 10.0f, 20.0f, 50.0f };
         speedChange.options.Clear();
@@ -113,15 +101,8 @@ public class UITopMenuView : BasePanel
     public override void HideMe()
     {
         base.HideMe();
-        EventManager.Instance.RemoveEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
+        // EventManager.Instance.RemoveEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
         EventManager.Instance.RemoveEventListener<string>(EventType.ReceiveTask.ToString(), ReceiveTask);
-    }
-
-    private void clickReport()
-    {
-        //这里是二级点击了报备按钮
-
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.TriggerReport, MyDataInfo.leadId);
     }
 
     private void putAwayMenu()
@@ -134,9 +115,26 @@ public class UITopMenuView : BasePanel
         GetControl<Button>("btn_CLose").gameObject.SetActive(false);
     }
 
-    private void ShowName(string pName)
+    private void ShowName()
     {
-        ProgrammName.text = $"{UIManager.Instance.MisName}（{pName}）";
+        switch (MyDataInfo.MyLevel)
+        {
+            case -1:
+                ProgrammName.text = "导教端";
+                break;
+            case 1:
+                ProgrammName.text = "总指挥端";
+                break;
+            case 2:
+                ProgrammName.text = "前线指挥端";
+                break;
+            case 3:
+                ProgrammName.text = "机长端";
+                break;
+            case 4:
+                ProgrammName.text = "态势端";
+                break;
+        }
     }
 
     private void ReceiveTask(string info)
@@ -147,19 +145,12 @@ public class UITopMenuView : BasePanel
     private void newBuild()
     {
         putAwayMenu();
-        ConfirmatonInfo info = new ConfirmatonInfo() { type = showType.newScheme, sureCallBack = runNewScheme };
+        ConfirmatonInfo info = new ConfirmatonInfo()
+        {
+            type = showType.newScheme, sureCallBack = (a) =>
+                ProgrammeDataManager.Instance.CreatProgramme((string)a)
+        };
         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, info);
-    }
-
-    private void runNewScheme(object _info)
-    {
-        string schemeName = (string)_info;
-        ProgrammeDataManager.Instance.CreatProgramme(schemeName);
-        //这个版本新建方案后，只是直升机状态、机组和资源数据的修改
-        // EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
-        // EventManager.Instance.EventTrigger(EventType.ClearProgramme.ToString());
-        MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
-        ShowName(schemeName);
     }
 
     private void save()
@@ -182,7 +173,6 @@ public class UITopMenuView : BasePanel
         if (data != null)
         {
             EventManager.Instance.EventTrigger(Enums.EventType.LoadProgrammeDataSuc.ToString(), data);
-            MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         }
         else
         {
@@ -204,16 +194,6 @@ public class UITopMenuView : BasePanel
         string packedData = ProgrammeDataManager.Instance.PackedData();
 
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendProgramme, packedData);
-
-        //目前设想，各个端地图模式应都是默认，只有导教端要新增灾区时，才都切换成create，机长端是plan模式，特情时切换为create
-        // EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
-        // for (int i = 0; i < allBObjects.Length; i++)
-        // {
-        //     if (allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
-        //     {
-        //         sender.RunSend(SendType.MainToAll, allBObjects[i].BObject.Id, (int)Enums.MessageID.SendProgramme, packedData);
-        //     }
-        // }
     }
 
     private void standAlone()
@@ -257,7 +237,7 @@ public class UITopMenuView : BasePanel
         // }
 
         //只有在准备阶段才能发送开始
-        
+
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
 
         currentState.text = "实时指挥 > 联机";
@@ -267,27 +247,33 @@ public class UITopMenuView : BasePanel
 
     private void OnFaStart()
     {
-        //这里只触发操作指令吧，数据的修改放到资源和任务分配的页面触发，实时同步多端数据
-    }
+        putAwayMenu();
+        //开始推演指令
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            bool isOut = ProgrammeDataManager.Instance.GetEquipDataById(MyDataInfo.sceneAllEquips[i].BObjectId).isSetOut == 1;
+            if (isOut && !MyDataInfo.TaskPlanningCompletedPersons.Contains(MyDataInfo.sceneAllEquips[i].BObjectId))
+            {
+                ConfirmatonInfo ci = new ConfirmatonInfo() { showStrInfo = "需等到所有出动直升机都完成任务规划才能开始", type = showType.tipView };
+                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, ci);
+                return;
+            }
+        }
 
-    private void OnFaPause()
-    {
-        
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
     }
 
     private void OnFaTurnBack()
     {
-        
-    }
+        putAwayMenu();
+        //返航指令
 
-    private void OnApplyForExecute()
-    {
-        
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendTurnBack, "");
     }
 
     private void OnControlStartAndPause(bool isPause)
     {
-        if ((int)MyDataInfo.gameState < 2)
+        if (MyDataInfo.gameState < GameState.GameStart)
         {
             ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "推演未开始！！" };
             UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
@@ -297,7 +283,7 @@ public class UITopMenuView : BasePanel
         btn_pause.gameObject.SetActive(!isPause);
         btn_start.gameObject.SetActive(isPause);
         //执行逻辑传给所有人
-        
+
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGamePause, (isPause ? 1 : 0).ToString());
     }
 
@@ -315,18 +301,15 @@ public class UITopMenuView : BasePanel
 
         if (MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) != null)
         {
-            EventManager.Instance.EventTrigger<string, UnityAction<bool>>(EventType.ShowConfirmUI.ToString(), "当前有飞机未入库机场，数据将无法生成报告，是否确认丢弃本次推演数据？", (a) =>
-            {
-                
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStop, "");
-            });
+            EventManager.Instance.EventTrigger<string, UnityAction<bool>>(EventType.ShowConfirmUI.ToString(), "当前有飞机未入库机场，数据将无法生成报告，是否确认丢弃本次推演数据？",
+                (a) => { EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStop, ""); });
             return;
         }
 
         btn_start.gameObject.SetActive(true);
         btn_pause.gameObject.SetActive(false);
         speedChange.value = 1;
-        
+
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStop, "");
     }
 
@@ -343,38 +326,26 @@ public class UITopMenuView : BasePanel
     {
         float changeSpeed = dropdownValue[index];
         if ((int)(changeSpeed * 100) == (int)(MyDataInfo.speedMultiplier * 100)) return;
-        
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, changeSpeed.ToString());
-    }
 
-    private void getAndLosePower(bool isGet)
-    {
-        getBtn.gameObject.SetActive(!isGet);
-        loseBtn.gameObject.SetActive(isGet);
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)(isGet ? Enums.MessageID.SendGetChangeZQPower : Enums.MessageID.SendLoseChangeZQPower), "");
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, changeSpeed.ToString());
     }
 
     private void Update()
     {
-        if (MyDataInfo.gameState != GameState.None && MyDataInfo.gameState != GameState.GamePause && MyDataInfo.gameState != GameState.GameStop)
-        {
-            currentTime.text = ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime);
-        }
+        currentTime.text = ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime);
 
         //速度页签要在时间进行阶段显示，zongPart要在总指挥开始推演阶段显示，otherPart要在其他指挥开始推演阶段显示
-        speedChangePart.SetActive(MyDataInfo.gameState > GameState.None && MyDataInfo.gameState < GameState.GameStop);
+        speedChangePart.SetActive(MyDataInfo.gameState >= GameState.None);
 
         if (MyDataInfo.isPlayBack)
         {
             zongPart.SetActive(false);
             otherPart.SetActive(false);
-            directorPart.SetActive(false);
         }
         else
         {
-            if (mainLevel == 1) zongPart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
-            else if (mainLevel == -1) directorPart.SetActive(MyDataInfo.gameState >= GameState.Preparation);
-            else otherPart.SetActive(MyDataInfo.gameState == GameState.GameStart || MyDataInfo.gameState == GameState.GamePause);
+            if (mainLevel == 1) zongPart.SetActive(true);
+            else otherPart.SetActive(true);
         }
 
         currentSpeed.text = $"{MyDataInfo.speedMultiplier:0.0} X";

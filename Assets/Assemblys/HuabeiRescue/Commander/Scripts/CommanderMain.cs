@@ -184,6 +184,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.gameState = GameState.None;
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
         MyDataInfo.SkillsToBeConfirmed = new List<string>();
+        MyDataInfo.TaskPlanningCompletedPersons = new List<string>();
         gameStartTimePoint = -1;
         if (playback) OnInitPlayBackPlayerInfos();
         float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
@@ -321,28 +322,19 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
 
         switch ((MessageID)eventType)
         {
-            case MessageID.SendReceiveTask:
-                MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
+            case MessageID.SendProgramme:
+                MyDataInfo.gameState = GameState.ReleaseProgramme;
+                _commanderController.Receive_ProgrammeData(param);
                 MyDataInfo.speedMultiplier = 1;
                 MyDataInfo.gameStartTime = 0;
-                _commanderController.Receive_TextMsgRecord("总指挥接受了任务，开始指定方案");
-                EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString(), "总指挥制定方案中");
-                break;
-            case MessageID.SendProgramme:
-                MyDataInfo.gameState = GameState.Preparation;
-                _commanderController.Receive_ProgrammeData(param);
                 break;
             case MessageID.SendGameStart:
                 MyDataInfo.gameState = GameState.GameStart;
                 if (gameStartTimePoint < 0) gameStartTimePoint = int.Parse(param);
                 MyDataInfo.speedMultiplier = 1;
                 MyDataInfo.gameStartTime = gameStartTimePoint / 1000.0f;
-                EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
                 _commanderController.Receive_TextMsgRecord("推演开始！");
-                EventManager.Instance.EventTrigger(EventType.SetMyEquipIconLayer.ToString());
                 _commanderController.Receive_GameStart();
-                if (MyDataInfo.MyLevel != 1)
-                    EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString(), "实时指挥 > 联机");
                 break;
             case MessageID.MoveToTarget:
                 sender.LogError("收到了移动的指令" + type);
@@ -351,17 +343,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendGamePause:
                 MyDataInfo.gameState = int.Parse(param) == 1 ? GameState.GamePause : GameState.GameStart;
                 break;
-            case MessageID.SendGameStop:
-                MyDataInfo.gameState = GameState.GameStop;
-                MyDataInfo.gameStartTime = gameStartTimePoint / 1000.0f;
-                MyDataInfo.speedMultiplier = 1;
-                _commanderController.Receive_GameStop();
-                break;
             case MessageID.SendChangeSpeed:
                 MyDataInfo.speedMultiplier = float.Parse(param);
-                break;
-            case MessageID.SendChangeController:
-                _commanderController.Receive_ChangeController(param);
                 break;
             case MessageID.SendChangeZaiqu:
                 sender.LogError("收到创建灾区的消息");
@@ -369,14 +352,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendMarkMapPoint:
                 _commanderController.Receive_ShowMarkPoint(param);
-                break;
-            case MessageID.SendGetChangeZQPower:
-                //暂停进度，并打开地图编辑模式
-                _commanderController.Receive_GetChangeZiyPower();
-                break;
-            case MessageID.SendLoseChangeZQPower:
-                //恢复进度，并关闭地图编辑模式
-                _commanderController.Receive_LoseChangeZiyPower();
                 break;
             case MessageID.SendPathPlanningData:
                 //收到规划数据，展示到界面上，
@@ -390,6 +365,76 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendEquipState:
                 _commanderController.Receive_ChangeEquipState(param);
+                break;
+            case MessageID.SendTianQi:
+                _commanderController.OnChangeTianQi(int.Parse(param));
+                break;
+            case MessageID.SendAskForAirLine:
+                //如果是导教端，就弹出航线申报消息，让他选择是否同意
+                if (MyDataInfo.MyLevel == -1)
+                    EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AirLineInfoShow", param);
+                break;
+            case MessageID.SendAgreeAirLine:
+                //这里如果是总指挥，就弹提示窗，告知航线申请反馈，如果同意就进入下一阶段
+                if (int.Parse(param) == 1)
+                {
+                    MyDataInfo.gameState = GameState.AgreeAirLine;
+                    if (MyDataInfo.MyLevel == 1)
+                        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "航线确认成功");
+                }
+                else
+                {
+                    if (MyDataInfo.MyLevel == 1)
+                        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "航线信息有误，请重新申报");
+                }
+
+                break;
+            case MessageID.SendAskForTaskExecute:
+                //这里如果是总指挥，就弹二次确认窗口，询问是否同意任务执行，让他选择是否同意
+                _commanderController.OnAskTaskExecute();
+                break;
+            case MessageID.SendAgreeTaskExecute:
+                //如果是机长，就让他的地图模式改为Plane模式，并弹窗提示可以开始任务规划
+                MyDataInfo.gameState = GameState.AgreeTaskExecute;
+                if (MyDataInfo.MyLevel == 3)
+                    _commanderController.OnOpenPlanningMode();
+                break;
+            case MessageID.SendTaskPlanningCompleted:
+                //前指收到这个通知，存起来，如果每架飞机都收到，那就可以点击开始推演
+                if (!MyDataInfo.TaskPlanningCompletedPersons.Contains(param))
+                    MyDataInfo.TaskPlanningCompletedPersons.Add(param);
+                break;
+            case MessageID.SendTurnBack:
+                //如果是机长，就让其控制直升机执行返回机场并入库操作
+                if (MyDataInfo.MyLevel == 3)
+                    _commanderController.OnGetTurnBack();
+                break;
+
+
+            //这下面的case逻辑不需要了
+            case MessageID.SendReceiveTask:
+                // MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
+                MyDataInfo.speedMultiplier = 1;
+                MyDataInfo.gameStartTime = 0;
+                _commanderController.Receive_TextMsgRecord("总指挥接受了任务，开始指定方案");
+                EventManager.Instance.EventTrigger(EventType.ReceiveTask.ToString(), "总指挥制定方案中");
+                break;
+            case MessageID.SendChangeController:
+                _commanderController.Receive_ChangeController(param);
+                break;
+            case MessageID.SendGetChangeZQPower:
+                //暂停进度，并打开地图编辑模式
+                _commanderController.Receive_GetChangeZiyPower();
+                break;
+            case MessageID.SendLoseChangeZQPower:
+                //恢复进度，并关闭地图编辑模式
+                _commanderController.Receive_LoseChangeZiyPower();
+                break;
+            case MessageID.SendGameStop:
+                MyDataInfo.gameState = GameState.GameStop;
+                MyDataInfo.gameStartTime = gameStartTimePoint / 1000.0f;
+                MyDataInfo.speedMultiplier = 1;
+                _commanderController.Receive_GameStop();
                 break;
         }
 

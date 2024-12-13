@@ -11,6 +11,7 @@ using UiManager;
 using UnityEngine;
 using Vectrosity;
 using ToolsLibrary.ProgrammePart;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using EventType = Enums.EventType;
 
@@ -182,6 +183,12 @@ public class TestLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.N))
         {
             MsgReceive_CreatZaiqu(asldfjlsdj);
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "当前天气下雨，是否全部返航", 
+                () => { Debug.LogError("确认了拉萨的"); });
         }
 
         if (isRunTimer) runTimer();

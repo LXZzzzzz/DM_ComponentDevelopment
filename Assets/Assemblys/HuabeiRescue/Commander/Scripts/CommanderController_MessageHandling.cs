@@ -15,6 +15,8 @@ public partial class CommanderController
 
     public void Receive_GameStart()
     {
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
+        EventManager.Instance.EventTrigger(EventType.SetMyEquipIconLayer.ToString());
         if (sceneAllzy != null)
             sceneAllzy.ForEach(a => a.OnStart());
     }
@@ -42,6 +44,8 @@ public partial class CommanderController
     {
         var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
         OnLoadProgrammeDataSuc(programmeData);
+        if (MyDataInfo.MyLevel == 2)
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "请您为出动直升机进行资源分配");
     }
 
 
@@ -130,7 +134,7 @@ public partial class CommanderController
             case MessageID.TriggerGroundReady:
                 sender.LogError("收到了起飞前准备的指令");
                 var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, data));
-                var itemAirportId = (item as DqChangePart).GetStopAtAirPort();
+                var itemAirportId = (item as IDqChangePart)?.GetStopAtAirPort();
                 if (string.IsNullOrEmpty(itemAirportId))
                 {
                     EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "数据错误，指定的直升机未在机场");
@@ -322,6 +326,7 @@ public partial class CommanderController
             if (!string.IsNullOrEmpty(infos[i]))
                 item.currentBindingZy.Add(infos[i]);
         }
+
         OnChangeJizhangView(item.currentBindingZy);
     }
 
@@ -333,7 +338,7 @@ public partial class CommanderController
             if (string.IsNullOrEmpty(infos[i])) continue;
             var itemData = infos[i].Split(':');
             var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, itemData[0]));
-            item.currentState = int.Parse(itemData[1]);
+            (item as IDqChangePart)?.ChangeCurrentState(int.Parse(itemData[1]));
         }
     }
 

@@ -12,7 +12,7 @@ namespace Enums
         CreatEquipCorrespondingIcon, //创建飞机对应的图标
         LoadProgrammeDataSuc, //读取方案成功通知场景响应
         MapChooseIcon, //地图上选择icon后通知出去（主要代表选择资源：取水点、补给点。。。）
-        SendSkillInfoForControler, //向指挥角色发送技能请求
+        SendSkillInfoForControler, //向指挥角色发送技能请求,消息发送入口，所有的消息都通过这里发出
         AddCommanderForZiYuan, //为资源添加控制者
         InitZiYuanBeUsed, //初始化资源可被谁使用
         CameraSwitch, //相机切换是否开启控制脚本
@@ -46,8 +46,10 @@ namespace Enums
         LoadPathPlanningData, //加载规划点数据
         MoveToTarget_AutoRun, //自动执行移动到目标点
 
+        ShowMisDescription, //展示灾情信息
         InitEquipData, //加载方案时初始化直升机数据
         ChangeJiZhangView, //机长端通知页面修改
+        DqChooseGo, //选中某个对象
     }
 
     public enum MessageID
@@ -68,6 +70,14 @@ namespace Enums
         SendSkillConfirmation = 1015, //发送技能确认，随技能指令发送，收到服务器反馈标志技能使用成功
         SendEquipBindingZiyuan = 1016, //发送直升机绑定资源数据
         SendEquipState = 1017, //发送所有直升机当前状态
+        SendTianQi = 1018, //发送天气情况
+        SendAskForAirLine = 1019, //总指发送申请航线消息
+        SendAgreeAirLine = 1020, //导教端发送航线信息的反馈
+        SendAskForTaskExecute = 1021, //前指发送任务执行请求
+        SendAgreeTaskExecute = 1022, //总指发送任务执行的反馈
+        SendTaskPlanningCompleted = 1023, //机长发送任务规划完成
+        SendTurnBack = 1024, //发送立即返航指令
+        SendChangeTaskPlanning = 1025, //可能要加 ：导教端修改了灾区数据后，前指要发送这个指令，告诉机长要根据最新灾情调整任务规划数据
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作
@@ -93,6 +103,8 @@ namespace Enums
 
         TriggerEquipCrash = 1116, //触发飞机坠毁
 
+
+        //这俩消息应该放到Send部分
         TriggerOnlyShow = 1200, //触发只做显示的文本
         TriggerReport = 1201, //触发报备指令
     }

@@ -776,7 +776,6 @@ MonoBehaviour:
   isYSRY: 0
   isSJJY: 0
   currentBindingZy: []
-  currentState: 0
 --- !u!1 &410259264 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8056713718229582192, guid: 7ce94dfc2103d5741b6288bba89f1160,
@@ -1021,6 +1020,7 @@ MonoBehaviour:
   UIChangePointDataInfo: {fileID: 0}
   UIPathPointsShow: {fileID: 0}
   UIChangeZyData: {fileID: 0}
+  UIAirLineInfoShow: {fileID: 0}
 --- !u!1001 &783700336
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1325,7 +1325,6 @@ MonoBehaviour:
   isYSRY: 0
   isSJJY: 0
   currentBindingZy: []
-  currentState: 0
 --- !u!1 &886457579
 GameObject:
   m_ObjectHideFlags: 0
@@ -1463,7 +1462,6 @@ MonoBehaviour:
   isYSRY: 0
   isSJJY: 0
   currentBindingZy: []
-  currentState: 0
 --- !u!223 &1015827771 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 3141163028321617580, guid: 13861a70b510f7e448a80feca267c02e,
@@ -1891,7 +1889,7 @@ MonoBehaviour:
   fj: {fileID: 410259264}
   aa: "{\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u6295\u6C34\u603B\u91CF\":0.0,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u8FC7\u706B\u603B\u9762\u79EF\":170596.15625,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u71C3\u70E7\u9762\u79EF\":39018.078125,\"\u4EFB\u52A1\u521D\u59CB\u8FC7\u706B\u603B\u9762\u79EF\":170506.09375,\"\u4EFB\u52A1\u521D\u59CB\u71C3\u70E7\u9762\u79EF\":39000.0,\"\u5F00\u59CB\u6295\u6C34\u65F6\u523B\":\"00:00:00\",\"\u53D6\u6C34\u70B9\u5230\u6295\u6C34\u70B9\u7684\u6700\u77ED\u8DEF\u5F84\":1.37932861328125,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u523B\":0.0,\"\u603B\u822A\u7A0B\":0.0,\"\u76F4\u5347\u673A\u603B\u67B6\u6B21\":0,\"\u706B\u573A\u6570\u91CF\":3,\"\u53D6\u6C34\u70B9\u6570\u91CF\":3,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u706B\u573A\u6295\u6C34\u603B\u91CD\u91CF\":0.0,\"HeliSortieWaterDataList\":{\"{\\\"Id\\\":\\\"133640551154477175972\\\",\\\"Name\\\":\\\"MI26_002\\\",\\\"Price\\\":13000.0,\\\"Consumption\\\":880.79998779296875,\\\"Speed\\\":255.0,\\\"TakeOffTime\\\":0.0,\\\"EndMissonTime\\\":0.0,\\\"WatersTime\\\":0.041666666666666664,\\\"WatersMaxCoune\\\":8000.0,\\\"PersonTime\\\":0.0,\\\"PersonMaxCount\\\":0.0,\\\"MaterialTime\\\":0.0,\\\"MaterialMaxCount\\\":0.0,\\\"IsCrash\\\":false,\\\"\u5355\u673A\u4EFB\u52A1\u6210\u672C\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u91CD\u91CF\u6548\u7387\\\":[],\\\"\u5355\u4F4D\u65F6\u95F4\u5355\u673A\u6295\u6C34\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u603B\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u7269\u8D44\u6295\u653E\u6548\u7387\\\":[],\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u9700\u6C42\\\":0.0,\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u5355\u673A\u6295\u9001\u7269\u8D44\u603B\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u6295\u653E\u7269\u8D44\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u8F6C\u8FD0\u4EBA\u6570\\\":0.0,\\\"\u5355\u673A\u4EBA\u5458\u8F6C\u8FD0\u6548\u7387\\\":[]}\":[],\"{\\\"Id\\\":\\\"133640550587125600951\\\",\\\"Name\\\":\\\"Z8_001\\\",\\\"Price\\\":13000.0,\\\"Consumption\\\":597.5999755859375,\\\"Speed\\\":232.0,\\\"TakeOffTime\\\":0.0,\\\"EndMissonTime\\\":0.0,\\\"WatersTime\\\":0.025,\\\"WatersMaxCoune\\\":5000.0,\\\"PersonTime\\\":0.0,\\\"PersonMaxCount\\\":0.0,\\\"MaterialTime\\\":0.0,\\\"MaterialMaxCount\\\":0.0,\\\"IsCrash\\\":false,\\\"\u5355\u673A\u4EFB\u52A1\u6210\u672C\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u91CD\u91CF\u6548\u7387\\\":[],\\\"\u5355\u4F4D\u65F6\u95F4\u5355\u673A\u6295\u6C34\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u603B\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u7269\u8D44\u6295\u653E\u6548\u7387\\\":[],\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u9700\u6C42\\\":0.0,\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u5355\u673A\u6295\u9001\u7269\u8D44\u603B\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u6295\u653E\u7269\u8D44\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u8F6C\u8FD0\u4EBA\u6570\\\":0.0,\\\"\u5355\u673A\u4EBA\u5458\u8F6C\u8FD0\u6548\u7387\\\":[]}\":[]},\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u706B\u573A\u6570\u636E\":[{\"Id\":\"13364124699425266298\",\"Name\":\"\u706B\u6E90A\",\"WaterWeight\":0.0,\"initBurnedArea\":71780.25,\"initBurnArea\":16000.0,\"burnArea\":16006.0263671875,\"burnedArea\":71810.2734375,\"WaterNeed\":0.0,\"Degree\":0.0},{\"Id\":\"133641247377979550100\",\"Name\":\"\u706B\u6E90B\",\"WaterWeight\":0.0,\"initBurnedArea\":41890.48046875,\"initBurnArea\":10000.0,\"burnArea\":10006.0263671875,\"burnedArea\":41920.5,\"WaterNeed\":0.0,\"Degree\":0.0},{\"Id\":\"133641247731845467102\",\"Name\":\"\u706B\u6E90C\",\"WaterWeight\":0.0,\"initBurnedArea\":56835.3671875,\"initBurnArea\":13000.0,\"burnArea\":13006.0263671875,\"burnedArea\":56865.38671875,\"WaterNeed\":0.0,\"Degree\":0.0}]}"
   bb: "{\"\u5355\u4F4D\u71C3\u70E7\u9762\u79EF\u6295\u6C34\u9700\u6C42\":1.0,\"\u6700\u5927\u5DE1\u822A\u901F\u5EA6\":255.0,\"\u5355\u6B21\u53D6\u6C34\u548C\u6295\u6C34\u65F6\u95F4\":0.025,\"\u540A\u6876\u5355\u6B21\u6700\u5927\u88C5\u8F7D\u91CF\":8000.0,\"\u76F4\u5347\u673A\u6BCF\u98DE\u884C\u5C0F\u65F6\u8017\u6CB9\u7387\":0.0,\"\u6700\u4F4E\u5C0F\u65F6\u71C3\u6CB9\u6D88\u8017\u7387\":597.5999755859375,\"\u6700\u4F4E\u76F4\u5347\u673A\u5355\u4EF7\":13000.0}"
-  asldfjlsdj: '{"tempId":"13371706246004071893","zaiquId":"133717062460040718932","pos":{"x":-4225.0,"y":0.0,"z":2200.0},"isDele":0,"vData":{"ZyType":1,"fs":12.0,"pd":12.0,"csrsmj":10000.0}}'
+  asldfjlsdj: '{"tempId":"13371706246004071893","zaiquId":"133717062460040718932","pos":{"x":-4100.263,"y":0.0,"z":1923.48315},"isDele":0,"vData":{"fs":12.0,"pd":12.0,"csrsmj":12345.0,"ZyType":0}}'
 --- !u!1 &1823688464
 GameObject:
   m_ObjectHideFlags: 0

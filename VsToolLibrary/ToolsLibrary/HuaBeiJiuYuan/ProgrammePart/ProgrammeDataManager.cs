@@ -117,6 +117,14 @@ namespace ToolsLibrary.ProgrammePart
             File.WriteAllText(path + $"/方案{fileCount + 1}.json", jsonData);
             lastPath = path;
         }
+        
+        public static void SaveAsData_Txt(string data)
+        {
+            if (string.IsNullOrEmpty(lastPath))
+                lastPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+
+            SaveDataFunc_Txt(data, lastPath);
+        }
 
         public static bool LoadData<T>(string path, out T outData)
         {
@@ -145,6 +153,25 @@ namespace ToolsLibrary.ProgrammePart
                 File.WriteAllText(filePath, jsonData);
             }
         }
+        private static void SaveDataFunc_Txt(string data, string folderPath)
+        {
+            string openPath = folderPath.Replace('/', '\\');
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Txt Files (*.txt)|*.txt",
+                DefaultExt = "txt",
+                AddExtension = true,
+                FileName = "NewFile", // 可以提供一个默认文件名
+                InitialDirectory = openPath
+            };
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+                lastPath = filePath;
+                File.WriteAllText(filePath, data);
+            }
+        }
 
         private static T LoadData<T>(string folderPath)
         {
@@ -169,6 +196,31 @@ namespace ToolsLibrary.ProgrammePart
             Debug.LogError($"检查路径：{openFileDialog.InitialDirectory}");
 
             return default(T);
+        }
+
+        public static string LoadData_Txt(string folderPath)
+        {
+            string openPath = folderPath.Replace('/', '\\');
+
+            Debug.LogError($"打开的路径：{openPath}");
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Txt Files (*.txt)|*.txt",
+                InitialDirectory = openPath, RestoreDirectory = true, FilterIndex = 2
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = openFileDialog.FileName;
+                lastPath = filePath;
+                string data = File.ReadAllText(filePath);
+                return data;
+            }
+            
+            Debug.LogError($"检查路径：{openFileDialog.InitialDirectory}");
+
+            return default;
         }
     }
 }

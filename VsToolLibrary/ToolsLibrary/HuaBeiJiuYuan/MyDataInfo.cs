@@ -20,38 +20,30 @@ namespace ToolsLibrary
         public static float speedMultiplier; //场景运行速度
         public static float gameStartTime; //记录本局游戏开始时刻
         public static List<string> SkillsToBeConfirmed; //待确认技能列表
+        public static List<string> TaskPlanningCompletedPersons; //记录完成了任务规划的机长
     }
 
     public enum GameState
     {
-        /// <summary>
-        /// 初始默认阶段
-        /// </summary>
+        // 初始默认阶段(此时是总指挥创建方案阶段，其他端等着)
         None,
 
-        /// <summary>
-        /// 一级指挥端编辑阶段
-        /// </summary>
-        FirstLevelCommanderEditor,
+        // 发布了方案（此时前线指挥可以进行资源分配了，总可以申请航线）
+        ReleaseProgramme,
 
-        /// <summary>
-        /// 收到方案后的准备阶段
-        /// </summary>
-        Preparation,
+        // 航线得到了同意（前指促使可以申请任务执行了）
+        AgreeAirLine,
 
-        /// <summary>
-        /// 游戏开始阶段
-        /// </summary>
+        //申请了任务执行（机长可以规划路径了（机长端改为Plan模式））
+        AgreeTaskExecute,
+
+        // 开始推演（导可以特情触发了，机长normal）
         GameStart,
 
-        /// <summary>
-        /// 游戏暂停
-        /// </summary>
+        // 游戏暂停
         GamePause,
 
-        /// <summary>
-        /// 游戏停止
-        /// </summary>
+        // 游戏停止
         GameStop
     }
 

@@ -41,7 +41,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
             //     }
             // }
 
-            mainLogic.SwitchMapLogic(OperatorState.Normal);
+            // mainLogic.SwitchMapLogic(OperatorState.Normal);
         }
         else if (data is string)
         {
@@ -104,8 +104,8 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         if (string.IsNullOrEmpty(creatTargetTemplate)) return;
         //通知主角在场景对应位置创建实体
         EventManager.Instance.EventTrigger(EventType.CreatZaiQuZy.ToString(), creatTargetTemplate, uiPos2WorldPos(pos));
-        
-        
+
+
         return;
         // if (string.IsNullOrEmpty(creatTargetTemplate)) return;
         // //这里先去数据管理器里申请创建，然后将数据ID传给创建者
@@ -119,6 +119,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
     {
         mainLogic.TempIcon.gameObject.SetActive(false);
         creatTargetTemplate = String.Empty;
+        mainLogic.SwitchMapLogic(OperatorState.DqNormal);
     }
 
     private void closeCreatTarget()

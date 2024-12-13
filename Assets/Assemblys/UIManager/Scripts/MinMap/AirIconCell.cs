@@ -101,7 +101,7 @@ public class AirIconCell : IconCellBase
     private GameObject getAirPort()
     {
         if (airPort != null) return airPort;
-        string airPortId = (equipGo as DqChangePart).GetStopAtAirPort();
+        string airPortId = (equipGo as IDqChangePart).GetStopAtAirPort();
         for (int j = 0; j < allBObjects.Length; j++)
         {
             if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)

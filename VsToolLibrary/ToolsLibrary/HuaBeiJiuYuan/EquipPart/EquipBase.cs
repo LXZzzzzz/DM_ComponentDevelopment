@@ -51,7 +51,7 @@ namespace ToolsLibrary.EquipPart
 
         public List<string> currentBindingZy; //当前直升机绑定的资源，其中也包括任务，由于任务与资源合并，只从接口区分
 
-        public int currentState; //当前直升机状态（可用状态：可用、不可用、返修）
+        private int currentState; //当前直升机状态（可用状态：可用、不可用、返修）
         protected bool isArrive => _isArrive;
 
         public Vector3 TargetPos => targetPos;
@@ -60,6 +60,12 @@ namespace ToolsLibrary.EquipPart
         {
             get => _isCrash;
             protected set => _isCrash = value;
+        }
+
+        public int CurrentState
+        {
+            get => currentState;
+            protected set => currentState = value;
         }
 
         public virtual void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
@@ -138,11 +144,17 @@ namespace ToolsLibrary.EquipPart
         protected abstract void OnClose();
     }
 
-    public interface DqChangePart
+    public interface IDqChangePart
     {
         //直升机变成想定预制，所以在初始化时ID、机场ID和控制者信息就已知了，直接赋值
         void InitData(string id, string airPortId, string ctrlId);
 
         string GetStopAtAirPort();
+
+        //触发返航
+        void GoReturnBack();
+
+        //设置直升机状态
+        void ChangeCurrentState(int state);
     }
 }

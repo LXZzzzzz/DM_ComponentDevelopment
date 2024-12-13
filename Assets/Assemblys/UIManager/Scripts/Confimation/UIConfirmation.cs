@@ -65,7 +65,7 @@ namespace UiManager
                 }
             });
 
-            GetControl<Button>("cancel").gameObject.SetActive(cinfo.type != showType.tipView);
+            GetControl<Button>("cancel").gameObject.SetActive(cinfo.sureCallBack != null);
 
             if (MyDataInfo.isPlayBack) StartCoroutine(closeMe());
         }

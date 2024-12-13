@@ -42,9 +42,9 @@ public partial class CommanderController : DMonoBehaviour
         CalculateLatLon = callback;
         InitZiyuan();
         _pdfReport = new PDFReport();
-        MyDataInfo.gameState = GameState.FirstLevelCommanderEditor;
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.AddEventListener<string>(EventType.ChooseZiyuan.ToString(), OnChangeCurrentZiyuan);
+        EventManager.Instance.AddEventListener<string>(EventType.DqChooseGo.ToString(), OnChooseAGo);
         EventManager.Instance.AddEventListener<string, Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         // EventManager.Instance.AddEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.AddEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
@@ -57,12 +57,14 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), OnSendCreatZaiQuZy);
         EventManager.Instance.AddEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
+        EventManager.Instance.AddEventListener(EventType.ShowMisDescription.ToString(), SendTaskSureMsg);
     }
 
     public void Terminate()
     {
         EventManager.Instance.RemoveEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
         EventManager.Instance.RemoveEventListener<string>(EventType.ChooseZiyuan.ToString(), OnChangeCurrentZiyuan);
+        EventManager.Instance.RemoveEventListener<string>(EventType.DqChooseGo.ToString(), OnChooseAGo);
         EventManager.Instance.RemoveEventListener<string, Vector3>(EventType.MoveToTarget.ToString(), OnChangeTarget);
         // EventManager.Instance.RemoveEventListener<string, string>(EventType.CreatEquipEntity.ToString(), OnCreatEquipEntity);
         EventManager.Instance.RemoveEventListener<ProgrammeData>(EventType.LoadProgrammeDataSuc.ToString(), OnLoadProgrammeDataSuc);
@@ -75,6 +77,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), OnSendCreatZaiQuZy);
         EventManager.Instance.RemoveEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
+        EventManager.Instance.RemoveEventListener(EventType.ShowMisDescription.ToString(), SendTaskSureMsg);
     }
 
     private void InitZiyuan()
@@ -129,24 +132,41 @@ public partial class CommanderController : DMonoBehaviour
             clouds.SetActive(Camera.main != null && Camera.main.gameObject.transform.position.y < 2000);
         }
 
-        if (Input.GetKeyDown(KeyCode.K))
+        // if (Input.GetKeyDown(KeyCode.K))
+        // {
+        //     EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.O))
+        // {
+        //     sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     OnGetTurnBack();
+        // }
+
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
+            Debug.LogError(MyDataInfo.gameState);
         }
     }
 
-    public void SendTaskSureMsg()
+    private void SendTaskSureMsg()
     {
-        EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misDescription, () =>
-        {
-            //接收灾情任务，此时计时器开始
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), misDescription);
 
-            OnSendSkillInfo((int)MessageID.SendReceiveTask, "");
-            // for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
-            // {
-            //     sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)MessageID.SendReceiveTask, "");
-            // }
-        });
+        // EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misDescription, () =>
+        // {
+        //     //接收灾情任务，此时计时器开始
+        //
+        //     // OnSendSkillInfo((int)MessageID.SendReceiveTask, "");
+        //     // for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
+        //     // {
+        //     //     sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, (int)MessageID.SendReceiveTask, "");
+        //     // }
+        // });
     }
 
     private DMCameraControl.DMCameraViewMove cvm;
@@ -197,6 +217,7 @@ public partial class CommanderController : DMonoBehaviour
 
     private void OnChangeCurrentEquip(string equipId)
     {
+        //大庆版本这里不走了
         // if (MyDataInfo.gameState != GameState.GameStart) return;
         if (string.IsNullOrEmpty(equipId))
         {
@@ -210,7 +231,7 @@ public partial class CommanderController : DMonoBehaviour
 
         var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(equipId, x.BObjectId));
 
-        if (MyDataInfo.gameState == GameState.FirstLevelCommanderEditor || string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
+        if (string.Equals(itemEquip.BeLongToCommanderId, MyDataInfo.leadId))
         {
             if (currentChooseEquip != null) currentChooseEquip.isChooseMe = false;
             currentChooseEquip = itemEquip;
@@ -294,8 +315,8 @@ public partial class CommanderController : DMonoBehaviour
         }
 
         // 这里地图状态应该都是默认，这个阶段没有创建需求
-        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
-        EventManager.Instance.EventTrigger(EventType.ShowProgrammeName.ToString(), data.programmeName);
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
+        // EventManager.Instance.EventTrigger(EventType.ShowProgrammeName.ToString(), data.programmeName);
     }
 
     //清空场景中的所有方案数据
@@ -407,6 +428,8 @@ public partial class CommanderController : DMonoBehaviour
 
     private void OnSendCreatZaiQuZy(ZyVariableDataBase vData)
     {
+        EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
+        EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 3);
         CreatZaiquData data = new CreatZaiquData()
         {
             tempId = zyId, pos = new JsonVector3() { x = pos.x, y = pos.y, z = pos.z }, zaiquId = zyId + (zaiquIdNum += 1), isDele = 0, vData = vData
@@ -435,6 +458,7 @@ public partial class CommanderController : DMonoBehaviour
 
     private void OnChangeZaiqu(CreatZaiquData data)
     {
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
         if (data.isDele == 1)
         {
             for (int i = 0; i < sceneAllzy.Count; i++)
@@ -444,6 +468,7 @@ public partial class CommanderController : DMonoBehaviour
                     EventManager.Instance.EventTrigger(EventType.DestoryZiyuanIcon.ToString(), data.zaiquId);
                     Destroy(sceneAllzy[i].gameObject);
                     sceneAllzy.RemoveAt(i);
+                    MyDataInfo.sceneAllZiYuan.RemoveAt(i);
                     break;
                 }
             }
@@ -499,6 +524,12 @@ public partial class CommanderController : DMonoBehaviour
 
         EventManager.Instance.EventTrigger(EventType.CreatAZiyuanIcon.ToString(), temporaryZaiqu);
         sceneAllzy.Add(temporaryZaiqu);
+        MyDataInfo.sceneAllZiYuan.Add(temporaryZaiqu);
+
+
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
+        
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(),"有新发现灾情，请处理");
     }
 
     private void OnChangeJizhangView(List<string> bindingZys)

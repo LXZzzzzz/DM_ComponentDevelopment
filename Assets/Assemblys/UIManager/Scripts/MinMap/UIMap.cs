@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
+using Enums;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
+using ToolsLibrary.PathPart;
+using ToolsLibrary.ProgrammePart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,7 +15,8 @@ public enum OperatorState
 {
     Normal,
     CreatAndEditor,
-    PlanningPath
+    PlanningPath,
+    DqNormal
 }
 
 public class UIMap : BasePanel, IPointerClickHandler
@@ -48,12 +52,17 @@ public class UIMap : BasePanel, IPointerClickHandler
         markPointPrefab = transform.Find("prefabs/markPoint").gameObject;
         TempIcon = transform.Find("maxMap/TempIcon").GetComponent<RectTransform>();
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
-        GetControl<Toggle>("Tog_PeculiarSetting").gameObject.SetActive(MyDataInfo.MyLevel == -1);
-        GetControl<Toggle>("Tog_PeculiarSetting").onValueChanged.AddListener(OnSwitchMode);
         GetControl<Button>("Btn_CreatFirePoint").onClick.AddListener(() => OnOpenCreatZaiqu(1));
         GetControl<Button>("Btn_CreatDisaster").onClick.AddListener(() => OnOpenCreatZaiqu(2));
         GetControl<Button>("Btn_ChangeTQ").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 1));
         GetControl<Button>("Btn_Malfunction").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 2));
+        GetControl<Button>("Btn_Zqxx").onClick.AddListener(OnClickZqxx);
+        GetControl<Button>("Btn_Hxsb").onClick.AddListener(OnClickHxsb);
+        GetControl<Button>("Btn_Sqrwzx").onClick.AddListener(OnClickSqrwzx);
+        GetControl<Button>("Btn_Rwghwc").onClick.AddListener(OnClickRwghwc);
+        GetControl<Button>("Btn_Export").onClick.AddListener(() => OnImportAndExportData(false));
+        GetControl<Button>("Btn_Import").onClick.AddListener(() => OnImportAndExportData(true));
+        GetControl<Button>("Btn_Set").onClick.AddListener(OnSetData);
 
         routeDecorateGo = transform.Find("maxMap/objects/routeDecorate").gameObject;
         startPoint = transform.Find("maxMap/objects/routeDecorate/startPoint").GetComponent<RectTransform>();
@@ -90,6 +99,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         localYAxis = middlePoint.transform.up;
 
         GetAllZaiquTemplate();
+        GetControl<Button>("Btn_Zqxx").gameObject.SetActive(MyDataInfo.MyLevel == 1);
     }
 
     private void GetAllZaiquTemplate()
@@ -162,6 +172,9 @@ public class UIMap : BasePanel, IPointerClickHandler
             case 2:
                 SwitchMapLogic(OperatorState.PlanningPath);
                 break;
+            case 3:
+                SwitchMapLogic(OperatorState.DqNormal);
+                break;
         }
     }
 
@@ -184,6 +197,9 @@ public class UIMap : BasePanel, IPointerClickHandler
             case OperatorState.CreatAndEditor:
                 if (isCreat) mapLogics.Add(OperatorState.CreatAndEditor, new MapOperate_CreatAndEditor(this));
                 break;
+            case OperatorState.DqNormal:
+                if (isCreat) mapLogics.Add(OperatorState.DqNormal, new MapOperate_DqNormal(this));
+                break;
         }
 
         mapLogics[targetState].setCanvanceSize(uiCameraSize);
@@ -201,20 +217,9 @@ public class UIMap : BasePanel, IPointerClickHandler
         // UIManager.Instance.GetUIPanel<UIAttributeView>(UIName.UIAttributeView).gameObject.SetActive(isShowMap);
     }
 
-    private void OnSwitchMode(bool isCreat)
-    {
-        if (isCreat)
-        {
-            //将所有客户端都切换为创建模式
-        }
-        else
-        {
-            //将所有客户端都切换回自己的模式
-        }
-    }
-
     private void OnOpenCreatZaiqu(int type)
     {
+        SwitchMapLogic(OperatorState.CreatAndEditor);
         for (int i = 0; i < zaiquTemplates.Count; i++)
         {
             switch (type)
@@ -224,6 +229,7 @@ public class UIMap : BasePanel, IPointerClickHandler
                     if (zaiquTemplates[i].ZiYuanType == ZiYuanType.SourceOfAFire)
                     {
                         EventManager.Instance.EventTrigger<object>(Enums.EventType.TransferEditingInfo.ToString(), zaiquTemplates[i].BobjectId);
+                        return;
                     }
 
                     break;
@@ -232,11 +238,16 @@ public class UIMap : BasePanel, IPointerClickHandler
                     if (zaiquTemplates[i].ZiYuanType == ZiYuanType.DisasterArea)
                     {
                         EventManager.Instance.EventTrigger<object>(Enums.EventType.TransferEditingInfo.ToString(), zaiquTemplates[i].BobjectId);
+
+                        return;
                     }
 
                     break;
             }
         }
+
+        SwitchMapLogic(OperatorState.DqNormal);
+        UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, new ConfirmatonInfo() { showStrInfo = "选择的灾情类型该地图不存在", type = showType.tipView });
     }
 
 
@@ -294,6 +305,14 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     private void Update()
     {
+        GetControl<Button>("Btn_PeculiarSetting").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState >= GameState.GameStart);
+        GetControl<Button>("Btn_Hxsb").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.ReleaseProgramme);
+        GetControl<Button>("Btn_Sqrwzx").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.AgreeAirLine);
+        GetControl<Button>("Btn_Rwghwc").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
+        GetControl<Button>("Btn_Export").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
+        GetControl<Button>("Btn_Import").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
+        GetControl<Button>("Btn_Set").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
+
         currentMapLogic?.OnUpdate();
         routeDecorateGo.transform.SetAsLastSibling();
         if (Input.GetKeyDown(KeyCode.M))
@@ -339,6 +358,76 @@ public class UIMap : BasePanel, IPointerClickHandler
             if (iconCell.Value is AirIconCell) continue;
             iconCell.Value.gameObject.SetActive(showZys.Find(x => string.Equals(x, iconCell.Key)) != null);
         }
+    }
+
+    private void OnClickZqxx()
+    {
+        EventManager.Instance.EventTrigger(EventType.ShowMisDescription.ToString());
+    }
+
+    private void OnClickHxsb()
+    {
+        UIManager.Instance.ShowPanel<UIAirLineInfoShow>(UIName.UIAirLineInfoShow, null);
+    }
+
+    private void OnClickSqrwzx()
+    {
+        ConfirmatonInfo infoa = new ConfirmatonInfo
+        {
+            type = showType.secondConfirm, showStrInfo = "是否申请任务执行?",
+            sureCallBack = (a) => { EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendAskForTaskExecute, ""); }
+        };
+        UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
+    }
+
+    private void OnClickRwghwc()
+    {
+        // UIManager.Instance.ShowPanel<>();
+
+        if (MyDataInfo.gameState == GameState.AgreeTaskExecute)
+        {
+            ConfirmatonInfo infoa = new ConfirmatonInfo
+            {
+                type = showType.secondConfirm, showStrInfo = "是否确认任务规划完成?", sureCallBack = (a) =>
+                {
+                    //这里发出消息，我完成了任务规划
+                    var myEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BeLongToCommanderId, MyDataInfo.leadId));
+                    if (myEquip == null)
+                    {
+                        Debug.LogError("身份错了，找不到我的飞机");
+                        return;
+                    }
+
+                    EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTaskPlanningCompleted, myEquip.BObjectId);
+                }
+            };
+            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
+            return;
+        }
+
+        SwitchMapLogic(OperatorState.DqNormal);
+    }
+
+    private void OnImportAndExportData(bool isEnter)
+    {
+        if (isEnter)
+        {
+            //导入逻辑
+            string data = FileOperator.LoadData_Txt(Application.dataPath + "/MapLib/Scheme");
+
+            SwitchMapLogic(OperatorState.PlanningPath);
+            EventManager.Instance.EventTrigger(EventType.LoadPathPlanningData.ToString(), data);
+        }
+        else
+        {
+            //导出逻辑
+            FileOperator.SaveAsData_Txt(PathPointManager.Instance.PackedData());
+        }
+    }
+
+    private void OnSetData()
+    {
+        SwitchMapLogic(OperatorState.PlanningPath);
     }
 
     private Vector3 localYAxis;

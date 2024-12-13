@@ -27,6 +27,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIChangePointDataInfo UIChangePointDataInfo;
     public UIPathPointsShow UIPathPointsShow;
     public UIChangeZyData UIChangeZyData;
+    public UIAirLineInfoShow UIAirLineInfoShow;
 
     private UIItem_IconShow itemIcon;
 
@@ -101,6 +102,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIChangePointDataInfo = transform.Find("UiPrefab/UIChangePointDataInfo").gameObject.GetComponent<UIChangePointDataInfo>();
         UIPathPointsShow = transform.Find("UiPrefab/UIPathPointsShow").gameObject.GetComponent<UIPathPointsShow>();
         UIChangeZyData = transform.Find("UiPrefab/UIChangeZyData").gameObject.GetComponent<UIChangeZyData>();
+        UIAirLineInfoShow = transform.Find("UiPrefab/UIAirLineInfoShow").gameObject.GetComponent<UIAirLineInfoShow>();
 
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();
@@ -135,9 +137,6 @@ public class UIManagerMain : ScriptManager, IMesRec
             case "BarChart":
                 UIManager.Instance.ShowPanel<UIBarChartController>(UIName.UIBarChart, dataInfo);
                 break;
-            case "Confirmation":
-                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, dataInfo);
-                break;
             case "MinMap":
                 UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, dataInfo);
                 break;
@@ -161,6 +160,9 @@ public class UIManagerMain : ScriptManager, IMesRec
                 break;
             case "ChangeZyData":
                 UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, dataInfo);
+                break;
+            case "AirLineInfoShow":
+                UIManager.Instance.ShowPanel<UIAirLineInfoShow>(UIName.UIAirLineInfoShow, dataInfo);
                 break;
             default:
                 break;

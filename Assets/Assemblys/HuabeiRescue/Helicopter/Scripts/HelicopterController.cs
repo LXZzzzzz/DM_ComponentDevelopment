@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using EventType = Enums.EventType;
 
-public partial class HelicopterController : EquipBase, IWatersOperation, IGroundReady, ITakeOffAndLand, IGoodsOperation, IRescuePersonnelOperation, ISupply,DqChangePart
+public partial class HelicopterController : EquipBase, IWatersOperation, IGroundReady, ITakeOffAndLand, IGoodsOperation, IRescuePersonnelOperation, ISupply, IDqChangePart
 {
     private bool isWaitArrive;
     public HelicopterInfo myAttributeInfo;
