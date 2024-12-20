@@ -21,6 +21,9 @@ public class ZiYuanIconCell : IconCellBase
     private RectTransform comsParentRect;
     private List<Transform> currentBelongToInfos;
     private Transform tipShowPart;
+    private RectTransform meRect;
+    private Func<Vector3, Vector2> worldPosMapPosFunc;
+    private Text nameTxt;
 
     // private GameObject chooseImg;
 
@@ -35,18 +38,19 @@ public class ZiYuanIconCell : IconCellBase
     public ZiYuanBase ziYuanItem => _ziYuanItem;
 
 
-    public void Init(ZiYuanBase zyObj,UnityAction<string, PointerEventData.InputButton> cb)
+    public void Init(ZiYuanBase zyObj, UnityAction<string, PointerEventData.InputButton> cb, Func<Vector3, Vector2> worldPosMapPosFunc)
     {
         base.Init(zyObj.BobjectId, cb);
+        this.worldPosMapPosFunc = worldPosMapPosFunc;
         zyTypePart = transform.Find("MainPart/zyTypePart");
         tipShowPart = transform.Find("MainPart/TipShowPart");
 
         _ziYuanItem = zyObj;
         if (_ziYuanItem == null) return;
         changeIcon(_ziYuanItem.ZiYuanType);
-        
+
         ChoosePart = transform.Find("MainPart/belongToPart");
-        transform.Find("MainPart/zyName").GetComponent<Text>().text = ziYuanItem.ziYuanName;
+        nameTxt = transform.Find("MainPart/zyName").GetComponent<Text>();
         for (int i = 0; i < ChoosePart.childCount; i++)
         {
             if (i == 1 || i == 3) continue;
@@ -57,8 +61,9 @@ public class ZiYuanIconCell : IconCellBase
         comsParent = transform.Find("MainPart/BelongtoShowPart");
         comsParentRect = comsParent.GetComponent<RectTransform>();
         currentBelongToInfos = new List<Transform>();
+        meRect = GetComponent<RectTransform>();
     }
-    
+
     private void Start()
     {
         // return;
@@ -253,6 +258,9 @@ public class ZiYuanIconCell : IconCellBase
                 {
                     ChoosePart.GetChild(1).GetComponent<Image>().color = ziYuanItem.isChooseMe ? Color.white : color;
                 }
+
+                meRect.GetComponent<RectTransform>().anchoredPosition = worldPosMapPosFunc(ziYuanItem.transform.position);
+                nameTxt.text = ziYuanItem.ziYuanName;
             }
 
             AirPortShowLogic();
@@ -300,6 +308,7 @@ public class ZiYuanIconCell : IconCellBase
     #region 机场相关
 
     private bool isUsePageTurning = false;
+    private List<AirPortEquipIconCell> airPortEquipIcons;
 
     private void AirPortShowLogic()
     {
@@ -323,10 +332,13 @@ public class ZiYuanIconCell : IconCellBase
             else
             {
                 //排列逻辑
-                for (int i = 0; i < equipParent.childCount; i++)
+                if (airPortEquipIcons == null) airPortEquipIcons = new List<AirPortEquipIconCell>();
+                for (int i = 0; i < airPortEquipIcons.Count; i++)
                 {
-                    Destroy(equipParent.GetChild(i).gameObject);
+                    Destroy(airPortEquipIcons[i].gameObject);
                 }
+
+                airPortEquipIcons.Clear();
 
                 for (int i = 0; i < itemInfo.Count; i++)
                 {
@@ -334,12 +346,22 @@ public class ZiYuanIconCell : IconCellBase
                     var item = MyDataInfo.sceneAllEquips.Find(a => string.Equals(a.BObjectId, itemInfo[i]));
                     itemCell.Init(item);
                     itemCell.gameObject.SetActive(true);
+                    airPortEquipIcons.Add(itemCell);
                 }
             }
         }
 
         airPortMarkView.SetActive(itemInfo.Count != 0);
         comsParentRect.anchoredPosition = new Vector2(0, itemInfo.Count != 0 ? -26 : 26);
+        refreshIconShow();
+    }
+
+    private void refreshIconShow()
+    {
+        for (int i = 0; i < airPortEquipIcons.Count; i++)
+        {
+            airPortEquipIcons[i].gameObject.SetActive(airPortEquipIcons[i].eb.gameObject.activeSelf);
+        }
     }
 
     private void pageTurning(bool isNext)

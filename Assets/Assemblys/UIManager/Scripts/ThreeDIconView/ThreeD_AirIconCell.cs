@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class ThreeD_AirIconCell : DMonoBehaviour
 {
-    private EquipBase equipGo;
+    private EquipBase _equipGo;
     private Slider skillProgressShow;
     private Text skillName;
     private Transform belongtoPart;
@@ -17,9 +17,11 @@ public class ThreeD_AirIconCell : DMonoBehaviour
     private GameObject airPort;
     private Vector3 initialScale = Vector3.zero;
 
+    public EquipBase equipGo => _equipGo;
+
     public void Init(EquipBase equipGo)
     {
-        this.equipGo = equipGo;
+        this._equipGo = equipGo;
         transform.Find("Root/mainPart/airType").GetComponent<Image>().sprite = equipGo.EquipIcon;
         transform.Find("Root/mainPart/equipName").GetComponent<Text>().text = equipGo.name;
         skillName = transform.Find("Root/skillBg/skillName").GetComponent<Text>();
@@ -35,9 +37,9 @@ public class ThreeD_AirIconCell : DMonoBehaviour
 
     private void Update()
     {
-        if (equipGo == null) return;
+        if (_equipGo == null) return;
 
-        selectChange(equipGo.isChooseMe);
+        selectChange(_equipGo.isChooseMe);
         changeBelongtoShow();
         showSkillState();
         showAllMassInfo();
@@ -54,7 +56,7 @@ public class ThreeD_AirIconCell : DMonoBehaviour
     {
         if (isLastSelect == isSelect) return;
         isLastSelect = isSelect;
-        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equipGo.BeLongToCommanderId));
+        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, _equipGo.BeLongToCommanderId));
         belongtoPart.GetChild(0).GetComponent<Image>().color = isSelect ? comData.ChooseColor : comData.MyColor;
         belongtoPart.GetChild(1).GetComponent<Image>().color = isSelect ? Color.white : comData.MyColor;
     }
@@ -65,10 +67,10 @@ public class ThreeD_AirIconCell : DMonoBehaviour
     {
         if (true)
         {
-            if (equipGo.BeLongToCommanderId != belongtoCom)
+            if (_equipGo.BeLongToCommanderId != belongtoCom)
             {
-                belongtoCom = equipGo.BeLongToCommanderId;
-                var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equipGo.BeLongToCommanderId));
+                belongtoCom = _equipGo.BeLongToCommanderId;
+                var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, _equipGo.BeLongToCommanderId));
                 belongtoPart.GetChild(0).GetComponent<Image>().color = comData.MyColor;
                 belongtoPart.GetChild(1).GetComponent<Image>().color = comData.MyColor;
                 belongtoPart.GetChild(2).GetComponent<Image>().color = comData.IconBgColor;
@@ -80,7 +82,7 @@ public class ThreeD_AirIconCell : DMonoBehaviour
 
     private void showSkillState()
     {
-        if (equipGo.currentSkill == SkillType.None)
+        if (_equipGo.currentSkill == SkillType.None)
         {
             if (skillName.transform.parent.gameObject.activeSelf) skillName.transform.parent.gameObject.SetActive(false);
             if (skillProgressShow != null && skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(false);
@@ -90,7 +92,7 @@ public class ThreeD_AirIconCell : DMonoBehaviour
         if (!skillName.transform.parent.gameObject.activeSelf) skillName.transform.parent.gameObject.SetActive(true);
         if (skillProgressShow != null && !skillProgressShow.gameObject.activeSelf) skillProgressShow.gameObject.SetActive(true);
 
-        switch (equipGo.currentSkill)
+        switch (_equipGo.currentSkill)
         {
             case SkillType.GroundReady:
                 skillName.text = "正在起飞前准备...";
@@ -133,12 +135,12 @@ public class ThreeD_AirIconCell : DMonoBehaviour
                 break;
         }
 
-        skillProgressShow.value = equipGo.skillProgress;
+        skillProgressShow.value = _equipGo.skillProgress;
     }
 
     private void showAllMassInfo()
     {
-        equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
+        _equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
         this.currentOil.value = currentOil / totalOil;
         // float aPartOil = totalOil / this.currentOil.childCount;
         // for (int i = 0; i < this.currentOil.childCount; i++)
@@ -154,8 +156,8 @@ public class ThreeD_AirIconCell : DMonoBehaviour
 
     private void controlView()
     {
-        Vector2 screenPoint = Camera.main.WorldToScreenPoint(equipGo.transform.position + equipGo.transform.up * 3);
-        bool isShow = Vector3.Angle(Camera.main.transform.forward, Vector3.Normalize(equipGo.transform.position - Camera.main.transform.position)) < 60;
+        Vector2 screenPoint = Camera.main.WorldToScreenPoint(_equipGo.transform.position + _equipGo.transform.up * 3);
+        bool isShow = Vector3.Angle(Camera.main.transform.forward, Vector3.Normalize(_equipGo.transform.position - Camera.main.transform.position)) < 60;
         transform.GetChild(0).gameObject.SetActive(isShow);
 
         Vector2 pointUGUIPos = new Vector2();
@@ -164,7 +166,7 @@ public class ThreeD_AirIconCell : DMonoBehaviour
         return;
         if (Camera.main != null && initialScale != Vector3.zero)
         {
-            float distance = Vector3.Distance(equipGo.transform.position, Camera.main.transform.position);
+            float distance = Vector3.Distance(_equipGo.transform.position, Camera.main.transform.position);
             if (distance > 1000)
             {
                 float scaleFactor = distance / 1000;

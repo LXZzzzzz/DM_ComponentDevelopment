@@ -177,4 +177,14 @@ namespace ToolsLibrary.EquipPart
     {
         public float goodsNum; //物资量
     }
+
+
+    public abstract class ShowViewInfoBase
+    {
+    }
+
+    public class ShowDisasterSituationInfo
+    {
+        public string disInfo;
+    }
 }

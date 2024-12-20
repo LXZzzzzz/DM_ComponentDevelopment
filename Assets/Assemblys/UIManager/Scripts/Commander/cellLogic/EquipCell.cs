@@ -10,8 +10,8 @@ using EventType = Enums.EventType;
 
 public class EquipCell : DMonoBehaviour
 {
-    private Text showName, equipState;
-    public GameObject zongPart, qianPart, otherPart;
+    private Text showName;
+    public GameObject daoPart, zongPart, qianPart;
     public Dropdown changeEnable, changeJizu;
     public Button zyfp, rwfp; //资源分配和任务分配按钮
     private EquipBase _equip;
@@ -23,13 +23,14 @@ public class EquipCell : DMonoBehaviour
     public string equipObjectId => _equip.BObjectId;
     public string equipBeUseCommander => _equip.BeLongToCommanderId;
 
+    public bool equipGoIsShow => _equip.gameObject.activeSelf;
+
     public void Init(int myLevel, EquipBase equip, Dictionary<string, string> allCommanderInfos, UnityAction<AEquipData> changeCb)
     {
+        daoPart.SetActive(myLevel == -1);
         zongPart.SetActive(myLevel == 1);
         qianPart.SetActive(myLevel == 2);
-        otherPart.SetActive(myLevel != 1 && myLevel != 2);
         showName = GetComponentInChildren<Text>(true);
-        equipState = otherPart.GetComponentInChildren<Text>(true);
         chooseImg = transform.Find("ChooseImg").gameObject;
         transform.Find("btn_track").GetComponent<Button>().onClick.AddListener(onTrack);
         changeCallBack = changeCb;
@@ -60,7 +61,7 @@ public class EquipCell : DMonoBehaviour
         // }
 
         checkTimer = Time.time;
-        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.CameraControl.ToString(), 1, _equip.transform));
+        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), equipObjectId));
     }
 
     private void Update()
@@ -68,8 +69,9 @@ public class EquipCell : DMonoBehaviour
         if (Time.time > checkTimer)
         {
             checkTimer = Time.time + 1 / 25f;
-            chooseImg.SetActive(_equip.isChooseMe);
-            changeEnable.interactable = (int)MyDataInfo.gameState < 1;
+            if (_equip != null)
+                chooseImg.SetActive(_equip.isChooseMe);
+            changeEnable.interactable = changeJizu.interactable = (int)MyDataInfo.gameState < (int)GameState.ReleaseProgramme;
             showEquipState();
         }
     }
@@ -88,49 +90,45 @@ public class EquipCell : DMonoBehaviour
         }
     }
 
+    public void RefreshJizu()
+    {
+        changeJizu.options.Clear();
+        for (int i = 0; i < MyDataInfo.BeUsedJizus.Count; i++)
+        {
+            changeJizu.options.Add(new Dropdown.OptionData(MyDataInfo.BeUsedJizus[i]));
+        }
+    }
+
     private void showEquipState()
     {
-        switch (_equip.currentSkill)
+        if (_equip.isCrash)
         {
-            case SkillType.GroundReady:
-                equipState.text = "起飞前准备";
+            for (int i = 0; i < daoPart.transform.childCount; i++)
+            {
+                daoPart.transform.GetChild(i).gameObject.SetActive(i == 2);
+            }
+
+            return;
+        }
+
+        int showIndex = 0;
+        switch (_equip.GetFlyState())
+        {
+            case 0:
+            case 1:
+                showIndex = 3;
                 break;
-            case SkillType.BePutInStorage:
-                equipState.text = "入库";
+            case 2:
+                showIndex = 1;
                 break;
-            case SkillType.TakeOff:
-                equipState.text = "起飞";
+            case 3:
+                showIndex = 0;
                 break;
-            case SkillType.Landing:
-                equipState.text = "降落";
-                break;
-            case SkillType.Supply:
-                equipState.text = "补给";
-                break;
-            case SkillType.WaterIntaking:
-                equipState.text = "取水";
-                break;
-            case SkillType.WaterPour:
-                equipState.text = "投水";
-                break;
-            case SkillType.LadeGoods:
-                equipState.text = "装载物资";
-                break;
-            case SkillType.UnLadeGoods:
-                equipState.text = "卸载物资";
-                break;
-            case SkillType.AirdropGoods:
-                equipState.text = "空投物资";
-                break;
-            case SkillType.Manned:
-                equipState.text = "装载人员";
-                break;
-            case SkillType.PlacementOfPersonnel:
-                equipState.text = "安置人员";
-                break;
-            case SkillType.CableDescentRescue:
-                equipState.text = "索降救援";
-                break;
+        }
+
+        for (int i = 0; i < daoPart.transform.childCount; i++)
+        {
+            daoPart.transform.GetChild(i).gameObject.SetActive(i == showIndex);
         }
     }
 

@@ -74,6 +74,7 @@ public class UICommanderView : BasePanel
         EventManager.Instance.AddEventListener<AEquipData>(EventType.InitEquipData.ToString(), OnInitEquipData);
         // EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);//修改权限后，更新页面
         EventManager.Instance.AddEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
+        EventManager.Instance.AddEventListener(EventType.changeJizuShow.ToString(), OnChangeJizu);
     }
 
     public override void HideMe()
@@ -87,6 +88,7 @@ public class UICommanderView : BasePanel
         EventManager.Instance.RemoveEventListener<AEquipData>(EventType.InitEquipData.ToString(), OnInitEquipData);
         // EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
         EventManager.Instance.RemoveEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
+        EventManager.Instance.RemoveEventListener(EventType.changeJizuShow.ToString(), OnChangeJizu);
     }
 
     private void showView()
@@ -125,6 +127,11 @@ public class UICommanderView : BasePanel
         if (MyDataInfo.gameStartTime > 0 && MyDataInfo.gameStartTime < 1)
             startTime.text = "开始时间 " + DateTime.Now.ToString("HH:mm:ss");
         currentTime.text = "当前时间 " + DateTime.Now.ToString("HH:mm:ss");
+
+        for (int i = 0; i < allEquipCells.Count; i++)
+        {
+            allEquipCells[i].gameObject.SetActive(allEquipCells[i].equipGoIsShow);
+        }
     }
 
     private void retractOrUnfold(bool isRetract, int type)
@@ -248,6 +255,14 @@ public class UICommanderView : BasePanel
         allTaskCells.ForEach(x =>
             x.gameObject.SetActive(showZys.Find(y => string.Equals(x.myEntityId, y)) != null)
         );
+    }
+
+    private void OnChangeJizu()
+    {
+        for (int i = 0; i < allEquipCells.Count; i++)
+        {
+            allEquipCells[i].RefreshJizu();
+        }
     }
 
     private void OnChangeEquipData(AEquipData edata)

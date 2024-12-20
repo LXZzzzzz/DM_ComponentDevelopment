@@ -62,7 +62,19 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_Rwghwc").onClick.AddListener(OnClickRwghwc);
         GetControl<Button>("Btn_Export").onClick.AddListener(() => OnImportAndExportData(false));
         GetControl<Button>("Btn_Import").onClick.AddListener(() => OnImportAndExportData(true));
+        GetControl<Button>("Btn_ReturnBack").onClick.AddListener(() => OnAskForReturn(2));
+        GetControl<Button>("Btn_ReturnRepair").onClick.AddListener(() => OnAskForReturn(1));
         GetControl<Button>("Btn_Set").onClick.AddListener(OnSetData);
+        GetControl<Button>("Btn_TaskBg").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 3));
+        GetControl<Button>("Btn_CompleteBgSet").onClick.AddListener(
+            () =>
+            {
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendCompleteTaskBgSet, "");
+                EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "已完成任务设置，可以开始训练");
+            });
+        GetControl<Button>("Btn_GroundSupport").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 4));
+        GetControl<Button>("Btn_EquipsAndPerson").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 5));
+        GetControl<Button>("Btn_GroundDisaster").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 6));
 
         routeDecorateGo = transform.Find("maxMap/objects/routeDecorate").gameObject;
         startPoint = transform.Find("maxMap/objects/routeDecorate/startPoint").GetComponent<RectTransform>();
@@ -305,13 +317,17 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     private void Update()
     {
+        GetControl<Button>("Btn_TaskBgSetting").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState == GameState.None);
+        GetControl<Button>("Btn_CompleteBgSet").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState == GameState.None);
         GetControl<Button>("Btn_PeculiarSetting").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState >= GameState.GameStart);
-        GetControl<Button>("Btn_Hxsb").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.ReleaseProgramme);
-        GetControl<Button>("Btn_Sqrwzx").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.AgreeAirLine);
+        GetControl<Button>("Btn_Hxsb").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet);
+        GetControl<Button>("Btn_Sqrwzx").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
         GetControl<Button>("Btn_Rwghwc").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
         GetControl<Button>("Btn_Export").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_Import").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
         GetControl<Button>("Btn_Set").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
+        GetControl<Button>("Btn_ReturnBack").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
+        GetControl<Button>("Btn_ReturnRepair").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
 
         currentMapLogic?.OnUpdate();
         routeDecorateGo.transform.SetAsLastSibling();
@@ -399,12 +415,14 @@ public class UIMap : BasePanel, IPointerClickHandler
                     }
 
                     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTaskPlanningCompleted, myEquip.BObjectId);
+                    EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendRwghData, PathPointManager.Instance.PackedData());
                 }
             };
             UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
             return;
         }
 
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendRwghData, PathPointManager.Instance.PackedData());
         SwitchMapLogic(OperatorState.DqNormal);
     }
 
@@ -423,6 +441,11 @@ public class UIMap : BasePanel, IPointerClickHandler
             //导出逻辑
             FileOperator.SaveAsData_Txt(PathPointManager.Instance.PackedData());
         }
+    }
+
+    private void OnAskForReturn(int state)
+    {
+        EventManager.Instance.EventTrigger(EventType.AskForReturnTrigger.ToString(), state);
     }
 
     private void OnSetData()

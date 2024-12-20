@@ -133,8 +133,7 @@ public class MapOperate_CreatAndEditor : MapOperateLogicBase
         var itemCell = Object.Instantiate(mainLogic.ziYuanIconPrefab, mainLogic.iconCellParent);
         itemCell.gameObject.SetActive(true);
         //传入这个组件的基本信息，和选择后的回调
-        itemCell.GetComponent<RectTransform>().anchoredPosition = worldPos2UiPos(zyObj.transform.position);
-        (itemCell as ZiYuanIconCell).Init(zyObj, mainLogic.OnChooseObj);
+        (itemCell as ZiYuanIconCell).Init(zyObj, mainLogic.OnChooseObj,worldPos2UiPos);
         mainLogic.allIconCells.Add(zyObj.BobjectId, itemCell);
     }
 

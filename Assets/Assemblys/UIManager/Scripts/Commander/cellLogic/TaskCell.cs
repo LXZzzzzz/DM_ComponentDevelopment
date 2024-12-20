@@ -22,12 +22,12 @@ public class TaskCell : DMonoBehaviour
         tp = ziYuan as ITaskProgress;
         isComplete = transform.Find("RootInfo/Tog_status").GetComponent<Toggle>();
         transform.Find("RootInfo/Text_zaiQuName").GetComponent<Text>().text = ziYuan.ziYuanName;
-        transform.Find("RootInfo/Text_taskIndex").GetComponentInChildren<Text>().text = taskIndex;
+        transform.Find("RootInfo/Text_taskIndex").GetComponentInChildren<Text>().text = taskIndex + ':';
         taskProgress = transform.Find("RootInfo/Text_taskName").GetComponentInChildren<Text>();
         slider_Progress = transform.Find("RootInfo/Slider_Progress").GetComponentInChildren<Slider>();
         // transform.Find("describe/Text_taskDescribe").GetComponentInChildren<Text>().text = ziYuan.ziYuanDescribe;
         GetComponentInChildren<Button>().onClick.AddListener(() =>
-            EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), tp.getAssociationAssemblyId()));
+            EventManager.Instance.EventTrigger(Enums.EventType.DqChooseGo.ToString(), tp.getAssociationAssemblyId()));
     }
 
     private void Update()

@@ -9,12 +9,14 @@ using UnityEngine.UI;
 
 public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler, IPointerEnterHandler
 {
-    private EquipBase eb;
+    private EquipBase _eb;
     private Image icon;
     private Text nameText;
     private Slider progress;
     private GameObject zbObj;
     private bool isInit = false;
+
+    public EquipBase eb => _eb;
 
     private void InitView()
     {
@@ -35,7 +37,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler, IPointe
     public void Init(EquipBase equip)
     {
         if (!isInit) InitView();
-        eb = equip;
+        _eb = equip;
         icon.sprite = equip.EquipIcon;
         var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, equip.BeLongToCommanderId));
         icon.color = comData.MyColor;
@@ -44,10 +46,10 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler, IPointe
 
     private void Update()
     {
-        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, eb.BeLongToCommanderId));
+        var comData = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, _eb.BeLongToCommanderId));
         icon.color = comData.MyColor;
 
-        if (eb == null || eb.currentSkill == SkillType.None)
+        if (_eb == null || _eb.currentSkill == SkillType.None)
         {
             if (progress == null)
             {
@@ -70,14 +72,14 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler, IPointe
             zbObj.SetActive(true);
         }
 
-        progress.value = eb.skillProgress;
+        progress.value = _eb.skillProgress;
     }
 
     private void openRightClickView()
     {
         if (MyDataInfo.gameState != GameState.GameStart) return;
-        if (eb?.currentSkill != SkillType.None) return;
-        if (!string.Equals(MyDataInfo.leadId, eb.BeLongToCommanderId)) return;
+        if (_eb?.currentSkill != SkillType.None) return;
+        if (!string.Equals(MyDataInfo.leadId, _eb.BeLongToCommanderId)) return;
 #if UNITY_EDITOR
 
         RightClickShowInfo info1 = new RightClickShowInfo()
@@ -92,7 +94,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler, IPointe
         RightClickShowInfo info = new RightClickShowInfo()
         {
             PointPos = GetComponent<RectTransform>().position,
-            ShowSkillDatas = eb.GetSkillsData(), OnTriggerCallBack = eb.OnSelectSkill
+            ShowSkillDatas = _eb.GetSkillsData(), OnTriggerCallBack = _eb.OnSelectSkill
         };
         UIManager.Instance.ShowPanel<UIRightClickMenuView>(UIName.UIRightClickMenuView, info);
     }
@@ -102,7 +104,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler, IPointe
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), eb.BObjectId);
+            EventManager.Instance.EventTrigger(Enums.EventType.ChooseEquip.ToString(), _eb.BObjectId);
         }
     }
 

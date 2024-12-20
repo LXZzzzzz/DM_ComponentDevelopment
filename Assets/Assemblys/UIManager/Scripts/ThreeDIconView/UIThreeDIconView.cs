@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ToolsLibrary;
@@ -10,9 +11,9 @@ public class UIThreeDIconView : BasePanel
 {
     private Transform parent;
     private ThreeD_AirIconCell tdic;
-    private Dictionary<string, ThreeD_AirIconCell> allIconCells;
-    private ThreeD_ZiYuanIconCell tzic;
+    private List<ThreeD_AirIconCell> allAirIconCells;
 
+    private ThreeD_ZiYuanIconCell tzic;
     private List<ThreeD_ZiYuanIconCell> allZiYuanCells;
 
     public override void Init()
@@ -27,33 +28,35 @@ public class UIThreeDIconView : BasePanel
         EventManager.Instance.AddEventListener<string>(Enums.EventType.DestoryEquip.ToString(), desAir);
         EventManager.Instance.AddEventListener<ZiYuanBase>(EventType.CreatAZiyuanIcon.ToString(), OnAddZyZq);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryZiyuanIcon.ToString(), OnRemoveZyZq);
-        
+
         parent = transform.Find("IconObjParent");
         tdic = transform.Find("IconPrefabs/ThreeD_AirIconCell").GetComponent<ThreeD_AirIconCell>();
         tzic = transform.Find("IconPrefabs/ThreeD_ZiYuanIconCell").GetComponent<ThreeD_ZiYuanIconCell>();
-        allIconCells = new Dictionary<string, ThreeD_AirIconCell>();
+        allAirIconCells = new List<ThreeD_AirIconCell>();
         allZiYuanCells = new List<ThreeD_ZiYuanIconCell>();
     }
+
     private void creatAirCell(EquipBase equip)
     {
         var itemIcon = Instantiate(tdic, parent);
         itemIcon.Init(equip);
         itemIcon.gameObject.SetActive(true);
-        allIconCells.Add(equip.BObjectId, itemIcon);
+        allAirIconCells.Add(itemIcon);
     }
 
     private void desAir(string id)
     {
-        foreach (var iconCell in allIconCells)
+        for (int i = 0; i < allAirIconCells.Count; i++)
         {
-            if (string.Equals(iconCell.Key, id))
+            if (string.Equals(allAirIconCells[i].equipGo.BObjectId, id))
             {
-                Destroy(iconCell.Value.gameObject);
-                allIconCells.Remove(id);
+                Destroy(allAirIconCells[i].gameObject);
+                allAirIconCells.RemoveAt(i);
                 break;
             }
         }
     }
+
     private void OnAddZyZq(ZiYuanBase zyObj)
     {
         var itemIcon = Instantiate(tzic, parent);
@@ -61,6 +64,7 @@ public class UIThreeDIconView : BasePanel
         itemIcon.gameObject.SetActive(true);
         allZiYuanCells.Add(itemIcon);
     }
+
     private void OnRemoveZyZq(string deleId)
     {
         for (int i = 0; i < allZiYuanCells.Count; i++)
@@ -72,6 +76,14 @@ public class UIThreeDIconView : BasePanel
                 allZiYuanCells.RemoveAt(i);
                 break;
             }
+        }
+    }
+
+    private void Update()
+    {
+        foreach (var t in allAirIconCells)
+        {
+            t.gameObject.SetActive(t.equipGo.gameObject.activeSelf);
         }
     }
 

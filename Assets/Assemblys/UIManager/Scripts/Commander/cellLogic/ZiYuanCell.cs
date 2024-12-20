@@ -16,6 +16,7 @@ public class ZiYuanCell : DMonoBehaviour
     private float checkTimer;
     private GameObject chooseImg;
     private UnityAction<AZiYuanData> changeDataCb;
+    private Text nameTxt;
 
 
     public string myEntityId => _ziYuan.BobjectId;
@@ -25,11 +26,11 @@ public class ZiYuanCell : DMonoBehaviour
         _ziYuan = ziyuan;
         changeDataCb = changeDataCallBack;
         chooseImg = transform.Find("ChooseImg").gameObject;
-        transform.Find("Text_name").GetComponent<Text>().text = _ziYuan.ziYuanName;
+        nameTxt = transform.Find("Text_name").GetComponent<Text>();
         transform.Find("Text_describe").GetComponent<Text>().text = _ziYuan.ziYuanDescribe;
         transform.Find("btn_changeData").GetComponent<Button>().onClick.AddListener(OnOpenChangeCom);
         transform.Find("btn_changeData").gameObject.SetActive(myLevel == 1 && (_ziYuan.ZiYuanType == ZiYuanType.Supply || _ziYuan.ZiYuanType == ZiYuanType.GoodsPoint));
-        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(Enums.EventType.ChooseZiyuan.ToString(), myEntityId));
+        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), myEntityId));
     }
 
     private void Update()
@@ -38,6 +39,7 @@ public class ZiYuanCell : DMonoBehaviour
         if (Time.time > checkTimer)
         {
             checkTimer = Time.time + 1 / 25f;
+            nameTxt.text = _ziYuan.ziYuanName;
             chooseImg.SetActive(_ziYuan.isChooseMe);
         }
     }

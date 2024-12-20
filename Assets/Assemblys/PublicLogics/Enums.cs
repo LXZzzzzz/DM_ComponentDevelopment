@@ -50,6 +50,8 @@ namespace Enums
         InitEquipData, //加载方案时初始化直升机数据
         ChangeJiZhangView, //机长端通知页面修改
         DqChooseGo, //选中某个对象
+        changeJizuShow, //更改机组可选信息
+        AskForReturnTrigger, //界面发送给管理器申请返回
     }
 
     public enum MessageID
@@ -78,6 +80,14 @@ namespace Enums
         SendTaskPlanningCompleted = 1023, //机长发送任务规划完成
         SendTurnBack = 1024, //发送立即返航指令
         SendChangeTaskPlanning = 1025, //可能要加 ：导教端修改了灾区数据后，前指要发送这个指令，告诉机长要根据最新灾情调整任务规划数据
+        SendTaskBgInfo = 1026, //导教端发送任务背景信息
+        SendZySetData = 1027, //导教端发送地面保障资源的修改数据
+        SendUseEquips = 1028, //导教端发送哪些直升机可用
+        SendUseJizus = 1029, //导教端发送哪些直升机可用
+        SendAskForReturn = 1030, //机长请求返航或返修
+        SendAgreeReturn = 1031, //前指发送请求反馈
+        SendCompleteTaskBgSet = 1032, //导教端发送完成任务背景设置
+        SendRwghData = 1033, //机长发送任务规划数据
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

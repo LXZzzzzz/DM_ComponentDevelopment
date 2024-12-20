@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Enums;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
@@ -8,6 +10,7 @@ using EventType = Enums.EventType;
 public partial class CommanderController
 {
     private object currentChooseGo;
+    private string[] tianqiInfo;
 
     public void Init()
     {
@@ -32,6 +35,8 @@ public partial class CommanderController
                 else itemObj.isDockingAtTheAirport = false;
             }
         }
+
+        tianqiInfo = new[] { "晴天", "多云", "阴有小雨", "风力2-3级", "大风5-6级", "大风7-8级", "雷雨", "中到大雨", "起雾" };
     }
 
     private void OnChooseAGo(string id)
@@ -55,12 +60,14 @@ public partial class CommanderController
         {
             itemEquip.isChooseMe = true;
             currentChooseGo = itemEquip;
+            OnCameraContral(1, itemEquip.transform);
             EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", itemEquip);
         }
         else if (itemZiyuan != null)
         {
             itemZiyuan.isChooseMe = true;
             currentChooseGo = itemZiyuan;
+            OnCameraContral(1, itemZiyuan.transform);
             EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", itemZiyuan);
         }
     }
@@ -74,12 +81,91 @@ public partial class CommanderController
         }
     }
 
+    public void OnSetZyInfo(string info)
+    {
+        var strs = info.Split('_');
+        var itemZy = sceneAllzy.Find(x => string.Equals(x.BobjectId, strs[0]));
+        itemZy.ziYuanName = strs[1];
+        itemZy.latAndLon = new Vector2(float.Parse(strs[2]), float.Parse(strs[3]));
+        var dataPos = LongLat2Pos(itemZy.latAndLon);
+        var posY = GetCurrentGroundHeight(dataPos);
+        itemZy.transform.position = new Vector3(dataPos.x, posY, dataPos.z);
+    }
+
+    public void OnSetEquipShow(string info)
+    {
+        var strs = info.Split('_');
+        List<string> infos = new List<string>();
+        for (int i = 0; i < strs.Length; i++)
+        {
+            infos.Add(strs[i]);
+        }
+
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            MyDataInfo.sceneAllEquips[i].gameObject.SetActive(infos.Contains(MyDataInfo.sceneAllEquips[i].BObjectId));
+        }
+    }
+
+    public void OnSetJizuInfo(string info)
+    {
+        var infos = info.Split('_');
+        MyDataInfo.BeUsedJizus = new List<string>();
+        for (int i = 0; i < infos.Length; i++)
+        {
+            if (string.IsNullOrEmpty(infos[i])) continue;
+            MyDataInfo.BeUsedJizus.Add(infos[i]);
+        }
+
+        //通知UI改一下界面
+        if (MyDataInfo.MyLevel == 1)
+            EventManager.Instance.EventTrigger(EventType.changeJizuShow.ToString());
+    }
+
+    public void OnAskForReturn(string info)
+    {
+        var data = info.Split('_');
+        string equipName = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data[0])).name;
+        switch (int.Parse(data[1]))
+        {
+            case 1:
+                EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"{equipName}申请返修，是否同意",
+                    () => { OnSendSkillInfo((int)MessageID.SendAgreeReturn, info); });
+                break;
+            case 2:
+                EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"{equipName}申请返航，是否同意",
+                    () => { OnSendSkillInfo((int)MessageID.SendAgreeReturn, info); });
+                break;
+        }
+    }
+
     public void OnChangeTianQi(int tqInfo)
     {
-        //收到天气信息
-        if (MyDataInfo.MyLevel == 2 && tqInfo > 0)
-        {
-            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "当前天气下雨，是否全部返航", () => { OnSendSkillInfo((int)MessageID.SendTurnBack, ""); });
-        }
+        if (MyDataInfo.MyLevel == 3)
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"当前天气：{tianqiInfo[tqInfo]}");
+    }
+
+    public void OnReceiveRwghwc(string param)
+    {
+        string equipName = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param)).name;
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"{equipName}任务规划完成");
+        if (!MyDataInfo.TaskPlanningCompletedPersons.Contains(param))
+            MyDataInfo.TaskPlanningCompletedPersons.Add(param);
+    }
+
+    public void OnShowRwghData(string param)
+    {
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 2);
+        EventManager.Instance.EventTrigger(EventType.LoadPathPlanningData.ToString(), param);
+        StartCoroutine(WaitAndPrint());
+    }
+
+    private IEnumerator WaitAndPrint()
+    {
+        // 等待1秒
+        yield return new WaitForSeconds(1f);
+
+
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
     }
 }

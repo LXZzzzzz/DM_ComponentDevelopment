@@ -46,7 +46,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         };
     }
 
-    private Vector2 CalcAndSetLonLat(Vector3 pos)
+    private Vector2 Pos2LonLat(Vector3 pos)
     {
         //基准点经纬度,基准经纬度默认Type=DMLonLatType.Normal，LonType=E,LatType=N
         Debug.LogError("移动调用" + pos);
@@ -64,6 +64,20 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         double lon = HarvenSin.GetLonByDis(mLon, pos.x, lat);
         Debug.LogError("Lon:" + (float)lon + "Lat:" + (float)lat);
         return new Vector2((float)lon, (float)lat);
+    }
+
+    private Vector3 LonLat2Pos(Vector2 lonLat)
+    {
+        if (mDMLonLat == null) return Vector2.zero;
+        var zeroLon = mDMLonLat.HGetField("Longitude");
+        var zeroLat = mDMLonLat.HGetField("Latitude");
+        double mLon = double.Parse(zeroLon.ToString()); //zeroLon.GetType() != typeof(double) ? 116.4 : (double)zeroLon;
+        double mLat = double.Parse(zeroLat.ToString()); //zeroLat.GetType() != typeof(double) ? 39.9 : (double)zeroLat;
+        int mScaleRate = (int)mDMLonLat.HGetField("ScaleRate");
+        Vector3 point = mDMLonLat.transform.position;
+        float vecX = (float)HarvenSin.DisLon(mLon, lonLat.x, mLat);
+        float vecZ = (float)HarvenSin.DisLat(mLat, lonLat.y);
+        return new Vector3(vecX / mScaleRate, 0, vecZ / mScaleRate) + point;
     }
 
     public override void EditorModeInitialized()
@@ -220,7 +234,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         //     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CursorShow", null);
 
         yield return 1;
-        _commanderController.Init(CalcAndSetLonLat);
+        _commanderController.Init(Pos2LonLat, LonLat2Pos);
         //大庆版本下的初始化，为了适应改变后的直升机创建模式
         _commanderController.Init();
         if (myLevel == 3)
@@ -401,13 +415,38 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendTaskPlanningCompleted:
                 //前指收到这个通知，存起来，如果每架飞机都收到，那就可以点击开始推演
-                if (!MyDataInfo.TaskPlanningCompletedPersons.Contains(param))
-                    MyDataInfo.TaskPlanningCompletedPersons.Add(param);
+                if (MyDataInfo.MyLevel == 2) _commanderController.OnReceiveRwghwc(param);
                 break;
             case MessageID.SendTurnBack:
                 //如果是机长，就让其控制直升机执行返回机场并入库操作
-                if (MyDataInfo.MyLevel == 3)
-                    _commanderController.OnGetTurnBack();
+                if (MyDataInfo.MyLevel == 3) _commanderController.OnReturnBack();
+                break;
+            case MessageID.SendTaskBgInfo:
+                _commanderController.Receive_SetTaskBg(param);
+                break;
+            case MessageID.SendCompleteTaskBgSet:
+                MyDataInfo.gameState = GameState.CompleteTaskBgSet;
+                _commanderController.Receive_CompleteBgSet();
+                break;
+            case MessageID.SendZySetData:
+                _commanderController.OnSetZyInfo(param);
+                break;
+            case MessageID.SendUseEquips:
+                //这里的数据是出动直升机信息，要让不出动的直升机在列表和地图不显示
+                _commanderController.OnSetEquipShow(param);
+                break;
+            case MessageID.SendUseJizus:
+                //这里的数据是可用机组信息，要让总指挥页面的下拉框修改一下
+                _commanderController.OnSetJizuInfo(param);
+                break;
+            case MessageID.SendAskForReturn:
+                if (MyDataInfo.MyLevel == 2) _commanderController.OnAskForReturn(param);
+                break;
+            case MessageID.SendAgreeReturn:
+                if (MyDataInfo.MyLevel == 3) _commanderController.OnReturnRepair(param);
+                break;
+            case MessageID.SendRwghData:
+                if (MyDataInfo.MyLevel == -1) _commanderController.OnShowRwghData(param);
                 break;
 
 

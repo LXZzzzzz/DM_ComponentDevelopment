@@ -346,6 +346,11 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         personType = this.personType;
     }
 
+    public override int GetFlyState()
+    {
+        return (int)myState;
+    }
+
     protected override void OnClose()
     {
         EventManager.Instance.EventTrigger(EventType.DestoryEquip.ToString(), BObjectId);

@@ -93,6 +93,8 @@ namespace ToolsLibrary.EquipPart
 
         public abstract void GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
 
+        public abstract int GetFlyState();
+
         public void MoveToTarget(Vector3 targetPos)
         {
             // if (currentSkill != SkillType.None) return;
@@ -153,6 +155,9 @@ namespace ToolsLibrary.EquipPart
 
         //触发返航
         void GoReturnBack();
+
+        //触发返修
+        void GoReturnRepair();
 
         //设置直升机状态
         void ChangeCurrentState(int state);

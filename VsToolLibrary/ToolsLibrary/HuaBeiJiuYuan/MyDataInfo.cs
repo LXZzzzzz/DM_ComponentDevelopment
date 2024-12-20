@@ -21,12 +21,16 @@ namespace ToolsLibrary
         public static float gameStartTime; //记录本局游戏开始时刻
         public static List<string> SkillsToBeConfirmed; //待确认技能列表
         public static List<string> TaskPlanningCompletedPersons; //记录完成了任务规划的机长
+        public static List<string> BeUsedJizus; //可用的机组信息
     }
 
     public enum GameState
     {
-        // 初始默认阶段(此时是总指挥创建方案阶段，其他端等着)
+        // 初始默认阶段(此时是导教端设置任务背景，其他端等着)
         None,
+
+        //导教端完成了任务背景设置（此时总指挥可以创建方案和查看灾情信息）
+        CompleteTaskBgSet,
 
         // 发布了方案（此时前线指挥可以进行资源分配了，总可以申请航线）
         ReleaseProgramme,

@@ -121,18 +121,23 @@ public class UITopMenuView : BasePanel
         {
             case -1:
                 ProgrammName.text = "导教端";
+                transform.Find("headNameBg").GetChild(0).gameObject.SetActive(true);
                 break;
             case 1:
-                ProgrammName.text = "总指挥端";
+                ProgrammName.text = "值班领导端";
+                transform.Find("headNameBg").GetChild(1).gameObject.SetActive(true);
                 break;
             case 2:
-                ProgrammName.text = "前线指挥端";
+                ProgrammName.text = "现场指挥端";
+                transform.Find("headNameBg").GetChild(2).gameObject.SetActive(true);
                 break;
             case 3:
                 ProgrammName.text = "机长端";
+                transform.Find("headNameBg").GetChild(3).gameObject.SetActive(true);
                 break;
             case 4:
                 ProgrammName.text = "态势端";
+                transform.Find("headNameBg").GetChild(4).gameObject.SetActive(true);
                 break;
         }
     }
@@ -145,6 +150,12 @@ public class UITopMenuView : BasePanel
     private void newBuild()
     {
         putAwayMenu();
+        if (MyDataInfo.gameState == GameState.None)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "收到任务背景后才可创建方案");
+            return;
+        }
+
         ConfirmatonInfo info = new ConfirmatonInfo()
         {
             type = showType.newScheme, sureCallBack = (a) =>
@@ -183,6 +194,12 @@ public class UITopMenuView : BasePanel
 
     private void release()
     {
+        if (MyDataInfo.gameState != GameState.AgreeAirLine)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "申报航线后才可发布方案");
+            return;
+        }
+
         if (ProgrammeDataManager.Instance.GetCurrentData == null)
         {
             ConfirmatonInfo infor = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "当前未创建方案无法发布" };
@@ -194,6 +211,7 @@ public class UITopMenuView : BasePanel
         string packedData = ProgrammeDataManager.Instance.PackedData();
 
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendProgramme, packedData);
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "方案已发布");
     }
 
     private void standAlone()
@@ -251,7 +269,7 @@ public class UITopMenuView : BasePanel
         //开始推演指令
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
-            bool isOut = ProgrammeDataManager.Instance.GetEquipDataById(MyDataInfo.sceneAllEquips[i].BObjectId).isSetOut == 1;
+            bool isOut = ProgrammeDataManager.Instance.GetEquipDataById(MyDataInfo.sceneAllEquips[i].BObjectId)?.isSetOut == 1;
             if (isOut && !MyDataInfo.TaskPlanningCompletedPersons.Contains(MyDataInfo.sceneAllEquips[i].BObjectId))
             {
                 ConfirmatonInfo ci = new ConfirmatonInfo() { showStrInfo = "需等到所有出动直升机都完成任务规划才能开始", type = showType.tipView };

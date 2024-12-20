@@ -21,11 +21,13 @@ public partial class CommanderController : DMonoBehaviour
     private List<string> showAllOperatorInfos;
     private List<ZiYuanBase> sceneAllzy;
     public int gameType;
-    private Func<Vector3, Vector2> CalculateLatLon;
+    private Func<Vector3, Vector2> Pos2LongLat;
+    private Func<Vector2, Vector3> LongLat2Pos;
     private GameObject clouds;
     private int zaiquIdNum;
     private GameObject cameraFllowGo;
     private List<ZiYuanBase> sceneAlltempzy;
+    private string zqxx;
 
     private bool isMe;
 
@@ -34,12 +36,13 @@ public partial class CommanderController : DMonoBehaviour
         clientOperatorInfos = new List<string>();
     }
 
-    public void Init(Func<Vector3, Vector2> callback)
+    public void Init(Func<Vector3, Vector2> callback1, Func<Vector2, Vector3> callback2)
     {
         sender.LogError("指挥端组件ID：" + main.BObjectId);
         isMe = true;
         zaiquIdNum = 1;
-        CalculateLatLon = callback;
+        Pos2LongLat = callback1;
+        LongLat2Pos = callback2;
         InitZiyuan();
         _pdfReport = new PDFReport();
         EventManager.Instance.AddEventListener<string>(EventType.ChooseEquip.ToString(), OnChangeCurrentEquip);
@@ -58,6 +61,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
         EventManager.Instance.AddEventListener(EventType.ShowMisDescription.ToString(), SendTaskSureMsg);
+        EventManager.Instance.AddEventListener<int>(EventType.AskForReturnTrigger.ToString(), OnAskForReturn);
     }
 
     public void Terminate()
@@ -78,6 +82,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
         EventManager.Instance.RemoveEventListener(EventType.ShowMisDescription.ToString(), SendTaskSureMsg);
+        EventManager.Instance.RemoveEventListener<int>(EventType.AskForReturnTrigger.ToString(), OnAskForReturn);
     }
 
     private void InitZiyuan()
@@ -104,7 +109,7 @@ public partial class CommanderController : DMonoBehaviour
                 if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
                 {
                     var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
-                    zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
+                    zyItem.latAndLon = Pos2LongLat(zyItem.transform.position);
                     EventManager.Instance.EventTrigger(EventType.CreatAZiyuanIcon.ToString(), zyItem);
                     sceneAllzy.Add(zyItem);
                     MyDataInfo.sceneAllZiYuan.Add(zyItem);
@@ -142,20 +147,30 @@ public partial class CommanderController : DMonoBehaviour
         //     sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
         // }
         //
+        // if (Input.GetKeyDown(KeyCode.I))
+        // {
+        //     (myEquip as IDqChangePart)?.GoReturnRepair();
+        // }
+        //
         // if (Input.GetKeyDown(KeyCode.L))
         // {
-        //     OnGetTurnBack();
+        //     (myEquip as IDqChangePart)?.GoReturnBack();
         // }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Debug.LogError(MyDataInfo.gameState);
-        }
+        //
+        // if (Input.GetKeyDown(KeyCode.P))
+        // {
+        //     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, "5");
+        // }
     }
 
     private void SendTaskSureMsg()
     {
-        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), misDescription);
+        if (string.IsNullOrEmpty(zqxx))
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(),"任务背景信息还未收到");
+            return;
+        }
+        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ChangeZyData", zqxx);
 
         // EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misDescription, () =>
         // {
@@ -314,7 +329,6 @@ public partial class CommanderController : DMonoBehaviour
             // EventManager.Instance.EventTrigger(EventType.InitZiYuanBeUsed.ToString(), itemZy);
         }
 
-        // 这里地图状态应该都是默认，这个阶段没有创建需求
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
         // EventManager.Instance.EventTrigger(EventType.ShowProgrammeName.ToString(), data.programmeName);
     }
@@ -496,12 +510,11 @@ public partial class CommanderController : DMonoBehaviour
         }
 
         var temporaryZaiqu = Instantiate(templateZaiqu, MyDataInfo.SceneGoParent);
-        temporaryZaiqu.transform.position = new Vector3(data.pos.x, data.pos.y, data.pos.z);
-        float posY = GetCurrentGroundHeight(temporaryZaiqu.transform);
-        var zaiQuPosition = temporaryZaiqu.transform.position;
-        zaiQuPosition = new Vector3(zaiQuPosition.x, posY, zaiQuPosition.z);
+        Vector3 dataPos = new Vector3(data.pos.x, data.pos.y, data.pos.z);
+        float posY = GetCurrentGroundHeight(dataPos);
+        Vector3 zaiQuPosition = new Vector3(dataPos.x, posY, dataPos.z);
         temporaryZaiqu.transform.position = zaiQuPosition;
-        temporaryZaiqu.latAndLon = CalculateLatLon(zaiQuPosition);
+        temporaryZaiqu.latAndLon = Pos2LongLat(zaiQuPosition);
         temporaryZaiqu.gameObject.SetActive(true);
 
         //这里可以使用多态，延迟初始化，这里暂时先这样写，功能完成后，进行优化
@@ -525,26 +538,19 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.EventTrigger(EventType.CreatAZiyuanIcon.ToString(), temporaryZaiqu);
         sceneAllzy.Add(temporaryZaiqu);
         MyDataInfo.sceneAllZiYuan.Add(temporaryZaiqu);
+        temporaryZaiqu.OnStart();
 
 
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
-        
-        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(),"有新发现灾情，请处理");
+
+        if (MyDataInfo.MyLevel != -1)
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "有新发现灾情，请处理");
     }
 
-    private void OnChangeJizhangView(List<string> bindingZys)
-    {
-        //如果是机长的话，要让机长页面上不属于自己的资源都不显示
-        if (MyDataInfo.MyLevel == 3)
-        {
-            EventManager.Instance.EventTrigger(EventType.ChangeJiZhangView.ToString(), bindingZys);
-        }
-    }
-
-    private float GetCurrentGroundHeight(Transform go)
+    private float GetCurrentGroundHeight(Vector3 go)
     {
         // 射线的起点是当前物体的位置
-        Ray ray = new Ray(go.position + Vector3.up * 10000, Vector3.down);
+        Ray ray = new Ray(go + Vector3.up * 10000, Vector3.down);
 
         // 存储射线碰撞信息的变量
         RaycastHit hit;

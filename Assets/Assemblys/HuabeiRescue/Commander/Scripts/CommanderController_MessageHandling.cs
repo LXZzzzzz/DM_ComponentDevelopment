@@ -31,8 +31,8 @@ public partial class CommanderController
         try
         {
             EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(),
-                $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
-            clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : CalculateLatLon(targetPos).ToString())}");
+                $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : Pos2LongLat(targetPos).ToString())}");
+            clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : Pos2LongLat(targetPos).ToString())}");
         }
         catch (Exception e)
         {
@@ -123,7 +123,7 @@ public partial class CommanderController
                 if (allBObjects[i].GetComponent<ZiYuanBase>() != null)
                 {
                     var zyItem = allBObjects[i].GetComponent<ZiYuanBase>();
-                    zyItem.latAndLon = CalculateLatLon(zyItem.transform.position);
+                    zyItem.latAndLon = Pos2LongLat(zyItem.transform.position);
                     sceneAllzy.Add(zyItem);
                 }
             }
@@ -327,7 +327,10 @@ public partial class CommanderController
                 item.currentBindingZy.Add(infos[i]);
         }
 
-        OnChangeJizhangView(item.currentBindingZy);
+        if (MyDataInfo.MyLevel == 3 && string.Equals(myEquip.BObjectId, item.BObjectId))
+        {
+            EventManager.Instance.EventTrigger(EventType.ChangeJiZhangView.ToString(), item.currentBindingZy);
+        }
     }
 
     public void Receive_ChangeEquipState(string data)
@@ -339,7 +342,24 @@ public partial class CommanderController
             var itemData = infos[i].Split(':');
             var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, itemData[0]));
             (item as IDqChangePart)?.ChangeCurrentState(int.Parse(itemData[1]));
+            if (MyDataInfo.MyLevel == 3 && string.Equals(myEquip.BObjectId, itemData[0]))
+                ShowMyEquipState(int.Parse(itemData[1]));
         }
+    }
+
+    public void Receive_SetTaskBg(string data)
+    {
+        var infos = data.Split('_');
+        if (MyDataInfo.MyLevel != -1)
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"已完成任务背景设置，训练即将开始。\n当前天气：{tianqiInfo[int.Parse(infos[0])]}");
+        zqxx = data;
+        misDescription = infos[2];
+    }
+
+    public void Receive_CompleteBgSet()
+    {
+        if (MyDataInfo.MyLevel == 1)
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务背景设置完成，请创建任务方案");
     }
 
     #endregion

@@ -23,6 +23,7 @@ public partial class HelicopterController
         BObjectId = id;
         stopAtAirPortId = airPortId;
         BeLongToCommanderId = ctrlId;
+        isAutoRunEnd = false;
     }
 
     public string GetStopAtAirPort()
@@ -52,31 +53,15 @@ public partial class HelicopterController
         runQueue.Enqueue(SkillType.BePutInStorage);
     }
 
+    public void GoReturnRepair()
+    {
+        isHaveReturnForRepair = true;
+        Debug.LogError("返修标记成功");
+    }
+
     public void ChangeCurrentState(int state)
     {
         CurrentState = state;
-        //这里要提示一个窗口，直升机故障，是否返航或返修
-        if (MyDataInfo.MyLevel == 3)
-        {
-            switch (state)
-            {
-                case 0: //正常情况
-                    break;
-                case 1: //返修
-                    //标记返修，在直升机执行完当前动作，再规划返修操作
-                    EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "直升机发生小故障，是否待执行完当前动作后返修？",
-                        () =>
-                        {
-                            isHaveReturnForRepair = true;
-                            Debug.LogError("需要返修");
-                        });
-                    break;
-                case 2:
-                    EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "直升机严重故障，将立刻返航！");
-                    GoReturnBack();
-                    break;
-            }
-        }
     }
 
     // 强制结束当前进度
@@ -96,8 +81,6 @@ public partial class HelicopterController
         runQueue.Enqueue(MessageID.MoveToTarget);
         runQueue.Enqueue(SkillType.Landing);
         runQueue.Enqueue(SkillType.BePutInStorage);
-        runQueue.Enqueue(SkillType.GroundReady);
-        runQueue.Enqueue(SkillType.TakeOff);
     }
 
     private void OnRunInstructionUpdate()
@@ -113,6 +96,7 @@ public partial class HelicopterController
                 if (runQueue != null && runQueue.Count > 0)
                 {
                     runQueue.Dequeue();
+                    if (runQueue.Count == 0) isStartAutoRun = false;
                     skillConfirmationStr = String.Empty;
                     return;
                 }
@@ -132,6 +116,8 @@ public partial class HelicopterController
         //如果直升机还没开始运行，就先起飞
         if (!isStartAutoRun)
         {
+            //⭐⭐这里判断这个飞机是否有未走的点，如果没有了，就return
+            if (PathPointManager.Instance.GetPointDataById(nextPointId) == null) return;
             //准备操作
             switch (myState)
             {

@@ -1,16 +1,23 @@
 using ToolsLibrary.EquipPart;
 using UiManager;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class UIChangeZyData : BasePanel
 {
     private Text title;
+    private RectTransform bgImage;
     private FireDataView _fireDataView;
     private DisasterDataView _disasterDataView;
     private ZYFPPartView _zyfpPartView;
     private TianQiSetView _tianQiSetView;
     private MalfunctionView _malfunctionView;
     private SupplyOrGoodsView _supplyOrGoodsView;
+    private TaskBgSettingView _taskBgSettingView;
+    private GroundSupportDataView _groundSupportDataView;
+    private EquipsAndPersonSetView _equipsAndPersonSetView;
+    private ShowTaskBgDataView _showTaskBgDataView;
+    private DisasterSituationView _disasterSituationView;
 
     private ChangeDataBase _currentView;
 
@@ -18,6 +25,7 @@ public class UIChangeZyData : BasePanel
     {
         base.Init();
         title = GetControl<Text>("title");
+        bgImage = transform.GetChild(0).GetComponent<RectTransform>();
         _fireDataView = new FireDataView();
         _fireDataView.Init(this);
         _disasterDataView = new DisasterDataView();
@@ -30,6 +38,16 @@ public class UIChangeZyData : BasePanel
         _malfunctionView.Init(this);
         _supplyOrGoodsView = new SupplyOrGoodsView();
         _supplyOrGoodsView.Init(this);
+        _taskBgSettingView = new TaskBgSettingView();
+        _taskBgSettingView.Init(this);
+        _groundSupportDataView = new GroundSupportDataView();
+        _groundSupportDataView.Init(this);
+        _equipsAndPersonSetView = new EquipsAndPersonSetView();
+        _equipsAndPersonSetView.Init(this);
+        _showTaskBgDataView = new ShowTaskBgDataView();
+        _showTaskBgDataView.Init(this);
+        _disasterSituationView = new DisasterSituationView();
+        _disasterSituationView.Init(this);
         GetControl<Button>("close").onClick.AddListener(() => Close(UIName.UIChangeZyData));
         GetControl<Button>("sure").onClick.AddListener(() =>
         {
@@ -75,6 +93,20 @@ public class UIChangeZyData : BasePanel
         {
             if ((int)userData == 1) _currentView = _tianQiSetView;
             if ((int)userData == 2) _currentView = _malfunctionView;
+            if ((int)userData == 3) _currentView = _taskBgSettingView;
+            if ((int)userData == 4) _currentView = _groundSupportDataView;
+            if ((int)userData == 5) _currentView = _equipsAndPersonSetView;
+            if ((int)userData == 6) _currentView = _groundSupportDataView;
+        }
+
+        if (userData is string)
+        {
+            _currentView = _showTaskBgDataView;
+        }
+
+        if (userData is ShowDisasterSituationInfo)
+        {
+            _currentView = _disasterSituationView;
         }
 
 
@@ -86,10 +118,23 @@ public class UIChangeZyData : BasePanel
         title.text = infoStr;
     }
 
+    public void ChangeViewSize(int type)
+    {
+        switch (type)
+        {
+            case 1:
+                bgImage.sizeDelta = new Vector2(650, 520);
+                break;
+            case 2:
+                bgImage.sizeDelta = new Vector2(442, 256 + 46);
+                break;
+        }
+    }
+
     public override void HideMe()
     {
         base.HideMe();
-        _currentView.OnHide();
+        _currentView?.OnHide();
         _currentView = null;
     }
 }
