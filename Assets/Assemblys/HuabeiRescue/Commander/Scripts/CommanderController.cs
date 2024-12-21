@@ -142,10 +142,10 @@ public partial class CommanderController : DMonoBehaviour
         //     EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
         // }
         //
-        // if (Input.GetKeyDown(KeyCode.O))
-        // {
-        //     sender.RunSend(SendType.MainToAll, MyDataInfo.leadId, (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
-        // }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            OnSendSkillInfo((int)MessageID.SendGameStart,((int)(MyDataInfo.gameStartTime * 1000)).ToString());
+        }
         //
         // if (Input.GetKeyDown(KeyCode.I))
         // {
@@ -161,15 +161,20 @@ public partial class CommanderController : DMonoBehaviour
         // {
         //     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, "5");
         // }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            EventManager.Instance.EventTrigger(EventType.HideGoIcon.ToString(), string.Empty);
+        }
     }
 
     private void SendTaskSureMsg()
     {
         if (string.IsNullOrEmpty(zqxx))
         {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(),"任务背景信息还未收到");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务背景信息还未收到");
             return;
         }
+
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ChangeZyData", zqxx);
 
         // EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misDescription, () =>
@@ -542,9 +547,6 @@ public partial class CommanderController : DMonoBehaviour
 
 
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
-
-        if (MyDataInfo.MyLevel != -1)
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "有新发现灾情，请处理");
     }
 
     private float GetCurrentGroundHeight(Vector3 go)

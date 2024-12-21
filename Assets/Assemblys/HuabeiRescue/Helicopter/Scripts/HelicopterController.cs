@@ -411,7 +411,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             myRecordedData.allDistanceTravelled += speed * Time.deltaTime * MyDataInfo.speedMultiplier;
             if (lastPos != Vector3.zero)
             {
-                float ifc = HeliPointFuel(transform.position, lastPos, speed * MyDataInfo.speedMultiplier, myAttributeInfo.xhyh);
+                float ifc = HeliPointFuel(transform.position, lastPos, speed * MyDataInfo.speedMultiplier, GetOilConsumption(speed));
                 amountOfOil -= ifc;
             }
 
@@ -420,8 +420,22 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
         if (myState == HelicopterState.hover)
         {
-            amountOfOil -= myAttributeInfo.xtyh / 3600f * Time.deltaTime * MyDataInfo.speedMultiplier;
+            amountOfOil -= GetOilConsumption(0) * (Time.deltaTime * MyDataInfo.speedMultiplier / 3600f);
         }
+    }
+
+    //获取当前直升机油耗
+    private float GetOilConsumption(float Speed)
+    {
+        float Temperature = 1; //温度
+        float Altitude = myAttributeInfo.zsjxhgd; //高度
+        float Weight = myAttributeInfo.kjzl + amountOfOil + amountOfWater + amountOfGoods + amountOfPerson * 70f;
+        double OilConsumption = 606.54742f - 3.56870f * Speed + 0.01127f * Weight - 0.32404f * Temperature - 0.09671f *
+            Altitude + 0.01986f * Mathf.Pow(Speed, 2f) - 0.00014f * Speed * Weight - 0.01365f * Speed * Temperature -
+            0.00015f * Speed * Altitude + 0.00024 * Weight * Temperature + 0.00001 * Weight * Altitude + 0.01545f *
+            Mathf.Pow(Temperature, 2f) - 0.00015f * Temperature * Altitude + 0.00001f * Mathf.Pow(Altitude, 2f);
+
+        return (float)OilConsumption;
     }
 
     private void DrawLine()
@@ -464,8 +478,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         float distanceab = Vector3.Distance(StartVect, TargetVect);
         if (distanceab > 0)
         {
-            SegmentFlightTime = distanceab / HeliVelocity; //千米每小时转换成米每秒
-            RemainingFuel = SegmentFlightTime * SegmentFlightFuelConsumption / 3600.0f;
+            SegmentFlightTime = distanceab / (HeliVelocity / 3.6f); //千米每小时转换成米每秒
+            RemainingFuel = SegmentFlightTime / 3600.0f * SegmentFlightFuelConsumption;
         }
 
         return RemainingFuel;
@@ -509,6 +523,14 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             currentSkill = SkillType.None;
             OnCountdownEndsCallBack?.Invoke();
         }
+    }
+
+    public void SetOilAndLoad(float oilProportion, float loadProportion)
+    {
+        //机长修改了载油量比例和装载量比例
+        myAttributeInfo.zyl *= oilProportion;
+        myAttributeInfo.dszl *= loadProportion;
+        myAttributeInfo.zdyxzh *= loadProportion;
     }
 }
 

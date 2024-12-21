@@ -10,7 +10,7 @@ using EventType = Enums.EventType;
 public partial class CommanderController
 {
     private object currentChooseGo;
-    private string[] tianqiInfo;
+    private string[] tianqiInfo, fengliInfo;
 
     public void Init()
     {
@@ -36,7 +36,8 @@ public partial class CommanderController
             }
         }
 
-        tianqiInfo = new[] { "晴天", "多云", "阴有小雨", "风力2-3级", "大风5-6级", "大风7-8级", "雷雨", "中到大雨", "起雾" };
+        tianqiInfo = new[] { "晴天", "多云", "阴", "雾", "雷阵雨", "小雨", "中雨", "大雨", "暴雨" };
+        fengliInfo = new[] { "无方向微风", "风力1-2级", "风力3-4级", "风力5-6级", "风力7-8级", "狂风9-10级", "狂风10级以上" };
     }
 
     private void OnChooseAGo(string id)
@@ -139,10 +140,13 @@ public partial class CommanderController
         }
     }
 
-    public void OnChangeTianQi(int tqInfo)
+    public void OnChangeTianQi(string param)
     {
+        string[] infos = param.Split('_');
+        int tqInfo = int.Parse(infos[0]);
+        int flInfo = int.Parse(infos[1]);
         if (MyDataInfo.MyLevel == 3)
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"当前天气：{tianqiInfo[tqInfo]}");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"当前天气：{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
     }
 
     public void OnReceiveRwghwc(string param)
@@ -167,5 +171,11 @@ public partial class CommanderController
 
 
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
+    }
+
+    public void OnDiscoverNewDisaster()
+    {
+        EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长发现新灾情，是否处理",
+            () => { OnSendSkillInfo((int)MessageID.SendAgreeDiscoverNewDisaster, ""); });
     }
 }

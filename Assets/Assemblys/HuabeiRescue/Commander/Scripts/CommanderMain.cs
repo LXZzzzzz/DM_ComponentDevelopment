@@ -343,6 +343,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.gameStartTime = 0;
                 break;
             case MessageID.SendGameStart:
+                Debug.LogError("收到了开始");
                 MyDataInfo.gameState = GameState.GameStart;
                 if (gameStartTimePoint < 0) gameStartTimePoint = int.Parse(param);
                 MyDataInfo.speedMultiplier = 1;
@@ -381,7 +382,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.Receive_ChangeEquipState(param);
                 break;
             case MessageID.SendTianQi:
-                _commanderController.OnChangeTianQi(int.Parse(param));
+                _commanderController.OnChangeTianQi(param);
                 break;
             case MessageID.SendAskForAirLine:
                 //如果是导教端，就弹出航线申报消息，让他选择是否同意
@@ -447,6 +448,13 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendRwghData:
                 if (MyDataInfo.MyLevel == -1) _commanderController.OnShowRwghData(param);
+                break;
+            case MessageID.SendDiscoverNewDisaster:
+                //收到上报新灾情，让前指处理
+                if (MyDataInfo.MyLevel == 2) _commanderController.OnDiscoverNewDisaster();
+                break;
+            case MessageID.SendAgreeDiscoverNewDisaster:
+                if (MyDataInfo.MyLevel != 3) EventManager.Instance.EventTrigger(EventType.HideGoIcon.ToString(), string.Empty);
                 break;
 
 

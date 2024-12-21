@@ -48,10 +48,11 @@ namespace Enums
 
         ShowMisDescription, //展示灾情信息
         InitEquipData, //加载方案时初始化直升机数据
-        ChangeJiZhangView, //机长端通知页面修改
+        ChangeJiZhangView, //机长端通知页面修改,控制哪些资源显示
         DqChooseGo, //选中某个对象
         changeJizuShow, //更改机组可选信息
         AskForReturnTrigger, //界面发送给管理器申请返回
+        HideGoIcon, //隐藏某个对象的图标，主要用来创建灾区不立即显示
     }
 
     public enum MessageID
@@ -88,6 +89,8 @@ namespace Enums
         SendAgreeReturn = 1031, //前指发送请求反馈
         SendCompleteTaskBgSet = 1032, //导教端发送完成任务背景设置
         SendRwghData = 1033, //机长发送任务规划数据
+        SendDiscoverNewDisaster = 1034, //上报发现新灾情
+        SendAgreeDiscoverNewDisaster = 1035, //确认发现了新灾情
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

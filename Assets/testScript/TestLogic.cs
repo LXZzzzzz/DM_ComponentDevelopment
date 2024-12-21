@@ -187,8 +187,13 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "当前天气下雨，是否全部返航", 
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "当前天气下雨，是否全部返航",
                 () => { Debug.LogError("确认了拉萨的"); });
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            GetOilConsumption(speedd, weightt);
         }
 
         if (isRunTimer) runTimer();
@@ -197,6 +202,21 @@ public class TestLogic : MonoBehaviour
         {
             // testPoint.anchoredPosition = routePoints[1];
         }
+    }
+
+    public float speedd, weightt;
+
+    private float GetOilConsumption(float Speed, float Weight)
+    {
+        float Temperature = 1; //温度
+        float Altitude = 3000; //高度
+        double OilConsumption = 606.54742f - 3.56870f * Speed + 0.01127f * Weight - 0.32404f * Temperature - 0.09671f *
+            Altitude + 0.01986f * Mathf.Pow(Speed, 2f) - 0.00014f * Speed * Weight - 0.01365f * Speed * Temperature -
+            0.00015f * Speed * Altitude + 0.00024 * Weight * Temperature + 0.00001 * Weight * Altitude + 0.01545f *
+            Mathf.Pow(Temperature, 2f) - 0.00015f * Temperature * Altitude + 0.00001f * Mathf.Pow(Altitude, 2f);
+
+        Debug.LogError(OilConsumption);
+        return (float)OilConsumption;
     }
 
     private void Msg_testPlan(string dataStr)

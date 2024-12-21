@@ -118,10 +118,11 @@ namespace ToolsLibrary.ProgrammePart
             lastPath = path;
         }
         
-        public static void SaveAsData_Txt(string data)
+        public static void SaveAsData_Txt(string data,string path)
         {
-            if (string.IsNullOrEmpty(lastPath))
+            if (string.IsNullOrEmpty(path))
                 lastPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            else lastPath = path;
 
             SaveDataFunc_Txt(data, lastPath);
         }

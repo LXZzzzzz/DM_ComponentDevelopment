@@ -64,6 +64,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_Import").onClick.AddListener(() => OnImportAndExportData(true));
         GetControl<Button>("Btn_ReturnBack").onClick.AddListener(() => OnAskForReturn(2));
         GetControl<Button>("Btn_ReturnRepair").onClick.AddListener(() => OnAskForReturn(1));
+        GetControl<Button>("Btn_NewDisaster").onClick.AddListener(OnSendNewDisaster);
         GetControl<Button>("Btn_Set").onClick.AddListener(OnSetData);
         GetControl<Button>("Btn_TaskBg").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 3));
         GetControl<Button>("Btn_CompleteBgSet").onClick.AddListener(
@@ -107,11 +108,13 @@ public class UIMap : BasePanel, IPointerClickHandler
         // EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), allBObjects);
         EventManager.Instance.AddEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
         EventManager.Instance.AddEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
+        EventManager.Instance.AddEventListener<string>(EventType.HideGoIcon.ToString(), OnHideZyShow);
         // 当前UI对象的局部Y轴
         localYAxis = middlePoint.transform.up;
 
         GetAllZaiquTemplate();
-        GetControl<Button>("Btn_Zqxx").gameObject.SetActive(MyDataInfo.MyLevel == 1);
+        GetControl<Toggle>("xxqrTog").gameObject.SetActive(MyDataInfo.MyLevel == 1);
+        GetControl<Toggle>("jzOperatorTog").gameObject.SetActive(MyDataInfo.MyLevel == 3);
     }
 
     private void GetAllZaiquTemplate()
@@ -169,6 +172,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.RemoveEventListener<int>(EventType.SwitchMapModel.ToString(), SwithMode);
         EventManager.Instance.RemoveEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
         EventManager.Instance.RemoveEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
+        EventManager.Instance.RemoveEventListener<string>(EventType.HideGoIcon.ToString(), OnHideZyShow);
     }
 
     private void SwithMode(int mode)
@@ -328,6 +332,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_Set").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_ReturnBack").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_ReturnRepair").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
+        GetControl<Button>("Btn_NewDisaster").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
 
         currentMapLogic?.OnUpdate();
         routeDecorateGo.transform.SetAsLastSibling();
@@ -373,6 +378,16 @@ public class UIMap : BasePanel, IPointerClickHandler
         {
             if (iconCell.Value is AirIconCell) continue;
             iconCell.Value.gameObject.SetActive(showZys.Find(x => string.Equals(x, iconCell.Key)) != null);
+        }
+    }
+
+    private void OnHideZyShow(string id)
+    {
+        foreach (var iconCell in allIconCells)
+        {
+            if (iconCell.Value is AirIconCell) continue;
+            if (string.IsNullOrEmpty(id)) iconCell.Value.gameObject.SetActive(true);
+            else iconCell.Value.gameObject.SetActive(!string.Equals(id, iconCell.Key));
         }
     }
 
@@ -439,13 +454,20 @@ public class UIMap : BasePanel, IPointerClickHandler
         else
         {
             //导出逻辑
-            FileOperator.SaveAsData_Txt(PathPointManager.Instance.PackedData());
+            FileOperator.SaveAsData_Txt(PathPointManager.Instance.PackedData(), Application.dataPath + "/MapLib/Scheme");
         }
     }
 
     private void OnAskForReturn(int state)
     {
         EventManager.Instance.EventTrigger(EventType.AskForReturnTrigger.ToString(), state);
+    }
+
+    private void OnSendNewDisaster()
+    {
+        //发送新发现灾情，并且提示
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendDiscoverNewDisaster, "");
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "已申报新灾情");
     }
 
     private void OnSetData()

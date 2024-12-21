@@ -295,6 +295,13 @@ public partial class CommanderController
     {
         var itemdata = MsgReceive_CreatZaiqu(data);
         OnChangeZaiqu(itemdata);
+
+        //创建完后，如果不是机长，就先隐藏掉
+        if (MyDataInfo.MyLevel != 3 || MyDataInfo.MyLevel != -1)
+            EventManager.Instance.EventTrigger(EventType.HideGoIcon.ToString(), itemdata.zaiquId);
+
+        if (MyDataInfo.MyLevel == 3)
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "有新发现灾情");
     }
 
     public void Receive_ShowMarkPoint(string data)

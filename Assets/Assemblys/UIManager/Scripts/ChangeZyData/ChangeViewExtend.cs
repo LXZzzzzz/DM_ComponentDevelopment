@@ -163,12 +163,13 @@ public class ZYFPPartView : ChangeDataBase
 public class TianQiSetView : ChangeDataBase
 {
     private GameObject view;
-    private Dropdown dptq;
+    private Dropdown dptq, dpfl;
 
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/tianQiSetPart").gameObject;
-        dptq = view.transform.GetComponentInChildren<Dropdown>(true);
+        dptq = view.transform.Find("dp_tqSetting").GetComponent<Dropdown>();
+        dpfl = view.transform.Find("dp_flSetting").GetComponent<Dropdown>();
     }
 
     public override void OnShow(object data)
@@ -186,8 +187,8 @@ public class TianQiSetView : ChangeDataBase
     public override void OnSave()
     {
         //发出当前天气情况
-
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendTianQi, dptq.value.ToString());
+        string tqStr = dptq.value.ToString() + '_' + dpfl.value.ToString();
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendTianQi, tqStr);
     }
 }
 

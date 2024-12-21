@@ -74,6 +74,7 @@ public class UICommanderView : BasePanel
         EventManager.Instance.AddEventListener<AEquipData>(EventType.InitEquipData.ToString(), OnInitEquipData);
         // EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);//修改权限后，更新页面
         EventManager.Instance.AddEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
+        EventManager.Instance.AddEventListener<string>(EventType.HideGoIcon.ToString(), OnHideZyShow);
         EventManager.Instance.AddEventListener(EventType.changeJizuShow.ToString(), OnChangeJizu);
     }
 
@@ -88,6 +89,7 @@ public class UICommanderView : BasePanel
         EventManager.Instance.RemoveEventListener<AEquipData>(EventType.InitEquipData.ToString(), OnInitEquipData);
         // EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
         EventManager.Instance.RemoveEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
+        EventManager.Instance.RemoveEventListener<string>(EventType.HideGoIcon.ToString(), OnHideZyShow);
         EventManager.Instance.RemoveEventListener(EventType.changeJizuShow.ToString(), OnChangeJizu);
     }
 
@@ -255,6 +257,19 @@ public class UICommanderView : BasePanel
         allTaskCells.ForEach(x =>
             x.gameObject.SetActive(showZys.Find(y => string.Equals(x.myEntityId, y)) != null)
         );
+    }
+
+    private void OnHideZyShow(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            allZiYuanCells.ForEach(x => x.gameObject.SetActive(true));
+            allTaskCells.ForEach(x => x.gameObject.SetActive(true));
+            return;
+        }
+
+        allZiYuanCells.ForEach(x => x.gameObject.SetActive(!string.Equals(x.myEntityId, id)));
+        allTaskCells.ForEach(x => x.gameObject.SetActive(!string.Equals(x.myEntityId, id)));
     }
 
     private void OnChangeJizu()

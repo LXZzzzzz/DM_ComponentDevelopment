@@ -161,5 +161,8 @@ namespace ToolsLibrary.EquipPart
 
         //设置直升机状态
         void ChangeCurrentState(int state);
+
+        //机长设置载油量和装载量
+        void SetOilAndLoad(float oilProportion, float loadProportion);
     }
 }
