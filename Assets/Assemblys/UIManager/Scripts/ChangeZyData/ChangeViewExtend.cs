@@ -307,7 +307,7 @@ public class TaskBgSettingView : ChangeDataBase
 {
     private GameObject view;
     private InputField taskTarget, disInfo, kongGuan;
-    private Dropdown tqSetting;
+    private Dropdown tqSetting, flSetting;
 
     protected override void OnInit()
     {
@@ -316,6 +316,7 @@ public class TaskBgSettingView : ChangeDataBase
         disInfo = view.transform.Find("InputF_disInfo").GetComponent<InputField>();
         kongGuan = view.transform.Find("InputF_kongGuan").GetComponent<InputField>();
         tqSetting = view.transform.Find("dp_tqSetting").GetComponent<Dropdown>();
+        flSetting = view.transform.Find("flSetting").GetComponent<Dropdown>();
     }
 
     public override void OnShow(object data)
@@ -332,14 +333,13 @@ public class TaskBgSettingView : ChangeDataBase
 
     public override void OnSave()
     {
-        Debug.LogError(tqSetting.value);
         Debug.LogError(getStrData());
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendTaskBgInfo, getStrData());
     }
 
     private string getStrData()
     {
-        return tqSetting.value.ToString() + '_' + taskTarget.text + '_' + disInfo.text + '_' + kongGuan.text;
+        return tqSetting.value.ToString() + '_' + flSetting.value.ToString() + '_' + taskTarget.text + '_' + disInfo.text + '_' + kongGuan.text;
     }
 }
 
@@ -482,8 +482,8 @@ public class EquipsAndPersonSetView : ChangeDataBase
 public class ShowTaskBgDataView : ChangeDataBase
 {
     private GameObject view;
-    private InputField taskTarget, disInfo, kongGuan, oilNum;
-    private Dropdown tqSetting;
+    private InputField taskTarget, disInfo, kongGuan;
+    private Dropdown tqSetting, flSetting;
 
     protected override void OnInit()
     {
@@ -491,8 +491,8 @@ public class ShowTaskBgDataView : ChangeDataBase
         taskTarget = view.transform.Find("InputF_taskTarget").GetComponent<InputField>();
         disInfo = view.transform.Find("InputF_disInfo").GetComponent<InputField>();
         kongGuan = view.transform.Find("InputF_kongGuan").GetComponent<InputField>();
-        oilNum = view.transform.Find("InputF_oilNum").GetComponent<InputField>();
         tqSetting = view.transform.Find("dp_tqSetting").GetComponent<Dropdown>();
+        flSetting = view.transform.Find("dp_flSetting").GetComponent<Dropdown>();
     }
 
     public override void OnShow(object data)
@@ -504,10 +504,10 @@ public class ShowTaskBgDataView : ChangeDataBase
         if (strs != null && strs.Length == 5)
         {
             tqSetting.value = int.Parse(strs[0]);
-            taskTarget.text = strs[1];
-            disInfo.text = strs[2];
-            kongGuan.text = strs[3];
-            oilNum.text = strs[4];
+            flSetting.value = int.Parse(strs[1]);
+            taskTarget.text = strs[2];
+            disInfo.text = strs[3];
+            kongGuan.text = strs[4];
         }
         else
         {
