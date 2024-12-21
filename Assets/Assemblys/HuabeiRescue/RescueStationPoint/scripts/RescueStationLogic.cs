@@ -11,7 +11,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation,ITaskProgress
     private int totalPerson;
 
     private float perPersonNeedGoodsWeight;
-    private int maxPersonNum;
+    // private int maxPersonNum;
 
     public void Init(string id, int zyType, float goodsWeight, int personNum, string colorCode, string chooseColoeCode)
     {
@@ -21,7 +21,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation,ITaskProgress
         totalWeight = 0;
         totalPerson = 0;
         perPersonNeedGoodsWeight = goodsWeight;
-        maxPersonNum = personNum;
+        // maxPersonNum = personNum;
     }
 
     public override void OnStart()
@@ -53,21 +53,25 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation,ITaskProgress
 
     public int placementOfPersonnel(int personNum)
     {
-        int itemPersonNum = maxPersonNum - totalPerson;
-        if (itemPersonNum > personNum)
-        {
-            //证明当前安置点还能容纳下所有伤员
-            totalPerson += personNum;
-            Debug.LogError($"安置点被安置了{totalPerson}人");
-            return personNum;
-        }
-        else
-        {
-            //安置点不足以安置下所有伤员
-            totalPerson = maxPersonNum;
-            Debug.LogError($"安置点被安置了{totalPerson}人");
-            return itemPersonNum;
-        }
+        
+        totalPerson += personNum;
+        Debug.LogError($"安置点被安置了{totalPerson}人");
+        return personNum;
+        // int itemPersonNum = maxPersonNum - totalPerson;
+        // if (itemPersonNum > personNum)
+        // {
+        //     //证明当前安置点还能容纳下所有伤员
+        //     totalPerson += personNum;
+        //     Debug.LogError($"安置点被安置了{totalPerson}人");
+        //     return personNum;
+        // }
+        // else
+        // {
+        //     //安置点不足以安置下所有伤员
+        //     totalPerson = maxPersonNum;
+        //     Debug.LogError($"安置点被安置了{totalPerson}人");
+        //     return itemPersonNum;
+        // }
     }
 
     public void getResData(out float firstTime, out float totalWeight, out int totalPerson)
@@ -80,11 +84,12 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation,ITaskProgress
     public bool getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum)
     {
         currentPersonNum = totalPerson;
-        maxPersonNum = this.maxPersonNum;
+        maxPersonNum = 100;
         currentGoodsNum = totalWeight;
         maxGoodsNum = perPersonNeedGoodsWeight * totalPerson;
 
-        return totalPerson >= this.maxPersonNum && totalWeight >= perPersonNeedGoodsWeight * this.maxPersonNum;
+        return totalWeight >= perPersonNeedGoodsWeight * totalPerson;
+        // return totalPerson >= this.maxPersonNum && totalWeight >= perPersonNeedGoodsWeight * this.maxPersonNum;
     }
 
     public string getAssociationAssemblyId()
@@ -95,7 +100,7 @@ public class RescueStationLogic : ZiYuanBase, IRescueStation,ITaskProgress
     public bool getTaskProgress(out string progressInfo, out float progressNum)
     {
         bool isComplete = getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
-        progressInfo = $"安置受灾群众:{currentPersonNum}人/{maxPersonNum}人\n所需物资:{currentGoodsNum}kg/{maxGoodsNum}kg";
+        progressInfo = $"安置受灾群众:{currentPersonNum}人\n所需物资:{currentGoodsNum}kg/{maxGoodsNum}kg";
         progressNum = maxGoodsNum == 0 ? 0 : Mathf.Clamp(currentGoodsNum / maxGoodsNum, 0, 1);
         return isComplete;
     }

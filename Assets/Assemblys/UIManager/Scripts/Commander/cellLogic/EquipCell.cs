@@ -61,7 +61,19 @@ public class EquipCell : DMonoBehaviour
         // }
 
         checkTimer = Time.time;
-        GetComponent<Button>().onClick.AddListener(() => EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), equipObjectId));
+        GetComponent<Button>().onClick.AddListener(() =>
+        {
+            if (MyDataInfo.MyLevel != 3)
+            {
+                EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), equipObjectId);
+                return;
+            }
+
+            if (string.Equals(_equip.BeLongToCommanderId, MyDataInfo.leadId))
+                EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), equipObjectId);
+            else
+                EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "机长只能查看自己所控直升机");
+        });
     }
 
     private void Update()

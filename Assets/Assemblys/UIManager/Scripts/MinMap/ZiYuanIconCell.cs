@@ -219,7 +219,7 @@ public class ZiYuanIconCell : IconCellBase
                 break;
             case ZiYuanType.RescueStation:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum, out int maxPersonNum, out float currentGoodsNum, out float maxGoodsNum);
-                progressInfo = $"安置点当前安置受灾群众:{currentPersonNum}人，总共可安置：{maxPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
+                progressInfo = $"安置点当前安置受灾群众:{currentPersonNum}人\n当前已有物资:{currentGoodsNum}kg，总共需求物资：{maxGoodsNum}kg";
                 break;
             case ZiYuanType.Hospital:
                 (_ziYuanItem as IRescueStation).getTaskProgress(out int currentPersonNum1, out int maxPersonNum1, out float currentGoodsNum1, out float maxGoodsNum1);

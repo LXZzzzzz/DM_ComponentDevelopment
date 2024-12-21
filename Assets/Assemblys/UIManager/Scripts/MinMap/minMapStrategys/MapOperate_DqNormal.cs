@@ -16,7 +16,20 @@ public class MapOperate_DqNormal : MapOperateLogicBase
 
     public override void OnLeftClickIcon(IconCellBase clickIcon)
     {
-        EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), clickIcon.belongToId);
+        if (clickIcon is AirIconCell)
+        {
+            if (MyDataInfo.MyLevel != 3)
+            {
+                EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), clickIcon.belongToId);
+                return;
+            }
+
+            var equip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, (clickIcon as AirIconCell).belongToId));
+            if (string.Equals(equip.BeLongToCommanderId, MyDataInfo.leadId))
+                EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), clickIcon.belongToId);
+            else
+                EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "机长只能查看自己所控直升机");
+        }
     }
 
     public override void OnRightClickIcon(IconCellBase clickIcon)
