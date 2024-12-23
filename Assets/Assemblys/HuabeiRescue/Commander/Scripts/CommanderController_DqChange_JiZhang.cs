@@ -14,7 +14,7 @@ public partial class CommanderController
     {
         //这里应该是主角数据初始化已经走过了，直接去直升机列表中找自己的id
         myEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BeLongToCommanderId, myId));
-        guzhangInfo = new[] { "发动机故障", "液压系统故障", "主减速器故障", "仪表显示故障" };
+        guzhangInfo = new[] { "无故障", "巡航时单发故障", "燃油压力警报灯亮", "主变速箱系统故障", "尾旋翼控制系统故障", "电瓶超温" };
     }
 
     public void OnOpenPlanningMode()
