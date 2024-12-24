@@ -11,7 +11,8 @@ using EventType = Enums.EventType;
 public partial class HelicopterController
 {
     private PathPoint currentPathPoint;
-    private bool isAutoRunEnd;
+
+    // private bool isAutoRunEnd;
     private string skillConfirmationStr;
     private TaskBase currentRunTask;
     private string stopAtAirPortId; //停靠机场Id
@@ -23,7 +24,7 @@ public partial class HelicopterController
         BObjectId = id;
         stopAtAirPortId = airPortId;
         BeLongToCommanderId = ctrlId;
-        isAutoRunEnd = false;
+        // isAutoRunEnd = false;
     }
 
     public string GetStopAtAirPort()
@@ -34,27 +35,56 @@ public partial class HelicopterController
     public void GoReturnBack()
     {
         //去除后续执行计划，并取消当前所执行内容，直接回机场
+        EventManager.Instance.EventTrigger(EventType.ClearPathPlanningData.ToString(), BObjectId);
 
-        while (!string.IsNullOrEmpty(lastPointId))
-        {
-            PathPointManager.Instance.RemovePoint(lastPointId);
-        }
-        //⭐⭐这里还得通知界面把规划路径点删掉
+        Debug.LogError("看一下数据是空吗" + PathPointManager.Instance.GetPointDataByBObjectId(BObjectId) == null);
 
         skillConfirmationStr = String.Empty;
 
-        CancelCurrentSkill();
 //⭐后面要把移动到目的地归为技能一类
         //起飞->飞往机场->降落->入库
         if (runQueue == null) runQueue = new Queue<object>();
-        runQueue.Enqueue(SkillType.TakeOff);
-        runQueue.Enqueue(MessageID.MoveToTarget);
+        runQueue.Clear();
+        switch (myState)
+        {
+            case HelicopterState.flying:
+                Vector3 targetPos = sceneAllZiyuan.Find(x => string.Equals(x.BobjectId, stopAtAirPortId)).transform.position;
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.MoveToTarget, MsgSend_Move(BObjectId, targetPos, stopAtAirPortId));
+
+                skillConfirmationStr = BObjectId + MessageID.MoveToTarget;
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendSkillConfirmation, skillConfirmationStr);
+                //在插入指令的同时执行操作，会在指令技术后移除一个，这里补一个移除替代品
+                runQueue.Enqueue(SkillType.None);
+                break;
+            case HelicopterState.Landing:
+                runQueue.Enqueue(SkillType.TakeOff);
+                runQueue.Enqueue(MessageID.MoveToTarget);
+                break;
+            case HelicopterState.hover:
+                runQueue.Enqueue(MessageID.MoveToTarget);
+                break;
+            case HelicopterState.NotReady:
+                return;
+        }
+
         runQueue.Enqueue(SkillType.Landing);
         runQueue.Enqueue(SkillType.BePutInStorage);
+        currentPathPoint = null;
+
+        Debug.LogError("下面要执行的动作：" + runQueue.Peek());
+        Debug.LogError("再看一下数据是空吗" + PathPointManager.Instance.GetPointDataByBObjectId(BObjectId));
+        Debug.LogError(PathPointManager.Instance.GetPointDataByBObjectId(BObjectId));
+        Debug.LogError(PathPointManager.Instance.GetPointDataByBObjectId(BObjectId)?.NextPointId);
+    }
+
+    public void StopRunTime()
+    {
+        CancelCurrentSkill();
     }
 
     public void GoReturnRepair()
     {
+        if (MyDataInfo.MyLevel != 3) return;
         isHaveReturnForRepair = true;
         Debug.LogError("返修标记成功");
     }
@@ -81,12 +111,14 @@ public partial class HelicopterController
         runQueue.Enqueue(MessageID.MoveToTarget);
         runQueue.Enqueue(SkillType.Landing);
         runQueue.Enqueue(SkillType.BePutInStorage);
+        currentPathPoint.isRuned = true;
+        currentPathPoint = null;
     }
 
     private void OnRunInstructionUpdate()
     {
         //坠毁就不执行了，可能还需要做标记，任务未完成
-        if (isCrash || isAutoRunEnd) return;
+        if (isCrash) return;
 
         //如果有发出未执行指令，就跳出
         if (!string.IsNullOrEmpty(skillConfirmationStr))
@@ -117,7 +149,13 @@ public partial class HelicopterController
         if (!isStartAutoRun)
         {
             //⭐⭐这里判断这个飞机是否有未走的点，如果没有了，就return
-            if (PathPointManager.Instance.GetPointDataById(nextPointId) == null) return;
+            if (PathPointManager.Instance.GetPointDataById(nextPointId) == null)
+            {
+                Debug.LogError("没有待执行任务");
+                return;
+            }
+
+            Debug.LogError("刚开始起飞");
             //准备操作
             switch (myState)
             {
@@ -182,8 +220,9 @@ public partial class HelicopterController
             }
 
             //该路点任务集执行完毕，走向下一个点
-            currentPathPoint = currentPathPoint == null ? PathPointManager.Instance.GetPointDataByBObjectId(BObjectId) : PathPointManager.Instance.GetPointDataById(currentPathPoint.NextPointId);
-            if (currentPathPoint == null) isAutoRunEnd = true;
+            currentPathPoint = getNextRunPoint();
+
+            if (currentPathPoint == null) Debug.LogError("执行完了所有内容"); //isAutoRunEnd = true;
             else
             {
                 currentPathPoint.tasks.Sort((a, b) => a.orderNumber < b.orderNumber ? -1 : 1);
@@ -208,6 +247,26 @@ public partial class HelicopterController
         }
 
         return null;
+    }
+
+    private PathPoint getNextRunPoint()
+    {
+        //如果不是空，直接走下一个点，如果是空，就从数据中找出一个未执行的点返回
+        if (currentPathPoint == null)
+        {
+            var itemPoint = PathPointManager.Instance.GetPointDataByBObjectId(BObjectId);
+            while (itemPoint != null && PathPointManager.Instance.GetPointDataById(itemPoint.pointId).isRuned)
+            {
+                itemPoint = PathPointManager.Instance.GetPointDataById(itemPoint.NextPointId);
+            }
+
+            return itemPoint;
+        }
+        else
+        {
+            currentPathPoint.isRuned = true;
+            return PathPointManager.Instance.GetPointDataById(currentPathPoint.NextPointId);
+        }
     }
 
     private string MsgSend_Move(string id, Vector3 pos, string targetId)

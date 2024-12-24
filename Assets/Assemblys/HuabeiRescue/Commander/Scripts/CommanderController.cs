@@ -141,29 +141,25 @@ public partial class CommanderController : DMonoBehaviour
         // {
         //     EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
         // }
-        //
+        
         if (Input.GetKeyDown(KeyCode.O))
         {
             OnSendSkillInfo((int)MessageID.SendGameStart,((int)(MyDataInfo.gameStartTime * 1000)).ToString());
         }
-        //
-        // if (Input.GetKeyDown(KeyCode.I))
-        // {
-        //     (myEquip as IDqChangePart)?.GoReturnRepair();
-        // }
-        //
-        // if (Input.GetKeyDown(KeyCode.L))
-        // {
-        //     (myEquip as IDqChangePart)?.GoReturnBack();
-        // }
-        //
-        // if (Input.GetKeyDown(KeyCode.P))
-        // {
-        //     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, "5");
-        // }
+        
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            (myEquip as IDqChangePart)?.GoReturnRepair();
+        }
+        
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            (myEquip as IDqChangePart)?.GoReturnBack();
+        }
+        
         if (Input.GetKeyDown(KeyCode.P))
         {
-            EventManager.Instance.EventTrigger(EventType.HideGoIcon.ToString(), string.Empty);
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, "5");
         }
     }
 

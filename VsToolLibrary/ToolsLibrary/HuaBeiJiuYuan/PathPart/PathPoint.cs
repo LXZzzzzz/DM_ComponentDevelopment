@@ -21,6 +21,9 @@ namespace ToolsLibrary.PathPart
 
         //这个点绑定的任务
         public List<TaskBase> tasks;
+
+        //当前点是否被执行过
+        public bool isRuned;
     }
 
     //限定任务的抽象行为

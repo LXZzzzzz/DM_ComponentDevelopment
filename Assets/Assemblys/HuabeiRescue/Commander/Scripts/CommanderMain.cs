@@ -420,7 +420,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendTurnBack:
                 //如果是机长，就让其控制直升机执行返回机场并入库操作
-                if (MyDataInfo.MyLevel == 3) _commanderController.OnReturnBack();
+                _commanderController.OnReturnBack();
                 break;
             case MessageID.SendTaskBgInfo:
                 _commanderController.Receive_SetTaskBg(param);
@@ -444,7 +444,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 if (MyDataInfo.MyLevel == 2) _commanderController.OnAskForReturn(param);
                 break;
             case MessageID.SendAgreeReturn:
-                if (MyDataInfo.MyLevel == 3) _commanderController.OnReturnRepair(param);
+                _commanderController.OnReturnRepair(param);
                 break;
             case MessageID.SendRwghData:
                 if (MyDataInfo.MyLevel == -1) _commanderController.OnShowRwghData(param);

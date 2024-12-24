@@ -56,9 +56,15 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_CreatDisaster").onClick.AddListener(() => OnOpenCreatZaiqu(2));
         GetControl<Button>("Btn_ChangeTQ").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 1));
         GetControl<Button>("Btn_Malfunction").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 2));
-        GetControl<Button>("Btn_Zqxx").onClick.AddListener(OnClickZqxx);
+        GetControl<Button>("Btn_Zqxx").onClick.AddListener(() => OnClickZqxx(1));
+        GetControl<Button>("Btn_Zbxx").onClick.AddListener(() => OnClickZqxx(2));
+        GetControl<Button>("Btn_Ryxx").onClick.AddListener(() => OnClickZqxx(3));
+        GetControl<Button>("Btn_Kgxx").onClick.AddListener(() => OnClickZqxx(4));
+        GetControl<Button>("Btn_Rwxx").onClick.AddListener(() => OnClickZqxx(5));
         GetControl<Button>("Btn_Hxsb").onClick.AddListener(OnClickHxsb);
+        GetControl<Button>("Btn_Rwqzb").onClick.AddListener(() => OnClickZqxx(6));
         GetControl<Button>("Btn_Sqrwzx").onClick.AddListener(OnClickSqrwzx);
+        GetControl<Button>("Btn_Dmzb").onClick.AddListener(() => OnClickZqxx(7));
         GetControl<Button>("Btn_Rwghwc").onClick.AddListener(OnClickRwghwc);
         GetControl<Button>("Btn_Export").onClick.AddListener(() => OnImportAndExportData(false));
         GetControl<Button>("Btn_Import").onClick.AddListener(() => OnImportAndExportData(true));
@@ -325,7 +331,9 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_CompleteBgSet").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState == GameState.None);
         GetControl<Button>("Btn_PeculiarSetting").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_Hxsb").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet);
+        GetControl<Button>("Btn_Rwqzb").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
         GetControl<Button>("Btn_Sqrwzx").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
+        GetControl<Button>("Btn_Dmzb").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
         GetControl<Button>("Btn_Rwghwc").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
         GetControl<Button>("Btn_Export").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_Import").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
@@ -391,9 +399,36 @@ public class UIMap : BasePanel, IPointerClickHandler
         }
     }
 
-    private void OnClickZqxx()
+    private void OnClickZqxx(int info)
     {
-        EventManager.Instance.EventTrigger(EventType.ShowMisDescription.ToString());
+        // EventManager.Instance.EventTrigger(EventType.ShowMisDescription.ToString());
+        string itemShowStr = "";
+        switch (info)
+        {
+            case 1:
+                itemShowStr = "灾情信息查看";
+                break;
+            case 2:
+                itemShowStr = "装备信息查看";
+                break;
+            case 3:
+                itemShowStr = "人员信息查看";
+                break;
+            case 4:
+                itemShowStr = "空管信息查看";
+                break;
+            case 5:
+                itemShowStr = "任务信息查看";
+                break;
+            case 6:
+                itemShowStr = "任务前准备界面，输入油量和装载量";
+                break;
+            case 7:
+                itemShowStr = "地面前准备，输入飞机载油量，装载量";
+                break;
+        }
+
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), itemShowStr);
     }
 
     private void OnClickHxsb()

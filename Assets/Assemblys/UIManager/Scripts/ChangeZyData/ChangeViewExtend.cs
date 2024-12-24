@@ -316,7 +316,7 @@ public class TaskBgSettingView : ChangeDataBase
         disInfo = view.transform.Find("InputF_disInfo").GetComponent<InputField>();
         kongGuan = view.transform.Find("InputF_kongGuan").GetComponent<InputField>();
         tqSetting = view.transform.Find("dp_tqSetting").GetComponent<Dropdown>();
-        flSetting = view.transform.Find("flSetting").GetComponent<Dropdown>();
+        flSetting = view.transform.Find("dp_flSetting").GetComponent<Dropdown>();
     }
 
     public override void OnShow(object data)

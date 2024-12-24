@@ -110,6 +110,7 @@ public class AirPortEquipIconCell : DMonoBehaviour, IPointerDownHandler, IPointe
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        return;
         openRightClickView();
     }
 }

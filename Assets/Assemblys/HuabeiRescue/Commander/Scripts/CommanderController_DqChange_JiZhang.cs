@@ -31,15 +31,20 @@ public partial class CommanderController
 
     public void OnReturnRepair(string data)
     {
+        Debug.LogError("收到了同意申请" + data);
         var infos = data.Split('_');
+        if (int.Parse(infos[1]) == 2) (MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, infos[0])) as IDqChangePart)?.StopRunTime();
+        if (MyDataInfo.MyLevel != 3) return;
         if (string.Equals(infos[0], myEquip.BObjectId))
         {
             switch (int.Parse(infos[1]))
             {
                 case 1:
+                    Debug.LogError("调用返修");
                     (myEquip as IDqChangePart)?.GoReturnRepair();
                     break;
                 case 2:
+                    Debug.LogError("调用返航");
                     (myEquip as IDqChangePart)?.GoReturnBack();
                     break;
             }

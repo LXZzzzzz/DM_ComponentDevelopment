@@ -156,6 +156,9 @@ namespace ToolsLibrary.EquipPart
         //触发返航
         void GoReturnBack();
 
+        //停止直升机计时进度
+        void StopRunTime();
+
         //触发返修
         void GoReturnRepair();
 

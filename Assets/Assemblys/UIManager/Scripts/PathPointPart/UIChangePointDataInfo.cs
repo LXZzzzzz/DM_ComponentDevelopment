@@ -29,7 +29,7 @@ public class UIChangePointDataInfo : BasePanel
         var itemTask = Instantiate(taskCell, tasksParent);
         itemTask.transform.GetComponentInChildren<Text>().text = $"第{currentTasks.Count + 1}个操作：";
         itemTask.gameObject.SetActive(true);
-        currentTasks.Add(new taskTest() { orderNumber = currentTasks.Count, testStr = "啦啦啦啦"});
+        currentTasks.Add(new taskTest() { orderNumber = currentTasks.Count, testStr = "啦啦啦啦", isRuned = false });
     }
 
     private void OnSure()
@@ -38,6 +38,7 @@ public class UIChangePointDataInfo : BasePanel
         {
             currentTasks[i].runSkillType = (SkillType)tasksParent.GetChild(currentTasks[i].orderNumber).GetComponentInChildren<Dropdown>().value;
         }
+
         PathPointManager.Instance.ChangePointDataInfo(pointId, currentTasks);
         Close(UIName.UIChangePointDataInfo);
     }

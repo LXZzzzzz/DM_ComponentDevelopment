@@ -44,6 +44,7 @@ namespace Enums
         ShowMarkMapPoint, //显示标记点
         crashIcon, //坠毁后通知Ui
         LoadPathPlanningData, //加载规划点数据
+        ClearPathPlanningData, //清空规划点
         MoveToTarget_AutoRun, //自动执行移动到目标点
 
         ShowMisDescription, //展示灾情信息

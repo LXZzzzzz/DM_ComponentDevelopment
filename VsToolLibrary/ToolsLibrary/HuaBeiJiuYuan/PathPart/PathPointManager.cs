@@ -37,7 +37,7 @@ namespace ToolsLibrary.PathPart
             {
                 pointId = pointId, belongToEquipId = targetEquip.BObjectId, PreviousPointId = targetEquip.lastPointId,
                 currentPoint = new JsonVector3() { x = currentPointPos.x, y = currentPointPos.y, z = currentPointPos.z },
-                tasks = new List<TaskBase>(), NextPointId = null,
+                tasks = new List<TaskBase>(), isRuned = false, NextPointId = null,
                 belongToIconId = string.IsNullOrEmpty(currentPointBelongtoIconId) ? pointId : currentPointBelongtoIconId
             };
             //创建新点，把上一个点的下一个点设为自己 ; 如果是第一个点，把飞机的下一个点设为自己

@@ -125,6 +125,7 @@ public partial class CommanderController
 
     public void OnAskForReturn(string info)
     {
+        Debug.LogError("收到的请求数据" + info);
         var data = info.Split('_');
         string equipName = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data[0])).name;
         switch (int.Parse(data[1]))

@@ -39,6 +39,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         if (equipPathLines == null) equipPathLines = new Dictionary<string, VectorLine>();
         if (equipPathDatas == null) equipPathDatas = new Dictionary<string, List<Vector2>>();
         EventManager.Instance.AddEventListener<string>(EventType.LoadPathPlanningData.ToString(), OnLoadPathPlanningData);
+        EventManager.Instance.AddEventListener<string>(EventType.ClearPathPlanningData.ToString(), OnClearPathPlanningData);
     }
 
     private void OnLoadPathPlanningData(string data)
@@ -68,6 +69,14 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
             itemEquip.nextPointId = startPoint.pointId;
             itemEquip.lastPointId = lastPoint.pointId;
             equipPathLines[equipPathData.Key].Draw();
+        }
+    }
+
+    private void OnClearPathPlanningData(string data)
+    {
+        while (PathPointManager.Instance.GetPointDataByBObjectId(data) != null)
+        {
+            RemovePoint(PathPointManager.Instance.GetPointDataByBObjectId(data).pointId);
         }
     }
 
@@ -128,6 +137,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
 #else
                     mainLogic.sender.LogError("选中的标点是" + clickIcon.belongToId + "的点；" + "名字是：" + clickIcon.name);
 #endif
+                if (clickIcon.allViaPointIds == null || clickIcon.allViaPointIds.Count == 0) return;
                 ShowPathPointsData sppd = new ShowPathPointsData() { allViaPointData = clickIcon.allViaPointIds, RemoveAction = RemovePoint, InsertAction = InsertAPoint };
                 UIManager.Instance.ShowPanel<UIPathPointsShow>(UIName.UIPathPointsShow, sppd);
             }
@@ -225,6 +235,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
     {
         isCreatPathPoint = false;
         EventManager.Instance.RemoveEventListener<string>(EventType.LoadPathPlanningData.ToString(), OnLoadPathPlanningData);
+        EventManager.Instance.RemoveEventListener<string>(EventType.ClearPathPlanningData.ToString(), OnClearPathPlanningData);
     }
 
     private void OnAddPointSuc(PathPoint pointData)

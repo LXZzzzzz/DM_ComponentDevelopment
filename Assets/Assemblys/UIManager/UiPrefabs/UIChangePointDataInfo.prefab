@@ -644,6 +644,18 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: "\u6295\u6C34"
       m_Image: {fileID: 0}
+    - m_Text: "\u88C5\u8F7D\u7269\u8D44"
+      m_Image: {fileID: 0}
+    - m_Text: "\u5378\u8F7D\u7269\u8D44"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7A7A\u6295\u7269\u8D44"
+      m_Image: {fileID: 0}
+    - m_Text: "\u88C5\u8F7D\u4EBA\u5458"
+      m_Image: {fileID: 0}
+    - m_Text: "\u5B89\u7F6E\u4EBA\u5458"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7D22\u964D\u6551\u63F4"
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2339,7 +2351,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8816832675840583759
 RectTransform:
   m_ObjectHideFlags: 0
