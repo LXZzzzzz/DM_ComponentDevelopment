@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class ChangeData_cellGroundZySet : DMonoBehaviour
 {
     public Text txtZyType;
-    public InputField inputFName, inputFLong, inputFLat;
+    public InputField inputFName;
+
+    public ChangeData_cellLongLatSet LonSet, LatSet;
 
     private ZiYuanBase _ziYuan;
 
@@ -15,8 +17,9 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
         _ziYuan = zyData;
         txtZyType.text = getZyTypename();
         inputFName.text = zyData.ziYuanName;
-        inputFLong.text = zyData.latAndLon.x.ToString();
-        inputFLat.text = zyData.latAndLon.y.ToString();
+
+        SetDMS(zyData.latAndLon.x, LonSet);
+        SetDMS(zyData.latAndLon.y, LatSet);
     }
 
     private string getZyTypename()
@@ -46,14 +49,71 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
     public string GetSaveData()
     {
         //组装数据并发出
-        Vector2 newPos = new Vector2(float.Parse(inputFLong.text), float.Parse(inputFLat.text));
+       
+
+        float lon = DMSToFloat(int.Parse(LonSet.InputField_D.text), int.Parse(LonSet.InputField_M.text),
+            int.Parse(LonSet.InputField_S.text));
+        
+        float lat = DMSToFloat(int.Parse(LatSet.InputField_D.text), int.Parse(LatSet.InputField_M.text),
+            int.Parse(LatSet.InputField_S.text));
+        
+        Vector2 newPos = new Vector2(lon, lat);
+        
         if (string.Equals(inputFName.text, _ziYuan.ziYuanName) && Vector2.Distance(newPos, _ziYuan.latAndLon) < 0.0001)
         {
             Debug.LogError(_ziYuan.ziYuanName + "数据未更改");
             return String.Empty;
         }
 
-        string strData = _ziYuan.BobjectId + '_' + inputFName.text + '_' + inputFLong.text + '_' + inputFLat.text;
+        string strData = _ziYuan.BobjectId + '_' + inputFName.text + '_' + lon + '_' + lat;
         return strData;
     }
+
+
+    public void SetDMS(float lonlat,ChangeData_cellLongLatSet cellLongLatSet)
+    {
+        Vector3 V3 = FloatToDMS(lonlat);
+        cellLongLatSet.InputField_D.text = V3.x.ToString();
+        cellLongLatSet.InputField_M.text = V3.y.ToString();
+        cellLongLatSet.InputField_S.text = V3.z.ToString();
+
+    }
+
+
+
+    /// <summary>
+    /// float 转度分秒
+    /// </summary>
+    /// <param name="coordinate"></param>
+    /// <returns></returns>
+    public Vector3 FloatToDMS(float coordinate)
+    {
+        // 获取度数（整数部分）
+        int degrees = Mathf.FloorToInt(coordinate);
+
+        // 获取分数（剩余的小数部分 * 60）
+        float minutesDecimal = (Mathf.Abs(coordinate) - Mathf.Abs(degrees)) * 60;
+        int minutes = Mathf.FloorToInt(minutesDecimal);
+
+        // 获取秒数（剩余的小数部分 * 60）
+        float secondsDecimal = (minutesDecimal - minutes) * 60;
+        int seconds = Mathf.FloorToInt(secondsDecimal);
+
+        // 返回格式化的度分秒字符串
+        return new Vector3(degrees, minutes, seconds);
+    }
+    
+    /// <summary>
+    /// 度分秒转化成 float
+    /// </summary>
+    /// <param name="degrees"></param>
+    /// <param name="minutes"></param>
+    /// <param name="seconds"></param>
+    /// <returns></returns>
+    public float DMSToFloat(int degrees, int minutes, int seconds)
+    {
+        // 计算并返回十进制度表示
+        return degrees + (float)minutes / 60 + (float)seconds / 3600;
+    }
+    
 }

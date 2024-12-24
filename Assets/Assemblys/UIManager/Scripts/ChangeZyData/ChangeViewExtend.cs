@@ -560,25 +560,282 @@ public class DisasterSituationView : ChangeDataBase
     }
 }
 
-public class test : ChangeDataBase
+/// <summary>
+/// 灾情信息
+/// </summary>
+public class DisasterInformationView : ChangeDataBase
 {
+    private GameObject view;
+    private Text disInfo;
+    private InputField zhlx, zhgm;
+
     protected override void OnInit()
     {
-        throw new System.NotImplementedException();
+        view = mainView.transform.Find("View/infos/disasterInformationPart").gameObject;
+        disInfo = view.transform.Find("info").GetComponent<Text>();
+        zhlx = view.transform.Find("disasterType").GetComponent<InputField>();
+        zhgm = view.transform.Find("disasterScale").GetComponent<InputField>();
     }
 
     public override void OnShow(object data)
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public override void OnHide()
     {
-        throw new System.NotImplementedException();
+        view.SetActive(false);
     }
 
     public override void OnSave()
     {
-        throw new System.NotImplementedException();
+        //存到cc中的数据结构中，用于报告显示
+    }
+}
+
+/// <summary>
+/// 装备信息
+/// </summary>
+public class EquipmentInfoView : ChangeDataBase
+{
+    private GameObject view;
+    private Transform equipParent;
+    private ChangeData_cellEquipInfoItem cell;
+
+    protected override void OnInit()
+    {
+        view = mainView.transform.Find("View/infos/equipmentInfoPart").gameObject;
+        equipParent = view.transform.Find("SR_equipParent").GetComponentInChildren<ScrollRect>().content;
+        cell = view.transform.Find("equipCell").GetComponent<ChangeData_cellEquipInfoItem>();
+    }
+
+    public override void OnShow(object data)
+    {
+        
+    }
+
+    public override void OnHide()
+    {
+        view.SetActive(false);
+    }
+
+    public override void OnSave()
+    {
+        //存到cc中的数据结构中，用于报告显示
+    }
+}
+
+
+/// <summary>
+/// 人员信息
+/// </summary>
+public class PersonnelInfoView : ChangeDataBase
+{
+    private GameObject view;
+    
+    /// <summary>
+    /// 空勤人员
+    /// </summary>
+    private Transform aircrewParent;
+    
+    /// <summary>
+    /// 机务人员
+    /// </summary>
+    private Transform arcraftCrewParent;
+
+
+    private ChangeData_cellPersonInfoItem cellAircrew, cellArcraftCrew;
+
+    protected override void OnInit()
+    {
+        view = mainView.transform.Find("View/infos/personnelInfoPart").gameObject;
+        aircrewParent = view.transform.Find("Aircrew/SR_Parent").GetComponentInChildren<ScrollRect>().content;
+        arcraftCrewParent = view.transform.Find("AircraftCrew/SR_Parent").GetComponentInChildren<ScrollRect>().content;
+
+        cellAircrew = view.transform.Find("Aircrew/Cell").GetComponent<ChangeData_cellPersonInfoItem>();
+        cellArcraftCrew = view.transform.Find("AircraftCrew/Cell").GetComponent<ChangeData_cellPersonInfoItem>();
+
+    }
+
+    public override void OnShow(object data)
+    {
+        
+    }
+
+    public override void OnHide()
+    {
+        view.SetActive(false);
+    }
+
+    public override void OnSave()
+    {
+        //存到cc中的数据结构中，用于报告显示
+    }
+}
+
+
+/// <summary>
+/// 空管信息
+/// </summary>
+public class AirTrafficControlInfoView : ChangeDataBase
+{
+    private GameObject view;
+
+    private ChangeData_cellFairWayInfoItem cell;
+
+    protected override void OnInit()
+    {
+        view = mainView.transform.Find("View/infos/airTrafficControlInfoPart").gameObject;
+        cell = view.transform.Find("fairway").GetComponent<ChangeData_cellFairWayInfoItem>();
+    }
+
+    public override void OnShow(object data)
+    {
+        
+    }
+
+    public override void OnHide()
+    {
+        view.SetActive(false);
+    }
+
+    public override void OnSave()
+    {
+        //存到cc中的数据结构中，用于报告显示
+    }
+}
+
+/// <summary>
+/// 任务信息
+/// </summary>
+public class TaskInfoView : ChangeDataBase
+{
+    private GameObject view;
+
+    private Image imgTask;
+
+    /// <summary>
+    /// 受灾数量点
+    /// </summary>
+    private InputField InputField_sz;
+    
+    /// <summary>
+    /// 医院数量点
+    /// </summary>
+    private InputField InputField_yy;
+    
+    /// <summary>
+    /// 补给数量
+    /// </summary>
+    private InputField InputField_bj;
+    
+    /// <summary>
+    /// 取水点数量
+    /// </summary>
+    private InputField InputField_qs;
+    
+    /// <summary>
+    /// 安置点数量
+    /// </summary>
+    private InputField InputField_az;
+    
+    /// <summary>
+    /// 起降点数量
+    /// </summary>
+    private InputField InputField_qj;
+    
+    /// <summary>
+    /// 火场点数量
+    /// </summary>
+    private InputField InputField_hc;
+
+    protected override void OnInit()
+    {
+        view = mainView.transform.Find("View/infos/taskInfoPart").gameObject;
+        InputField_sz = view.transform.Find("grid/inputpoints/input").GetComponent<InputField>();
+        InputField_yy = view.transform.Find("grid/inputpoints (1)/input").GetComponent<InputField>();
+        InputField_bj = view.transform.Find("grid/inputpoints (2)/input").GetComponent<InputField>();
+        InputField_qs = view.transform.Find("grid/inputpoints (3)/input").GetComponent<InputField>();
+        InputField_az = view.transform.Find("grid/inputpoints (4)/input").GetComponent<InputField>();
+        InputField_qj = view.transform.Find("grid/inputpoints (5)/input").GetComponent<InputField>();
+        InputField_hc = view.transform.Find("grid/inputpoints (6)/input").GetComponent<InputField>();
+
+    }
+
+    public override void OnShow(object data)
+    {
+        
+    }
+
+    public override void OnHide()
+    {
+        view.SetActive(false);
+    }
+
+    public override void OnSave()
+    {
+        //存到cc中的数据结构中，用于报告显示
+    }
+}
+
+/// <summary>
+/// 二级指挥员
+/// </summary>
+public class FieldCommanderView : ChangeDataBase
+{
+    private GameObject view;
+
+    private ChangeData_cellHeilInfoItem cell;
+
+    protected override void OnInit()
+    {
+        view = mainView.transform.Find("View/infos/fieldCommanderPart").gameObject;
+        cell = view.GetComponent<ChangeData_cellHeilInfoItem>();
+    }
+
+    public override void OnShow(object data)
+    {
+        
+    }
+
+    public override void OnHide()
+    {
+        view.SetActive(false);
+    }
+
+    public override void OnSave()
+    {
+        //存到cc中的数据结构中，用于报告显示
+    }
+}
+
+/// <summary>
+/// 机长
+/// </summary>
+public class CaptainView : ChangeDataBase
+{
+    private GameObject view;
+
+    private ChangeData_cellCaptainInfoItem cell;
+
+    protected override void OnInit()
+    {
+        view = mainView.transform.Find("View/infos/fieldCommanderPart").gameObject;
+        cell = view.GetComponent<ChangeData_cellCaptainInfoItem>();
+    }
+
+    public override void OnShow(object data)
+    {
+        
+    }
+
+    public override void OnHide()
+    {
+        view.SetActive(false);
+    }
+
+    public override void OnSave()
+    {
+        //存到cc中的数据结构中，用于报告显示
     }
 }
