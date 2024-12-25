@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChangeData_cellFairWayInfoItem : MonoBehaviour
+public class ChangeData_cellFairWayInfoItem : DMonoBehaviour
 {
    /// <summary>
    /// 航线toggle

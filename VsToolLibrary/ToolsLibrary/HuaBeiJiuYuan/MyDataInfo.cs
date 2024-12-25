@@ -21,7 +21,7 @@ namespace ToolsLibrary
         public static float gameStartTime; //记录本局游戏开始时刻
         public static List<string> SkillsToBeConfirmed; //待确认技能列表
         public static List<string> TaskPlanningCompletedPersons; //记录完成了任务规划的机长
-        public static List<string> BeUsedJizus; //可用的机组信息
+        public static List<string> BeUsedJizus, BeUsedBaozhangs; //可用的机组信息和保障人员信息
     }
 
     public enum GameState

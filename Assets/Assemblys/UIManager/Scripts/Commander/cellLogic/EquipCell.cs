@@ -27,8 +27,8 @@ public class EquipCell : DMonoBehaviour
 
     public void Init(int myLevel, EquipBase equip, Dictionary<string, string> allCommanderInfos, UnityAction<AEquipData> changeCb)
     {
-        daoPart.SetActive(myLevel == -1);
-        zongPart.SetActive(myLevel == 1);
+        daoPart.SetActive(myLevel == -1 || myLevel == 1);
+        zongPart.SetActive(false);
         qianPart.SetActive(myLevel == 2);
         showName = GetComponentInChildren<Text>(true);
         chooseImg = transform.Find("ChooseImg").gameObject;

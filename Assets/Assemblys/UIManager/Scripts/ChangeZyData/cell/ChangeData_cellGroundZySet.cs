@@ -8,7 +8,7 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
     public Text txtZyType;
     public InputField inputFName;
 
-    public ChangeData_cellLongLatSet LonSet, LatSet;
+    private ChangeData_cellLongLatSet LonSet, LatSet;
 
     private ZiYuanBase _ziYuan;
 
@@ -17,6 +17,8 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
         _ziYuan = zyData;
         txtZyType.text = getZyTypename();
         inputFName.text = zyData.ziYuanName;
+        LonSet = transform.Find("long").GetComponent<ChangeData_cellLongLatSet>();
+        LatSet = transform.Find("lat").GetComponent<ChangeData_cellLongLatSet>();
 
         SetDMS(zyData.latAndLon.x, LonSet);
         SetDMS(zyData.latAndLon.y, LatSet);
@@ -49,16 +51,16 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
     public string GetSaveData()
     {
         //组装数据并发出
-       
+
 
         float lon = DMSToFloat(int.Parse(LonSet.InputField_D.text), int.Parse(LonSet.InputField_M.text),
             int.Parse(LonSet.InputField_S.text));
-        
+
         float lat = DMSToFloat(int.Parse(LatSet.InputField_D.text), int.Parse(LatSet.InputField_M.text),
             int.Parse(LatSet.InputField_S.text));
-        
+
         Vector2 newPos = new Vector2(lon, lat);
-        
+
         if (string.Equals(inputFName.text, _ziYuan.ziYuanName) && Vector2.Distance(newPos, _ziYuan.latAndLon) < 0.0001)
         {
             Debug.LogError(_ziYuan.ziYuanName + "数据未更改");
@@ -70,15 +72,13 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
     }
 
 
-    public void SetDMS(float lonlat,ChangeData_cellLongLatSet cellLongLatSet)
+    public void SetDMS(float lonlat, ChangeData_cellLongLatSet cellLongLatSet)
     {
         Vector3 V3 = FloatToDMS(lonlat);
         cellLongLatSet.InputField_D.text = V3.x.ToString();
         cellLongLatSet.InputField_M.text = V3.y.ToString();
         cellLongLatSet.InputField_S.text = V3.z.ToString();
-
     }
-
 
 
     /// <summary>
@@ -102,7 +102,7 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
         // 返回格式化的度分秒字符串
         return new Vector3(degrees, minutes, seconds);
     }
-    
+
     /// <summary>
     /// 度分秒转化成 float
     /// </summary>
@@ -115,5 +115,4 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
         // 计算并返回十进制度表示
         return degrees + (float)minutes / 60 + (float)seconds / 3600;
     }
-    
 }

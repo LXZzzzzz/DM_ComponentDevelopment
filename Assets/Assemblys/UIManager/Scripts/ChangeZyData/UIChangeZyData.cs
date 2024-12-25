@@ -1,3 +1,4 @@
+using Enums;
 using ToolsLibrary.EquipPart;
 using UiManager;
 using UnityEngine;
@@ -15,9 +16,14 @@ public class UIChangeZyData : BasePanel
     private SupplyOrGoodsView _supplyOrGoodsView;
     private TaskBgSettingView _taskBgSettingView;
     private GroundSupportDataView _groundSupportDataView;
-    private EquipsAndPersonSetView _equipsAndPersonSetView;
+    private PersonSetView _personSetView;
+    private EquipmentInfoView _equipmentInfoView;
     private ShowTaskBgDataView _showTaskBgDataView;
     private DisasterSituationView _disasterSituationView;
+    private AirTrafficControlInfoView _airTrafficControlInfoView;
+    private TaskInfoView _taskInfoView;
+    private FieldCommanderView _fieldCommanderView;
+    private CaptainView _captainView;
 
     private ChangeDataBase _currentView;
 
@@ -42,12 +48,22 @@ public class UIChangeZyData : BasePanel
         _taskBgSettingView.Init(this);
         _groundSupportDataView = new GroundSupportDataView();
         _groundSupportDataView.Init(this);
-        _equipsAndPersonSetView = new EquipsAndPersonSetView();
-        _equipsAndPersonSetView.Init(this);
+        _personSetView = new PersonSetView();
+        _personSetView.Init(this);
+        _equipmentInfoView = new EquipmentInfoView();
+        _equipmentInfoView.Init(this);
         _showTaskBgDataView = new ShowTaskBgDataView();
         _showTaskBgDataView.Init(this);
         _disasterSituationView = new DisasterSituationView();
         _disasterSituationView.Init(this);
+        _airTrafficControlInfoView = new AirTrafficControlInfoView();
+        _airTrafficControlInfoView.Init(this);
+        _taskInfoView = new TaskInfoView();
+        _taskInfoView.Init(this);
+        _fieldCommanderView = new FieldCommanderView();
+        _fieldCommanderView.Init(this);
+        _captainView = new CaptainView();
+        _captainView.Init(this);
         GetControl<Button>("close").onClick.AddListener(() => Close(UIName.UIChangeZyData));
         GetControl<Button>("sure").onClick.AddListener(() =>
         {
@@ -59,6 +75,50 @@ public class UIChangeZyData : BasePanel
     public override void ShowMe(object userData)
     {
         base.ShowMe(userData);
+
+        if (userData is ShowViewInfoBase)
+        {
+            switch ((ShowZyDataType)((ShowViewInfoBase)userData).showType)
+            {
+                case ShowZyDataType.TaskBgShow:
+                    _currentView = _taskBgSettingView;
+                    break;
+                case ShowZyDataType.GroundSupport:
+                case ShowZyDataType.GroundDisaster:
+                    _currentView = _groundSupportDataView;
+                    break;
+                case ShowZyDataType.EquipsShow:
+                case ShowZyDataType.zbxxShow:
+                    _currentView = _equipmentInfoView;
+                    break;
+                case ShowZyDataType.PersonShow:
+                case ShowZyDataType.ryxxShow:
+                    _currentView = _personSetView;
+                    break;
+                case ShowZyDataType.TqChange:
+                    _currentView = _tianQiSetView;
+                    break;
+                case ShowZyDataType.zbgzChange:
+                    _currentView = _malfunctionView;
+                    break;
+                case ShowZyDataType.zqxxShow:
+                    _currentView = _disasterSituationView;
+                    break;
+                case ShowZyDataType.kgxxShow:
+                    _currentView = _airTrafficControlInfoView;
+                    break;
+                case ShowZyDataType.rwxxShow:
+                    _currentView = _taskInfoView;
+                    break;
+                case ShowZyDataType.rwqzbShow:
+                    _currentView = _fieldCommanderView;
+                    break;
+                case ShowZyDataType.dmzbShow:
+                    _currentView = _captainView;
+                    break;
+            }
+        }
+
 
         if (userData is ZiYuanType)
         {
@@ -87,26 +147,6 @@ public class UIChangeZyData : BasePanel
         if (userData is ZyfpInfo)
         {
             _currentView = _zyfpPartView;
-        }
-
-        if (userData is int)
-        {
-            if ((int)userData == 1) _currentView = _tianQiSetView;
-            if ((int)userData == 2) _currentView = _malfunctionView;
-            if ((int)userData == 3) _currentView = _taskBgSettingView;
-            if ((int)userData == 4) _currentView = _groundSupportDataView;
-            if ((int)userData == 5) _currentView = _equipsAndPersonSetView;
-            if ((int)userData == 6) _currentView = _groundSupportDataView;
-        }
-
-        if (userData is string)
-        {
-            _currentView = _showTaskBgDataView;
-        }
-
-        if (userData is ShowDisasterSituationInfo)
-        {
-            _currentView = _disasterSituationView;
         }
 
 

@@ -95,32 +95,61 @@ public partial class CommanderController
 
     public void OnSetEquipShow(string info)
     {
-        var strs = info.Split('_');
+        var equipInfos = info.Split(':');
         List<string> infos = new List<string>();
-        for (int i = 0; i < strs.Length; i++)
+        for (int i = 0; i < equipInfos.Length; i++)
         {
-            infos.Add(strs[i]);
+            if (string.IsNullOrEmpty(equipInfos[i])) continue;
+            //记录场景中要显示的直升机id
+            var adatas = equipInfos[i].Split('_');
+            if (int.Parse(adatas[1]) == 1)
+                infos.Add(adatas[0]);
         }
 
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
+            for (int j = 0; j < equipInfos.Length; j++)
+            {
+                var adatas = equipInfos[j].Split('_');
+                if (string.Equals(MyDataInfo.sceneAllEquips[i].BObjectId, adatas[0]))
+                {
+                    MyDataInfo.sceneAllEquips[i].textInfo = equipInfos[j];
+                    break;
+                }
+            }
+
             MyDataInfo.sceneAllEquips[i].gameObject.SetActive(infos.Contains(MyDataInfo.sceneAllEquips[i].BObjectId));
         }
     }
 
-    public void OnSetJizuInfo(string info)
+    public void OnSetPersonInfo(string data)
     {
-        var infos = info.Split('_');
+        //把机组和保障人员数据拆开
+        var cellsInfo = data.Split(';');
         MyDataInfo.BeUsedJizus = new List<string>();
-        for (int i = 0; i < infos.Length; i++)
+        MyDataInfo.BeUsedBaozhangs = new List<string>();
+
+        //所有机组信息
+        var jizuInfos = cellsInfo[0].Split(':');
+        for (int i = 0; i < jizuInfos.Length; i++)
         {
-            if (string.IsNullOrEmpty(infos[i])) continue;
-            MyDataInfo.BeUsedJizus.Add(infos[i]);
+            if (string.IsNullOrEmpty(jizuInfos[i])) continue;
+            var ajz = jizuInfos[i].Split('_');
+            if (int.Parse(ajz[1]) == 1) MyDataInfo.BeUsedJizus.Add(ajz[0]);
         }
 
-        //通知UI改一下界面
+        //所有保障组信息
+        var baozhangInfos = cellsInfo[1].Split(':');
+        for (int i = 0; i < baozhangInfos.Length; i++)
+        {
+            if (string.IsNullOrEmpty(baozhangInfos[i])) continue;
+            var abz = baozhangInfos[i].Split('_');
+            if (int.Parse(abz[1]) == 1) MyDataInfo.BeUsedBaozhangs.Add(abz[0]);
+        }
+
         if (MyDataInfo.MyLevel == 1)
-            EventManager.Instance.EventTrigger(EventType.changeJizuShow.ToString());
+            // EventManager.Instance.EventTrigger(EventType.changeJizuShow.ToString());
+            EventManager.Instance.EventTrigger(EventType.TransferPersonData.ToString(), data);
     }
 
     public void OnAskForReturn(string info)
@@ -148,6 +177,9 @@ public partial class CommanderController
         int flInfo = int.Parse(infos[1]);
         if (MyDataInfo.MyLevel == 3)
             EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"当前天气：{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
+
+
+        EventManager.Instance.EventTrigger(EventType.TransferTianqiData.ToString(), $"{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
     }
 
     public void OnReceiveRwghwc(string param)
@@ -178,5 +210,30 @@ public partial class CommanderController
     {
         EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长发现新灾情，是否处理",
             () => { OnSendSkillInfo((int)MessageID.SendAgreeDiscoverNewDisaster, ""); });
+    }
+
+    public void OnChangeEquipInfo(string data)
+    {
+        var infos = data.Split('_');
+        var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, infos[0]));
+        (itemEquip as IDqChangePart).SetOilAndLoad(float.Parse(infos[1]), float.Parse(infos[2]));
+    }
+
+    public void OnChangeZiyuanInfo(string data)
+    {
+        var infos = data.Split('_');
+        ZyVariableDataBase itemData = null;
+        var item = sceneAllzy.Find(x => string.Equals(x.BobjectId, infos[0]));
+        switch (item.ZiYuanType)
+        {
+            case ZiYuanType.Supply:
+                itemData = new SupplyVariableData() { oilNum = float.Parse(infos[1]) };
+                break;
+            case ZiYuanType.GoodsPoint:
+                itemData = new GoodsPointVariableData() { goodsNum = float.Parse(infos[1]) };
+                break;
+        }
+
+        item.SetVariableData(itemData);
     }
 }

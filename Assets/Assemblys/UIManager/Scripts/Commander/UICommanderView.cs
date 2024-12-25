@@ -304,7 +304,10 @@ public class UICommanderView : BasePanel
     public void OnChangeZiYuanData(AZiYuanData zdata)
     {
         //这个方法要改成修改资源数据
-        ProgrammeDataManager.Instance.ChangeZiyuanData(zdata);
+        // ProgrammeDataManager.Instance.ChangeZiyuanData(zdata);
+
+        string zyData = zdata.myId + '_' + zdata.zyNum;
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeZiyuanData, zyData);
 
 
         // bool isChangeSuc = ProgrammeDataManager.Instance.ChangeZiYuanData(ziYuanId, commanderId, addOrRemove);

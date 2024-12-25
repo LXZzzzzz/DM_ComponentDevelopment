@@ -436,9 +436,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 //这里的数据是出动直升机信息，要让不出动的直升机在列表和地图不显示
                 _commanderController.OnSetEquipShow(param);
                 break;
-            case MessageID.SendUseJizus:
-                //这里的数据是可用机组信息，要让总指挥页面的下拉框修改一下
-                _commanderController.OnSetJizuInfo(param);
+            case MessageID.SendUsePersons:
+                //这里的数据是可用机组和保障信息，要让总指挥页面的下拉框修改一下
+                _commanderController.OnSetPersonInfo(param);
                 break;
             case MessageID.SendAskForReturn:
                 if (MyDataInfo.MyLevel == 2) _commanderController.OnAskForReturn(param);
@@ -455,6 +455,12 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendAgreeDiscoverNewDisaster:
                 if (MyDataInfo.MyLevel != 3) EventManager.Instance.EventTrigger(EventType.HideGoIcon.ToString(), string.Empty);
+                break;
+            case MessageID.SendChangeEquipOilAndLoad:
+                _commanderController.OnChangeEquipInfo(param);
+                break;
+            case MessageID.SendChangeZiyuanData:
+                _commanderController.OnChangeZiyuanInfo(param);
                 break;
 
 

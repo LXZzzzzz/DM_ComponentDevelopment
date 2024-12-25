@@ -51,6 +51,8 @@ namespace ToolsLibrary.EquipPart
 
         public List<string> currentBindingZy; //当前直升机绑定的资源，其中也包括任务，由于任务与资源合并，只从接口区分
 
+        public string textInfo; //存储这个直升机文本信息
+
         private int currentState; //当前直升机状态（可用状态：可用、不可用、返修）
         protected bool isArrive => _isArrive;
 
@@ -164,6 +166,9 @@ namespace ToolsLibrary.EquipPart
 
         //设置直升机状态
         void ChangeCurrentState(int state);
+
+        //获取飞机的载油量和装载量
+        void GetOilAndLoad(out float oil, out float load);
 
         //机长设置载油量和装载量
         void SetOilAndLoad(float oilProportion, float loadProportion);

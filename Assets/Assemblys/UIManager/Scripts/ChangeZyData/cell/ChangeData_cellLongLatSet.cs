@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChangeData_cellLongLatSet : MonoBehaviour
+public class ChangeData_cellLongLatSet : DMonoBehaviour
 {
     /// <summary>
     /// 度分秒

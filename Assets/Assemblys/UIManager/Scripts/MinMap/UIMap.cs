@@ -41,6 +41,8 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     private List<ZiYuanBase> zaiquTemplates;
 
+    private string personData, misDescriptionData, kongguanData, tianqiData;
+
     public override void Init()
     {
         base.Init();
@@ -54,8 +56,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
         GetControl<Button>("Btn_CreatFirePoint").onClick.AddListener(() => OnOpenCreatZaiqu(1));
         GetControl<Button>("Btn_CreatDisaster").onClick.AddListener(() => OnOpenCreatZaiqu(2));
-        GetControl<Button>("Btn_ChangeTQ").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 1));
-        GetControl<Button>("Btn_Malfunction").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 2));
+        GetControl<Button>("Btn_ChangeTQ").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.TqChange)));
+        GetControl<Button>("Btn_Malfunction").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.zbgzChange)));
         GetControl<Button>("Btn_Zqxx").onClick.AddListener(() => OnClickZqxx(1));
         GetControl<Button>("Btn_Zbxx").onClick.AddListener(() => OnClickZqxx(2));
         GetControl<Button>("Btn_Ryxx").onClick.AddListener(() => OnClickZqxx(3));
@@ -72,16 +74,17 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_ReturnRepair").onClick.AddListener(() => OnAskForReturn(1));
         GetControl<Button>("Btn_NewDisaster").onClick.AddListener(OnSendNewDisaster);
         GetControl<Button>("Btn_Set").onClick.AddListener(OnSetData);
-        GetControl<Button>("Btn_TaskBg").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 3));
+        GetControl<Button>("Btn_TaskBg").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.TaskBgShow)));
         GetControl<Button>("Btn_CompleteBgSet").onClick.AddListener(
             () =>
             {
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendCompleteTaskBgSet, "");
                 EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "已完成任务设置，可以开始训练");
             });
-        GetControl<Button>("Btn_GroundSupport").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 4));
-        GetControl<Button>("Btn_EquipsAndPerson").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 5));
-        GetControl<Button>("Btn_GroundDisaster").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, 6));
+        GetControl<Button>("Btn_GroundSupport").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.GroundSupport)));
+        GetControl<Button>("Btn_GroundDisaster").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.GroundDisaster)));
+        GetControl<Button>("Btn_Equips").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.EquipsShow)));
+        GetControl<Button>("Btn_Person").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.PersonShow)));
 
         routeDecorateGo = transform.Find("maxMap/objects/routeDecorate").gameObject;
         startPoint = transform.Find("maxMap/objects/routeDecorate/startPoint").GetComponent<RectTransform>();
@@ -115,6 +118,10 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.AddEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
         EventManager.Instance.AddEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
         EventManager.Instance.AddEventListener<string>(EventType.HideGoIcon.ToString(), OnHideZyShow);
+        EventManager.Instance.AddEventListener<string>(EventType.TransferPersonData.ToString(), OnGetPersonData);
+        EventManager.Instance.AddEventListener<string>(EventType.TransferMisDescription.ToString(), OnGetmisDescription);
+        EventManager.Instance.AddEventListener<string>(EventType.TransferKongguanData.ToString(), OnGetKongGuanData);
+        EventManager.Instance.AddEventListener<string>(EventType.TransferTianqiData.ToString(), OnGetTianqiData);
         // 当前UI对象的局部Y轴
         localYAxis = middlePoint.transform.up;
 
@@ -179,6 +186,10 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.RemoveEventListener(EventType.SetMyEquipIconLayer.ToString(), setAirCellMaxLayer);
         EventManager.Instance.RemoveEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
         EventManager.Instance.RemoveEventListener<string>(EventType.HideGoIcon.ToString(), OnHideZyShow);
+        EventManager.Instance.RemoveEventListener<string>(EventType.TransferPersonData.ToString(), OnGetPersonData);
+        EventManager.Instance.RemoveEventListener<string>(EventType.TransferMisDescription.ToString(), OnGetmisDescription);
+        EventManager.Instance.RemoveEventListener<string>(EventType.TransferKongguanData.ToString(), OnGetKongGuanData);
+        EventManager.Instance.RemoveEventListener<string>(EventType.TransferTianqiData.ToString(), OnGetTianqiData);
     }
 
     private void SwithMode(int mode)
@@ -331,6 +342,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_CompleteBgSet").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState == GameState.None);
         GetControl<Button>("Btn_PeculiarSetting").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_Hxsb").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet);
+        GetControl<Toggle>("xxqrTog").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet);
         GetControl<Button>("Btn_Rwqzb").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
         GetControl<Button>("Btn_Sqrwzx").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
         GetControl<Button>("Btn_Dmzb").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
@@ -339,7 +351,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_Import").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
         GetControl<Button>("Btn_Set").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_ReturnBack").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
-        GetControl<Button>("Btn_ReturnRepair").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
+        GetControl<Button>("Btn_ReturnRepair").gameObject.SetActive(false);
         GetControl<Button>("Btn_NewDisaster").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
 
         currentMapLogic?.OnUpdate();
@@ -399,6 +411,26 @@ public class UIMap : BasePanel, IPointerClickHandler
         }
     }
 
+    private void OnGetPersonData(string pd)
+    {
+        personData = pd;
+    }
+
+    private void OnGetmisDescription(string mis)
+    {
+        misDescriptionData = mis;
+    }
+
+    private void OnGetKongGuanData(string kg)
+    {
+        kongguanData = kg;
+    }
+
+    private void OnGetTianqiData(string tq)
+    {
+        tianqiData = tq;
+    }
+
     private void OnClickZqxx(int info)
     {
         // EventManager.Instance.EventTrigger(EventType.ShowMisDescription.ToString());
@@ -406,29 +438,34 @@ public class UIMap : BasePanel, IPointerClickHandler
         switch (info)
         {
             case 1:
+                UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowStrInputData((int)ShowZyDataType.zqxxShow, misDescriptionData));
                 itemShowStr = "灾情信息查看";
                 break;
             case 2:
+                UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.zbxxShow));
                 itemShowStr = "装备信息查看";
                 break;
             case 3:
+                UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowStrInputData((int)ShowZyDataType.ryxxShow, personData));
                 itemShowStr = "人员信息查看";
                 break;
             case 4:
+                UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowStrInputData((int)ShowZyDataType.kgxxShow, kongguanData));
                 itemShowStr = "空管信息查看";
                 break;
             case 5:
+                UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowStrInputData((int)ShowZyDataType.rwxxShow, tianqiData));
                 itemShowStr = "任务信息查看";
                 break;
             case 6:
+                UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.rwqzbShow));
                 itemShowStr = "任务前准备界面，输入油量和装载量";
                 break;
             case 7:
+                UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.dmzbShow));
                 itemShowStr = "地面前准备，输入飞机载油量，装载量";
                 break;
         }
-
-        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), itemShowStr);
     }
 
     private void OnClickHxsb()

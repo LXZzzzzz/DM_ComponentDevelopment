@@ -196,12 +196,38 @@ public class TestLogic : MonoBehaviour
             GetOilConsumption(speedd, weightt);
         }
 
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log(FloatToDMS(45.56f));
+        }
+
         if (isRunTimer) runTimer();
 
         if (routePoints != null)
         {
             // testPoint.anchoredPosition = routePoints[1];
         }
+    }
+    /// <summary>
+    /// float 转度分秒
+    /// </summary>
+    /// <param name="coordinate"></param>
+    /// <returns></returns>
+    public Vector3 FloatToDMS(float coordinate)
+    {
+        // 获取度数（整数部分）
+        int degrees = Mathf.FloorToInt(coordinate);
+
+        // 获取分数（剩余的小数部分 * 60）
+        float minutesDecimal = (Mathf.Abs(coordinate) - Mathf.Abs(degrees)) * 60;
+        int minutes = Mathf.FloorToInt(minutesDecimal);
+
+        // 获取秒数（剩余的小数部分 * 60）
+        float secondsDecimal = (minutesDecimal - minutes) * 60;
+        int seconds = Mathf.FloorToInt(secondsDecimal);
+
+        // 返回格式化的度分秒字符串
+        return new Vector3(degrees, minutes, seconds);
     }
 
     public float speedd, weightt;

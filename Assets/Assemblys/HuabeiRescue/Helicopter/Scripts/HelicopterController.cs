@@ -525,6 +525,13 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         }
     }
 
+    public void GetOilAndLoad(out float oil, out float load)
+    {
+        //⭐⭐这里要区分一下如果是救援就用最大有效载荷
+        oil = myAttributeInfo.zyl;
+        load = myAttributeInfo.dszl;
+    }
+
     public void SetOilAndLoad(float oilProportion, float loadProportion)
     {
         //机长修改了载油量比例和装载量比例

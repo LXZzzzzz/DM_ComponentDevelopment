@@ -179,12 +179,30 @@ namespace ToolsLibrary.EquipPart
     }
 
 
+    //展示信息的结构父类
     public abstract class ShowViewInfoBase
     {
+        public int showType;
     }
 
-    public class ShowDisasterSituationInfo
+    //无输入参数
+    public class ShowNoInputData : ShowViewInfoBase
     {
-        public string disInfo;
+        public ShowNoInputData(int st)
+        {
+            showType = st;
+        }
+    }
+
+    //展示需要传递字符串信息的页面
+    public class ShowStrInputData : ShowViewInfoBase
+    {
+        public string strInfo;
+
+        public ShowStrInputData(int st, string str)
+        {
+            showType = st;
+            strInfo = str;
+        }
     }
 }

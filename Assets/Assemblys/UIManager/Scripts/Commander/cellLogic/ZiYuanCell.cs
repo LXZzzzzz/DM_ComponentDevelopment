@@ -47,12 +47,12 @@ public class ZiYuanCell : DMonoBehaviour
     private void OnOpenChangeCom()
     {
         //打开选择权限的视图
-        if (ProgrammeDataManager.Instance.GetCurrentData == null)
-        {
-            ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "请先创建方案再进行编辑！" };
-            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
-            return;
-        }
+        // if (ProgrammeDataManager.Instance.GetCurrentData == null)
+        // {
+        //     ConfirmatonInfo infob = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "请先创建方案再进行编辑！" };
+        //     UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infob);
+        //     return;
+        // }
 
         Debug.LogError("资源类型：" + _ziYuan.ZiYuanType);
 

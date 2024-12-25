@@ -42,8 +42,10 @@ public partial class CommanderController
 
     public void Receive_ProgrammeData(string data)
     {
-        var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
-        OnLoadProgrammeDataSuc(programmeData);
+        
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
+        // var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
+        // OnLoadProgrammeDataSuc(programmeData);
         if (MyDataInfo.MyLevel == 2)
             EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "请您为出动直升机进行资源分配");
     }
@@ -358,9 +360,13 @@ public partial class CommanderController
     {
         var infos = data.Split('_');
         if (MyDataInfo.MyLevel != -1)
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"已完成任务背景设置，训练即将开始。\n当前天气：{tianqiInfo[int.Parse(infos[0])]}");
-        zqxx = data;
-        misDescription = infos[2];
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"已完成任务背景设置，训练即将开始。\n当前天气：{tianqiInfo[int.Parse(infos[0])]},{fengliInfo[int.Parse(infos[1])]}");
+
+        misDescription = infos[3];
+        //把信息传给UI，去展示
+        EventManager.Instance.EventTrigger(EventType.TransferMisDescription.ToString(), misDescription);
+        EventManager.Instance.EventTrigger(EventType.TransferKongguanData.ToString(), infos[4]);
+        EventManager.Instance.EventTrigger(EventType.TransferTianqiData.ToString(), $"{tianqiInfo[int.Parse(infos[0])]},{fengliInfo[int.Parse(infos[1])]}");
     }
 
     public void Receive_CompleteBgSet()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Enums;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
@@ -360,9 +361,9 @@ public class GroundSupportDataView : ChangeDataBase
     public override void OnShow(object data)
     {
         mainView.ChangeViewSize(1);
-        switch ((int)data)
+        switch ((ShowZyDataType)((ShowViewInfoBase)data).showType)
         {
-            case 4:
+            case ShowZyDataType.GroundSupport:
                 mainView.ChangeTitleInfo("地面保障数据");
                 for (int i = 0; i < MyDataInfo.sceneAllZiYuan.Count; i++)
                 {
@@ -374,7 +375,7 @@ public class GroundSupportDataView : ChangeDataBase
                 }
 
                 break;
-            case 6:
+            case ShowZyDataType.GroundDisaster:
                 mainView.ChangeTitleInfo("地面灾情点数据");
                 for (int i = 0; i < MyDataInfo.sceneAllZiYuan.Count; i++)
                 {
@@ -414,71 +415,94 @@ public class GroundSupportDataView : ChangeDataBase
     }
 }
 
-//装备和机组人员设置部分
-public class EquipsAndPersonSetView : ChangeDataBase
+//机组人员设置部分，导教端修改页面和一级查看页面共用
+public class PersonSetView : ChangeDataBase
 {
     private GameObject view;
-    private Transform equipParent, jizuParent;
-    private ChangeData_cellEquipChooseItem equipCell;
+    private Transform jizuParent, baozhangParent;
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/equipsAndPersonSetPart").gameObject;
-        equipParent = view.transform.Find("ScrollR_Equip").GetComponent<ScrollRect>().content;
-        jizuParent = view.transform.Find("ScrollR_Jizu").GetComponent<ScrollRect>().content;
-        equipCell = view.transform.Find("equipCell").GetComponent<ChangeData_cellEquipChooseItem>();
+        view = mainView.transform.Find("View/infos/personSetPart").gameObject;
+        jizuParent = view.transform.Find("ScrollR_Jizuu").GetComponent<ScrollRect>().content;
+        baozhangParent = view.transform.Find("ScrollR_Baozhang").GetComponent<ScrollRect>().content;
     }
 
     public override void OnShow(object data)
     {
         mainView.ChangeViewSize(1);
-        mainView.ChangeTitleInfo("装备和机组人员设置");
+        mainView.ChangeTitleInfo("机组人员设置");
         view.SetActive(true);
-        //展示所有直升机，选择启用情况
-        //展示所有机组人员，可增删
-        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+
+        //一级指挥打开的时候，要把信息初始化进去，，导教端打开不用管，数据让他自己填
+        if (data is ShowStrInputData)
         {
-            var eqItem = GameObject.Instantiate(equipCell, equipParent);
-            eqItem.Init(MyDataInfo.sceneAllEquips[i]);
-            eqItem.gameObject.SetActive(true);
+            var cellsInfo = (data as ShowStrInputData).strInfo.Split(';');
+
+            //所有机组信息
+            var jizuInfos = cellsInfo[0].Split(':');
+            for (int i = 0; i < jizuParent.childCount; i++)
+            {
+                ChangeData_cellPersonInfoItem personCell = jizuParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>();
+                for (int j = 0; j < jizuInfos.Length; j++)
+                {
+                    //从所有机组信息中找到一个和当前cell匹配的数据，传进去
+                    var acellData = jizuInfos[j].Split('_');
+                    if (string.Equals(acellData[0], personCell.personName))
+                    {
+                        personCell.Init(jizuInfos[j]);
+                        break;
+                    }
+                }
+            }
+
+            //所有保障组信息
+            var baozhangInfos = cellsInfo[1].Split(':');
+            for (int i = 0; i < baozhangParent.childCount; i++)
+            {
+                ChangeData_cellPersonInfoItem personCell = baozhangParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>();
+                for (int j = 0; j < baozhangInfos.Length; j++)
+                {
+                    //从所有机组信息中找到一个和当前cell匹配的数据，传进去
+                    var acellData = baozhangInfos[j].Split('_');
+                    if (string.Equals(acellData[0], personCell.personName))
+                    {
+                        personCell.Init(baozhangInfos[j]);
+                        break;
+                    }
+                }
+            }
         }
     }
 
     public override void OnHide()
     {
         view.SetActive(false);
-        for (int i = 0; i < equipParent.childCount; i++)
-        {
-            GameObject.Destroy(equipParent.GetChild(i).gameObject);
-        }
     }
 
     public override void OnSave()
     {
-        //装备可用状态和机组人员显示状态 发送
-        string chooseEquips = "";
-        for (int i = 0; i < equipParent.childCount; i++)
-        {
-            string chooseId = equipParent.GetChild(i).GetComponent<ChangeData_cellEquipChooseItem>().GetRunEquip();
-            if (string.IsNullOrEmpty(chooseId)) continue;
-            chooseEquips += chooseId + '_';
-        }
-
-        //发送出去
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendUseEquips, chooseEquips);
-        string chooseJizus = "";
+        //只有导教端才有修改机组人员状态的权限，一级指挥只是查看
+        if (MyDataInfo.MyLevel != -1) return;
+        //机组人员显示状态 发送
+        string choosePersons = "";
         for (int i = 0; i < jizuParent.childCount; i++)
         {
-            if (jizuParent.GetChild(i).GetComponentInChildren<Toggle>().isOn)
-                chooseJizus += jizuParent.GetChild(i).GetComponentInChildren<Text>().text + '_';
+            choosePersons += jizuParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>().GetData() + ':';
         }
 
-        Debug.LogError(chooseJizus);
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendUseJizus, chooseJizus);
+        choosePersons += ';'; //机组数据和保障数据用;隔开
+        for (int i = 0; i < baozhangParent.childCount; i++)
+        {
+            choosePersons += baozhangParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>().GetData() + ':';
+        }
+
+        Debug.LogError(choosePersons);
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendUsePersons, choosePersons);
     }
 }
 
-//任务背景查看部分
+//任务背景查看部分,,这里应该删掉，展示灾情信息界面就行
 public class ShowTaskBgDataView : ChangeDataBase
 {
     private GameObject view;
@@ -500,18 +524,21 @@ public class ShowTaskBgDataView : ChangeDataBase
         mainView.ChangeViewSize(1);
         mainView.ChangeTitleInfo("任务背景信息");
         view.SetActive(true);
-        var strs = (data as string).Split('_');
-        if (strs != null && strs.Length == 5)
+        if (data is ShowStrInputData)
         {
-            tqSetting.value = int.Parse(strs[0]);
-            flSetting.value = int.Parse(strs[1]);
-            taskTarget.text = strs[2];
-            disInfo.text = strs[3];
-            kongGuan.text = strs[4];
-        }
-        else
-        {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务背景信息还未收到");
+            var strs = (data as ShowStrInputData).strInfo.Split('_');
+            if (strs != null && strs.Length == 5)
+            {
+                tqSetting.value = int.Parse(strs[0]);
+                flSetting.value = int.Parse(strs[1]);
+                taskTarget.text = strs[2];
+                disInfo.text = strs[3];
+                kongGuan.text = strs[4];
+            }
+            else
+            {
+                EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务背景信息还未收到");
+            }
         }
     }
 
@@ -542,11 +569,11 @@ public class DisasterSituationView : ChangeDataBase
 
     public override void OnShow(object data)
     {
-        ShowDisasterSituationInfo sdsi = data as ShowDisasterSituationInfo;
-        mainView.ChangeTitleInfo(sdsi.disInfo);
+        ShowStrInputData sdsi = data as ShowStrInputData;
+        mainView.ChangeTitleInfo("灾害信息");
         mainView.ChangeViewSize(1);
         view.SetActive(true);
-        disInfo.text = sdsi.disInfo;
+        disInfo.text = sdsi.strInfo;
     }
 
     public override void OnHide()
@@ -561,57 +588,36 @@ public class DisasterSituationView : ChangeDataBase
 }
 
 /// <summary>
-/// 灾情信息
-/// </summary>
-public class DisasterInformationView : ChangeDataBase
-{
-    private GameObject view;
-    private Text disInfo;
-    private InputField zhlx, zhgm;
-
-    protected override void OnInit()
-    {
-        view = mainView.transform.Find("View/infos/disasterInformationPart").gameObject;
-        disInfo = view.transform.Find("info").GetComponent<Text>();
-        zhlx = view.transform.Find("disasterType").GetComponent<InputField>();
-        zhgm = view.transform.Find("disasterScale").GetComponent<InputField>();
-    }
-
-    public override void OnShow(object data)
-    {
-        
-    }
-
-    public override void OnHide()
-    {
-        view.SetActive(false);
-    }
-
-    public override void OnSave()
-    {
-        //存到cc中的数据结构中，用于报告显示
-    }
-}
-
-/// <summary>
-/// 装备信息
+/// 装备信息,导教端修改页面和一级查看页面共用
 /// </summary>
 public class EquipmentInfoView : ChangeDataBase
 {
     private GameObject view;
     private Transform equipParent;
     private ChangeData_cellEquipInfoItem cell;
+    private List<ChangeData_cellEquipInfoItem> equips;
 
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/equipmentInfoPart").gameObject;
         equipParent = view.transform.Find("SR_equipParent").GetComponentInChildren<ScrollRect>().content;
         cell = view.transform.Find("equipCell").GetComponent<ChangeData_cellEquipInfoItem>();
+        equips = new List<ChangeData_cellEquipInfoItem>();
     }
 
     public override void OnShow(object data)
     {
-        
+        mainView.ChangeTitleInfo("装备信息");
+        mainView.ChangeViewSize(1);
+        view.SetActive(true);
+        if (equipParent.childCount != 0) return;
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            ChangeData_cellEquipInfoItem item = GameObject.Instantiate(cell, equipParent);
+            item.Init(MyDataInfo.sceneAllEquips[i]);
+            equips.Add(item);
+            item.gameObject.SetActive(true);
+        }
     }
 
     public override void OnHide()
@@ -621,23 +627,30 @@ public class EquipmentInfoView : ChangeDataBase
 
     public override void OnSave()
     {
-        //存到cc中的数据结构中，用于报告显示
+        if (MyDataInfo.MyLevel != -1) return;
+        string equipDatas = "";
+        for (int i = 0; i < equips.Count; i++)
+        {
+            equipDatas += equips[i].getData() + ':';
+        }
+
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendUseEquips, equipDatas);
     }
 }
 
 
 /// <summary>
-/// 人员信息
+/// 人员信息,这里应该删掉
 /// </summary>
 public class PersonnelInfoView : ChangeDataBase
 {
     private GameObject view;
-    
+
     /// <summary>
     /// 空勤人员
     /// </summary>
     private Transform aircrewParent;
-    
+
     /// <summary>
     /// 机务人员
     /// </summary>
@@ -654,12 +667,10 @@ public class PersonnelInfoView : ChangeDataBase
 
         cellAircrew = view.transform.Find("Aircrew/Cell").GetComponent<ChangeData_cellPersonInfoItem>();
         cellArcraftCrew = view.transform.Find("AircraftCrew/Cell").GetComponent<ChangeData_cellPersonInfoItem>();
-
     }
 
     public override void OnShow(object data)
     {
-        
     }
 
     public override void OnHide()
@@ -681,17 +692,22 @@ public class AirTrafficControlInfoView : ChangeDataBase
 {
     private GameObject view;
 
+    private InputField kg;
     private ChangeData_cellFairWayInfoItem cell;
 
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/airTrafficControlInfoPart").gameObject;
+        kg = view.transform.Find("InputF_fairway").GetComponent<InputField>();
         cell = view.transform.Find("fairway").GetComponent<ChangeData_cellFairWayInfoItem>();
     }
 
     public override void OnShow(object data)
     {
-        
+        mainView.ChangeTitleInfo("空管信息");
+        mainView.ChangeViewSize(1);
+        view.SetActive(true);
+        kg.text = (data as ShowStrInputData).strInfo;
     }
 
     public override void OnHide()
@@ -701,7 +717,6 @@ public class AirTrafficControlInfoView : ChangeDataBase
 
     public override void OnSave()
     {
-        //存到cc中的数据结构中，用于报告显示
     }
 }
 
@@ -711,39 +726,39 @@ public class AirTrafficControlInfoView : ChangeDataBase
 public class TaskInfoView : ChangeDataBase
 {
     private GameObject view;
-
+    private Text text_tq;
     private Image imgTask;
 
     /// <summary>
     /// 受灾数量点
     /// </summary>
     private InputField InputField_sz;
-    
+
     /// <summary>
     /// 医院数量点
     /// </summary>
     private InputField InputField_yy;
-    
+
     /// <summary>
     /// 补给数量
     /// </summary>
     private InputField InputField_bj;
-    
+
     /// <summary>
     /// 取水点数量
     /// </summary>
     private InputField InputField_qs;
-    
+
     /// <summary>
     /// 安置点数量
     /// </summary>
     private InputField InputField_az;
-    
+
     /// <summary>
     /// 起降点数量
     /// </summary>
     private InputField InputField_qj;
-    
+
     /// <summary>
     /// 火场点数量
     /// </summary>
@@ -752,6 +767,7 @@ public class TaskInfoView : ChangeDataBase
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/taskInfoPart").gameObject;
+        text_tq = view.transform.Find("text_tq").GetComponent<Text>();
         InputField_sz = view.transform.Find("grid/inputpoints/input").GetComponent<InputField>();
         InputField_yy = view.transform.Find("grid/inputpoints (1)/input").GetComponent<InputField>();
         InputField_bj = view.transform.Find("grid/inputpoints (2)/input").GetComponent<InputField>();
@@ -759,12 +775,16 @@ public class TaskInfoView : ChangeDataBase
         InputField_az = view.transform.Find("grid/inputpoints (4)/input").GetComponent<InputField>();
         InputField_qj = view.transform.Find("grid/inputpoints (5)/input").GetComponent<InputField>();
         InputField_hc = view.transform.Find("grid/inputpoints (6)/input").GetComponent<InputField>();
-
     }
 
     public override void OnShow(object data)
     {
-        
+        mainView.ChangeTitleInfo("任务信息");
+        mainView.ChangeViewSize(1);
+        view.SetActive(true);
+        Debug.LogError("是不是空:" + data);
+        if (data is ShowStrInputData)
+            text_tq.text = "任务区气象条件：" + (data as ShowStrInputData).strInfo;
     }
 
     public override void OnHide()
@@ -784,18 +804,24 @@ public class TaskInfoView : ChangeDataBase
 public class FieldCommanderView : ChangeDataBase
 {
     private GameObject view;
-
-    private ChangeData_cellHeilInfoItem cell;
+    private Dropdown checkEquip;
 
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/fieldCommanderPart").gameObject;
-        cell = view.GetComponent<ChangeData_cellHeilInfoItem>();
+        checkEquip = view.transform.Find("dp_checkEquip").GetComponent<Dropdown>();
     }
 
     public override void OnShow(object data)
     {
-        
+        mainView.ChangeTitleInfo("任务前准备信息");
+        mainView.ChangeViewSize(1);
+        view.SetActive(true);
+        checkEquip.options.Clear();
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            checkEquip.options.Add(new Dropdown.OptionData(MyDataInfo.sceneAllEquips[i].name));
+        }
     }
 
     public override void OnHide()
@@ -815,18 +841,37 @@ public class FieldCommanderView : ChangeDataBase
 public class CaptainView : ChangeDataBase
 {
     private GameObject view;
-
-    private ChangeData_cellCaptainInfoItem cell;
+    private Text jixing, bianhao, oilMax, loadMax;
+    private Slider zyl, zzl;
+    private EquipBase _equip;
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/fieldCommanderPart").gameObject;
-        cell = view.GetComponent<ChangeData_cellCaptainInfoItem>();
+        view = mainView.transform.Find("View/infos/captainPart").gameObject;
+        jixing = view.transform.Find("modeldes").GetComponent<Text>();
+        bianhao = view.transform.Find("numberdes").GetComponent<Text>();
+        zyl = view.transform.Find("fuelSlider").GetChild(0).GetComponent<Slider>();
+        zzl = view.transform.Find("loadSlider").GetChild(0).GetComponent<Slider>();
+        oilMax = view.transform.Find("fuelSlider").GetChild(2).GetComponent<Text>();
+        loadMax = view.transform.Find("loadSlider").GetChild(2).GetComponent<Text>();
     }
 
     public override void OnShow(object data)
     {
-        
+        mainView.ChangeTitleInfo("地面准备信息");
+        mainView.ChangeViewSize(1);
+        view.SetActive(true);
+        _equip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BeLongToCommanderId, MyDataInfo.leadId));
+        if (_equip == null)
+        {
+            Debug.LogError("找不到我自己的飞机");
+            return;
+        }
+
+        (_equip as IDqChangePart).GetOilAndLoad(out float oil, out float load);
+        jixing.text = bianhao.text = _equip.name;
+        zyl.value = oil;
+        zzl.value = load;
     }
 
     public override void OnHide()
@@ -836,6 +881,7 @@ public class CaptainView : ChangeDataBase
 
     public override void OnSave()
     {
-        //存到cc中的数据结构中，用于报告显示
+        string info = _equip.BObjectId + zyl.value.ToString() + '_' + zzl.value.ToString();
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeEquipOilAndLoad, info);
     }
 }

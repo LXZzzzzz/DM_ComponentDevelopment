@@ -27,7 +27,6 @@ public partial class CommanderController : DMonoBehaviour
     private int zaiquIdNum;
     private GameObject cameraFllowGo;
     private List<ZiYuanBase> sceneAlltempzy;
-    private string zqxx;
 
     private bool isMe;
 
@@ -60,7 +59,6 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), OnSendCreatZaiQuZy);
         EventManager.Instance.AddEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
-        EventManager.Instance.AddEventListener(EventType.ShowMisDescription.ToString(), SendTaskSureMsg);
         EventManager.Instance.AddEventListener<int>(EventType.AskForReturnTrigger.ToString(), OnAskForReturn);
     }
 
@@ -81,7 +79,6 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), OnSendCreatZaiQuZy);
         EventManager.Instance.RemoveEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
-        EventManager.Instance.RemoveEventListener(EventType.ShowMisDescription.ToString(), SendTaskSureMsg);
         EventManager.Instance.RemoveEventListener<int>(EventType.AskForReturnTrigger.ToString(), OnAskForReturn);
     }
 
@@ -142,36 +139,36 @@ public partial class CommanderController : DMonoBehaviour
         //     EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
         // }
         
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            OnSendSkillInfo((int)MessageID.SendGameStart,((int)(MyDataInfo.gameStartTime * 1000)).ToString());
-        }
-        
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            (myEquip as IDqChangePart)?.GoReturnRepair();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            (myEquip as IDqChangePart)?.GoReturnBack();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, "5");
-        }
+        // if (Input.GetKeyDown(KeyCode.O))
+        // {
+        //     OnSendSkillInfo((int)MessageID.SendGameStart,((int)(MyDataInfo.gameStartTime * 1000)).ToString());
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.I))
+        // {
+        //     (myEquip as IDqChangePart)?.GoReturnRepair();
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     (myEquip as IDqChangePart)?.GoReturnBack();
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.P))
+        // {
+        //     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, "5");
+        // }
     }
 
     private void SendTaskSureMsg()
     {
-        if (string.IsNullOrEmpty(zqxx))
-        {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务背景信息还未收到");
-            return;
-        }
-
-        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ChangeZyData", zqxx);
+        // if (string.IsNullOrEmpty(zqxx))
+        // {
+        //     EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务背景信息还未收到");
+        //     return;
+        // }
+        //
+        // EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ChangeZyData", zqxx);
 
         // EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), misDescription, () =>
         // {

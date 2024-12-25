@@ -196,22 +196,22 @@ public class UITopMenuView : BasePanel
     {
         if (MyDataInfo.gameState != GameState.AgreeAirLine)
         {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "申报航线后才可发布方案");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "申报航线后才可下达任务");
             return;
         }
 
-        if (ProgrammeDataManager.Instance.GetCurrentData == null)
-        {
-            ConfirmatonInfo infor = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "当前未创建方案无法发布" };
-            UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infor);
-            return;
-        }
+        // if (ProgrammeDataManager.Instance.GetCurrentData == null)
+        // {
+        //     ConfirmatonInfo infor = new ConfirmatonInfo { type = showType.tipView, showStrInfo = "当前未创建方案无法发布" };
+        //     UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infor);
+        //     return;
+        // }
 
         putAwayMenu();
-        string packedData = ProgrammeDataManager.Instance.PackedData();
+        // string packedData = ProgrammeDataManager.Instance.PackedData();
 
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendProgramme, packedData);
-        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "方案已发布");
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendProgramme, "");
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务已下达");
     }
 
     private void standAlone()
@@ -267,16 +267,16 @@ public class UITopMenuView : BasePanel
     {
         putAwayMenu();
         //开始推演指令
-        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
-        {
-            bool isOut = ProgrammeDataManager.Instance.GetEquipDataById(MyDataInfo.sceneAllEquips[i].BObjectId)?.isSetOut == 1;
-            if (isOut && !MyDataInfo.TaskPlanningCompletedPersons.Contains(MyDataInfo.sceneAllEquips[i].BObjectId))
-            {
-                ConfirmatonInfo ci = new ConfirmatonInfo() { showStrInfo = "需等到所有出动直升机都完成任务规划才能开始", type = showType.tipView };
-                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, ci);
-                return;
-            }
-        }
+        // for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        // {
+        //     bool isOut = ProgrammeDataManager.Instance.GetEquipDataById(MyDataInfo.sceneAllEquips[i].BObjectId)?.isSetOut == 1;
+        //     if (isOut && !MyDataInfo.TaskPlanningCompletedPersons.Contains(MyDataInfo.sceneAllEquips[i].BObjectId))
+        //     {
+        //         ConfirmatonInfo ci = new ConfirmatonInfo() { showStrInfo = "需等到所有出动直升机都完成任务规划才能开始", type = showType.tipView };
+        //         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, ci);
+        //         return;
+        //     }
+        // }
 
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
     }

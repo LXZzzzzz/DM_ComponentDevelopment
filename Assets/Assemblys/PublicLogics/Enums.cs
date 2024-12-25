@@ -47,13 +47,16 @@ namespace Enums
         ClearPathPlanningData, //清空规划点
         MoveToTarget_AutoRun, //自动执行移动到目标点
 
-        ShowMisDescription, //展示灾情信息
         InitEquipData, //加载方案时初始化直升机数据
         ChangeJiZhangView, //机长端通知页面修改,控制哪些资源显示
         DqChooseGo, //选中某个对象
         changeJizuShow, //更改机组可选信息
         AskForReturnTrigger, //界面发送给管理器申请返回
         HideGoIcon, //隐藏某个对象的图标，主要用来创建灾区不立即显示
+        TransferPersonData, //传递人员数据给UI
+        TransferMisDescription, //传递灾情信息给UI
+        TransferKongguanData, //传递空管信息给UI
+        TransferTianqiData, //传递天气信息给UI
     }
 
     public enum MessageID
@@ -85,13 +88,15 @@ namespace Enums
         SendTaskBgInfo = 1026, //导教端发送任务背景信息
         SendZySetData = 1027, //导教端发送地面保障资源的修改数据
         SendUseEquips = 1028, //导教端发送哪些直升机可用
-        SendUseJizus = 1029, //导教端发送哪些直升机可用
+        SendUsePersons = 1029, //导教端发送人员信息
         SendAskForReturn = 1030, //机长请求返航或返修
         SendAgreeReturn = 1031, //前指发送请求反馈
         SendCompleteTaskBgSet = 1032, //导教端发送完成任务背景设置
         SendRwghData = 1033, //机长发送任务规划数据
         SendDiscoverNewDisaster = 1034, //上报发现新灾情
         SendAgreeDiscoverNewDisaster = 1035, //确认发现了新灾情
+        SendChangeEquipOilAndLoad = 1036, //修改直升机的载油量和装载量
+        SendChangeZiyuanData = 1037, //一级修改资源点的数据
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作
@@ -121,5 +126,24 @@ namespace Enums
         //这俩消息应该放到Send部分
         TriggerOnlyShow = 1200, //触发只做显示的文本
         TriggerReport = 1201, //触发报备指令
+    }
+
+    public enum ShowZyDataType
+    {
+        TaskBgShow, //导教端展示任务背景界面
+        GroundSupport, //导教端地面保障
+        GroundDisaster, //地面灾区
+        EquipsShow, //导教端直升机信息展示
+        PersonShow, //导教端人员信息展示
+        TqChange, //导教端天气变化设置界面
+        zbgzChange, //导教端装备故障设置界面
+
+        zqxxShow, //一级展示灾情信息
+        zbxxShow, //展示装备信息
+        ryxxShow, //展示人员信息
+        kgxxShow, //展示空管信息
+        rwxxShow, //展示任务信息 
+        rwqzbShow, //展示任务前准备
+        dmzbShow, //展示地面准备
     }
 }
