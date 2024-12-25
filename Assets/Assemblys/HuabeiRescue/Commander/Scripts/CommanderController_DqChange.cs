@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.WebSockets;
+using DM.IFS;
 using Enums;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.LookDev;
 using EventType = Enums.EventType;
 
 public partial class CommanderController
@@ -36,6 +39,7 @@ public partial class CommanderController
             }
         }
 
+        //地形实际是 0=> 晴天，1=> 多云，2=> 阴天，3=> 雨天，4=> 雪天，5=> 浓雾，6=> 薄雾
         tianqiInfo = new[] { "晴天", "多云", "阴", "雾", "雷阵雨", "小雨", "中雨", "大雨", "暴雨" };
         fengliInfo = new[] { "无方向微风", "风力1-2级", "风力3-4级", "风力5-6级", "风力7-8级", "狂风9-10级", "狂风10级以上" };
     }
@@ -69,7 +73,8 @@ public partial class CommanderController
             itemZiyuan.isChooseMe = true;
             currentChooseGo = itemZiyuan;
             OnCameraContral(1, itemZiyuan.transform);
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", itemZiyuan);
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView",
+                itemZiyuan);
         }
     }
 
@@ -78,7 +83,8 @@ public partial class CommanderController
         if (MyDataInfo.MyLevel == 1)
         {
             //弹窗询问总指挥是否同意任务执行
-            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "申请任务执行", () => { OnSendSkillInfo((int)MessageID.SendAgreeTaskExecute, ""); });
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "申请任务执行",
+                () => { OnSendSkillInfo((int)MessageID.SendAgreeTaskExecute, ""); });
         }
     }
 
@@ -160,11 +166,13 @@ public partial class CommanderController
         switch (int.Parse(data[1]))
         {
             case 1:
-                EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"{equipName}申请返修，是否同意",
+                EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(),
+                    $"{equipName}申请返修，是否同意",
                     () => { OnSendSkillInfo((int)MessageID.SendAgreeReturn, info); });
                 break;
             case 2:
-                EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"{equipName}申请返航，是否同意",
+                EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(),
+                    $"{equipName}申请返航，是否同意",
                     () => { OnSendSkillInfo((int)MessageID.SendAgreeReturn, info); });
                 break;
         }
@@ -176,7 +184,10 @@ public partial class CommanderController
         int tqInfo = int.Parse(infos[0]);
         int flInfo = int.Parse(infos[1]);
         if (MyDataInfo.MyLevel == 3)
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"当前天气：{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(),
+                $"当前天气：{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
+
+        GetWeathersByIndex(tqInfo);
 
 
         EventManager.Instance.EventTrigger(EventType.TransferTianqiData.ToString(), $"{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
@@ -210,6 +221,50 @@ public partial class CommanderController
     {
         EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长发现新灾情，是否处理",
             () => { OnSendSkillInfo((int)MessageID.SendAgreeDiscoverNewDisaster, ""); });
+    }
+
+    /// <summary>
+    /// 通过索引切换天气 index最大为 6
+    /// </summary>
+    /// <param name="index">0=> 晴天，1=> 多云，2=> 阴天，3=> 雨天，4=> 雪天，5=> 浓雾，6=> 薄雾 </param>
+    public void GetWeathersByIndex(int index)
+    {
+        int newindex = 0;
+        GameObject expanse = GameObject.Find("Expanse Sky");
+        if (expanse == null) return;
+        Transform weather = expanse.transform.Find("Weathers");
+        if (weather != null)
+        {
+            for (int i = 0; i < weather.childCount; i++)
+            {
+                weather.GetChild(i).gameObject.SetActive(false);
+            }
+
+           
+            
+            if (index <= 2) newindex = index;
+            else if (index > 3 && index <= 8) newindex = 3;
+            else if (index == 3) newindex = 5;
+            
+            weather.GetChild(newindex).gameObject.SetActive(true);
+        }
+    }
+
+    public List<string> Getweathers()
+    {
+        List<string> listWeather = new List<string>();
+        GameObject expanse = GameObject.Find("Expanse Sky");
+        if (expanse == null) return listWeather;
+        Transform weather = expanse.transform.Find("Weathers");
+        if (weather != null)
+        {
+            for (int i = 0; i < weather.childCount; i++)
+            {
+                listWeather.Add(weather.GetChild(i).name);
+            }
+        }
+
+        return listWeather;
     }
 
     public void OnChangeEquipInfo(string data)
