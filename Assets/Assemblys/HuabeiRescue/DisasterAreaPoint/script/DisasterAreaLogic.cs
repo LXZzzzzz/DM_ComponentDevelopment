@@ -2,7 +2,7 @@ using System;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
-public class DisasterAreaLogic : ZiYuanBase, IDisasterArea,ITaskProgress
+public class DisasterAreaLogic : ZiYuanBase, IDisasterArea, ITaskProgress
 {
     private int allPersonNum;
 
@@ -81,7 +81,7 @@ public class DisasterAreaLogic : ZiYuanBase, IDisasterArea,ITaskProgress
     public bool getTaskProgress(out string progressInfo, out float progressNum)
     {
         bool isComplete = getTaskProgress(out int currentNum, out int maxNum);
-        progressInfo = $"转运人员:{currentNum}人/{maxNum}人";
+        progressInfo = $"转运人员:{maxNum - currentNum}人/{maxNum}人";
         progressNum = Mathf.Clamp((maxNum - currentNum) / (float)maxNum, 0, 1);
         return isComplete;
     }

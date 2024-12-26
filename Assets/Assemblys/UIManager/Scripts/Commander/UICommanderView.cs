@@ -160,7 +160,7 @@ public class UICommanderView : BasePanel
                 equipViewGo.SetActive(isRetract);
                 if (!isRetract)
                 {
-                    GetControl<Toggle>("tog_CtrlEquipTypeView").isOn = false;
+                    // GetControl<Toggle>("tog_CtrlEquipTypeView").isOn = false;
                     EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
                 }
 

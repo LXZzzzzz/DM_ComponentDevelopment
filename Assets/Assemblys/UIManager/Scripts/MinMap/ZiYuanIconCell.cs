@@ -358,7 +358,7 @@ public class ZiYuanIconCell : IconCellBase
 
     private void refreshIconShow()
     {
-        for (int i = 0; i < airPortEquipIcons.Count; i++)
+        for (int i = 0; i < airPortEquipIcons?.Count; i++)
         {
             airPortEquipIcons[i].gameObject.SetActive(airPortEquipIcons[i].eb.gameObject.activeSelf);
         }

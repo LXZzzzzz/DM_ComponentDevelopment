@@ -728,6 +728,7 @@ public class TaskInfoView : ChangeDataBase
     private GameObject view;
     private Text text_tq;
     private Image imgTask;
+    private GameObject hz, sz;
 
     /// <summary>
     /// 受灾数量点
@@ -775,14 +776,17 @@ public class TaskInfoView : ChangeDataBase
         InputField_az = view.transform.Find("grid/inputpoints (4)/input").GetComponent<InputField>();
         InputField_qj = view.transform.Find("grid/inputpoints (5)/input").GetComponent<InputField>();
         InputField_hc = view.transform.Find("grid/inputpoints (6)/input").GetComponent<InputField>();
+        hz = view.transform.Find("hz").gameObject;
+        sz = view.transform.Find("sz").gameObject;
     }
 
     public override void OnShow(object data)
     {
         mainView.ChangeTitleInfo("任务信息");
-        mainView.ChangeViewSize(1);
+        mainView.ChangeViewSize(3);
         view.SetActive(true);
-        Debug.LogError("是不是空:" + data);
+        hz.SetActive(MyDataInfo.gameScene == 1);
+        sz.SetActive(MyDataInfo.gameScene == 2);
         if (data is ShowStrInputData)
             text_tq.text = "任务区气象条件：" + (data as ShowStrInputData).strInfo;
     }
