@@ -20,8 +20,8 @@ public class ChangeData_cellEquipInfoItem : DMonoBehaviour
     public void Init(EquipBase data)
     {
         _equip = data;
-        jz.gameObject.SetActive(MyDataInfo.MyLevel == 1);
-        bz.gameObject.SetActive(MyDataInfo.MyLevel == 1);
+        jz.interactable = (MyDataInfo.MyLevel == 1);
+        bz.interactable = (MyDataInfo.MyLevel == 1);
         toggle.interactable = MyDataInfo.MyLevel == -1;
         InputField_pos.interactable = MyDataInfo.MyLevel == -1;
         InputField_state.interactable = MyDataInfo.MyLevel == -1;

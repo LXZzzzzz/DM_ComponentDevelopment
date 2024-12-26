@@ -42,7 +42,6 @@ public partial class CommanderController
 
     public void Receive_ProgrammeData(string data)
     {
-        
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
         // var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
         // OnLoadProgrammeDataSuc(programmeData);
@@ -299,7 +298,7 @@ public partial class CommanderController
         OnChangeZaiqu(itemdata);
 
         //创建完后，如果不是机长，就先隐藏掉
-        if (MyDataInfo.MyLevel != 3 || MyDataInfo.MyLevel != -1)
+        if (MyDataInfo.MyLevel != 3 && MyDataInfo.MyLevel != -1)
             EventManager.Instance.EventTrigger(EventType.HideGoIcon.ToString(), itemdata.zaiquId);
 
         if (MyDataInfo.MyLevel == 3)
@@ -367,6 +366,8 @@ public partial class CommanderController
         EventManager.Instance.EventTrigger(EventType.TransferMisDescription.ToString(), misDescription);
         EventManager.Instance.EventTrigger(EventType.TransferKongguanData.ToString(), infos[4]);
         EventManager.Instance.EventTrigger(EventType.TransferTianqiData.ToString(), $"{tianqiInfo[int.Parse(infos[0])]},{fengliInfo[int.Parse(infos[1])]}");
+
+        GetWeathersByIndex(int.Parse(infos[0]));
     }
 
     public void Receive_CompleteBgSet()

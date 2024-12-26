@@ -125,7 +125,7 @@ public partial class HelicopterController
             if (Vector3.Distance(transform.position, zyPos) < 10)
             {
                 currentSkill = SkillType.Supply;
-                openTimer(myAttributeInfo.bjsj * 60f, () => amountOfOil = myAttributeInfo.zyl);
+                openTimer(myAttributeInfo.bjsj * 60f, () => amountOfOil = actualAddOilMass);
                 return;
             }
         }

@@ -19,6 +19,7 @@ namespace ToolsLibrary
         public static List<ClientInfo> playerInfos;
         public static float speedMultiplier; //场景运行速度
         public static float gameStartTime; //记录本局游戏开始时刻
+        public static int gameScene; //当前游戏场景
         public static List<string> SkillsToBeConfirmed; //待确认技能列表
         public static List<string> TaskPlanningCompletedPersons; //记录完成了任务规划的机长
         public static List<string> BeUsedJizus, BeUsedBaozhangs; //可用的机组信息和保障人员信息

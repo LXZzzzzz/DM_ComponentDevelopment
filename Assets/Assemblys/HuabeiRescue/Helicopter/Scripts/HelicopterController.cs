@@ -45,6 +45,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     private bool isStartAutoRun;
 
+    private float actualAddOilMass, actualAddWaterMass, actualAddLoadMass;
+
 
     public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
     {
@@ -128,6 +130,9 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         amountOfWater = 0;
         amountOfGoods = 0;
         amountOfPerson = 0;
+        actualAddOilMass = myAttributeInfo.zyl;
+        actualAddWaterMass = myAttributeInfo.dszl;
+        actualAddLoadMass = myAttributeInfo.zdyxzh;
         speed = myAttributeInfo.zsjxhsd / 3.6f;
         isSendCrash = false;
         myass = new List<AudioSource>();
@@ -527,17 +532,16 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     public void GetOilAndLoad(out float oil, out float load)
     {
-        //⭐⭐这里要区分一下如果是救援就用最大有效载荷
         oil = myAttributeInfo.zyl;
-        load = myAttributeInfo.dszl;
+        load = MyDataInfo.gameScene == 1 ? myAttributeInfo.dszl : myAttributeInfo.zdyxzh;
     }
 
     public void SetOilAndLoad(float oilProportion, float loadProportion)
     {
         //机长修改了载油量比例和装载量比例
-        myAttributeInfo.zyl *= oilProportion;
-        myAttributeInfo.dszl *= loadProportion;
-        myAttributeInfo.zdyxzh *= loadProportion;
+        actualAddOilMass = myAttributeInfo.zyl * oilProportion;
+        actualAddWaterMass = myAttributeInfo.dszl * loadProportion;
+        actualAddLoadMass = myAttributeInfo.zdyxzh * loadProportion;
     }
 }
 

@@ -40,7 +40,7 @@ public partial class HelicopterController
 
     private void OnZZWZSuc()
     {
-        amountOfGoods = myAttributeInfo.zdyxzh;
+        amountOfGoods = actualAddLoadMass;
     }
 
     /// <summary>

@@ -7,7 +7,6 @@ using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering.LookDev;
 using EventType = Enums.EventType;
 
 public partial class CommanderController
@@ -189,7 +188,6 @@ public partial class CommanderController
 
         GetWeathersByIndex(tqInfo);
 
-
         EventManager.Instance.EventTrigger(EventType.TransferTianqiData.ToString(), $"{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
     }
 
@@ -240,11 +238,24 @@ public partial class CommanderController
                 weather.GetChild(i).gameObject.SetActive(false);
             }
 
-           
-            
-            if (index <= 2) newindex = index;
-            else if (index > 3 && index <= 8) newindex = 3;
-            else if (index == 3) newindex = 5;
+            switch (index)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    newindex = index;
+                    break;
+                case 3:
+                    newindex = 5;
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    newindex = 3;
+                    break;
+            }
             
             weather.GetChild(newindex).gameObject.SetActive(true);
         }

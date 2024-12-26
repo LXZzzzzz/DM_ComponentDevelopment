@@ -870,8 +870,8 @@ public class CaptainView : ChangeDataBase
 
         (_equip as IDqChangePart).GetOilAndLoad(out float oil, out float load);
         jixing.text = bianhao.text = _equip.name;
-        zyl.value = oil;
-        zzl.value = load;
+        oilMax.text = oil.ToString();
+        loadMax.text = load.ToString();
     }
 
     public override void OnHide()
@@ -881,7 +881,7 @@ public class CaptainView : ChangeDataBase
 
     public override void OnSave()
     {
-        string info = _equip.BObjectId + zyl.value.ToString() + '_' + zzl.value.ToString();
+        string info = _equip.BObjectId + '_' + zyl.value.ToString() + '_' + zzl.value.ToString();
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeEquipOilAndLoad, info);
     }
 }

@@ -161,7 +161,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
     {
         _commanderController.cdata = new ComanderData();
         _commanderController.cdata.dwrsmjtsxq = (Properties[3] as InputFloatUnitProperty).Value;
-        _commanderController.gameType = (Properties[2] as DropDownProperty).Selected.Enum;
+        MyDataInfo.gameScene = _commanderController.gameType = (Properties[2] as DropDownProperty).Selected.Enum;
 
         // var fields = _commanderController.cdata.GetType().GetFields();
         // for (int i = 3; i < 12; i++)
