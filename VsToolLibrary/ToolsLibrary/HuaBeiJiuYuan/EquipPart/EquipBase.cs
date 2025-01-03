@@ -151,7 +151,7 @@ namespace ToolsLibrary.EquipPart
     public interface IDqChangePart
     {
         //直升机变成想定预制，所以在初始化时ID、机场ID和控制者信息就已知了，直接赋值
-        void InitData(string id, string airPortId, string ctrlId);
+        void InitData(string id, string qjdId, string ctrlId, string airPortId);
 
         string GetStopAtAirPort();
 
@@ -172,5 +172,8 @@ namespace ToolsLibrary.EquipPart
 
         //机长设置载油量和装载量
         void SetOilAndLoad(float oilProportion, float loadProportion);
+
+        //触发转场飞行
+        void GoFerryFlights();
     }
 }

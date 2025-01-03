@@ -13,7 +13,7 @@ public partial class HelicopterController
     /// </summary>
     public void LadeGoods()
     {
-        if (myState != HelicopterState.Landing) return;
+        // if (myState != HelicopterState.Landing) return;
         //找到场景中所有物资点，判断距离
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.GoodsPoint);
         for (int i = 0; i < items.Count; i++)
@@ -48,7 +48,7 @@ public partial class HelicopterController
     /// </summary>
     public void UnLadeGoods()
     {
-        if (myState != HelicopterState.Landing) return;
+        // if (myState != HelicopterState.Landing) return;
         //找到场景中所有物资点，判断距离
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
         for (int i = 0; i < items.Count; i++)

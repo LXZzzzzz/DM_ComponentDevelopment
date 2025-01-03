@@ -32,7 +32,7 @@ public partial class HelicopterController
 
     public void WaterIntaking_New()
     {
-        if (myState != HelicopterState.hover) return;
+        // if (myState != HelicopterState.hover) return;
         //找到场景中所有水源点，判断距离
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
         for (int i = 0; i < items.Count; i++)

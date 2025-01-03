@@ -320,7 +320,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
         if (currentSkill != SkillType.None)
         {
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前正在执行任务，无法机动");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前正在执行任务，无法执行飞行任务");
             return false;
         }
 
@@ -542,6 +542,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         actualAddOilMass = myAttributeInfo.zyl * oilProportion;
         actualAddWaterMass = myAttributeInfo.dszl * loadProportion;
         actualAddLoadMass = myAttributeInfo.zdyxzh * loadProportion;
+        amountOfOil = actualAddOilMass;
     }
 }
 

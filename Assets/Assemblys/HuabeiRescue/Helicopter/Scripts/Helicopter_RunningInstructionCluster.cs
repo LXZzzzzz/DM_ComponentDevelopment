@@ -15,21 +15,26 @@ public partial class HelicopterController
     // private bool isAutoRunEnd;
     private string skillConfirmationStr;
     private TaskBase currentRunTask;
-    private string stopAtAirPortId; //停靠机场Id
+    private string stopQjdtId; //临时起降点Id
+    private string stopAirPortId; //停靠机场Id
     private Queue<object> runQueue;
     private bool isHaveReturnForRepair; //是否需要返修
+    private bool isAtAirport; //是否在机场
 
-    public void InitData(string id, string airPortId, string ctrlId)
+    public void InitData(string id, string qjdId, string ctrlId, string airPortId)
     {
         BObjectId = id;
-        stopAtAirPortId = airPortId;
+        stopQjdtId = qjdId;
         BeLongToCommanderId = ctrlId;
+        stopAirPortId = airPortId;
+        isAtAirport = true;
         // isAutoRunEnd = false;
     }
 
     public string GetStopAtAirPort()
     {
-        return stopAtAirPortId;
+        if (isAtAirport) return stopAirPortId;
+        else return stopQjdtId;
     }
 
     public void GoReturnBack()
@@ -48,8 +53,8 @@ public partial class HelicopterController
         switch (myState)
         {
             case HelicopterState.flying:
-                Vector3 targetPos = sceneAllZiyuan.Find(x => string.Equals(x.BobjectId, stopAtAirPortId)).transform.position;
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.MoveToTarget, MsgSend_Move(BObjectId, targetPos, stopAtAirPortId));
+                Vector3 targetPos = sceneAllZiyuan.Find(x => string.Equals(x.BobjectId, stopQjdtId)).transform.position;
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.MoveToTarget, MsgSend_Move(BObjectId, targetPos, stopQjdtId));
 
                 skillConfirmationStr = BObjectId + MessageID.MoveToTarget;
                 EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendSkillConfirmation, skillConfirmationStr);
@@ -183,8 +188,8 @@ public partial class HelicopterController
             if (runQueue.Peek() is MessageID)
             {
                 //执行机动到机场的指令
-                Vector3 targetPos = sceneAllZiyuan.Find(x => string.Equals(x.BobjectId, stopAtAirPortId)).transform.position;
-                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.MoveToTarget, MsgSend_Move(BObjectId, targetPos, stopAtAirPortId));
+                Vector3 targetPos = sceneAllZiyuan.Find(x => string.Equals(x.BobjectId, stopQjdtId)).transform.position;
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.MoveToTarget, MsgSend_Move(BObjectId, targetPos, stopQjdtId));
 
                 skillConfirmationStr = BObjectId + MessageID.MoveToTarget;
             }

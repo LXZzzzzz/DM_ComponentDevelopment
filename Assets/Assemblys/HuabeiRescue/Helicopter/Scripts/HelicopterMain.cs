@@ -53,8 +53,9 @@ public class HelicopterMain : ScriptManager
             new InputFloatUnitProperty("成年人平均重量", 70, "kg"),
             new InputFloatUnitProperty("直升机价格", 13000, "万元"),
             new InputFloatUnitProperty("最低每小时耗油量", 100, "kg/h"),
+            new DropDownSceneBObjectsProperty("绑定所属临时起降点"),
+            new DropDownSceneBObjectsProperty("绑定所控机长"),
             new DropDownSceneBObjectsProperty("绑定所属机场"),
-            new DropDownSceneBObjectsProperty("绑定所控机长")
         };
     }
 
@@ -91,7 +92,8 @@ public class HelicopterMain : ScriptManager
             }
         }
 
-        ((IDqChangePart)logic).InitData(BObjectId, (Properties[35] as DropDownSceneBObjectsProperty).Value, (Properties[36] as DropDownSceneBObjectsProperty).Value);
+        ((IDqChangePart)logic).InitData(BObjectId, (Properties[35] as DropDownSceneBObjectsProperty).Value,
+            (Properties[36] as DropDownSceneBObjectsProperty).Value, (Properties[36] as DropDownSceneBObjectsProperty).Value);
         logic.gameObject.SetActive(false);
     }
 

@@ -538,7 +538,14 @@ public class UIMap : BasePanel, IPointerClickHandler
     private void OnSendNewDisaster()
     {
         //发送新发现灾情，并且提示
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendDiscoverNewDisaster, "");
+        var myEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BeLongToCommanderId, MyDataInfo.leadId));
+        if (myEquip == null)
+        {
+            Debug.LogError("身份错了，找不到我的飞机");
+            return;
+        }
+
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendDiscoverNewDisaster, myEquip.BObjectId);
         EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "已申报新灾情");
     }
 

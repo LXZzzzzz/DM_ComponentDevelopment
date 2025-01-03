@@ -14,7 +14,7 @@ public partial class HelicopterController
 
     public void TakeOff()
     {
-        if (myState != HelicopterState.Landing) return;
+        // if (myState != HelicopterState.Landing) return;
         currentSkill = SkillType.TakeOff;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnTOSuc);
         float itemHight = GetCurrentGroundHeight(out bool isHit);
@@ -66,7 +66,7 @@ public partial class HelicopterController
 
     public void Landing()
     {
-        if (myState != HelicopterState.hover) return;
+        // if (myState != HelicopterState.hover) return;
         currentSkill = SkillType.Landing;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnLandSuc);
         float itemHight = GetCurrentGroundHeight(out bool isHit);
@@ -116,7 +116,7 @@ public partial class HelicopterController
 
     public void Supply()
     {
-        if (myState != HelicopterState.Landing) return;
+        // if (myState != HelicopterState.Landing) return;
         //找到场景中补给点，判断距离
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
         for (int i = 0; i < items.Count; i++)

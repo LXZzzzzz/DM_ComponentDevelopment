@@ -17,7 +17,7 @@ public partial class HelicopterController
     /// </summary>
     public void Manned()
     {
-        if (myState != HelicopterState.Landing) return;
+        // if (myState != HelicopterState.Landing) return;
         //找到场景中所有灾区点，判断距离
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
         for (int i = 0; i < items.Count; i++)
@@ -65,7 +65,7 @@ public partial class HelicopterController
     /// </summary>
     public void PlacementOfPersonnel()
     {
-        if (myState != HelicopterState.Landing) return;
+        // if (myState != HelicopterState.Landing) return;
         ZiYuanType targetType = personType == 1 ? ZiYuanType.RescueStation : ZiYuanType.Hospital;
         string targetTypeName = personType == 1 ? "安置点" : "医院";
         //找到场景中所有安置点，判断距离
@@ -100,7 +100,7 @@ public partial class HelicopterController
     /// </summary>
     public void CableDescentRescue()
     {
-        if (myState != HelicopterState.hover) return;
+        // if (myState != HelicopterState.hover) return;
         //找到场景中所有灾区点，判断距离
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
         for (int i = 0; i < items.Count; i++)

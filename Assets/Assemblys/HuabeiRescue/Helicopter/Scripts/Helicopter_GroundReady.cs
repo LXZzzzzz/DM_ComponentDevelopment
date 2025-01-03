@@ -8,7 +8,7 @@ public partial class HelicopterController
 
     public void GroundReady(IAirPort airPort)
     {
-        if (myState != HelicopterState.NotReady) return;
+        // if (myState != HelicopterState.NotReady) return;
         Debug.LogError("起飞前准备" + myAttributeInfo.qfqzbsj * 60);
         _airPort = airPort;
         currentSkill = SkillType.GroundReady;
@@ -42,7 +42,7 @@ public partial class HelicopterController
 
     public void BePutInStorage()
     {
-        if (myState != HelicopterState.Landing) return;
+        // if (myState != HelicopterState.Landing) return;
         var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
         for (int i = 0; i < items.Count; i++)
         {

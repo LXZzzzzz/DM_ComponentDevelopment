@@ -31,8 +31,8 @@ public partial class CommanderController
         try
         {
             EventManager.Instance.EventTrigger(EventType.ShowAMsgInfo.ToString(),
-                $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : Pos2LongLat(targetPos).ToString())}");
-            clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行机动操作，  目标点为{(targetZy != null ? targetZy.ziYuanName : Pos2LongLat(targetPos).ToString())}");
+                $"<color={playerData.ColorCode}>{playerData.ClientLevelName}</color> {item.name}执行飞行任务，  目标点为{(targetZy != null ? targetZy.ziYuanName : Pos2LongLat(targetPos).ToString())}");
+            clientOperatorInfos.Add(MyDataInfo.gameStartTime + $"--【{playerData.ClientLevelName}】{item.name}执行飞行任务，  目标点为{(targetZy != null ? targetZy.ziYuanName : Pos2LongLat(targetPos).ToString())}");
         }
         catch (Exception e)
         {
@@ -334,6 +334,7 @@ public partial class CommanderController
             if (!string.IsNullOrEmpty(infos[i]))
                 item.currentBindingZy.Add(infos[i]);
         }
+        Receive_TextMsgRecord($"前线指挥对直升机{item.name}进行了现场任务分配");
 
         if (MyDataInfo.MyLevel == 3 && string.Equals(myEquip.BObjectId, item.BObjectId))
         {
@@ -373,7 +374,7 @@ public partial class CommanderController
     public void Receive_CompleteBgSet()
     {
         if (MyDataInfo.MyLevel == 1)
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务背景设置完成，请创建任务方案");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务设置完成，请创建任务方案");
     }
 
     #endregion

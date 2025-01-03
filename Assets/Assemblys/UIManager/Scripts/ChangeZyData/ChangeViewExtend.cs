@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using ToolsLibrary;
@@ -48,14 +49,15 @@ public class FireDataView : ChangeDataBase
 public class DisasterDataView : ChangeDataBase
 {
     private GameObject view;
-    private InputField zyName, num, type;
+    private InputField zyName, num;
+    private Dropdown type;
 
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/disasterPart").gameObject;
         zyName = view.transform.Find("name/inputF_name").GetComponent<InputField>();
         num = view.transform.Find("num/inputF_num").GetComponent<InputField>();
-        type = view.transform.Find("type/inputF_type").GetComponent<InputField>();
+        type = view.transform.Find("type/dp_Type").GetComponent<Dropdown>();
     }
 
     public override void OnShow(object data)
@@ -72,7 +74,7 @@ public class DisasterDataView : ChangeDataBase
 
     public override void OnSave()
     {
-        DisasterVariableData variableData = new DisasterVariableData() { ZyType = ZiYuanType.DisasterArea, ZyName = zyName.text, personNum = int.Parse(num.text), type = int.Parse(type.text) };
+        DisasterVariableData variableData = new DisasterVariableData() { ZyType = ZiYuanType.DisasterArea, ZyName = zyName.text, personNum = int.Parse(num.text), type = type.value + 1 };
         EventManager.Instance.EventTrigger<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), variableData);
     }
 }
@@ -100,10 +102,10 @@ public class ZYFPPartView : ChangeDataBase
         for (int i = 0; i < MyDataInfo.sceneAllZiYuan.Count; i++)
         {
             if (info.type == 1)
-                if (MyDataInfo.sceneAllZiYuan[i] is ITaskProgress)
+                if (MyDataInfo.sceneAllZiYuan[i] is ITaskProgress && MyDataInfo.sceneAllZiYuan[i].ZiYuanType != ZiYuanType.Hospital)
                     continue;
             if (info.type == 2)
-                if (!(MyDataInfo.sceneAllZiYuan[i] is ITaskProgress))
+                if (!(MyDataInfo.sceneAllZiYuan[i] is ITaskProgress) || MyDataInfo.sceneAllZiYuan[i].ZiYuanType == ZiYuanType.Hospital)
                     continue;
 
             var zyItem = GameObject.Instantiate(zyTemplate, zyParent);
@@ -270,11 +272,11 @@ public class SupplyOrGoodsView : ChangeDataBase
         switch (info.zyType)
         {
             case ZiYuanType.Supply:
-                _text.text = "存储油量";
+                _text.text = "存储油量(Kg)";
                 _inputField.text = (info.currentData as SupplyVariableData)?.oilNum.ToString();
                 break;
             case ZiYuanType.GoodsPoint:
-                _text.text = "物资数量";
+                _text.text = "物资数量(Kg)";
                 _inputField.text = (info.currentData as GoodsPointVariableData)?.goodsNum.ToString();
                 break;
         }
@@ -441,36 +443,18 @@ public class PersonSetView : ChangeDataBase
 
             //所有机组信息
             var jizuInfos = cellsInfo[0].Split(':');
-            for (int i = 0; i < jizuParent.childCount; i++)
+            for (int i = 0; i < jizuInfos.Length; i++)
             {
                 ChangeData_cellPersonInfoItem personCell = jizuParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>();
-                for (int j = 0; j < jizuInfos.Length; j++)
-                {
-                    //从所有机组信息中找到一个和当前cell匹配的数据，传进去
-                    var acellData = jizuInfos[j].Split('_');
-                    if (string.Equals(acellData[0], personCell.personName))
-                    {
-                        personCell.Init(jizuInfos[j]);
-                        break;
-                    }
-                }
+                personCell?.Init(jizuInfos[i]);
             }
 
             //所有保障组信息
             var baozhangInfos = cellsInfo[1].Split(':');
-            for (int i = 0; i < baozhangParent.childCount; i++)
+            for (int i = 0; i < baozhangInfos.Length; i++)
             {
                 ChangeData_cellPersonInfoItem personCell = baozhangParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>();
-                for (int j = 0; j < baozhangInfos.Length; j++)
-                {
-                    //从所有机组信息中找到一个和当前cell匹配的数据，传进去
-                    var acellData = baozhangInfos[j].Split('_');
-                    if (string.Equals(acellData[0], personCell.personName))
-                    {
-                        personCell.Init(baozhangInfos[j]);
-                        break;
-                    }
-                }
+                personCell?.Init(baozhangInfos[i]);
             }
         }
     }
@@ -809,11 +793,21 @@ public class FieldCommanderView : ChangeDataBase
 {
     private GameObject view;
     private Dropdown checkEquip;
+    private Text oilMax, loadMax;
+    private Slider zyl, zzl;
+    private float maxOil, maxZzl;
 
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/fieldCommanderPart").gameObject;
         checkEquip = view.transform.Find("dp_checkEquip").GetComponent<Dropdown>();
+        zyl = view.transform.Find("fuelSlider").GetChild(0).GetComponent<Slider>();
+        zzl = view.transform.Find("loadSlider").GetChild(0).GetComponent<Slider>();
+        oilMax = view.transform.Find("fuelSlider").GetChild(2).GetComponent<Text>();
+        loadMax = view.transform.Find("loadSlider").GetChild(2).GetComponent<Text>();
+        checkEquip.onValueChanged.AddListener(OnChangEquip);
+        zyl.onValueChanged.AddListener(OnChangeOilNum);
+        zzl.onValueChanged.AddListener(OnChangeZzlNum);
     }
 
     public override void OnShow(object data)
@@ -826,6 +820,31 @@ public class FieldCommanderView : ChangeDataBase
         {
             checkEquip.options.Add(new Dropdown.OptionData(MyDataInfo.sceneAllEquips[i].name));
         }
+
+        checkEquip.value = 1;
+        checkEquip.value = 0;
+    }
+
+    private void OnChangEquip(int index)
+    {
+        var _equip = MyDataInfo.sceneAllEquips[index];
+        (_equip as IDqChangePart).GetOilAndLoad(out float oil, out float load);
+        oilMax.text = oil.ToString();
+        loadMax.text = load.ToString();
+        maxOil = oil;
+        maxZzl = load;
+        OnChangeOilNum(zyl.value);
+        OnChangeZzlNum(zzl.value);
+    }
+
+    private void OnChangeOilNum(float num)
+    {
+        zyl.GetComponentInChildren<Text>().text = (num * maxOil).ToString();
+    }
+
+    private void OnChangeZzlNum(float num)
+    {
+        zzl.GetComponentInChildren<Text>().text = (num * maxZzl).ToString();
     }
 
     public override void OnHide()
@@ -848,6 +867,7 @@ public class CaptainView : ChangeDataBase
     private Text jixing, bianhao, oilMax, loadMax;
     private Slider zyl, zzl;
     private EquipBase _equip;
+    private float maxOil, maxZzl;
 
     protected override void OnInit()
     {
@@ -858,6 +878,18 @@ public class CaptainView : ChangeDataBase
         zzl = view.transform.Find("loadSlider").GetChild(0).GetComponent<Slider>();
         oilMax = view.transform.Find("fuelSlider").GetChild(2).GetComponent<Text>();
         loadMax = view.transform.Find("loadSlider").GetChild(2).GetComponent<Text>();
+        zyl.onValueChanged.AddListener(OnChangeOilNum);
+        zzl.onValueChanged.AddListener(OnChangeZzlNum);
+    }
+
+    private void OnChangeOilNum(float num)
+    {
+        zyl.GetComponentInChildren<Text>().text = (num * maxOil).ToString();
+    }
+
+    private void OnChangeZzlNum(float num)
+    {
+        zzl.GetComponentInChildren<Text>().text = (num * maxZzl).ToString();
     }
 
     public override void OnShow(object data)
@@ -876,6 +908,8 @@ public class CaptainView : ChangeDataBase
         jixing.text = bianhao.text = _equip.name;
         oilMax.text = oil.ToString();
         loadMax.text = load.ToString();
+        maxOil = oil;
+        maxZzl = load;
     }
 
     public override void OnHide()

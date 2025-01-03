@@ -341,6 +341,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.Receive_ProgrammeData(param);
                 MyDataInfo.speedMultiplier = 1;
                 MyDataInfo.gameStartTime = 0;
+                _commanderController.Receive_TextMsgRecord("值班领导下达了任务");
                 break;
             case MessageID.SendGameStart:
                 Debug.LogError("收到了开始");
@@ -348,7 +349,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 if (gameStartTimePoint < 0) gameStartTimePoint = int.Parse(param);
                 MyDataInfo.speedMultiplier = 1;
                 MyDataInfo.gameStartTime = gameStartTimePoint / 1000.0f;
-                _commanderController.Receive_TextMsgRecord("推演开始！");
+                _commanderController.Receive_TextMsgRecord("前线指挥控制推演开始！");
                 _commanderController.Receive_GameStart();
                 break;
             case MessageID.MoveToTarget:
@@ -365,9 +366,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 sender.LogError("收到创建灾区的消息");
                 _commanderController.Receive_CreatZaiqu(param);
                 break;
-            case MessageID.SendMarkMapPoint:
-                _commanderController.Receive_ShowMarkPoint(param);
-                break;
             case MessageID.SendPathPlanningData:
                 //收到规划数据，展示到界面上，
                 _commanderController.Receive_PathPlanningData(param);
@@ -380,6 +378,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendEquipState:
                 _commanderController.Receive_ChangeEquipState(param);
+                _commanderController.Receive_TextMsgRecord("特情信息：直升机装备发生故障");
                 break;
             case MessageID.SendTianQi:
                 _commanderController.OnChangeTianQi(param);
@@ -388,6 +387,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 //如果是导教端，就弹出航线申报消息，让他选择是否同意
                 if (MyDataInfo.MyLevel == -1)
                     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AirLineInfoShow", param);
+
+                _commanderController.Receive_TextMsgRecord("值班领导进行航线申报");
                 break;
             case MessageID.SendAgreeAirLine:
                 //这里如果是总指挥，就弹提示窗，告知航线申请反馈，如果同意就进入下一阶段
@@ -407,6 +408,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendAskForTaskExecute:
                 //这里如果是总指挥，就弹二次确认窗口，询问是否同意任务执行，让他选择是否同意
                 _commanderController.OnAskTaskExecute();
+                _commanderController.Receive_TextMsgRecord("前线指挥员申请任务执行");
                 break;
             case MessageID.SendAgreeTaskExecute:
                 //如果是机长，就让他的地图模式改为Plane模式，并弹窗提示可以开始任务规划
@@ -416,11 +418,12 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendTaskPlanningCompleted:
                 //前指收到这个通知，存起来，如果每架飞机都收到，那就可以点击开始推演
-                if (MyDataInfo.MyLevel == 2) _commanderController.OnReceiveRwghwc(param);
+                _commanderController.OnReceiveRwghwc(param);
                 break;
             case MessageID.SendTurnBack:
                 //如果是机长，就让其控制直升机执行返回机场并入库操作
                 _commanderController.OnReturnBack();
+                _commanderController.Receive_TextMsgRecord("前线指挥员发送返航指令");
                 break;
             case MessageID.SendTaskBgInfo:
                 _commanderController.Receive_SetTaskBg(param);
@@ -428,6 +431,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendCompleteTaskBgSet:
                 MyDataInfo.gameState = GameState.CompleteTaskBgSet;
                 _commanderController.Receive_CompleteBgSet();
+                _commanderController.Receive_TextMsgRecord("导教端完成任务设置");
                 break;
             case MessageID.SendZySetData:
                 _commanderController.OnSetZyInfo(param);
@@ -441,7 +445,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.OnSetPersonInfo(param);
                 break;
             case MessageID.SendAskForReturn:
-                if (MyDataInfo.MyLevel == 2) _commanderController.OnAskForReturn(param);
+                _commanderController.OnAskForReturn(param);
                 break;
             case MessageID.SendAgreeReturn:
                 _commanderController.OnReturnRepair(param);
@@ -451,7 +455,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendDiscoverNewDisaster:
                 //收到上报新灾情，让前指处理
-                if (MyDataInfo.MyLevel == 2) _commanderController.OnDiscoverNewDisaster();
+                _commanderController.OnDiscoverNewDisaster(param);
                 break;
             case MessageID.SendAgreeDiscoverNewDisaster:
                 if (MyDataInfo.MyLevel != 3) EventManager.Instance.EventTrigger(EventType.HideGoIcon.ToString(), string.Empty);
@@ -488,6 +492,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.gameStartTime = gameStartTimePoint / 1000.0f;
                 MyDataInfo.speedMultiplier = 1;
                 _commanderController.Receive_GameStop();
+                break;
+            case MessageID.SendMarkMapPoint:
+                _commanderController.Receive_ShowMarkPoint(param);
                 break;
         }
 

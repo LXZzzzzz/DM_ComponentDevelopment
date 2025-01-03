@@ -11,7 +11,9 @@ public class ChangeData_cellEquipInfoItem : DMonoBehaviour
 {
     public Toggle toggle;
 
-    public InputField InputField_pos, InputField_state, InputField_cycle, InputField_time;
+    public InputField InputField_pos, InputField_cycle, InputField_time;
+
+    public Dropdown dp_state;
 
     public Dropdown jz, bz;
 
@@ -24,7 +26,7 @@ public class ChangeData_cellEquipInfoItem : DMonoBehaviour
         bz.interactable = (MyDataInfo.MyLevel == 1);
         toggle.interactable = MyDataInfo.MyLevel == -1;
         InputField_pos.interactable = MyDataInfo.MyLevel == -1;
-        InputField_state.interactable = MyDataInfo.MyLevel == -1;
+        dp_state.interactable = MyDataInfo.MyLevel == -1;
         InputField_cycle.interactable = MyDataInfo.MyLevel == -1;
         InputField_time.interactable = MyDataInfo.MyLevel == -1;
         toggle.GetComponentInChildren<Text>().text = _equip.name;
@@ -33,7 +35,7 @@ public class ChangeData_cellEquipInfoItem : DMonoBehaviour
         var strs = _equip.textInfo.Split('_');
         toggle.isOn = int.Parse(strs[1]) == 1;
         InputField_pos.text = strs[2];
-        InputField_state.text = strs[3];
+        dp_state.value = int.Parse(strs[3]);
         InputField_cycle.text = strs[4];
         InputField_time.text = strs[5];
         jz.value = int.Parse(strs[6]);
@@ -63,7 +65,7 @@ public class ChangeData_cellEquipInfoItem : DMonoBehaviour
         Debug.LogError(_equip.BObjectId);
         Debug.LogError(toggle.name);
         Debug.LogError(InputField_pos.name);
-        return _equip.BObjectId + '_' + (toggle.isOn ? 1 : 0) + '_' + InputField_pos.text + '_' + InputField_state.text + '_' +
+        return _equip.BObjectId + '_' + (toggle.isOn ? 1 : 0) + '_' + InputField_pos.text + '_' + dp_state.value + '_' +
                InputField_cycle.text + '_' + InputField_time.text + '_' + jz.value.ToString() + '_' + bz.value.ToString();
     }
 }

@@ -162,6 +162,9 @@ public partial class CommanderController
         Debug.LogError("收到的请求数据" + info);
         var data = info.Split('_');
         string equipName = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, data[0])).name;
+        Receive_TextMsgRecord($"{equipName}机长申请返航");
+
+        if (MyDataInfo.MyLevel != 2) return;
         switch (int.Parse(data[1]))
         {
             case 1:
@@ -186,6 +189,8 @@ public partial class CommanderController
             EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(),
                 $"当前天气：{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
 
+        Receive_TextMsgRecord($"特情信息：天气发生变化 {tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
+
         GetWeathersByIndex(tqInfo);
 
         EventManager.Instance.EventTrigger(EventType.TransferTianqiData.ToString(), $"{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
@@ -194,6 +199,8 @@ public partial class CommanderController
     public void OnReceiveRwghwc(string param)
     {
         string equipName = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param)).name;
+        Receive_TextMsgRecord($"{equipName}任务规划完成");
+        if (MyDataInfo.MyLevel != 2) return;
         EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), $"{equipName}任务规划完成");
         if (!MyDataInfo.TaskPlanningCompletedPersons.Contains(param))
             MyDataInfo.TaskPlanningCompletedPersons.Add(param);
@@ -215,10 +222,16 @@ public partial class CommanderController
         EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
     }
 
-    public void OnDiscoverNewDisaster()
+    public void OnDiscoverNewDisaster(string param)
     {
-        EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长发现新灾情，是否处理",
-            () => { OnSendSkillInfo((int)MessageID.SendAgreeDiscoverNewDisaster, ""); });
+        string equipName = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param)).name;
+        Receive_TextMsgRecord($"{equipName}机长上报新灾情");
+
+        if (MyDataInfo.MyLevel == 2)
+        {
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长发现新灾情，是否处理",
+                () => { OnSendSkillInfo((int)MessageID.SendAgreeDiscoverNewDisaster, ""); });
+        }
     }
 
     /// <summary>
@@ -256,7 +269,7 @@ public partial class CommanderController
                     newindex = 3;
                     break;
             }
-            
+
             weather.GetChild(newindex).gameObject.SetActive(true);
         }
     }
