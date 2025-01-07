@@ -40,6 +40,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         if (equipPathDatas == null) equipPathDatas = new Dictionary<string, List<Vector2>>();
         EventManager.Instance.AddEventListener<string>(EventType.LoadPathPlanningData.ToString(), OnLoadPathPlanningData);
         EventManager.Instance.AddEventListener<string>(EventType.ClearPathPlanningData.ToString(), OnClearPathPlanningData);
+        EventManager.Instance.AddEventListener<Vector2>(EventType.CloseEditorModel.ToString(), OnRightClickMap);
     }
 
     private void OnLoadPathPlanningData(string data)
@@ -236,6 +237,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         isCreatPathPoint = false;
         EventManager.Instance.RemoveEventListener<string>(EventType.LoadPathPlanningData.ToString(), OnLoadPathPlanningData);
         EventManager.Instance.RemoveEventListener<string>(EventType.ClearPathPlanningData.ToString(), OnClearPathPlanningData);
+        EventManager.Instance.RemoveEventListener<Vector2>(EventType.CloseEditorModel.ToString(), OnRightClickMap);
     }
 
     private void OnAddPointSuc(PathPoint pointData)

@@ -23,7 +23,7 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIAirportAircraftShowView UIAirportAircraftShowView;
     public UIChangeControllers UIChangeControllers;
     public UIThreeDIconView UIThreeDIconView;
-    public UICommanderDirector UICommanderDirector;
+    public UIDirectorView UIDirectorView;
     public UIChangePointDataInfo UIChangePointDataInfo;
     public UIPathPointsShow UIPathPointsShow;
     public UIChangeZyData UIChangeZyData;
@@ -98,7 +98,7 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIAirportAircraftShowView = transform.Find("UiPrefab/UIAirportAircraftShowView").gameObject.GetComponent<UIAirportAircraftShowView>();
         UIChangeControllers = transform.Find("UiPrefab/UIChangeControllers").gameObject.GetComponent<UIChangeControllers>();
         UIThreeDIconView = transform.Find("UiPrefab/UIThreeDIconView").gameObject.GetComponent<UIThreeDIconView>();
-        UICommanderDirector = transform.Find("UiPrefab/UICommanderDirector").gameObject.GetComponent<UICommanderDirector>();
+        UIDirectorView = transform.Find("UiPrefab/UIDirectorView").gameObject.GetComponent<UIDirectorView>();
         UIChangePointDataInfo = transform.Find("UiPrefab/UIChangePointDataInfo").gameObject.GetComponent<UIChangePointDataInfo>();
         UIPathPointsShow = transform.Find("UiPrefab/UIPathPointsShow").gameObject.GetComponent<UIPathPointsShow>();
         UIChangeZyData = transform.Find("UiPrefab/UIChangeZyData").gameObject.GetComponent<UIChangeZyData>();
@@ -155,8 +155,8 @@ public class UIManagerMain : ScriptManager, IMesRec
             case "ThreeDIconView":
                 UIManager.Instance.ShowPanel<UIThreeDIconView>(UIName.UIThreeDIcon, dataInfo);
                 break;
-            case "CommanderDirector":
-                UIManager.Instance.ShowPanel<UICommanderDirector>(UIName.UICommanderDirector, dataInfo);
+            case "DirectorView":
+                UIManager.Instance.ShowPanel<UIDirectorView>(UIName.UIDirectorView, dataInfo);
                 break;
             case "ChangeZyData":
                 UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, dataInfo);

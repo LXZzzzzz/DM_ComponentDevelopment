@@ -1887,7 +1887,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toggle: {fileID: 2623428352079018920}
-  InputField_name: {fileID: 0}
+  InputField_name: {fileID: 8889799022628205739}
   InputField_postion: {fileID: 4437393263919966616}
   dp_state: {fileID: 4134741222244015043}
 --- !u!1 &372970744243403819
@@ -7199,7 +7199,7 @@ GameObject:
   - component: {fileID: 8282903452657152687}
   - component: {fileID: 6236969792313970610}
   m_Layer: 5
-  m_Name: Label
+  m_Name: text_name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7217,12 +7217,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8444131885390706796}
+  m_Father: {fileID: 9161638837767758135}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 11.6498, y: 0.5}
-  m_SizeDelta: {x: -33.2997, y: -1}
+  m_AnchoredPosition: {x: -233.35027, y: 0.5}
+  m_SizeDelta: {x: -559.4187, y: -21}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8282903452657152687
 CanvasRenderer:
@@ -7635,7 +7635,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: "\u822A\u8DEF\u53CA\u4EFB\u52A1\u533A\u4F4E\u7A7A\u60C5\u51B5\u826F\u597D"
 --- !u!1 &1256461219832820075
 GameObject:
   m_ObjectHideFlags: 0
@@ -10205,7 +10205,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 
+  m_Text: "\u822A\u8DEF\u53CA\u4EFB\u52A1\u533A\u4F4E\u7A7A\u60C5\u51B5\u826F\u597D"
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -11883,13 +11883,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7529268559188591126}
-  - {fileID: 4982360616956553529}
   m_Father: {fileID: 9161638837767758135}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -245, y: 0}
-  m_SizeDelta: {x: 93.881, y: 30}
+  m_AnchoredPosition: {x: -279.9666, y: 0}
+  m_SizeDelta: {x: 23.9477, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2799091069665258398
 MonoBehaviour:
@@ -23790,7 +23789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toggle: {fileID: 7955739194092704549}
-  InputField_name: {fileID: 0}
+  InputField_name: {fileID: 378589985303980750}
   InputField_postion: {fileID: 387768267401580129}
   dp_state: {fileID: 7157472184406295312}
 --- !u!1 &4011333361001703788
@@ -24441,7 +24440,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4056770879261172987}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
@@ -33466,7 +33465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toggle: {fileID: 9120183181458816705}
-  InputField_name: {fileID: 0}
+  InputField_name: {fileID: 8923342519682036755}
   InputField_postion: {fileID: 1606999181940549050}
   dp_state: {fileID: 3102662972183409194}
 --- !u!1 &5654439498849648307
@@ -39809,7 +39808,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toggle: {fileID: 1027999189354575098}
-  InputField_name: {fileID: 0}
+  InputField_name: {fileID: 1315573455997968572}
   InputField_postion: {fileID: 369355714150493615}
   dp_state: {fileID: 2131751356902670729}
 --- !u!1 &6589158089111944550
@@ -41540,6 +41539,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8444131885390706796}
+  - {fileID: 4982360616956553529}
   - {fileID: 2713304122125620832}
   - {fileID: 6861553231614721127}
   - {fileID: 8101895540569798373}
@@ -41565,6 +41565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toggle: {fileID: 2799091069665258398}
+  text_name: {fileID: 6236969792313970610}
   InputField_pos: {fileID: 4648889088703552110}
   InputField_cycle: {fileID: 1349046786122240502}
   InputField_time: {fileID: 8907149710332103261}
@@ -47847,7 +47848,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 7.52, y: -15}
+  m_AnchoredPosition: {x: 12, y: -15}
   m_SizeDelta: {x: 18, y: 18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2034318342258390276

@@ -1,4 +1,5 @@
 using System;
+using ToolsLibrary;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,15 +11,20 @@ public class ChangeData_cellPersonInfoItem : DMonoBehaviour
 
     public Dropdown dp_state;
 
+    private void Start()
+    {
+        toggle.gameObject.SetActive(MyDataInfo.MyLevel == 1);
+    }
+
     public void Init(string data)
     {
         var itemInfos = data.Split('_');
         InputField_name.text = itemInfos[0];
-        toggle.isOn = string.Equals(itemInfos[1], "1");
+        // toggle.isOn = string.Equals(itemInfos[1], "1");
         InputField_postion.text = itemInfos[2];
         dp_state.value = int.Parse(itemInfos[3]);
 
-        toggle.interactable = false;
+        // toggle.interactable = false;
         InputField_name.interactable = false;
         InputField_postion.interactable = false;
         dp_state.interactable = false;

@@ -15,6 +15,7 @@ public partial class HelicopterController
     public void TakeOff()
     {
         // if (myState != HelicopterState.Landing) return;
+        isAtAirport = false;
         currentSkill = SkillType.TakeOff;
         openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnTOSuc);
         float itemHight = GetCurrentGroundHeight(out bool isHit);
@@ -22,17 +23,20 @@ public partial class HelicopterController
         currentFlyHight = isHit ? itemHight : correctGroundHight;
         updateEvent += OnRunTakeOff;
 
-        var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
-        for (int i = 0; i < items.Count; i++)
+        if (MyDataInfo.gameState >= GameState.GameStart)
         {
-            Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
-            if (Vector3.Distance(transform.position, zyPos) < 10)
+            var items = sceneAllZiyuan.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
+            for (int i = 0; i < items.Count; i++)
             {
-                //第一次从机场起飞记为起飞时刻
-                if (myRecordedData.takeOffTime < 1)
-                    myRecordedData.takeOffTime = MyDataInfo.gameStartTime;
-                Debug.LogError($"起飞时刻：{myRecordedData.takeOffTime}");
-                break;
+                Vector3 zyPos = new Vector3(items[i].transform.position.x, transform.position.y, items[i].transform.position.z);
+                if (Vector3.Distance(transform.position, zyPos) < 10)
+                {
+                    //第一次从机场起飞记为起飞时刻
+                    if (myRecordedData.takeOffTime < 1)
+                        myRecordedData.takeOffTime = MyDataInfo.gameStartTime;
+                    Debug.LogError($"起飞时刻：{myRecordedData.takeOffTime}");
+                    break;
+                }
             }
         }
 

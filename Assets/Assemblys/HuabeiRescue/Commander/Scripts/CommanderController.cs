@@ -138,7 +138,7 @@ public partial class CommanderController : DMonoBehaviour
         // {
         //     EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
         // }
-        
+
         // if (Input.GetKeyDown(KeyCode.O))
         // {
         //     OnSendSkillInfo((int)MessageID.SendGameStart,((int)(MyDataInfo.gameStartTime * 1000)).ToString());
@@ -157,6 +157,15 @@ public partial class CommanderController : DMonoBehaviour
         // if (Input.GetKeyDown(KeyCode.P))
         // {
         //     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeSpeed, "5");
+        // }
+        // if (Input.GetKeyDown(KeyCode.T))
+        // {
+        //     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendFerryFlights, "");
+        // }
+        //
+        // if (Input.GetKeyDown(KeyCode.Y))
+        // {
+        //     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendProgramme, "");
         // }
     }
 

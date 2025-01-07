@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
@@ -9,18 +11,27 @@ public partial class CommanderController
 {
     private EquipBase myEquip;
     private string[] guzhangInfo;
+    private Queue<string> pendingRunSkill;
 
     public void Init(string myId)
     {
         //这里应该是主角数据初始化已经走过了，直接去直升机列表中找自己的id
         myEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BeLongToCommanderId, myId));
         guzhangInfo = new[] { "无故障", "巡航时单发故障", "燃油压力警报灯亮", "主变速箱系统故障", "尾旋翼控制系统故障", "电瓶超温" };
+        pendingRunSkill = new Queue<string>();
+        StartCoroutine(OnRunSkill());
     }
 
     public void OnOpenPlanningMode()
     {
         EventManager.Instance.EventTrigger(Enums.EventType.ShowTipUI.ToString(), "请开始为直升机规划任务");
         EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
+    }
+
+    public void OnFerryFlights()
+    {
+        //收到了转场飞行的指令.
+        (myEquip as IDqChangePart)?.GoFerryFlights();
     }
 
     public void OnReturnBack()
@@ -47,6 +58,25 @@ public partial class CommanderController
                     Debug.LogError("调用返航");
                     (myEquip as IDqChangePart)?.GoReturnBack();
                     break;
+            }
+        }
+    }
+
+    public void OnAddSkillUseSuc(string param)
+    {
+        Debug.LogError("收到技能使用" + param);
+        pendingRunSkill.Enqueue(param);
+    }
+
+    private IEnumerator OnRunSkill()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1);
+            if (pendingRunSkill.Count > 0)
+            {
+                Debug.LogError("加入了一个待执行点" + pendingRunSkill.Peek());
+                MyDataInfo.SkillsToBeConfirmed.Add(pendingRunSkill.Dequeue());
             }
         }
     }

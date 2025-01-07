@@ -202,7 +202,7 @@ public class ZiYuanIconCell : IconCellBase
                 tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(135, 34);
                 break;
             default:
-                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(110, 40);
+                tipShowPart.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(115, 40);
                 break;
         }
     }

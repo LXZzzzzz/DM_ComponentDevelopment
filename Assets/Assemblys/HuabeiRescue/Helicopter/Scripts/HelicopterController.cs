@@ -364,7 +364,13 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
     protected override void OnUpdate()
     {
-        if (MyDataInfo.gameState < GameState.GameStart || MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
+        //如果是支队前线指挥员，并且属于自己支队的直升机才执行指令  MyDataInfo.gameState >= GameState.AgreeAirLine
+
+        if (MyDataInfo.gameState == GameState.ReleaseProgramme || MyDataInfo.gameState == GameState.GameStart)
+            if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId))
+                OnRunInstructionUpdate();
+
+        if (MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
 
         updateEvent?.Invoke();
 
@@ -378,7 +384,8 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
 
         if (!isCrash && !isSendCrash && amountOfOil <= 0)
         {
-            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerEquipCrash, BObjectId);
+            if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId))
+                EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.TriggerEquipCrash, BObjectId);
             isSendCrash = true;
         }
 
@@ -391,9 +398,6 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
                 currentIsCrash = true;
             }
         }
-
-        //如果是支队前线指挥员，并且属于自己支队的直升机才执行指令
-        if (string.Equals(BeLongToCommanderId, MyDataInfo.leadId)) OnRunInstructionUpdate();
     }
 
     private bool currentIsCrash;

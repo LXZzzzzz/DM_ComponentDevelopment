@@ -307,7 +307,7 @@ public class UIAttributeView : BasePanel
             if (isShowWarn)
             {
                 float itemOil = currentOil / totalOil;
-                if (itemOil > .2f)
+                if (itemOil > .1f)
                 {
                     isShowWarn = false;
                     currentTweener?.Kill();
@@ -317,7 +317,7 @@ public class UIAttributeView : BasePanel
             else
             {
                 float itemOil = currentOil / totalOil;
-                if (itemOil < .2f)
+                if (itemOil < .1f)
                 {
                     isShowWarn = true;
                     currentTweener = oilPic.DOColor(Color.red, 1).SetLoops(-1, LoopType.Yoyo);

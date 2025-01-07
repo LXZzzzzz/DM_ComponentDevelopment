@@ -443,7 +443,7 @@ public class PersonSetView : ChangeDataBase
 
             //所有机组信息
             var jizuInfos = cellsInfo[0].Split(':');
-            for (int i = 0; i < jizuInfos.Length; i++)
+            for (int i = 0; i < jizuParent.childCount; i++)
             {
                 ChangeData_cellPersonInfoItem personCell = jizuParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>();
                 personCell?.Init(jizuInfos[i]);
@@ -451,7 +451,7 @@ public class PersonSetView : ChangeDataBase
 
             //所有保障组信息
             var baozhangInfos = cellsInfo[1].Split(':');
-            for (int i = 0; i < baozhangInfos.Length; i++)
+            for (int i = 0; i < baozhangParent.childCount; i++)
             {
                 ChangeData_cellPersonInfoItem personCell = baozhangParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>();
                 personCell?.Init(baozhangInfos[i]);
@@ -467,7 +467,6 @@ public class PersonSetView : ChangeDataBase
     public override void OnSave()
     {
         //只有导教端才有修改机组人员状态的权限，一级指挥只是查看
-        if (MyDataInfo.MyLevel != -1) return;
         //机组人员显示状态 发送
         string choosePersons = "";
         for (int i = 0; i < jizuParent.childCount; i++)
@@ -482,7 +481,10 @@ public class PersonSetView : ChangeDataBase
         }
 
         Debug.LogError(choosePersons);
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendUsePersons, choosePersons);
+        if (MyDataInfo.MyLevel == -1)
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendPersonsInfo, choosePersons);
+        else if (MyDataInfo.MyLevel == 1)
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendPersonUsedInfo, choosePersons);
     }
 }
 
@@ -602,6 +604,8 @@ public class EquipmentInfoView : ChangeDataBase
             equips.Add(item);
             item.gameObject.SetActive(true);
         }
+
+        view.transform.Find("TitleInfo/group").gameObject.SetActive(MyDataInfo.MyLevel == 1);
     }
 
     public override void OnHide()
@@ -611,14 +615,26 @@ public class EquipmentInfoView : ChangeDataBase
 
     public override void OnSave()
     {
-        if (MyDataInfo.MyLevel != -1) return;
-        string equipDatas = "";
-        for (int i = 0; i < equips.Count; i++)
+        if (MyDataInfo.MyLevel == -1)
         {
-            equipDatas += equips[i].getData() + ':';
-        }
+            string equipDatas = "";
+            for (int i = 0; i < equips.Count; i++)
+            {
+                equipDatas += equips[i].getData() + ':';
+            }
 
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendUseEquips, equipDatas);
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendEquipsInfo, equipDatas);
+        }
+        else if (MyDataInfo.MyLevel == 1)
+        {
+            string equipDatas = "";
+            for (int i = 0; i < equips.Count; i++)
+            {
+                equipDatas += equips[i].GetUsedEquipId + ':';
+            }
+
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendEquipUsedInfo, equipDatas);
+        }
     }
 }
 

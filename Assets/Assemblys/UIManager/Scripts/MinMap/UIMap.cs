@@ -65,7 +65,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_Rwxx").onClick.AddListener(() => OnClickZqxx(5));
         GetControl<Button>("Btn_Hxsb").onClick.AddListener(OnClickHxsb);
         GetControl<Button>("Btn_Rwqzb").onClick.AddListener(() => OnClickZqxx(6));
-        GetControl<Button>("Btn_Sqrwzx").onClick.AddListener(OnClickSqrwzx);
+        GetControl<Button>("Btn_Zcfx").onClick.AddListener(OnClickZcfx);
+        GetControl<Button>("Btn_Xdrw").onClick.AddListener(OnClickSqrwzx);
         GetControl<Button>("Btn_Dmzb").onClick.AddListener(() => OnClickZqxx(7));
         GetControl<Button>("Btn_Rwghwc").onClick.AddListener(OnClickRwghwc);
         GetControl<Button>("Btn_Export").onClick.AddListener(() => OnImportAndExportData(false));
@@ -128,6 +129,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetAllZaiquTemplate();
         GetControl<Toggle>("xxqrTog").gameObject.SetActive(MyDataInfo.MyLevel == 1);
         GetControl<Toggle>("jzOperatorTog").gameObject.SetActive(MyDataInfo.MyLevel == 3);
+        if (MyDataInfo.MyLevel == -1) GetControl<Toggle>("tog_Scene").isOn = true;
     }
 
     private void GetAllZaiquTemplate()
@@ -344,7 +346,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_Hxsb").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet);
         GetControl<Toggle>("xxqrTog").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet);
         GetControl<Button>("Btn_Rwqzb").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
-        GetControl<Button>("Btn_Sqrwzx").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
+        GetControl<Button>("Btn_Zcfx").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
+        GetControl<Button>("Btn_Xdrw").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
         GetControl<Button>("Btn_Dmzb").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
         GetControl<Button>("Btn_Rwghwc").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.AgreeTaskExecute);
         GetControl<Button>("Btn_Export").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
@@ -473,12 +476,22 @@ public class UIMap : BasePanel, IPointerClickHandler
         UIManager.Instance.ShowPanel<UIAirLineInfoShow>(UIName.UIAirLineInfoShow, null);
     }
 
+    private void OnClickZcfx()
+    {
+        ConfirmatonInfo infoa = new ConfirmatonInfo
+        {
+            type = showType.secondConfirm, showStrInfo = "是否开始转场飞行?",
+            sureCallBack = (a) => { EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendFerryFlights, ""); }
+        };
+        UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
+    }
+
     private void OnClickSqrwzx()
     {
         ConfirmatonInfo infoa = new ConfirmatonInfo
         {
-            type = showType.secondConfirm, showStrInfo = "是否申请任务执行?",
-            sureCallBack = (a) => { EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendAskForTaskExecute, ""); }
+            type = showType.secondConfirm, showStrInfo = "是否向机长下达任务?",
+            sureCallBack = (a) => { EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendAgreeTaskExecute, ""); }
         };
         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
     }
@@ -503,6 +516,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
                     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTaskPlanningCompleted, myEquip.BObjectId);
                     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendRwghData, PathPointManager.Instance.PackedData());
+                    EventManager.Instance.EventTrigger(EventType.CloseEditorModel.ToString(), new Vector2());
                 }
             };
             UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
@@ -510,6 +524,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         }
 
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendRwghData, PathPointManager.Instance.PackedData());
+        EventManager.Instance.EventTrigger(EventType.CloseEditorModel.ToString(), new Vector2());
         SwitchMapLogic(OperatorState.DqNormal);
     }
 

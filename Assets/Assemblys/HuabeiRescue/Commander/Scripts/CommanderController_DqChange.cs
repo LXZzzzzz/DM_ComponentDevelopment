@@ -38,6 +38,8 @@ public partial class CommanderController
             }
         }
 
+        if (MyDataInfo.sceneAllEquips != null && MyDataInfo.sceneAllEquips.Count > 0)
+            OnCameraContral(1, MyDataInfo.sceneAllEquips[0].transform);
         //地形实际是 0=> 晴天，1=> 多云，2=> 阴天，3=> 雨天，4=> 雪天，5=> 浓雾，6=> 薄雾
         tianqiInfo = new[] { "晴天", "多云", "阴", "雾", "雷阵雨", "小雨", "中雨", "大雨", "暴雨" };
         fengliInfo = new[] { "无方向微风", "风力1-2级", "风力3-4级", "风力5-6级", "风力7-8级", "狂风9-10级", "狂风10级以上" };
@@ -98,18 +100,9 @@ public partial class CommanderController
         itemZy.transform.position = new Vector3(dataPos.x, posY, dataPos.z);
     }
 
-    public void OnSetEquipShow(string info)
+    public void OnSetEquipData(string info)
     {
         var equipInfos = info.Split(':');
-        List<string> infos = new List<string>();
-        for (int i = 0; i < equipInfos.Length; i++)
-        {
-            if (string.IsNullOrEmpty(equipInfos[i])) continue;
-            //记录场景中要显示的直升机id
-            var adatas = equipInfos[i].Split('_');
-            if (int.Parse(adatas[1]) == 1)
-                infos.Add(adatas[0]);
-        }
 
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
@@ -122,7 +115,22 @@ public partial class CommanderController
                     break;
                 }
             }
+        }
+    }
 
+    public void OnSetEquipShow(string info)
+    {
+        var equips = info.Split(':');
+        List<string> infos = new List<string>();
+        for (int i = 0; i < equips.Length; i++)
+        {
+            if (string.IsNullOrEmpty(equips[i])) continue;
+            //记录场景中要显示的直升机id
+            infos.Add(equips[i]);
+        }
+
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
             MyDataInfo.sceneAllEquips[i].gameObject.SetActive(infos.Contains(MyDataInfo.sceneAllEquips[i].BObjectId));
         }
     }
@@ -151,10 +159,6 @@ public partial class CommanderController
             var abz = baozhangInfos[i].Split('_');
             if (int.Parse(abz[1]) == 1) MyDataInfo.BeUsedBaozhangs.Add(abz[0]);
         }
-
-        if (MyDataInfo.MyLevel == 1)
-            // EventManager.Instance.EventTrigger(EventType.changeJizuShow.ToString());
-            EventManager.Instance.EventTrigger(EventType.TransferPersonData.ToString(), data);
     }
 
     public void OnAskForReturn(string info)

@@ -100,16 +100,9 @@ public class AirIconCell : IconCellBase
 
     private GameObject getAirPort()
     {
-        if (airPort != null) return airPort;
         string airPortId = (equipGo as IDqChangePart).GetStopAtAirPort();
-        for (int j = 0; j < allBObjects.Length; j++)
-        {
-            if (string.Equals(airPortId, allBObjects[j].BObject.Id) && allBObjects[j].GetComponent<ZiYuanBase>() != null)
-            {
-                airPort = allBObjects[j].gameObject;
-                break;
-            }
-        }
+
+        airPort = MyDataInfo.sceneAllZiYuan.Find(x => string.Equals(x.BobjectId, airPortId)).gameObject;
 
         return airPort;
     }
@@ -261,7 +254,7 @@ public class AirIconCell : IconCellBase
         {
             equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
             float itemOil = currentOil / totalOil;
-            if (itemOil > .2f)
+            if (itemOil > .1f)
             {
                 isShowWarn = false;
                 currentTweener?.Kill();
@@ -272,7 +265,7 @@ public class AirIconCell : IconCellBase
         {
             equipGo.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
             float itemOil = currentOil / totalOil;
-            if (itemOil < .2f)
+            if (itemOil < .1f)
             {
                 isShowWarn = true;
                 currentTweener = oilPic.DOColor(Color.red, 1).SetLoops(-1, LoopType.Yoyo);

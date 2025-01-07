@@ -45,6 +45,7 @@ namespace Enums
         crashIcon, //坠毁后通知Ui
         LoadPathPlanningData, //加载规划点数据
         ClearPathPlanningData, //清空规划点
+        CloseEditorModel, //关闭路径编辑模式
         MoveToTarget_AutoRun, //自动执行移动到目标点
 
         InitEquipData, //加载方案时初始化直升机数据
@@ -81,14 +82,14 @@ namespace Enums
         SendAskForAirLine = 1019, //总指发送申请航线消息
         SendAgreeAirLine = 1020, //导教端发送航线信息的反馈
         SendAskForTaskExecute = 1021, //前指发送任务执行请求
-        SendAgreeTaskExecute = 1022, //总指发送任务执行的反馈
+        SendAgreeTaskExecute = 1022, //总指发送任务执行的反馈--->修改为前指发送任务下达指令
         SendTaskPlanningCompleted = 1023, //机长发送任务规划完成
         SendTurnBack = 1024, //发送立即返航指令
         SendChangeTaskPlanning = 1025, //可能要加 ：导教端修改了灾区数据后，前指要发送这个指令，告诉机长要根据最新灾情调整任务规划数据
         SendTaskBgInfo = 1026, //导教端发送任务背景信息
         SendZySetData = 1027, //导教端发送地面保障资源的修改数据
-        SendUseEquips = 1028, //导教端发送哪些直升机可用
-        SendUsePersons = 1029, //导教端发送人员信息
+        SendEquipsInfo = 1028, //导教端发送各个直升机信息
+        SendPersonsInfo = 1029, //导教端发送人员信息
         SendAskForReturn = 1030, //机长请求返航或返修
         SendAgreeReturn = 1031, //前指发送请求反馈
         SendCompleteTaskBgSet = 1032, //导教端发送完成任务背景设置
@@ -97,6 +98,9 @@ namespace Enums
         SendAgreeDiscoverNewDisaster = 1035, //确认发现了新灾情
         SendChangeEquipOilAndLoad = 1036, //修改直升机的载油量和装载量
         SendChangeZiyuanData = 1037, //一级修改资源点的数据
+        SendFerryFlights = 1038, //触发直升机转场飞行
+        SendEquipUsedInfo = 1039, //一级指挥发送哪些直升机可用
+        SendPersonUsedInfo = 1040, //一级发送哪些机组人员可用
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

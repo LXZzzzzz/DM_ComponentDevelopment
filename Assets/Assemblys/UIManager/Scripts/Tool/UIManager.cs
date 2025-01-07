@@ -186,8 +186,8 @@ namespace UiManager
                 case UIName.UIChangeControllers:
                     itemUI = Instantiate((main as UIManagerMain).UIChangeControllers, canvansTran);
                     break;
-                case UIName.UICommanderDirector:
-                    itemUI = Instantiate((main as UIManagerMain).UICommanderDirector, canvansTran);
+                case UIName.UIDirectorView:
+                    itemUI = Instantiate((main as UIManagerMain).UIDirectorView, canvansTran);
                     break;
                 case UIName.UIChangePointDataInfo:
                     itemUI = Instantiate((main as UIManagerMain).UIChangePointDataInfo, canvansTran);
@@ -253,7 +253,7 @@ namespace UiManager
         UIAirportAircraftShowView,
         UIThreeDIcon,
         UIChangeControllers,
-        UICommanderDirector,
+        UIDirectorView,
         UIChangePointDataInfo,
         UIPathPointsShow,
         UIChangeZyData,

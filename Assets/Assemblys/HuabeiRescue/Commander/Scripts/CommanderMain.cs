@@ -339,8 +339,6 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendProgramme:
                 MyDataInfo.gameState = GameState.ReleaseProgramme;
                 _commanderController.Receive_ProgrammeData(param);
-                MyDataInfo.speedMultiplier = 1;
-                MyDataInfo.gameStartTime = 0;
                 _commanderController.Receive_TextMsgRecord("值班领导下达了任务");
                 break;
             case MessageID.SendGameStart:
@@ -371,7 +369,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.Receive_PathPlanningData(param);
                 break;
             case MessageID.SendSkillConfirmation:
-                MyDataInfo.SkillsToBeConfirmed.Add(param);
+                if (MyDataInfo.MyLevel == 3) _commanderController.OnAddSkillUseSuc(param);
                 break;
             case MessageID.SendEquipBindingZiyuan:
                 _commanderController.Receive_ChangeEquipBindings(param);
@@ -405,13 +403,13 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 }
 
                 break;
-            case MessageID.SendAskForTaskExecute:
-                //这里如果是总指挥，就弹二次确认窗口，询问是否同意任务执行，让他选择是否同意
-                _commanderController.OnAskTaskExecute();
-                _commanderController.Receive_TextMsgRecord("前线指挥员申请任务执行");
+            case MessageID.SendFerryFlights:
+                _commanderController.OnFerryFlights();
+                _commanderController.Receive_TextMsgRecord("前线指挥员指挥转场飞行");
                 break;
             case MessageID.SendAgreeTaskExecute:
                 //如果是机长，就让他的地图模式改为Plane模式，并弹窗提示可以开始任务规划
+                _commanderController.Receive_TextMsgRecord("前线指挥员下达任务");
                 MyDataInfo.gameState = GameState.AgreeTaskExecute;
                 if (MyDataInfo.MyLevel == 3)
                     _commanderController.OnOpenPlanningMode();
@@ -431,17 +429,26 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendCompleteTaskBgSet:
                 MyDataInfo.gameState = GameState.CompleteTaskBgSet;
                 _commanderController.Receive_CompleteBgSet();
+                MyDataInfo.speedMultiplier = 1;
+                MyDataInfo.gameStartTime = 0;
                 _commanderController.Receive_TextMsgRecord("导教端完成任务设置");
                 break;
             case MessageID.SendZySetData:
                 _commanderController.OnSetZyInfo(param);
                 break;
-            case MessageID.SendUseEquips:
+            case MessageID.SendEquipsInfo:
                 //这里的数据是出动直升机信息，要让不出动的直升机在列表和地图不显示
+                _commanderController.OnSetEquipData(param);
+                break;
+            case MessageID.SendEquipUsedInfo:
                 _commanderController.OnSetEquipShow(param);
                 break;
-            case MessageID.SendUsePersons:
+            case MessageID.SendPersonsInfo:
                 //这里的数据是可用机组和保障信息，要让总指挥页面的下拉框修改一下
+                if (MyDataInfo.MyLevel == 1)
+                    EventManager.Instance.EventTrigger(EventType.TransferPersonData.ToString(), param);
+                break;
+            case MessageID.SendPersonUsedInfo:
                 _commanderController.OnSetPersonInfo(param);
                 break;
             case MessageID.SendAskForReturn:
@@ -495,6 +502,11 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendMarkMapPoint:
                 _commanderController.Receive_ShowMarkPoint(param);
+                break;
+            case MessageID.SendAskForTaskExecute:
+                //这里如果是总指挥，就弹二次确认窗口，询问是否同意任务执行，让他选择是否同意
+                _commanderController.OnAskTaskExecute();
+                _commanderController.Receive_TextMsgRecord("前线指挥员下达任务");
                 break;
         }
 

@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DM.Core.Map;
-using DM.IFS;
-using Newtonsoft.Json;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
