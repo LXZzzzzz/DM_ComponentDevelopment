@@ -484,7 +484,11 @@ public class PersonSetView : ChangeDataBase
         if (MyDataInfo.MyLevel == -1)
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendPersonsInfo, choosePersons);
         else if (MyDataInfo.MyLevel == 1)
+        {
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendPersonUsedInfo, choosePersons);
+
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSurePersonInfo.ToString());
+        }
     }
 }
 
@@ -570,6 +574,7 @@ public class DisasterSituationView : ChangeDataBase
     public override void OnSave()
     {
         //存到cc中的数据结构中，用于报告显示
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureDisasterInfo.ToString());
     }
 }
 
@@ -634,6 +639,8 @@ public class EquipmentInfoView : ChangeDataBase
             }
 
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendEquipUsedInfo, equipDatas);
+
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureEquipInfo.ToString());
         }
     }
 }
@@ -870,7 +877,7 @@ public class FieldCommanderView : ChangeDataBase
 
     public override void OnSave()
     {
-        //存到cc中的数据结构中，用于报告显示
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHInspectEquipInfo.ToString());
     }
 }
 
@@ -936,6 +943,7 @@ public class CaptainView : ChangeDataBase
     public override void OnSave()
     {
         string info = _equip.BObjectId + '_' + zyl.value.ToString() + '_' + zzl.value.ToString();
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendChangeEquipOilAndLoad, info);
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendChangeEquipOilAndLoad, info);
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.JZSureOilAndLoad.ToString());
     }
 }

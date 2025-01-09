@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.ProgrammePart;
@@ -11,51 +13,45 @@ using EventType = Enums.EventType;
 
 public class UIDirectorView : BasePanel
 {
-    private GameObject equipViewGo, ziYuanViewGo;
     private RectTransform equipParent;
     private RectTransform ziYuanParent;
     private RectTransform taskParent; //灾区组件所展示的列表
+    private RectTransform trainParent;
 
     private EquipCell ecPrefab;
     private ZiYuanCell zycPrefab;
     private TaskCell taskPrefab;
+    private TrainCell trainPrefab;
     private Text startTime, currentTime;
-    private Button btn_EquipUnfold, btn_ZiyuanUnfold;
 
     private int level;
     private Dictionary<string, string> allCommanderIds; //存储所有指挥端Id和 对应的名称
     private List<EquipCell> allEquipCells; //存储所有装备cell
     private List<ZiYuanCell> allZiYuanCells; //存储所有资源cell，为了后面数据修改
     private List<TaskCell> allTaskCells; //存储所有任务cell，方便后面数据修改
+    private List<TrainCell> allTrainCells; //存储所有训练点
 
 
     public override void Init()
     {
         base.Init();
-        equipViewGo = transform.Find("LeftPart/GoListViews/EquipListView").gameObject;
-        ziYuanViewGo = transform.Find("LeftPart/GoListViews/ZiYuanListView").gameObject;
         equipParent = GetControl<ScrollRect>("EquipsView").content;
         ecPrefab = GetComponentInChildren<EquipCell>(true);
         ziYuanParent = GetControl<ScrollRect>("ZiYuanView").content;
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
-        taskParent = transform.Find("RightPart").GetComponentInChildren<ScrollRect>(true).content;
-        taskPrefab = transform.Find("RightPart").GetComponentInChildren<TaskCell>(true);
+        taskParent = GetControl<ScrollRect>("TaskListView").content;
+        taskPrefab = GetComponentInChildren<TaskCell>(true);
+        trainParent = GetControl<ScrollRect>("TrainsView").content;
+        trainPrefab = GetComponentInChildren<TrainCell>(true);
         startTime = GetControl<Text>("startTimeShow");
         currentTime = GetControl<Text>("currentTimeShow");
-        btn_EquipUnfold = GetControl<Button>("btn_EquipUnfold");
-        btn_ZiyuanUnfold = GetControl<Button>("btn_ZiyuanUnfold");
-
-        btn_EquipUnfold.onClick.AddListener(() => retractOrUnfold(true, 1));
-        btn_ZiyuanUnfold.onClick.AddListener(() => retractOrUnfold(true, 2));
-        GetControl<Button>("btn_EquipRecover").onClick.AddListener(() => retractOrUnfold(false, 1));
-        GetControl<Button>("btn_ZiyuanRecover").onClick.AddListener(() => retractOrUnfold(false, 2));
-        GetControl<Button>("btn_TaskRecover").onClick.AddListener(() => retractOrUnfold(false, 3));
 
 
         allCommanderIds = new Dictionary<string, string>();
         allEquipCells = new List<EquipCell>();
         allZiYuanCells = new List<ZiYuanCell>();
         allTaskCells = new List<TaskCell>();
+        allTrainCells = new List<TrainCell>();
     }
 
     public override void ShowMe(object userData)
@@ -72,6 +68,8 @@ public class UIDirectorView : BasePanel
         // EventManager.Instance.AddEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);//修改权限后，更新页面
         EventManager.Instance.AddEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
         EventManager.Instance.AddEventListener<string>(EventType.HideGoIcon.ToString(), OnHideZyShow);
+        EventManager.Instance.AddEventListener<string>(EventType.CompleteATrainPoint.ToString(), OnCompleteTrainPoint);
+        showTrainsData();
     }
 
     public override void HideMe()
@@ -86,36 +84,7 @@ public class UIDirectorView : BasePanel
         // EventManager.Instance.RemoveEventListener<int, string>(EventType.ChangeObjController.ToString(), OnRunningChangeObjCom);
         EventManager.Instance.RemoveEventListener<List<string>>(EventType.ChangeJiZhangView.ToString(), OnChangeZyShow);
         EventManager.Instance.RemoveEventListener<string>(EventType.HideGoIcon.ToString(), OnHideZyShow);
-    }
-
-    private void showView()
-    {
-        //设置自己的信息
-        // myCommanderInfoShow.Init(MyDataInfo.leadId, OnChooseCommander);
-        //获取子指挥官,一级指挥端才需要显示，只显示别人
-        if (level == 1)
-        {
-            for (int i = 0; i < allBObjects.Length; i++)
-            {
-                //找到了主角,并且不是自己，就要展示,展示所有占席位玩家
-                // if (!string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id) && allBObjects[i].BObject.Info.Tags.Find(x => x.Id == 8) != null)
-                // {
-                //     //如果这个玩家没有进入房间，就跳过
-                //     string myRoleId = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).RoleId;
-                //     if (string.IsNullOrEmpty(myRoleId)) continue;
-                //     if (MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, allBObjects[i].BObject.Id)).ClientLevel < 0) continue;
-                //     var itemObj = allBObjects[i];
-                //     var itemCell = Instantiate(ccPrefab, commanderParent);
-                //     itemCell.Init(itemObj.BObject.Info.Name, itemObj.BObject.Id, OnChooseCommander);
-                //     itemCell.gameObject.SetActive(true);
-                //     allCommanderIds.Add(itemObj.BObject.Id, itemObj.BObject.Info.Name);
-                //     allCommanderCells.Add(itemObj.BObject.Id, itemCell);
-                // }
-
-                if (string.Equals(MyDataInfo.leadId, allBObjects[i].BObject.Id))
-                    allCommanderIds.Add(allBObjects[i].BObject.Id, allBObjects[i].BObject.Info.Name);
-            }
-        }
+        EventManager.Instance.RemoveEventListener<string>(EventType.CompleteATrainPoint.ToString(), OnCompleteTrainPoint);
     }
 
     private void Update()
@@ -128,42 +97,6 @@ public class UIDirectorView : BasePanel
         for (int i = 0; i < allEquipCells.Count; i++)
         {
             allEquipCells[i].gameObject.SetActive(allEquipCells[i].equipGoIsShow);
-        }
-    }
-
-    private void retractOrUnfold(bool isRetract, int type)
-    {
-        switch (type)
-        {
-            case 0:
-                //隐藏和显示玩家列表
-                // btn_ComUnfold.gameObject.SetActive(!isRetract);
-                // if (!isRetract)
-                // {
-                //     commanderViewGo.anchoredPosition = new Vector2(commanderViewGo.anchoredPosition.x - 104, commanderViewGo.anchoredPosition.y);
-                //     goListViewGo.anchoredPosition = new Vector2(goListViewGo.anchoredPosition.x - 90, commanderViewGo.anchoredPosition.y);
-                // }
-                // else
-                // {
-                //     commanderViewGo.anchoredPosition = new Vector2(commanderViewGo.anchoredPosition.x + 104, commanderViewGo.anchoredPosition.y);
-                //     goListViewGo.anchoredPosition = new Vector2(goListViewGo.anchoredPosition.x + 90, commanderViewGo.anchoredPosition.y);
-                // }
-
-                break;
-            case 1:
-                btn_EquipUnfold.gameObject.SetActive(!isRetract);
-                equipViewGo.SetActive(isRetract);
-                if (!isRetract)
-                {
-                    // GetControl<Toggle>("tog_CtrlEquipTypeView").isOn = false;
-                    EventManager.Instance.EventTrigger(Enums.EventType.CloseCreatTarget.ToString());
-                }
-
-                break;
-            case 2:
-                btn_ZiyuanUnfold.gameObject.SetActive(!isRetract);
-                ziYuanViewGo.SetActive(isRetract);
-                break;
         }
     }
 
@@ -265,5 +198,46 @@ public class UIDirectorView : BasePanel
 
         allZiYuanCells.ForEach(x => x.gameObject.SetActive(!string.Equals(x.myEntityId, id)));
         allTaskCells.ForEach(x => x.gameObject.SetActive(!string.Equals(x.myEntityId, id)));
+    }
+
+    private void showTrainsData()
+    {
+        string filePath = Path.Combine(Application.dataPath, "MapLib", "XmlData", "TrainPointData.xml");
+
+        // 检查文件是否存在
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError("File not found: " + filePath);
+            return;
+        }
+
+        // 读取文件内容
+        string fileContent = File.ReadAllText(filePath);
+
+        // 创建一个 XmlDocument 对象
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(fileContent);
+
+        // 获取根节点
+        XmlNode root = xmlDoc.DocumentElement;
+
+        // 遍历所有节点
+        foreach (XmlNode bookNode in root.ChildNodes)
+        {
+            string id = bookNode.Attributes["id"].Value;
+
+            string title = bookNode["title"]?.InnerText;
+            string type = bookNode["type"]?.InnerText;
+
+            TrainCell itemCell = Instantiate(trainPrefab, trainParent);
+            itemCell.Init(id, title, type);
+            itemCell.gameObject.SetActive(true);
+            allTrainCells.Add(itemCell);
+        }
+    }
+
+    private void OnCompleteTrainPoint(string type)
+    {
+        allTrainCells.ForEach(x => x.SetComplete(type));
     }
 }

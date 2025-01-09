@@ -225,8 +225,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         int myLevel = MyDataInfo.MyLevel = (Properties[0] as DropDownProperty).Selected.Enum;
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "IconShow", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "MinMap", mapSizeData);
-        // if (myLevel == -1) EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderDirector", null);
-        EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
+        if (myLevel == -1) EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "DirectorView", myLevel);
+        else EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "CommanderView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "TopMenuView", myLevel);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", null);
         EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "ThreeDIconView", null);
@@ -340,6 +340,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.gameState = GameState.ReleaseProgramme;
                 _commanderController.Receive_ProgrammeData(param);
                 _commanderController.Receive_TextMsgRecord("值班领导下达了任务");
+                EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.ZBLDSendTask.ToString());
                 break;
             case MessageID.SendGameStart:
                 Debug.LogError("收到了开始");
@@ -387,6 +388,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AirLineInfoShow", param);
 
                 _commanderController.Receive_TextMsgRecord("值班领导进行航线申报");
+                EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.ZBLDRouteDeclaration.ToString());
                 break;
             case MessageID.SendAgreeAirLine:
                 //这里如果是总指挥，就弹提示窗，告知航线申请反馈，如果同意就进入下一阶段
@@ -399,7 +401,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 else
                 {
                     if (MyDataInfo.MyLevel == 1)
-                        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "航线信息有误，请重新申报");
+                        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "航线信息有误，重新申报");
                 }
 
                 break;
@@ -410,6 +412,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendAgreeTaskExecute:
                 //如果是机长，就让他的地图模式改为Plane模式，并弹窗提示可以开始任务规划
                 _commanderController.Receive_TextMsgRecord("前线指挥员下达任务");
+                EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.XCZHSendTask.ToString());
                 MyDataInfo.gameState = GameState.AgreeTaskExecute;
                 if (MyDataInfo.MyLevel == 3)
                     _commanderController.OnOpenPlanningMode();
@@ -472,6 +475,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendChangeZiyuanData:
                 _commanderController.OnChangeZiyuanInfo(param);
+                break;
+            case MessageID.SendTrainPointSucInfo:
+                if (MyDataInfo.MyLevel == -1) EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), param);
                 break;
 
 

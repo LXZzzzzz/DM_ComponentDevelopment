@@ -7,6 +7,7 @@ using ToolsLibrary.EquipPart;
 using ToolsLibrary.PathPart;
 using ToolsLibrary.ProgrammePart;
 using UnityEngine;
+using UnityEngine.Events;
 using EventType = Enums.EventType;
 
 public partial class CommanderController
@@ -46,7 +47,8 @@ public partial class CommanderController
         // var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
         // OnLoadProgrammeDataSuc(programmeData);
         if (MyDataInfo.MyLevel == 2)
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "请您为出动直升机进行资源分配");
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "接到现场任务分配命令",
+                () => OnSendSkillInfo((int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHGetTask.ToString()));
     }
 
 
@@ -334,6 +336,7 @@ public partial class CommanderController
             if (!string.IsNullOrEmpty(infos[i]))
                 item.currentBindingZy.Add(infos[i]);
         }
+
         Receive_TextMsgRecord($"前线指挥对直升机{item.name}进行了现场任务分配");
 
         if (MyDataInfo.MyLevel == 3 && string.Equals(myEquip.BObjectId, item.BObjectId))
@@ -374,7 +377,7 @@ public partial class CommanderController
     public void Receive_CompleteBgSet()
     {
         if (MyDataInfo.MyLevel == 1)
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务设置完成，请创建任务方案");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务设置完成，接到制定任务方案的命令");
     }
 
     #endregion

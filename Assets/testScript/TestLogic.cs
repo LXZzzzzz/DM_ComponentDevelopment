@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 using DG.Tweening;
 using Newtonsoft.Json;
 using ReportGenerate;
@@ -13,6 +15,7 @@ using Vectrosity;
 using ToolsLibrary.ProgrammePart;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Application = UnityEngine.Application;
 using EventType = Enums.EventType;
 
 public class TestLogic : MonoBehaviour
@@ -201,6 +204,11 @@ public class TestLogic : MonoBehaviour
             Debug.Log(FloatToDMS(45.56f));
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            jiexiXml();
+        }
+
         if (isRunTimer) runTimer();
 
         if (routePoints != null)
@@ -208,6 +216,54 @@ public class TestLogic : MonoBehaviour
             // testPoint.anchoredPosition = routePoints[1];
         }
     }
+
+    private void jiexiXml()
+    {
+        Debug.LogError(Enums.TrainsPintType.JZCompletePlan);
+        Debug.LogError(Enums.TrainsPintType.JZCompletePlan.ToString());
+        string filePath = Path.Combine(Application.streamingAssetsPath, "XmlData", "TrainPointData.xml");
+
+        // 检查文件是否存在
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError("File not found: " + filePath);
+            return;
+        }
+
+        // 读取文件内容
+        string fileContent = File.ReadAllText(filePath);
+
+        // 创建一个 XmlDocument 对象
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(fileContent);
+
+        // 获取根节点
+        XmlNode root = xmlDoc.DocumentElement;
+
+        // 遍历所有 book 节点
+        foreach (XmlNode bookNode in root.ChildNodes)
+        {
+            string id = bookNode.Attributes["id"].Value;
+
+            string author = bookNode["author"]?.InnerText;
+            string title = bookNode["title"]?.InnerText;
+            string genre = bookNode["genre"]?.InnerText;
+            string price = bookNode["price"]?.InnerText;
+            string publishDate = bookNode["publish_date"]?.InnerText;
+            string description = bookNode["description"]?.InnerText;
+
+            // 输出信息
+            Debug.Log($"Book ID: {id}");
+            Debug.Log($"Author: {author}");
+            Debug.Log($"Title: {title}");
+            Debug.Log($"Genre: {genre}");
+            Debug.Log($"Price: {price}");
+            Debug.Log($"Publish Date: {publishDate}");
+            Debug.Log($"Description: {description}");
+            Debug.Log("----------");
+        }
+    }
+
     /// <summary>
     /// float 转度分秒
     /// </summary>

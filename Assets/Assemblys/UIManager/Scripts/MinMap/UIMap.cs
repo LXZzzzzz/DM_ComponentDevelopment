@@ -517,6 +517,7 @@ public class UIMap : BasePanel, IPointerClickHandler
                     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTaskPlanningCompleted, myEquip.BObjectId);
                     EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendRwghData, PathPointManager.Instance.PackedData());
                     EventManager.Instance.EventTrigger(EventType.CloseEditorModel.ToString(), new Vector2());
+                    EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.JZCompletePlan.ToString());
                 }
             };
             UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, infoa);
@@ -535,6 +536,7 @@ public class UIMap : BasePanel, IPointerClickHandler
             //导入逻辑
             string data = FileOperator.LoadData_Txt(Application.dataPath + "/MapLib/Scheme");
 
+            if (string.IsNullOrEmpty(data)) return;
             SwitchMapLogic(OperatorState.PlanningPath);
             EventManager.Instance.EventTrigger(EventType.LoadPathPlanningData.ToString(), data);
         }
@@ -562,6 +564,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendDiscoverNewDisaster, myEquip.BObjectId);
         EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "已申报新灾情");
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.JZSendTqInfo.ToString());
     }
 
     private void OnSetData()

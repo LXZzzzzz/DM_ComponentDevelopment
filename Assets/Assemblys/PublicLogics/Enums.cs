@@ -58,6 +58,7 @@ namespace Enums
         TransferMisDescription, //传递灾情信息给UI
         TransferKongguanData, //传递空管信息给UI
         TransferTianqiData, //传递天气信息给UI
+        CompleteATrainPoint, //完成了一个训练点
     }
 
     public enum MessageID
@@ -101,6 +102,7 @@ namespace Enums
         SendFerryFlights = 1038, //触发直升机转场飞行
         SendEquipUsedInfo = 1039, //一级指挥发送哪些直升机可用
         SendPersonUsedInfo = 1040, //一级发送哪些机组人员可用
+        SendTrainPointSucInfo = 1041, //发送训练点完成的信息
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作
@@ -149,5 +151,24 @@ namespace Enums
         rwxxShow, //展示任务信息 
         rwqzbShow, //展示任务前准备
         dmzbShow, //展示地面准备
+    }
+
+    public enum TrainsPintType
+    {
+        ZBLDSureDisasterInfo, //确认灾情信息
+        ZBLDSureEquipInfo, //确认装备信息
+        ZBLDSurePersonInfo, //确认人员信息
+        ZBLDRouteDeclaration, //航线申报
+        ZBLDSendTask, //值班领导下达任务
+        XCZHGetTask, //现场指挥领受任务
+        XCZHInspectEquipInfo, //检查装备装载设备、载油量、状态信息
+        XCZHSendTask, //前线指挥完成任务分配并下达任务
+        XCZHSureTqInfo, //前线指挥确认机长的特情信息
+        JZSureTaskInfo, //机长确认任务分配信息
+        JZSureOilAndLoad, //机长确认油量和装载量
+        JZCompletePlan, //机长完成航线规划
+        JZOilInsufficient, //机长发生燃油不足告警
+        JZLandingError, //机长着陆区域错误
+        JZSendTqInfo, //机长发送特情信息
     }
 }

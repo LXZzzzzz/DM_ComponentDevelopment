@@ -234,7 +234,11 @@ public partial class CommanderController
         if (MyDataInfo.MyLevel == 2)
         {
             EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长发现新灾情，是否处理",
-                () => { OnSendSkillInfo((int)MessageID.SendAgreeDiscoverNewDisaster, ""); });
+                () =>
+                {
+                    OnSendSkillInfo((int)MessageID.SendAgreeDiscoverNewDisaster, "");
+                    OnSendSkillInfo((int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHSureTqInfo.ToString());
+                });
         }
     }
 
