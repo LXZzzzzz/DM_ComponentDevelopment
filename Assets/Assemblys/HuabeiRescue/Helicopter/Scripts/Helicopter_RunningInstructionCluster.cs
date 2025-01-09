@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Enums;
 using ToolsLibrary;
@@ -40,8 +41,9 @@ public partial class HelicopterController
     public void GoReturnBack()
     {
         //去除后续执行计划，并取消当前所执行内容，直接回机场
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 2);
         EventManager.Instance.EventTrigger(EventType.ClearPathPlanningData.ToString(), BObjectId);
-
+        StartCoroutine(WaitAndPrint());
 
         if (!string.IsNullOrEmpty(skillConfirmationStr))
             MyDataInfo.SkillsToBeConfirmed.Remove(skillConfirmationStr);
@@ -81,6 +83,13 @@ public partial class HelicopterController
         Debug.LogError("再看一下数据是空吗" + PathPointManager.Instance.GetPointDataByBObjectId(BObjectId));
         Debug.LogError(PathPointManager.Instance.GetPointDataByBObjectId(BObjectId));
         Debug.LogError(PathPointManager.Instance.GetPointDataByBObjectId(BObjectId)?.NextPointId);
+    }
+
+    private IEnumerator WaitAndPrint()
+    {
+        // 等待1秒
+        yield return new WaitForSeconds(1f);
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
     }
 
     public void StopRunTime()
