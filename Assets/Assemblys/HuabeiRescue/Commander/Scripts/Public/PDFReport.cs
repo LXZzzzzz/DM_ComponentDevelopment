@@ -31,7 +31,7 @@ namespace ReportGenerate
         /// 灭火任务报告
         /// </summary>
         public void CreateWaterMissionReport(string reportId, string reportName, string userName, string Id, string Abstract, ResultFireWaterData resultData, ResultFireWaterOutData resultOutData, List<string> trainData,
-            Dictionary<string, List<WaterMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports)
+            Dictionary<string, List<WaterMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports,PersonAssessment_ResultFireWater personAss)
         {
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
@@ -168,7 +168,6 @@ namespace ReportGenerate
             doc.Add(tableResult);
             doc.Add(nullString);
 
-            
             Paragraph messagePersonAssessment = new Paragraph("二、岗位职责能力评估", fontSub);
             doc.Add(messagePersonAssessment);
             doc.Add(nullString);
@@ -176,7 +175,7 @@ namespace ReportGenerate
             paLevel1.IndentationLeft = 20f;
             doc.Add(paLevel1);
             doc.Add(nullString);
-            
+            //数据：personAss
             
             
             

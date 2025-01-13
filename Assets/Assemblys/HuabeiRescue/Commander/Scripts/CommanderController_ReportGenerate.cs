@@ -173,7 +173,7 @@ public partial class CommanderController
         if (showAllOperatorInfos == null) Debug.LogError("showAllOperatorInfos");
         if (playerEquips == null) Debug.LogError("playerEquips");
         if (playerZiyuans == null) Debug.LogError("playerZiyuans");
-        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count);
+        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, null);
     }
 
     private void GenerateRescueReport()
