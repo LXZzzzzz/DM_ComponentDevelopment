@@ -473,4 +473,99 @@ namespace ReportGenerate
     }
 
     #endregion
+
+    #region 能力评估_灭火
+
+    //灭火能力评估
+    public class PersonAssessment_ResultFireWater
+    {
+        public parfw_level1 yjzhy;//一级指挥员
+        public parfw_level2 ejzhy;//二级指挥员
+        public List<parfw_level3> sjzhy;//三级指挥员
+    }
+
+    public class parfw_level1
+    {
+        //灾害类型
+        public string zhlx;
+        //灾情规模
+        public string zqgm;
+        //火场面积
+        public string hcmj;
+        //出动救援力量
+        public List<RescueForces> cdjyll;
+        //航线规划信息
+        public string hxgh;
+        //任务要素统计
+        public TaskElements rwystj;
+    }
+
+    public class RescueForces
+    {
+        public string jx;//机型
+        public string bh;//编号
+        public string jz;//机长
+        public string jzrs;//机组人数
+        public string zz;//组长
+        public string nun;//数量
+    }
+
+    public class TaskElements
+    {
+        public int jc;//机场
+        public int lsqjd;//临时起降点
+        public int bjd;//补给点
+        public int qsd;//取水点
+    }
+
+    public class parfw_level2
+    {
+        //机组信息
+        public List<UnitInfo> jzxx;
+        //任务要素确认
+        public TaskElements2 rwys;
+        //任务分配
+        public List<TaskAllocation> rwfp;
+    }
+
+    public class UnitInfo
+    {
+        public string jzName;//机组名
+        public string jx;//机型
+        public List<string> zzsb;//装载设备
+        public float zyl;//载油量
+        public float zzl;//载重量
+        public float dmwhTime;//地面维护时间
+    }
+
+    public class TaskElements2
+    {
+        public List<string> sdz;//受灾点
+        public List<float> hcmj;//火场面积
+        public List<string> qsd;//取水点
+        public List<string> bjd;//补给点
+        public List<string> bjc;//备降场
+    }
+
+    public class TaskAllocation
+    {
+        public string jzName;//机组名、
+        public List<string> szd;//受灾点
+        public List<string> qsd;//取水点
+        public List<string> bjd;//补给点
+        public List<string> bjc;//备降场
+    }
+
+    public class parfw_level3
+    {
+        public float zyl;//载油量
+        public float zzl;//载重量
+        public int rybz;//燃油不足报警次数
+        public int cwzl;//错误着陆报警次数
+        public bool zbgzbg;//装备故障是否报告
+        public bool zbgzzl;//装备故障是否着陆
+        public bool tqbhbg;//天气变化是否报告
+        public bool tqbhfh;//天气变化是否返航
+    }
+    #endregion
 }

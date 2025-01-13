@@ -24,6 +24,7 @@ public class ZiYuanIconCell : IconCellBase
     private RectTransform meRect;
     private Func<Vector3, Vector2> worldPosMapPosFunc;
     private Text nameTxt;
+    private bool isShow;
 
     // private GameObject chooseImg;
 
@@ -242,6 +243,11 @@ public class ZiYuanIconCell : IconCellBase
         return data;
     }
 
+    public void OnSetShow(bool isshow)
+    {
+        isShow = isshow;
+    }
+
     private void Update()
     {
         if (Time.time > checkTimer)
@@ -249,10 +255,21 @@ public class ZiYuanIconCell : IconCellBase
             checkTimer = Time.time + 1 / 25f;
             if (ChoosePart != null && ziYuanItem != null)
             {
-                if (ziYuanItem.ZiYuanType == ZiYuanType.SourceOfAFire && (ziYuanItem as ISourceOfAFire).getTaskProgress())
-                    ChoosePart.GetChild(0).GetComponent<Image>().color = Color.gray;
+                if (MyDataInfo.MyLevel == 3)
+                {
+                    if (!isShow) //ziYuanItem.ZiYuanType == ZiYuanType.SourceOfAFire && (ziYuanItem as ISourceOfAFire).getTaskProgress()
+                        ChoosePart.GetChild(0).GetComponent<Image>().color = Color.gray;
+                    else
+                        ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+                }
                 else
-                    ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+                {
+                    if (ziYuanItem.ZiYuanType == ZiYuanType.SourceOfAFire && (ziYuanItem as ISourceOfAFire).getTaskProgress() ||
+                        ziYuanItem.ZiYuanType == ZiYuanType.DisasterArea && (ziYuanItem as IDisasterArea).getTaskProgress(out int a, out int b))
+                        ChoosePart.GetChild(0).GetComponent<Image>().color = Color.gray;
+                    else
+                        ChoosePart.GetChild(0).GetComponent<Image>().color = ziYuanItem.isChooseMe ? ziYuanItem.ChooseColor : ziYuanItem.MyColor;
+                }
 
                 if (ColorUtility.TryParseHtmlString("#D7D7D7", out Color color))
                 {

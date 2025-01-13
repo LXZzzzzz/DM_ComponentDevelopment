@@ -399,8 +399,8 @@ public class UIMap : BasePanel, IPointerClickHandler
     {
         foreach (var iconCell in allIconCells)
         {
-            if (iconCell.Value is AirIconCell) continue;
-            iconCell.Value.gameObject.SetActive(showZys.Find(x => string.Equals(x, iconCell.Key)) != null);
+            if (iconCell.Value is ZiYuanIconCell)
+                (iconCell.Value as ZiYuanIconCell)?.OnSetShow(showZys.Find(x => string.Equals(x, iconCell.Key)) != null);
         }
     }
 

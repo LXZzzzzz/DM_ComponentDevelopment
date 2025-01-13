@@ -479,6 +479,14 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendTrainPointSucInfo:
                 if (MyDataInfo.MyLevel == -1) EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), param);
                 break;
+            case MessageID.SendShowAMsgWithData:
+                if (MyDataInfo.MyLevel == -1)
+                {
+                    var datas = param.Split('_');
+                    EventManager.Instance.EventTrigger(EventType.ShowAMsgInfoWithData.ToString(), datas[0], datas[1]);
+                }
+
+                break;
 
 
             //这下面的case逻辑不需要了

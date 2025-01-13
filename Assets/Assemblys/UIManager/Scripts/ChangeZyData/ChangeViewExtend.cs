@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using DataTranfsers;
 using Enums;
+using Newtonsoft.Json;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
@@ -559,11 +562,29 @@ public class DisasterSituationView : ChangeDataBase
 
     public override void OnShow(object data)
     {
-        ShowStrInputData sdsi = data as ShowStrInputData;
-        mainView.ChangeTitleInfo("灾害信息");
-        mainView.ChangeViewSize(1);
-        view.SetActive(true);
-        disInfo.text = sdsi.strInfo;
+        if (data is ShowStrInputData)
+        {
+            ShowStrInputData sdsi = data as ShowStrInputData;
+            mainView.ChangeTitleInfo("灾害信息");
+            mainView.ChangeViewSize(1);
+            view.SetActive(true);
+
+            if (MyDataInfo.MyLevel == -1)
+            {
+                var strinfo = JsonConvert.DeserializeObject<ZbldZqqr>(sdsi.strInfo);
+                disInfo.text = strinfo.titleInfo;
+                zhlx.text = strinfo.typeStr;
+                zhgm.text = strinfo.scaleStr;
+                zhlx.interactable = false;
+                zhgm.interactable = false;
+            }
+            else
+            {
+                disInfo.text = sdsi.strInfo;
+                zhlx.interactable = true;
+                zhgm.interactable = true;
+            }
+        }
     }
 
     public override void OnHide()
@@ -573,8 +594,13 @@ public class DisasterSituationView : ChangeDataBase
 
     public override void OnSave()
     {
+        if (MyDataInfo.MyLevel == -1) return;
         //存到cc中的数据结构中，用于报告显示
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureDisasterInfo.ToString());
+        ZbldZqqr zz = new ZbldZqqr() { titleInfo = disInfo.text, szdt = ShowZyDataType.zqxxShow, typeStr = zhlx.text, scaleStr = zhgm.text };
+        string jsonData = JsonConvert.SerializeObject(zz);
+        string dataStr = "值班领导确认了灾情_" + AESUtils.Encrypt(jsonData);
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
     }
 }
 
@@ -641,6 +667,11 @@ public class EquipmentInfoView : ChangeDataBase
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendEquipUsedInfo, equipDatas);
 
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureEquipInfo.ToString());
+            //
+            // ZbldZqqr zz = new ZbldZqqr { titleInfo = disInfo.text, szdt = ShowZyDataType.zqxxShow, typeStr = zhlx.text, scaleStr = zhgm.text };
+            // string jsonData = JsonConvert.SerializeObject(zz);
+            // string dataStr = "值班领导确认了出动装备信息_" + AESUtils.Encrypt(jsonData);
+            // EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
         }
     }
 }

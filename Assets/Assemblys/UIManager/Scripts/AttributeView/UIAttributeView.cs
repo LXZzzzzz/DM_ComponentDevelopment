@@ -57,6 +57,7 @@ public class UIAttributeView : BasePanel
         taskPrefab = GetComponentInChildren<TaskCell>(true);
         zycPrefab = GetComponentInChildren<ZiYuanCell>(true);
         EventManager.Instance.AddEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
+        EventManager.Instance.AddEventListener<string,string>(EventType.ShowAMsgInfoWithData.ToString(), OnAddAMsgWithData);
         EventManager.Instance.AddEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
         EventManager.Instance.AddEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
         allMsgCells = new List<msgCell>();
@@ -130,9 +131,11 @@ public class UIAttributeView : BasePanel
         base.HideMe();
         EventManager.Instance.RemoveEventListener<BObjectModel>(EventType.MapChooseIcon.ToString(), OnChooseWaters);
         EventManager.Instance.RemoveEventListener<string>(EventType.ShowAMsgInfo.ToString(), OnAddAMsg);
+        EventManager.Instance.RemoveEventListener<string,string>(EventType.ShowAMsgInfoWithData.ToString(), OnAddAMsgWithData);
         EventManager.Instance.RemoveEventListener(EventType.ClearMsgBox.ToString(), OnCleraMsg);
         EventManager.Instance.RemoveEventListener<string>(EventType.ChangeCurrentCom.ToString(), OnChangeCom);
     }
+
     public void OnChooseCommander(string id)
     {
         var currentCommander = MyDataInfo.playerInfos.Find(x => string.Equals(id, x.RoleId));
@@ -250,7 +253,16 @@ public class UIAttributeView : BasePanel
     private void OnAddAMsg(string info)
     {
         var itemCell = Instantiate(msgObj, msgParent);
-        itemCell.Init(ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime), info);
+        itemCell.Init(ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime), info, String.Empty);
+        itemCell.gameObject.SetActive(true);
+        allMsgCells.Add(itemCell);
+        StartCoroutine(setSV());
+    }
+
+    private void OnAddAMsgWithData(string info, string data)
+    {
+        var itemCell = Instantiate(msgObj, msgParent);
+        itemCell.Init(ConvertSecondsToHHMMSS(MyDataInfo.gameStartTime), info, data);
         itemCell.gameObject.SetActive(true);
         allMsgCells.Add(itemCell);
         StartCoroutine(setSV());
@@ -351,7 +363,7 @@ public class UIAttributeView : BasePanel
         equip.GetCurrentAllMass(out float currentOil, out float totalOil, out float water, out float goods, out float person, out int personType);
         oilSlider.value = currentOil / totalOil;
         oilValue.text = (int)(currentOil / totalOil * 100) + "%";
-        
+
         Transform itemAirFun = equipObj.Find("equipNameView/myFunction");
         itemAirFun.GetChild(0).gameObject.SetActive(equip.isTS);
         itemAirFun.GetChild(1).gameObject.SetActive(equip.isYSWZ);

@@ -205,4 +205,15 @@ namespace ToolsLibrary.EquipPart
             strInfo = str;
         }
     }
+    //展示需要传递字符串信息的页面
+    public class ShowStrInputData_Daojiao : ShowViewInfoBase
+    {
+        public string strInfo;
+
+        public ShowStrInputData_Daojiao(int st, string str)
+        {
+            showType = st;
+            strInfo = str;
+        }
+    }
 }

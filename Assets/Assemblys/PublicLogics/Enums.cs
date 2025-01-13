@@ -29,6 +29,7 @@ namespace Enums
         ShowConfirmUI, //非UI曾调用二次确认窗口
         ChooseEquipToZiYuanType, //控制飞机飞往某个资源点
         ShowAMsgInfo, //展示一个指令信息
+        ShowAMsgInfoWithData, //展示一个指令信息,携带展示数据
         ClearMsgBox, //清除操作记录数据
         GameStop, //通知游戏结束
         ChangeCurrentCom, //更改当前选择的指挥端
@@ -103,6 +104,7 @@ namespace Enums
         SendEquipUsedInfo = 1039, //一级指挥发送哪些直升机可用
         SendPersonUsedInfo = 1040, //一级发送哪些机组人员可用
         SendTrainPointSucInfo = 1041, //发送训练点完成的信息
+        SendShowAMsgWithData = 1042, //发送某端带数据的实时信息
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

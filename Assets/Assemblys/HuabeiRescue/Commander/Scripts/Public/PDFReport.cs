@@ -71,50 +71,55 @@ namespace ReportGenerate
             doc.Add(mesAbstract);
             doc.Add(nullString);
 
-            Paragraph messageUserInfo = new Paragraph("1.救援力量配置", fontSub);
-            doc.Add(messageUserInfo);
-            doc.Add(nullString);
-            PdfPTable tableUserInfos = new PdfPTable(5);
-            tableUserInfos.AddCell(MyCell("指挥员", 1, 1));
-            tableUserInfos.AddCell(MyCell("装备", 2, 1));
-            tableUserInfos.AddCell(MyCell("资源", 2, 1));
+            #region 救援力量配置不用了
 
-            Dictionary<string, string[]> userInfos = new Dictionary<string, string[]>();
-            foreach (var equip in usersEquips)
-            {
-                if (!userInfos.ContainsKey(equip.Key)) userInfos.Add(equip.Key, new string[2]);
-                for (int i = 0; i < equip.Value.Count; i++)
-                {
-                    userInfos[equip.Key][0] += equip.Value[i] + '、';
-                }
+            //
+            // Paragraph messageUserInfo = new Paragraph("1.救援力量配置", fontSub);
+            // doc.Add(messageUserInfo);
+            // doc.Add(nullString);
+            // PdfPTable tableUserInfos = new PdfPTable(5);
+            // tableUserInfos.AddCell(MyCell("指挥员", 1, 1));
+            // tableUserInfos.AddCell(MyCell("装备", 2, 1));
+            // tableUserInfos.AddCell(MyCell("资源", 2, 1));
+            //
+            // Dictionary<string, string[]> userInfos = new Dictionary<string, string[]>();
+            // foreach (var equip in usersEquips)
+            // {
+            //     if (!userInfos.ContainsKey(equip.Key)) userInfos.Add(equip.Key, new string[2]);
+            //     for (int i = 0; i < equip.Value.Count; i++)
+            //     {
+            //         userInfos[equip.Key][0] += equip.Value[i] + '、';
+            //     }
+            //
+            //     if (!string.IsNullOrEmpty(userInfos[equip.Key][0]) && userInfos[equip.Key][0].Length > 1)
+            //         userInfos[equip.Key][0] = userInfos[equip.Key][0].Remove(userInfos[equip.Key][0].Length - 1);
+            // }
+            //
+            // foreach (var ziyuan in usersZiyuans)
+            // {
+            //     if (!userInfos.ContainsKey(ziyuan.Key)) userInfos.Add(ziyuan.Key, new string[2]);
+            //     for (int i = 0; i < ziyuan.Value.Count; i++)
+            //     {
+            //         userInfos[ziyuan.Key][1] += ziyuan.Value[i] + '、';
+            //     }
+            //
+            //     if (!string.IsNullOrEmpty(userInfos[ziyuan.Key][1]) && userInfos[ziyuan.Key][1].Length > 1)
+            //         userInfos[ziyuan.Key][1] = userInfos[ziyuan.Key][1].Remove(userInfos[ziyuan.Key][1].Length - 1);
+            // }
+            //
+            // foreach (var item in userInfos)
+            // {
+            //     tableUserInfos.AddCell(MyCell(item.Key, 1, 5));
+            //     tableUserInfos.AddCell(MyCell(item.Value[0], 2, 5));
+            //     tableUserInfos.AddCell(MyCell(item.Value[1], 2, 5));
+            // }
+            //
+            // doc.Add(tableUserInfos);
+            // doc.Add(nullString);
 
-                if (!string.IsNullOrEmpty(userInfos[equip.Key][0]) && userInfos[equip.Key][0].Length > 1)
-                    userInfos[equip.Key][0] = userInfos[equip.Key][0].Remove(userInfos[equip.Key][0].Length - 1);
-            }
+            #endregion
 
-            foreach (var ziyuan in usersZiyuans)
-            {
-                if (!userInfos.ContainsKey(ziyuan.Key)) userInfos.Add(ziyuan.Key, new string[2]);
-                for (int i = 0; i < ziyuan.Value.Count; i++)
-                {
-                    userInfos[ziyuan.Key][1] += ziyuan.Value[i] + '、';
-                }
-
-                if (!string.IsNullOrEmpty(userInfos[ziyuan.Key][1]) && userInfos[ziyuan.Key][1].Length > 1)
-                    userInfos[ziyuan.Key][1] = userInfos[ziyuan.Key][1].Remove(userInfos[ziyuan.Key][1].Length - 1);
-            }
-
-            foreach (var item in userInfos)
-            {
-                tableUserInfos.AddCell(MyCell(item.Key, 1, 5));
-                tableUserInfos.AddCell(MyCell(item.Value[0], 2, 5));
-                tableUserInfos.AddCell(MyCell(item.Value[1], 2, 5));
-            }
-
-            doc.Add(tableUserInfos);
-            doc.Add(nullString);
-
-            Paragraph messageEval = new Paragraph("2.评估结果", fontSub);
+            Paragraph messageEval = new Paragraph("一、任务效能评估", fontSub);
             doc.Add(messageEval);
             doc.Add(nullString);
 
@@ -163,6 +168,21 @@ namespace ReportGenerate
             doc.Add(tableResult);
             doc.Add(nullString);
 
+            
+            Paragraph messagePersonAssessment = new Paragraph("二、岗位职责能力评估", fontSub);
+            doc.Add(messagePersonAssessment);
+            doc.Add(nullString);
+            Paragraph paLevel1 = new Paragraph($"1.一级指挥员    得分:{100}", fontSub);
+            paLevel1.IndentationLeft = 20f;
+            doc.Add(paLevel1);
+            doc.Add(nullString);
+            
+            
+            
+            
+            
+            
+            
             Paragraph mesFire = new Paragraph("任务结束时各火场数据", fontSub);
             mesFire.IndentationLeft = 20f;
             doc.Add(mesFire);
