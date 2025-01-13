@@ -47,8 +47,8 @@ public class msgCell : DMonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void showDataClick()
     {
-        string showJsonStr=AESUtils.Decrypt(showData);
-        var data = JsonConvert.DeserializeObject<ZbldZqqr>(showJsonStr);
-        UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowStrInputData((int)data.szdt, showJsonStr));
+        string showJsonStr = AESUtils.Decrypt(showData);
+        var data = JsonConvert.DeserializeObject<ShowInfoClass>(showJsonStr);
+        UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowStrInputData_Daojiao((int)data.szdt, data.dataStr));
     }
 }

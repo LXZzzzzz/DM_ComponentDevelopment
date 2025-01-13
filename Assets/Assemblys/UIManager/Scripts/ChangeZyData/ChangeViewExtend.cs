@@ -460,6 +460,20 @@ public class PersonSetView : ChangeDataBase
                 personCell?.Init(baozhangInfos[i]);
             }
         }
+        else if (data is ShowStrInputData_Daojiao)
+        {
+            for (int i = 0; i < jizuParent.childCount; i++)
+            {
+                ChangeData_cellPersonInfoItem personCell = jizuParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>();
+                personCell?.SetChoose(MyDataInfo.BeUsedJizus);
+            }
+
+            for (int i = 0; i < baozhangParent.childCount; i++)
+            {
+                ChangeData_cellPersonInfoItem personCell = baozhangParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>();
+                personCell?.SetChoose(MyDataInfo.BeUsedBaozhangs);
+            }
+        }
     }
 
     public override void OnHide()
@@ -483,14 +497,20 @@ public class PersonSetView : ChangeDataBase
             choosePersons += baozhangParent.GetChild(i).GetComponent<ChangeData_cellPersonInfoItem>().GetData() + ':';
         }
 
-        Debug.LogError(choosePersons);
-        if (MyDataInfo.MyLevel == -1)
+        if (MyDataInfo.MyLevel == -1 && MyDataInfo.gameState == GameState.None)
+        {
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendPersonsInfo, choosePersons);
-        else if (MyDataInfo.MyLevel == 1)
+        }
+        else if (MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet)
         {
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendPersonUsedInfo, choosePersons);
 
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSurePersonInfo.ToString());
+
+            ShowInfoClass sib = new ShowInfoClass() { szdt = ShowZyDataType.ryxxShow };
+            string jsonData = JsonConvert.SerializeObject(sib);
+            string dataStr = "值班领导确认了出动人员信息_" + AESUtils.Encrypt(jsonData);
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
         }
     }
 }
@@ -562,28 +582,25 @@ public class DisasterSituationView : ChangeDataBase
 
     public override void OnShow(object data)
     {
+        mainView.ChangeTitleInfo("灾害信息");
+        mainView.ChangeViewSize(1);
+        view.SetActive(true);
         if (data is ShowStrInputData)
         {
             ShowStrInputData sdsi = data as ShowStrInputData;
-            mainView.ChangeTitleInfo("灾害信息");
-            mainView.ChangeViewSize(1);
-            view.SetActive(true);
-
-            if (MyDataInfo.MyLevel == -1)
-            {
-                var strinfo = JsonConvert.DeserializeObject<ZbldZqqr>(sdsi.strInfo);
-                disInfo.text = strinfo.titleInfo;
-                zhlx.text = strinfo.typeStr;
-                zhgm.text = strinfo.scaleStr;
-                zhlx.interactable = false;
-                zhgm.interactable = false;
-            }
-            else
-            {
-                disInfo.text = sdsi.strInfo;
-                zhlx.interactable = true;
-                zhgm.interactable = true;
-            }
+            disInfo.text = sdsi.strInfo;
+            zhlx.interactable = true;
+            zhgm.interactable = true;
+        }
+        else if (data is ShowStrInputData_Daojiao)
+        {
+            var djshow = data as ShowStrInputData_Daojiao;
+            var strinfo = JsonConvert.DeserializeObject<ZbldZqqr>(djshow.strInfo);
+            disInfo.text = strinfo.titleInfo;
+            zhlx.text = strinfo.typeStr;
+            zhgm.text = strinfo.scaleStr;
+            zhlx.interactable = false;
+            zhgm.interactable = false;
         }
     }
 
@@ -597,9 +614,11 @@ public class DisasterSituationView : ChangeDataBase
         if (MyDataInfo.MyLevel == -1) return;
         //存到cc中的数据结构中，用于报告显示
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureDisasterInfo.ToString());
-        ZbldZqqr zz = new ZbldZqqr() { titleInfo = disInfo.text, szdt = ShowZyDataType.zqxxShow, typeStr = zhlx.text, scaleStr = zhgm.text };
+        ZbldZqqr zz = new ZbldZqqr() { titleInfo = disInfo.text, typeStr = zhlx.text, scaleStr = zhgm.text };
         string jsonData = JsonConvert.SerializeObject(zz);
-        string dataStr = "值班领导确认了灾情_" + AESUtils.Encrypt(jsonData);
+        ShowInfoClass sic = new ShowInfoClass() { szdt = ShowZyDataType.zqxxShow, dataStr = jsonData };
+        string jsonData2 = JsonConvert.SerializeObject(sic);
+        string dataStr = "值班领导确认了灾情_" + AESUtils.Encrypt(jsonData2);
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
     }
 }
@@ -627,16 +646,30 @@ public class EquipmentInfoView : ChangeDataBase
         mainView.ChangeTitleInfo("装备信息");
         mainView.ChangeViewSize(1);
         view.SetActive(true);
-        if (equipParent.childCount != 0) return;
-        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        if (equipParent.childCount == 0)
         {
-            ChangeData_cellEquipInfoItem item = GameObject.Instantiate(cell, equipParent);
-            item.Init(MyDataInfo.sceneAllEquips[i]);
-            equips.Add(item);
-            item.gameObject.SetActive(true);
+            for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+            {
+                ChangeData_cellEquipInfoItem item = GameObject.Instantiate(cell, equipParent);
+                item.Init(MyDataInfo.sceneAllEquips[i]);
+                equips.Add(item);
+                item.gameObject.SetActive(true);
+            }
+
+            view.transform.Find("TitleInfo/group").gameObject.SetActive(MyDataInfo.MyLevel == 1);
         }
 
-        view.transform.Find("TitleInfo/group").gameObject.SetActive(MyDataInfo.MyLevel == 1);
+        if (data is ShowStrInputData_Daojiao)
+        {
+            var djshow = data as ShowStrInputData_Daojiao;
+            var strinfo = JsonConvert.DeserializeObject<ZbldZbqr>(djshow.strInfo);
+            for (int i = 0; i < equips.Count; i++)
+            {
+                equips[i].ShowInfo(strinfo.equipInfo.Find(x => string.Equals(x.eId, equips[i].GetId)));
+            }
+
+            view.transform.Find("TitleInfo/group").gameObject.SetActive(true);
+        }
     }
 
     public override void OnHide()
@@ -646,7 +679,7 @@ public class EquipmentInfoView : ChangeDataBase
 
     public override void OnSave()
     {
-        if (MyDataInfo.MyLevel == -1)
+        if (MyDataInfo.MyLevel == -1 && MyDataInfo.gameState == GameState.None)
         {
             string equipDatas = "";
             for (int i = 0; i < equips.Count; i++)
@@ -668,10 +701,19 @@ public class EquipmentInfoView : ChangeDataBase
 
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureEquipInfo.ToString());
             //
-            // ZbldZqqr zz = new ZbldZqqr { titleInfo = disInfo.text, szdt = ShowZyDataType.zqxxShow, typeStr = zhlx.text, scaleStr = zhgm.text };
-            // string jsonData = JsonConvert.SerializeObject(zz);
-            // string dataStr = "值班领导确认了出动装备信息_" + AESUtils.Encrypt(jsonData);
-            // EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
+            ZbldZbqr zz = new ZbldZbqr();
+            zz.equipInfo = new List<zbcellInfo>();
+            for (int i = 0; i < equips.Count; i++)
+            {
+                zbcellInfo zi = new zbcellInfo() { eId = equips[i].GetId, isUse = equips[i].GetIsUse, chooseJz = equips[i].jz.value, chooseBzz = equips[i].bz.value };
+                zz.equipInfo.Add(zi);
+            }
+
+            string jsonData = JsonConvert.SerializeObject(zz);
+            ShowInfoClass sic = new ShowInfoClass { szdt = ShowZyDataType.zbxxShow, dataStr = jsonData };
+            string jsonData2 = JsonConvert.SerializeObject(sic);
+            string dataStr = "值班领导确认了出动装备信息_" + AESUtils.Encrypt(jsonData2);
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
         }
     }
 }
@@ -827,6 +869,26 @@ public class TaskInfoView : ChangeDataBase
         sz.SetActive(MyDataInfo.gameScene == 2);
         if (data is ShowStrInputData)
             text_tq.text = "任务区气象条件：" + (data as ShowStrInputData).strInfo;
+        else if (data is ShowStrInputData_Daojiao)
+        {
+            var djshow = data as ShowStrInputData_Daojiao;
+            var strinfo = JsonConvert.DeserializeObject<ZbldRwystj>(djshow.strInfo);
+            text_tq.text = strinfo.qxtj;
+            InputField_sz.text = strinfo.szNum.ToString();
+            InputField_yy.text = strinfo.yyNum.ToString();
+            InputField_bj.text = strinfo.bjNum.ToString();
+            InputField_qs.text = strinfo.qsdNum.ToString();
+            InputField_az.text = strinfo.azdNum.ToString();
+            InputField_qj.text = strinfo.qjdNum.ToString();
+            InputField_hc.text = strinfo.hcNum.ToString();
+            InputField_sz.interactable = false;
+            InputField_yy.interactable = false;
+            InputField_bj.interactable = false;
+            InputField_qs.interactable = false;
+            InputField_az.interactable = false;
+            InputField_qj.interactable = false;
+            InputField_hc.interactable = false;
+        }
     }
 
     public override void OnHide()
@@ -836,7 +898,19 @@ public class TaskInfoView : ChangeDataBase
 
     public override void OnSave()
     {
-        //存到cc中的数据结构中，用于报告显示
+        if (MyDataInfo.MyLevel == 1)
+        {
+            ZbldRwystj zr = new ZbldRwystj()
+            {
+                qxtj = text_tq.text, szNum = int.Parse(InputField_sz.text), yyNum = int.Parse(InputField_yy.text), bjNum = int.Parse(InputField_bj.text),
+                qsdNum = int.Parse(InputField_qs.text), azdNum = int.Parse(InputField_az.text), qjdNum = int.Parse(InputField_qj.text), hcNum = int.Parse(InputField_hc.text)
+            };
+            string jsonData = JsonConvert.SerializeObject(zr);
+            ShowInfoClass sic = new ShowInfoClass { szdt = ShowZyDataType.rwxxShow, dataStr = jsonData };
+            string jsonData2 = JsonConvert.SerializeObject(sic);
+            string dataStr = "值班领导完成了任务区域要素统计_" + AESUtils.Encrypt(jsonData2);
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
+        }
     }
 }
 

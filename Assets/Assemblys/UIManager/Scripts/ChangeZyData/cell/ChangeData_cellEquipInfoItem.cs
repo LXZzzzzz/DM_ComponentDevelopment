@@ -1,4 +1,5 @@
 using System;
+using DataTranfsers;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
@@ -22,6 +23,8 @@ public class ChangeData_cellEquipInfoItem : DMonoBehaviour
     private EquipBase _equip;
 
     public string GetUsedEquipId => toggle.isOn ? _equip.BObjectId : string.Empty;
+    public string GetId => _equip.BObjectId;
+    public bool GetIsUse => toggle.isOn;
 
     public void Init(EquipBase data)
     {
@@ -46,6 +49,25 @@ public class ChangeData_cellEquipInfoItem : DMonoBehaviour
 
         jz.interactable = (MyDataInfo.MyLevel == 1 && toggle.isOn);
         bz.interactable = (MyDataInfo.MyLevel == 1 && toggle.isOn);
+    }
+
+    public void ShowInfo(zbcellInfo zi)
+    {
+        if (zi == null) return;
+
+        groupInit();
+        jz.gameObject.SetActive(true);
+        bz.gameObject.SetActive(true);
+        toggle.gameObject.SetActive(true);
+        InputField_pos.interactable = false;
+        dp_state.interactable = false;
+        InputField_cycle.interactable = false;
+        InputField_time.interactable = false;
+        jz.interactable = false;
+        bz.interactable = false;
+        toggle.isOn = zi.isUse;
+        jz.value = zi.chooseJz;
+        bz.value = zi.chooseBzz;
     }
 
     private void groupInit()

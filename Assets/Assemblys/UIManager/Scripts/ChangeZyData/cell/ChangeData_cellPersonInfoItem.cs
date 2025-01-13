@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using ToolsLibrary;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,16 @@ public class ChangeData_cellPersonInfoItem : DMonoBehaviour
         dp_state.value = int.Parse(itemInfos[3]);
 
         // toggle.interactable = false;
+        InputField_name.interactable = false;
+        InputField_postion.interactable = false;
+        dp_state.interactable = false;
+    }
+
+    public void SetChoose(List<string> data)
+    {
+        toggle.gameObject.SetActive(true);
+        toggle.isOn = data.Contains(InputField_name.text);
+        toggle.interactable = false;
         InputField_name.interactable = false;
         InputField_postion.interactable = false;
         dp_state.interactable = false;
