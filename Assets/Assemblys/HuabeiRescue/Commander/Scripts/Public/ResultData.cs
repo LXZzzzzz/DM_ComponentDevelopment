@@ -558,6 +558,12 @@ namespace ReportGenerate
 
     public class parfw_level3
     {
+        public string jzname;
+        public int zScore;//总得分
+        public int aqfxnl = 60;
+        public int tqcznl = 40;
+       
+        
         public float zyl;//载油量
         public float zzl;//载重量
         public int rybz;//燃油不足报警次数
