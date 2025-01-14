@@ -50,4 +50,21 @@ namespace DataTranfsers
         public int qjdNum;
         public int hcNum;
     }
+
+    public class XczhRwqzb
+    {
+        public List<zbcellInfo2> zbRwqInfo;
+    }
+
+    public class zbcellInfo2
+    {
+        public string id;//直升机ID
+        public string jx;//机型
+        public string zyl; //载油量
+        public string zzl; //载重量
+        public string whsj; //地面维护时间
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

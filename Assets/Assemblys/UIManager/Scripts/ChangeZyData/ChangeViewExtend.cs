@@ -924,6 +924,8 @@ public class FieldCommanderView : ChangeDataBase
     private Text oilMax, loadMax;
     private Slider zyl, zzl;
     private float maxOil, maxZzl;
+    private List<zbcellInfo2> equipsInfo;
+    private bool isDaojiaoShow;
 
     protected override void OnInit()
     {
@@ -943,10 +945,40 @@ public class FieldCommanderView : ChangeDataBase
         mainView.ChangeTitleInfo("任务前准备信息");
         mainView.ChangeViewSize(1);
         view.SetActive(true);
-        checkEquip.options.Clear();
-        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+
+
+        if (data is ShowStrInputData_Daojiao)
         {
-            checkEquip.options.Add(new Dropdown.OptionData(MyDataInfo.sceneAllEquips[i].name));
+            isDaojiaoShow = true;
+            var djshow = data as ShowStrInputData_Daojiao;
+            var strinfo = JsonConvert.DeserializeObject<XczhRwqzb>(djshow.strInfo);
+            equipsInfo = strinfo.zbRwqInfo;
+            checkEquip.options.Clear();
+            for (int i = 0; i < equipsInfo.Count; i++)
+            {
+                checkEquip.options.Add(new Dropdown.OptionData(equipsInfo[i].jx));
+            }
+
+            zyl.interactable = false;
+            zzl.interactable = false;
+            OnChangEquip(0);
+        }
+        else
+        {
+            isDaojiaoShow = false;
+            equipsInfo = new List<zbcellInfo2>();
+            checkEquip.options.Clear();
+            for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+            {
+                if (MyDataInfo.sceneAllEquips[i].gameObject.activeSelf)
+                {
+                    checkEquip.options.Add(new Dropdown.OptionData(MyDataInfo.sceneAllEquips[i].name));
+                    equipsInfo.Add(new zbcellInfo2() { id = MyDataInfo.sceneAllEquips[i].BObjectId, jx = MyDataInfo.sceneAllEquips[i].name });
+                }
+            }
+
+            zyl.interactable = true;
+            zzl.interactable = true;
         }
 
         checkEquip.value = 1;
@@ -955,12 +987,19 @@ public class FieldCommanderView : ChangeDataBase
 
     private void OnChangEquip(int index)
     {
-        var _equip = MyDataInfo.sceneAllEquips[index];
+        var _equip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.name, checkEquip.options[index].text));
         (_equip as IDqChangePart).GetOilAndLoad(out float oil, out float load);
         oilMax.text = oil.ToString();
         loadMax.text = load.ToString();
         maxOil = oil;
         maxZzl = load;
+        if (isDaojiaoShow)
+        {
+            zyl.value = float.Parse(equipsInfo[index].zyl) / oil;
+            zzl.value = float.Parse(equipsInfo[index].zzl) / load;
+            return;
+        }
+
         OnChangeOilNum(zyl.value);
         OnChangeZzlNum(zzl.value);
     }
@@ -968,11 +1007,13 @@ public class FieldCommanderView : ChangeDataBase
     private void OnChangeOilNum(float num)
     {
         zyl.GetComponentInChildren<Text>().text = (num * maxOil).ToString();
+        equipsInfo[checkEquip.value].zyl = (num * maxOil).ToString();
     }
 
     private void OnChangeZzlNum(float num)
     {
         zzl.GetComponentInChildren<Text>().text = (num * maxZzl).ToString();
+        equipsInfo[checkEquip.value].zzl = (num * maxZzl).ToString();
     }
 
     public override void OnHide()
@@ -983,6 +1024,15 @@ public class FieldCommanderView : ChangeDataBase
     public override void OnSave()
     {
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHInspectEquipInfo.ToString());
+        if (MyDataInfo.MyLevel == 1)
+        {
+            XczhRwqzb xr = new XczhRwqzb() { zbRwqInfo = equipsInfo };
+            string jsonData = JsonConvert.SerializeObject(xr);
+            ShowInfoClass sic = new ShowInfoClass { szdt = ShowZyDataType.rwqzbShow, dataStr = jsonData };
+            string jsonData2 = JsonConvert.SerializeObject(sic);
+            string dataStr = "现场指挥完成了任务前准备_" + AESUtils.Encrypt(jsonData2);
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
+        }
     }
 }
 

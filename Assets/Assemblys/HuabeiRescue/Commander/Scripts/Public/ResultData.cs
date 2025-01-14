@@ -498,6 +498,12 @@ namespace ReportGenerate
         public string hxgh;
         //任务要素统计
         public TaskElements rwystj;
+        
+        
+        //物资投放重量
+        public float wztfzl;
+        //待转运人数
+        public int dzyrs;
     }
 
     public class RescueForces
@@ -516,6 +522,8 @@ namespace ReportGenerate
         public int lsqjd;//临时起降点
         public int bjd;//补给点
         public int qsd;//取水点
+        public int yy;//医院
+        public int azd;//安置点
     }
 
     public class parfw_level2
@@ -545,6 +553,10 @@ namespace ReportGenerate
         public List<string> qsd;//取水点
         public List<string> bjd;//补给点
         public List<string> bjc;//备降场
+        
+        public List<string> dzyry;//待转运人员
+        public List<string> azd;//安置点
+        public List<string> yy;//医院
     }
 
     public class TaskAllocation
@@ -554,6 +566,9 @@ namespace ReportGenerate
         public List<string> qsd;//取水点
         public List<string> bjd;//补给点
         public List<string> bjc;//备降场
+        
+        public List<string> azd;//安置点
+        public List<string> yy;//医院
     }
 
     public class parfw_level3
@@ -566,6 +581,36 @@ namespace ReportGenerate
         public bool zbgzzl;//装备故障是否着陆
         public bool tqbhbg;//天气变化是否报告
         public bool tqbhfh;//天气变化是否返航
+
+        public bool xfxzq;//新发现灾区是否报告
     }
+
+    #endregion
+
+
+    #region 能力评估_救援
+
+    //救援能力评估
+    public class PersonAssessment_ResultMaterialPerson
+    {
+        public parfw_level1 yjzhy;//一级指挥员
+        public parfw_level2 ejzhy;//二级指挥员
+        public List<parfw_level3> sjzhy;//三级指挥员
+    }
+
+    #endregion
+
+    #region 能力评估_文本数据
+
+    public class PersonAssessment_TxtData
+    {
+        public string zhlx; //灾害类型
+        public string zqgm; //灾区规模
+        public string hxgh; //航线规划
+        public TaskElements rwystj; //任务要素统计
+        public List<UnitInfo> jzxx; //机组信息
+        public TaskElements2 rwys; //任务要素确认
+    }
+
     #endregion
 }
