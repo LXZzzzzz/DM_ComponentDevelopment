@@ -267,6 +267,7 @@ public class AirIconCell : IconCellBase
             float itemOil = currentOil / totalOil;
             if (itemOil < .1f)
             {
+                equipGo.TriggerOilWarn();
                 isShowWarn = true;
                 currentTweener = oilPic.DOColor(Color.red, 1).SetLoops(-1, LoopType.Yoyo);
             }

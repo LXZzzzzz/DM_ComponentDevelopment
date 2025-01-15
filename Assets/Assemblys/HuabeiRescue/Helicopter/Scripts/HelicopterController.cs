@@ -548,6 +548,12 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         actualAddLoadMass = myAttributeInfo.zdyxzh * loadProportion;
         amountOfOil = actualAddOilMass;
     }
+
+    public void GetUsableOilAndLoad(out float oil, out float load)
+    {
+        oil = actualAddOilMass;
+        load = MyDataInfo.gameScene == 1 ? actualAddWaterMass : actualAddLoadMass;
+    }
 }
 
 public enum HelicopterState

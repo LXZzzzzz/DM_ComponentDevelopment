@@ -281,7 +281,7 @@ namespace ReportGenerate
         /// 物资和人员任务报告
         /// </summary>
         public void CreateRescueMissionReport(string reportId, string reportName, string userName, string Id, string Abstract, ResultMaterialPersonData resultData, ResultMaterialPersonOutData resultOutData,
-            ResultRescueSystemData resultSysData, List<string> trainData, Dictionary<string, List<MaterialPersonMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports)
+            ResultRescueSystemData resultSysData, List<string> trainData, Dictionary<string, List<MaterialPersonMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports,PersonAssessment_ResultFireWater personAss)
         {
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);

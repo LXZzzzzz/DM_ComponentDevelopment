@@ -105,6 +105,8 @@ namespace Enums
         SendPersonUsedInfo = 1040, //一级发送哪些机组人员可用
         SendTrainPointSucInfo = 1041, //发送训练点完成的信息
         SendShowAMsgWithData = 1042, //发送某端带数据的实时信息
+        SendReportTianQi = 1043, //发送上报天气变化
+        SendReportZbgz = 1044, //发送上报装备故障
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作

@@ -54,6 +54,11 @@ namespace ToolsLibrary.EquipPart
         public string textInfo; //存储这个直升机文本信息
 
         private int currentState; //当前直升机状态（可用状态：可用、不可用、返修）
+
+        private int oilWarnNum; //燃油报警次数
+        private int landErrorNum; //降落错误次数
+        public bool isReportXzq, isReportZbgz, isReportTqbh, isReportXfxzq; //新灾情、装备故障、天气变化报告记录
+        public bool isReturnBack;//是否返航操作
         protected bool isArrive => _isArrive;
 
         public Vector3 TargetPos => targetPos;
@@ -70,11 +75,16 @@ namespace ToolsLibrary.EquipPart
             protected set => currentState = value;
         }
 
+        public int OilWarnNum => oilWarnNum;
+        public int LandErrorNum => landErrorNum;
+
         public virtual void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
         {
             //初始化飞机基本属性
             _isArrive = true;
             isCrash = false;
+            oilWarnNum = 0;
+            landErrorNum = 0;
             // EquipIcon = baseData.EquipIcon;
             // AttributeInfos = new List<string>();
             // for (int i = 0; i < baseData.AttributeInfos.Count; i++)
@@ -132,6 +142,16 @@ namespace ToolsLibrary.EquipPart
             MoveLogic();
         }
 
+        public void TriggerOilWarn()
+        {
+            oilWarnNum++;
+        }
+
+        protected void TriggerLandError()
+        {
+            landErrorNum++;
+        }
+
         public virtual void OnCrash()
         {
             isCrash = true;
@@ -172,6 +192,10 @@ namespace ToolsLibrary.EquipPart
 
         //机长设置载油量和装载量
         void SetOilAndLoad(float oilProportion, float loadProportion);
+
+
+        //获取可用载油量和装载量
+        void GetUsableOilAndLoad(out float oil, out float load);
 
         //触发转场飞行
         void GoFerryFlights();

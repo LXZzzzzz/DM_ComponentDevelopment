@@ -386,6 +386,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 //如果是导教端，就弹出航线申报消息，让他选择是否同意
                 if (MyDataInfo.MyLevel == -1)
                     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AirLineInfoShow", param);
+                if (MyDataInfo.MyLevel == 1)
+                    _commanderController.OnGetHxgh(param);
 
                 _commanderController.Receive_TextMsgRecord("值班领导进行航线申报");
                 EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.ZBLDRouteDeclaration.ToString());
@@ -480,12 +482,19 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 if (MyDataInfo.MyLevel == -1) EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), param);
                 break;
             case MessageID.SendShowAMsgWithData:
+                var datas = param.Split('_');
                 if (MyDataInfo.MyLevel == -1)
                 {
-                    var datas = param.Split('_');
                     EventManager.Instance.EventTrigger(EventType.ShowAMsgInfoWithData.ToString(), datas[0], datas[1]);
                 }
 
+                if (MyDataInfo.MyLevel == 1) _commanderController.OnGetPdfData(datas[1]);
+                break;
+            case MessageID.SendReportTianQi:
+                MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param)).isReportTqbh = true;
+                break;
+            case MessageID.SendReportZbgz:
+                MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param)).isReportZbgz = true;
                 break;
 
 

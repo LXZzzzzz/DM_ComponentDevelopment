@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using DataTranfsers;
+using Enums;
 using Newtonsoft.Json;
 using ReportGenerate;
 using ToolsLibrary;
@@ -13,6 +15,49 @@ public partial class CommanderController
     public string misDescription;
     private Dictionary<string, List<string>> playerEquips, playerZiyuans;
     private List<string> reportPlayers = new List<string>();
+    private PersonAssessment_TxtData _personAssessmentTxtData;
+
+    public void OnGetPdfData(string param)
+    {
+        string dataStr = AESUtils.Decrypt(param);
+        if (_personAssessmentTxtData == null) _personAssessmentTxtData = new PersonAssessment_TxtData();
+        var data = JsonConvert.DeserializeObject<ShowInfoClass>(dataStr);
+        switch (data.szdt)
+        {
+            case ShowZyDataType.zqxxShow:
+                var datazq = JsonConvert.DeserializeObject<ZbldZqqr>(data.dataStr);
+                _personAssessmentTxtData.zhlx = datazq.typeStr;
+                _personAssessmentTxtData.zqgm = datazq.scaleStr;
+                break;
+            case ShowZyDataType.rwxxShow:
+                var datarw = JsonConvert.DeserializeObject<ZbldRwystj>(data.dataStr);
+                _personAssessmentTxtData.rwystj = new TaskElements() { jc = 1, bjd = datarw.bjNum, lsqjd = datarw.qjdNum, qsd = datarw.qsdNum };
+                break;
+            case ShowZyDataType.rwqzbShow:
+                var datazb = JsonConvert.DeserializeObject<XczhRwqzb>(data.dataStr);
+                _personAssessmentTxtData.jzxx = new List<UnitInfo>();
+                for (int i = 0; i < datazb.zbRwqInfo.Count; i++)
+                {
+                    var itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, datazb.zbRwqInfo[i].id));
+                    var strs = itemEquip.textInfo.Split('_');
+                    List<string> sbs = new List<string>();
+                    if (itemEquip.isTS) sbs.Add("吊桶");
+                    if (itemEquip.isSJJY) sbs.Add("吊索");
+                    _personAssessmentTxtData.jzxx.Add(new UnitInfo()
+                    {
+                        jzName = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], jx = itemEquip.name, zzsb = sbs,
+                        zyl = float.Parse(datazb.zbRwqInfo[i].zyl), zzl = float.Parse(datazb.zbRwqInfo[i].zzl), dmwhTime = 8
+                    });
+                }
+
+                break;
+        }
+    }
+
+    public void OnGetHxgh(string data)
+    {
+        _personAssessmentTxtData.hxgh = data;
+    }
 
     private void GenerateFireExtinguishingReport()
     {
@@ -50,6 +95,9 @@ public partial class CommanderController
         int zjc = 0;
         float ghzmj = 0, rszmj = 0, csghzmj = 0, csrszmj = 0, firetszl = 0;
         float minWater2FireDistance = float.MaxValue;
+        _personAssessmentTxtData.rwys = new TaskElements2();
+        _personAssessmentTxtData.rwys.sdz = new List<string>();
+        _personAssessmentTxtData.rwys.hcmj = new List<float>();
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
             for (int j = 0; j < MyDataInfo.sceneAllEquips[i].GetRecordedData().eachSortieData.Count; j++)
@@ -75,6 +123,8 @@ public partial class CommanderController
                 csghzmj += csghmj;
                 csrszmj += csrsmj;
                 firetszl += atszl;
+                _personAssessmentTxtData.rwys.sdz.Add(sceneAllzy[i].ziYuanName);
+                _personAssessmentTxtData.rwys.hcmj.Add(csrsmj);
                 for (int j = 0; j < sceneAllzy.Count; j++)
                 {
                     if (sceneAllzy[j].ZiYuanType == ZiYuanType.Waters)
@@ -165,6 +215,109 @@ public partial class CommanderController
             heliWaterMegList.Add(hd1.Name, nwmdList);
         }
 
+        #region 岗位职责能力评估
+
+        List<RescueForces> itemRescueForcesList = new List<RescueForces>();
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            if (MyDataInfo.sceneAllEquips[i].gameObject.activeSelf)
+            {
+                var itemEquip = MyDataInfo.sceneAllEquips[i];
+                var strs = itemEquip.textInfo.Split('_');
+                itemRescueForcesList.Add(new RescueForces()
+                {
+                    jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
+                    jzrs = "--", zz = MyDataInfo.BeUsedJizus[int.Parse(strs[6])], nun = "--"
+                });
+            }
+        }
+
+        parfw_level1 level1 = new parfw_level1()
+        {
+            zhlx = _personAssessmentTxtData.zhlx, zqgm = _personAssessmentTxtData.zqgm, hcmj = csrszmj.ToString(), cdjyll = itemRescueForcesList,
+            hxgh = _personAssessmentTxtData.hxgh, rwystj = _personAssessmentTxtData.rwystj
+        };
+        _personAssessmentTxtData.rwys.qsd = new List<string>();
+        _personAssessmentTxtData.rwys.bjd = new List<string>();
+        _personAssessmentTxtData.rwys.bjc = new List<string>();
+        for (int j = 0; j < sceneAllzy.Count; j++)
+        {
+            switch (sceneAllzy[j].ZiYuanType)
+            {
+                case ZiYuanType.Waters:
+                    _personAssessmentTxtData.rwys.qsd.Add(sceneAllzy[j].ziYuanName);
+                    break;
+                case ZiYuanType.Supply:
+                    _personAssessmentTxtData.rwys.bjd.Add(sceneAllzy[j].ziYuanName);
+                    break;
+                case ZiYuanType.Airport:
+                    if (!string.Equals(sceneAllzy[j].ziYuanName, "机场"))
+                        _personAssessmentTxtData.rwys.bjc.Add(sceneAllzy[j].ziYuanName);
+                    break;
+            }
+        }
+
+        List<TaskAllocation> rwfpData = new List<TaskAllocation>();
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            if (!MyDataInfo.sceneAllEquips[i].gameObject.activeSelf) continue;
+            var strs = MyDataInfo.sceneAllEquips[i].textInfo.Split('_');
+            List<string> szds = new List<string>();
+            var itemData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.SourceOfAFire);
+            for (int j = 0; j < itemData.Count; j++)
+            {
+                szds.Add(itemData[i].ziYuanName);
+            }
+
+            List<string> qsds = new List<string>();
+            var itemQsdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
+            for (int j = 0; j < itemQsdsData.Count; j++)
+            {
+                qsds.Add(itemQsdsData[i].ziYuanName);
+            }
+
+            List<string> bjds = new List<string>();
+            var itemBjdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
+            for (int j = 0; j < itemBjdsData.Count; j++)
+            {
+                bjds.Add(itemBjdsData[i].ziYuanName);
+            }
+
+            List<string> bjcs = new List<string>();
+            var itemBjcsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
+            for (int j = 0; j < itemBjcsData.Count; j++)
+            {
+                if (itemBjcsData[i].ziYuanName == "机场") continue;
+                bjcs.Add(itemBjcsData[i].ziYuanName);
+            }
+
+            rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds, qsd = qsds, bjd = bjds, bjc = bjcs });
+        }
+
+        parfw_level2 level2 = new parfw_level2()
+        {
+            jzxx = _personAssessmentTxtData.jzxx, rwys = _personAssessmentTxtData.rwys, rwfp = rwfpData
+        };
+        List<parfw_level3> level3s = new List<parfw_level3>();
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            if (!MyDataInfo.sceneAllEquips[i].gameObject.activeSelf) continue;
+            var itemEquip = MyDataInfo.sceneAllEquips[i];
+            var strs = itemEquip.textInfo.Split('_');
+            (itemEquip as IDqChangePart).GetUsableOilAndLoad(out float oilNum, out float loadNum);
+            parfw_level3 level3 = new parfw_level3()
+            {
+                jzname = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
+                zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq
+            };
+            level3.zScore = 100 - level3.rybz - level3.cwzl - (level3.zbgzbg ? 0 : 10) - (level3.zbgzzl ? 0 : 10) - (level3.tqbhbg ? 0 : 10) - (level3.tqbhfh ? 0 : 10);
+            level3s.Add(level3);
+        }
+
+        PersonAssessment_ResultFireWater personAssData = new PersonAssessment_ResultFireWater() { yjzhy = level1, ejzhy = level2, sjzhy = level3s };
+
+        #endregion
+
         EvalManage em = new EvalManage();
         sender.LogError(JsonConvert.SerializeObject(rfout));
         sender.LogError(JsonConvert.SerializeObject(rfsystem));
@@ -173,7 +326,7 @@ public partial class CommanderController
         if (showAllOperatorInfos == null) Debug.LogError("showAllOperatorInfos");
         if (playerEquips == null) Debug.LogError("playerEquips");
         if (playerZiyuans == null) Debug.LogError("playerZiyuans");
-        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, null);
+        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, personAssData);
     }
 
     private void GenerateRescueReport()
@@ -394,13 +547,124 @@ public partial class CommanderController
         if (goodsMinTime > float.MaxValue / 2) goodsMinTime = 0;
 
         sender.LogError($"最小救援{personMinTime}最小物资{goodsMinTime}");
+        
+        #region 岗位职责能力评估
+
+        List<RescueForces> itemRescueForcesList = new List<RescueForces>();
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            if (MyDataInfo.sceneAllEquips[i].gameObject.activeSelf)
+            {
+                var itemEquip = MyDataInfo.sceneAllEquips[i];
+                var strs = itemEquip.textInfo.Split('_');
+                itemRescueForcesList.Add(new RescueForces()
+                {
+                    jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
+                    jzrs = "--", zz = MyDataInfo.BeUsedJizus[int.Parse(strs[6])], nun = "--"
+                });
+            }
+        }
+
+        parfw_level1 level1 = new parfw_level1()
+        {
+            zhlx = _personAssessmentTxtData.zhlx, zqgm = _personAssessmentTxtData.zqgm,dzyrs = (int)zqxzyzrs, cdjyll = itemRescueForcesList,
+            hxgh = _personAssessmentTxtData.hxgh, rwystj = _personAssessmentTxtData.rwystj
+        };
+        _personAssessmentTxtData.rwys.bjd = new List<string>();
+        _personAssessmentTxtData.rwys.bjc = new List<string>();
+        _personAssessmentTxtData.rwys.dzyry = new List<string>();
+        _personAssessmentTxtData.rwys.azd = new List<string>();
+        _personAssessmentTxtData.rwys.yy = new List<string>();
+        for (int j = 0; j < sceneAllzy.Count; j++)
+        {
+            switch (sceneAllzy[j].ZiYuanType)
+            {
+                case ZiYuanType.Supply:
+                    _personAssessmentTxtData.rwys.bjd.Add(sceneAllzy[j].ziYuanName);
+                    break;
+                case ZiYuanType.Airport:
+                    if (!string.Equals(sceneAllzy[j].ziYuanName, "机场"))
+                        _personAssessmentTxtData.rwys.bjc.Add(sceneAllzy[j].ziYuanName);
+                    break;
+                case ZiYuanType.DisasterArea:
+                    (sceneAllzy[j] as IDisasterArea).getTaskProgress(out int currentNuma, out int maxNuma);
+                    _personAssessmentTxtData.rwys.dzyry.Add(maxNuma.ToString());
+                    break;
+                case ZiYuanType.RescueStation:
+                    _personAssessmentTxtData.rwys.azd.Add(sceneAllzy[j].ziYuanName);
+                    break;
+                case ZiYuanType.Hospital:
+                    _personAssessmentTxtData.rwys.yy.Add(sceneAllzy[j].ziYuanName);
+                    break;
+            }
+        }
+
+        List<TaskAllocation> rwfpData = new List<TaskAllocation>();
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            if (!MyDataInfo.sceneAllEquips[i].gameObject.activeSelf) continue;
+            var strs = MyDataInfo.sceneAllEquips[i].textInfo.Split('_');
+            List<string> szds = new List<string>();
+            var itemData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
+            for (int j = 0; j < itemData.Count; j++)
+            {
+                szds.Add(itemData[i].ziYuanName);
+            }
+
+            List<string> azds = new List<string>();
+            var itemAzdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
+            for (int j = 0; j < itemAzdsData.Count; j++)
+            {
+                azds.Add(itemAzdsData[i].ziYuanName);
+            }
+            
+            List<string> yys = new List<string>();
+            var itemyysData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Hospital);
+            for (int j = 0; j < itemyysData.Count; j++)
+            {
+                yys.Add(itemyysData[i].ziYuanName);
+            }
+
+            List<string> bjds = new List<string>();
+            var itemBjdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
+            for (int j = 0; j < itemBjdsData.Count; j++)
+            {
+                bjds.Add(itemBjdsData[i].ziYuanName);
+            }
+
+            rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds,azd = azds,yy = yys, bjd = bjds });
+        }
+
+        parfw_level2 level2 = new parfw_level2()
+        {
+            jzxx = _personAssessmentTxtData.jzxx, rwys = _personAssessmentTxtData.rwys, rwfp = rwfpData
+        };
+        List<parfw_level3> level3s = new List<parfw_level3>();
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            if (!MyDataInfo.sceneAllEquips[i].gameObject.activeSelf) continue;
+            var itemEquip = MyDataInfo.sceneAllEquips[i];
+            var strs = itemEquip.textInfo.Split('_');
+            (itemEquip as IDqChangePart).GetUsableOilAndLoad(out float oilNum, out float loadNum);
+            parfw_level3 level3 = new parfw_level3()
+            {
+                jzname = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
+                zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq
+            };
+            level3.zScore = 100 - level3.rybz - level3.cwzl - (level3.zbgzbg ? 0 : 5) - (level3.zbgzzl ? 0 : 5) - (level3.tqbhbg ? 0 : 5) - (level3.tqbhfh ? 0 : 5)-(level3.xfxzq ? 0 : 10);
+            level3s.Add(level3);
+        }
+
+        PersonAssessment_ResultFireWater personAssData = new PersonAssessment_ResultFireWater() { yjzhy = level1, ejzhy = level2, sjzhy = level3s };
+
+        #endregion
 
         EvalManage em = new EvalManage();
         sender.LogError(JsonConvert.SerializeObject(cfout));
         sender.LogError(JsonConvert.SerializeObject(rfsystem));
         ResultMaterialPersonData rfwd = em.EvalMaterialCompute(cfout, rfsystem, personMinTime, goodsMinTime);
 
-        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count);
+        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count,personAssData);
     }
 
 

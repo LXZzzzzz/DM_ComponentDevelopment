@@ -115,10 +115,27 @@ public class TestLogic : MonoBehaviour
             //
             // Dictionary<HeliData, List<HeliSortieData>> er = JsonConvert.DeserializeObject<Dictionary<HeliData, List<HeliSortieData>>>(qw);
             // return;
-
-
+            ResultFireWaterOutData rfout = new ResultFireWaterOutData
+            {
+                任务结束时投水总量 = 12,
+                任务结束时过火总面积 = 12,
+                任务结束时燃烧面积 = 12,
+                任务初始过火总面积 = 12,
+                任务初始燃烧面积 = 12,
+                开始投水时刻 = "时间", //增大检测范围，防止浮点误差
+                取水点到投水点的最短路径 = 122,
+                任务结束时刻 = 3600,
+                总航程 = 1000f,
+                直升机总架次 = 12,
+                火场数量 = 12,
+                取水点数量 = 12,
+                任务结束时火场投水总重量 = 1000
+            };
+            PDFReport report = new PDFReport();
             EvalManage em = new EvalManage();
-            em.EvalWaterCompute(JsonConvert.DeserializeObject<ResultFireWaterOutData>(aa), JsonConvert.DeserializeObject<ResultFireWaterSystemData>(bb));
+            var rfwd=em.EvalWaterCompute(JsonConvert.DeserializeObject<ResultFireWaterOutData>(aa), JsonConvert.DeserializeObject<ResultFireWaterSystemData>(bb));
+            // report.CreateWaterMissionReport(System.DateTime.Now.ToString("HH_mm_ss"), "-效能评估报告", "mName", "mId", "mAbstract", rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, personAssData);
+
         }
 
         if (Input.GetKeyDown(KeyCode.F))

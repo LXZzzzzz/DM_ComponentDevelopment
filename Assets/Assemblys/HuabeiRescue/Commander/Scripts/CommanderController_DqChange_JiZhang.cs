@@ -45,7 +45,12 @@ public partial class CommanderController
     {
         Debug.LogError("收到了同意申请" + data);
         var infos = data.Split('_');
-        if (int.Parse(infos[1]) == 2) (MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, infos[0])) as IDqChangePart)?.StopRunTime();
+        if (int.Parse(infos[1]) == 2)
+        {
+            (MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, infos[0])) as IDqChangePart)?.StopRunTime();
+            MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, infos[0])).isReturnBack = true;
+        }
+
         if (MyDataInfo.MyLevel != 3) return;
         if (string.Equals(infos[0], myEquip.BObjectId))
         {

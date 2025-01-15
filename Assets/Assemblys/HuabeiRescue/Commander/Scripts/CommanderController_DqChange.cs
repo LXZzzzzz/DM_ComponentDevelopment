@@ -228,8 +228,9 @@ public partial class CommanderController
 
     public void OnDiscoverNewDisaster(string param)
     {
-        string equipName = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param)).name;
-        Receive_TextMsgRecord($"{equipName}机长上报新灾情");
+        var equip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param));
+        Receive_TextMsgRecord($"{equip.name}机长上报新灾情");
+        equip.isReportXfxzq = true;
 
         if (MyDataInfo.MyLevel == 2)
         {

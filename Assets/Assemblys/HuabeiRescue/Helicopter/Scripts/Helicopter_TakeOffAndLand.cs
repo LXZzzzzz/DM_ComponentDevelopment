@@ -45,7 +45,7 @@ public partial class HelicopterController
             anis[i].Play();
         }
 
-        myass.ForEach(x => x.gameObject.SetActive(false));
+        myass.ForEach(x => x.gameObject.SetActive(true));
     }
 
     private void OnTOSuc()
@@ -109,6 +109,20 @@ public partial class HelicopterController
         }
 
         mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
+
+        for (int i = 0; i < sceneAllZiyuan.Count; i++)
+        {
+            Vector3 zyPos = new Vector3(sceneAllZiyuan[i].transform.position.x, transform.position.y, sceneAllZiyuan[i].transform.position.z);
+            if (Vector3.Distance(transform.position, zyPos) < 10)
+            {
+                //距离够近，证明降落在此处
+                if (!currentBindingZy.Contains(sceneAllZiyuan[i].BobjectId))
+                    TriggerLandError();
+                return;
+            }
+        }
+        //证明飞机没有降落在任何场景资源上，记录为错误降落
+        TriggerLandError();
     }
 
     private void OnRunLand()

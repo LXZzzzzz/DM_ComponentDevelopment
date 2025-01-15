@@ -74,6 +74,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_ReturnBack").onClick.AddListener(() => OnAskForReturn(2));
         GetControl<Button>("Btn_ReturnRepair").onClick.AddListener(() => OnAskForReturn(1));
         GetControl<Button>("Btn_NewDisaster").onClick.AddListener(OnSendNewDisaster);
+        GetControl<Button>("Btn_Tqbhsb").onClick.AddListener(() => OnSendReport(1));
+        GetControl<Button>("Btn_Zbgzsb").onClick.AddListener(() => OnSendReport(2));
         GetControl<Button>("Btn_Set").onClick.AddListener(OnSetData);
         GetControl<Button>("Btn_TaskBg").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.TaskBgShow)));
         GetControl<Button>("Btn_CompleteBgSet").onClick.AddListener(
@@ -356,6 +358,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_ReturnBack").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_ReturnRepair").gameObject.SetActive(false);
         GetControl<Button>("Btn_NewDisaster").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
+        GetControl<Button>("Btn_Tqbhsb").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
+        GetControl<Button>("Btn_Zbgzsb").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
 
         currentMapLogic?.OnUpdate();
         routeDecorateGo.transform.SetAsLastSibling();
@@ -565,6 +569,19 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendDiscoverNewDisaster, myEquip.BObjectId);
         EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "已申报新灾情");
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.JZSendTqInfo.ToString());
+    }
+
+    private void OnSendReport(int type)
+    {
+        var myEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BeLongToCommanderId, MyDataInfo.leadId));
+        if (myEquip == null)
+        {
+            Debug.LogError("身份错了，找不到我的飞机");
+            return;
+        }
+
+        if (type == 1) EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendReportTianQi, myEquip.BObjectId);
+        if (type == 2) EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendReportZbgz, myEquip.BObjectId);
     }
 
     private void OnSetData()
