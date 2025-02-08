@@ -202,7 +202,7 @@ public partial class HelicopterController
         //如果直升机还没开始运行，就先起飞
         if (!isStartAutoRun)
         {
-            //⭐⭐这里判断这个飞机是否有未走的点，如果没有了，就return
+            //这里判断这个飞机是否有未走的点，如果没有了，就return
             if (PathPointManager.Instance.GetPointDataById(nextPointId) == null)
             {
                 Debug.LogError("没有待执行任务" + MyDataInfo.SkillsToBeConfirmed?.Count);

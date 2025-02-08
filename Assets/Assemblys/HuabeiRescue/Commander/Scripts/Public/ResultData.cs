@@ -573,10 +573,10 @@ namespace ReportGenerate
 
     public class parfw_level3
     {
+        public string guzhangStr;
+        public string tianqiStr;
         public string jzname;
         public int zScore;//总得分
-        public int aqfxnl = 60;
-        public int tqcznl = 40;
        
         
         public float zyl;//载油量
@@ -592,19 +592,7 @@ namespace ReportGenerate
     }
 
     #endregion
-
-
-    #region 能力评估_救援
-
-    //救援能力评估
-    public class PersonAssessment_ResultMaterialPerson
-    {
-        public parfw_level1 yjzhy;//一级指挥员
-        public parfw_level2 ejzhy;//二级指挥员
-        public List<parfw_level3> sjzhy;//三级指挥员
-    }
-
-    #endregion
+    
 
     #region 能力评估_文本数据
 

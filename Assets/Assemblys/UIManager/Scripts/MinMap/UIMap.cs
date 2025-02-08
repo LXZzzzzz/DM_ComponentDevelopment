@@ -125,6 +125,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.AddEventListener<string>(EventType.TransferMisDescription.ToString(), OnGetmisDescription);
         EventManager.Instance.AddEventListener<string>(EventType.TransferKongguanData.ToString(), OnGetKongGuanData);
         EventManager.Instance.AddEventListener<string>(EventType.TransferTianqiData.ToString(), OnGetTianqiData);
+        EventManager.Instance.AddEventListener(EventType.OpenMap.ToString(), OnOpenMap);
         // 当前UI对象的局部Y轴
         localYAxis = middlePoint.transform.up;
 
@@ -194,6 +195,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.RemoveEventListener<string>(EventType.TransferMisDescription.ToString(), OnGetmisDescription);
         EventManager.Instance.RemoveEventListener<string>(EventType.TransferKongguanData.ToString(), OnGetKongGuanData);
         EventManager.Instance.RemoveEventListener<string>(EventType.TransferTianqiData.ToString(), OnGetTianqiData);
+        EventManager.Instance.RemoveEventListener(EventType.OpenMap.ToString(), OnOpenMap);
     }
 
     private void SwithMode(int mode)
@@ -436,6 +438,11 @@ public class UIMap : BasePanel, IPointerClickHandler
     private void OnGetTianqiData(string tq)
     {
         tianqiData = tq;
+    }
+
+    private void OnOpenMap()
+    {
+        GetControl<Toggle>("tog_Map").isOn = true;
     }
 
     private void OnClickZqxx(int info)

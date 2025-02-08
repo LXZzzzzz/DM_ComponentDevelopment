@@ -16,6 +16,8 @@ public partial class CommanderController
     private Dictionary<string, List<string>> playerEquips, playerZiyuans;
     private List<string> reportPlayers = new List<string>();
     private PersonAssessment_TxtData _personAssessmentTxtData;
+    private string tianqiInfoStr;
+    private Dictionary<string, string> guzhangInfoStr = new Dictionary<string, string>();
 
     public void OnGetPdfData(string param)
     {
@@ -31,7 +33,7 @@ public partial class CommanderController
                 break;
             case ShowZyDataType.rwxxShow:
                 var datarw = JsonConvert.DeserializeObject<ZbldRwystj>(data.dataStr);
-                _personAssessmentTxtData.rwystj = new TaskElements() { jc = 1, bjd = datarw.bjNum, lsqjd = datarw.qjdNum, qsd = datarw.qsdNum };
+                _personAssessmentTxtData.rwystj = new TaskElements() { jc = 1, bjd = datarw.bjNum, lsqjd = datarw.qjdNum, qsd = datarw.qsdNum, azd = datarw.azdNum, yy = datarw.yyNum };
                 break;
             case ShowZyDataType.rwqzbShow:
                 var datazb = JsonConvert.DeserializeObject<XczhRwqzb>(data.dataStr);
@@ -61,6 +63,7 @@ public partial class CommanderController
 
     private void GenerateFireExtinguishingReport()
     {
+        if (_personAssessmentTxtData == null) _personAssessmentTxtData = new PersonAssessment_TxtData();
         PDFReport report = new PDFReport();
         var playerInfo = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId));
         string mName = playerInfo.PlayerName, mId = playerInfo.RoleId, mAbstract = misDescription;
@@ -223,12 +226,15 @@ public partial class CommanderController
             if (MyDataInfo.sceneAllEquips[i].gameObject.activeSelf)
             {
                 var itemEquip = MyDataInfo.sceneAllEquips[i];
-                var strs = itemEquip.textInfo.Split('_');
-                itemRescueForcesList.Add(new RescueForces()
+                if (!string.IsNullOrEmpty(itemEquip.textInfo))
                 {
-                    jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
-                    jzrs = "--", zz = MyDataInfo.BeUsedJizus[int.Parse(strs[6])], nun = "--"
-                });
+                    var strs = itemEquip.textInfo.Split('_');
+                    itemRescueForcesList.Add(new RescueForces()
+                    {
+                        jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
+                        jzrs = "--", zz = MyDataInfo.BeUsedBaozhangs[int.Parse(strs[6])], nun = "--"
+                    });
+                }
             }
         }
 
@@ -260,35 +266,40 @@ public partial class CommanderController
         List<TaskAllocation> rwfpData = new List<TaskAllocation>();
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
-            if (!MyDataInfo.sceneAllEquips[i].gameObject.activeSelf) continue;
-            var strs = MyDataInfo.sceneAllEquips[i].textInfo.Split('_');
+            var itemEquip = MyDataInfo.sceneAllEquips[i];
+            if (!itemEquip.gameObject.activeSelf || string.IsNullOrEmpty(itemEquip.textInfo)) continue;
+            var strs = itemEquip.textInfo.Split('_');
             List<string> szds = new List<string>();
             var itemData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.SourceOfAFire);
             for (int j = 0; j < itemData.Count; j++)
             {
-                szds.Add(itemData[i].ziYuanName);
+                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                    szds.Add(itemData[j].ziYuanName);
             }
 
             List<string> qsds = new List<string>();
             var itemQsdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
             for (int j = 0; j < itemQsdsData.Count; j++)
             {
-                qsds.Add(itemQsdsData[i].ziYuanName);
+                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                    qsds.Add(itemQsdsData[j].ziYuanName);
             }
 
             List<string> bjds = new List<string>();
             var itemBjdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
             for (int j = 0; j < itemBjdsData.Count; j++)
             {
-                bjds.Add(itemBjdsData[i].ziYuanName);
+                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                    bjds.Add(itemBjdsData[j].ziYuanName);
             }
 
             List<string> bjcs = new List<string>();
             var itemBjcsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Airport);
             for (int j = 0; j < itemBjcsData.Count; j++)
             {
-                if (itemBjcsData[i].ziYuanName == "机场") continue;
-                bjcs.Add(itemBjcsData[i].ziYuanName);
+                if (itemBjcsData[j].ziYuanName == "机场") continue;
+                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                    bjcs.Add(itemBjcsData[j].ziYuanName);
             }
 
             rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds, qsd = qsds, bjd = bjds, bjc = bjcs });
@@ -303,12 +314,14 @@ public partial class CommanderController
         {
             if (!MyDataInfo.sceneAllEquips[i].gameObject.activeSelf) continue;
             var itemEquip = MyDataInfo.sceneAllEquips[i];
+            if (string.IsNullOrEmpty(itemEquip.textInfo)) continue;
             var strs = itemEquip.textInfo.Split('_');
             (itemEquip as IDqChangePart).GetUsableOilAndLoad(out float oilNum, out float loadNum);
             parfw_level3 level3 = new parfw_level3()
             {
                 jzname = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
-                zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq
+                zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq, tianqiStr = tianqiInfoStr,
+                guzhangStr = guzhangInfoStr.ContainsKey(itemEquip.BObjectId) ? guzhangInfoStr[itemEquip.BObjectId] : "正常"
             };
             level3.zScore = 100 - level3.rybz - level3.cwzl - (level3.zbgzbg ? 0 : 10) - (level3.zbgzzl ? 0 : 10) - (level3.tqbhbg ? 0 : 10) - (level3.tqbhfh ? 0 : 10);
             level3s.Add(level3);
@@ -326,11 +339,12 @@ public partial class CommanderController
         if (showAllOperatorInfos == null) Debug.LogError("showAllOperatorInfos");
         if (playerEquips == null) Debug.LogError("playerEquips");
         if (playerZiyuans == null) Debug.LogError("playerZiyuans");
-        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, personAssData);
+        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), "火灾航空救援任务协同指挥训练评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, personAssData);
     }
 
     private void GenerateRescueReport()
     {
+        if (_personAssessmentTxtData == null) _personAssessmentTxtData = new PersonAssessment_TxtData();
         PDFReport report = new PDFReport();
         var playerInfo = MyDataInfo.playerInfos.Find(x => string.Equals(x.RoleId, MyDataInfo.leadId));
         string mName = playerInfo.PlayerName, mId = playerInfo.RoleId, mAbstract = misDescription;
@@ -547,7 +561,7 @@ public partial class CommanderController
         if (goodsMinTime > float.MaxValue / 2) goodsMinTime = 0;
 
         sender.LogError($"最小救援{personMinTime}最小物资{goodsMinTime}");
-        
+
         #region 岗位职责能力评估
 
         List<RescueForces> itemRescueForcesList = new List<RescueForces>();
@@ -556,20 +570,25 @@ public partial class CommanderController
             if (MyDataInfo.sceneAllEquips[i].gameObject.activeSelf)
             {
                 var itemEquip = MyDataInfo.sceneAllEquips[i];
-                var strs = itemEquip.textInfo.Split('_');
-                itemRescueForcesList.Add(new RescueForces()
+                if (!string.IsNullOrEmpty(itemEquip.textInfo))
                 {
-                    jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
-                    jzrs = "--", zz = MyDataInfo.BeUsedJizus[int.Parse(strs[6])], nun = "--"
-                });
+                    var strs = itemEquip.textInfo.Split('_');
+                    itemRescueForcesList.Add(new RescueForces()
+                    {
+                        jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
+                        jzrs = "--", zz = MyDataInfo.BeUsedBaozhangs[int.Parse(strs[6])], nun = "--"
+                    });
+                }
             }
         }
 
         parfw_level1 level1 = new parfw_level1()
         {
-            zhlx = _personAssessmentTxtData.zhlx, zqgm = _personAssessmentTxtData.zqgm,dzyrs = (int)zqxzyzrs, cdjyll = itemRescueForcesList,
+            zhlx = _personAssessmentTxtData.zhlx, zqgm = _personAssessmentTxtData.zqgm, dzyrs = (int)zqxzyzrs, cdjyll = itemRescueForcesList,
             hxgh = _personAssessmentTxtData.hxgh, rwystj = _personAssessmentTxtData.rwystj
         };
+        _personAssessmentTxtData.rwys = new TaskElements2();
+        _personAssessmentTxtData.rwys.sdz = new List<string>();
         _personAssessmentTxtData.rwys.bjd = new List<string>();
         _personAssessmentTxtData.rwys.bjc = new List<string>();
         _personAssessmentTxtData.rwys.dzyry = new List<string>();
@@ -588,6 +607,7 @@ public partial class CommanderController
                     break;
                 case ZiYuanType.DisasterArea:
                     (sceneAllzy[j] as IDisasterArea).getTaskProgress(out int currentNuma, out int maxNuma);
+                    _personAssessmentTxtData.rwys.sdz.Add(sceneAllzy[j].ziYuanName);
                     _personAssessmentTxtData.rwys.dzyry.Add(maxNuma.ToString());
                     break;
                 case ZiYuanType.RescueStation:
@@ -602,37 +622,42 @@ public partial class CommanderController
         List<TaskAllocation> rwfpData = new List<TaskAllocation>();
         for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
         {
-            if (!MyDataInfo.sceneAllEquips[i].gameObject.activeSelf) continue;
-            var strs = MyDataInfo.sceneAllEquips[i].textInfo.Split('_');
+            var itemEquip = MyDataInfo.sceneAllEquips[i];
+            if (!itemEquip.gameObject.activeSelf || string.IsNullOrEmpty(itemEquip.textInfo)) continue;
+            var strs = itemEquip.textInfo.Split('_');
             List<string> szds = new List<string>();
             var itemData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
             for (int j = 0; j < itemData.Count; j++)
             {
-                szds.Add(itemData[i].ziYuanName);
+                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                    szds.Add(itemData[j].ziYuanName);
             }
 
             List<string> azds = new List<string>();
             var itemAzdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
             for (int j = 0; j < itemAzdsData.Count; j++)
             {
-                azds.Add(itemAzdsData[i].ziYuanName);
+                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                    azds.Add(itemAzdsData[j].ziYuanName);
             }
-            
+
             List<string> yys = new List<string>();
             var itemyysData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Hospital);
             for (int j = 0; j < itemyysData.Count; j++)
             {
-                yys.Add(itemyysData[i].ziYuanName);
+                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                    yys.Add(itemyysData[j].ziYuanName);
             }
 
             List<string> bjds = new List<string>();
             var itemBjdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
             for (int j = 0; j < itemBjdsData.Count; j++)
             {
-                bjds.Add(itemBjdsData[i].ziYuanName);
+                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                    bjds.Add(itemBjdsData[j].ziYuanName);
             }
 
-            rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds,azd = azds,yy = yys, bjd = bjds });
+            rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds, azd = azds, yy = yys, bjd = bjds });
         }
 
         parfw_level2 level2 = new parfw_level2()
@@ -644,14 +669,16 @@ public partial class CommanderController
         {
             if (!MyDataInfo.sceneAllEquips[i].gameObject.activeSelf) continue;
             var itemEquip = MyDataInfo.sceneAllEquips[i];
+            if (string.IsNullOrEmpty(itemEquip.textInfo)) continue;
             var strs = itemEquip.textInfo.Split('_');
             (itemEquip as IDqChangePart).GetUsableOilAndLoad(out float oilNum, out float loadNum);
             parfw_level3 level3 = new parfw_level3()
             {
                 jzname = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
-                zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq
+                zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq, tianqiStr = tianqiInfoStr,
+                guzhangStr = guzhangInfoStr.ContainsKey(itemEquip.BObjectId) ? guzhangInfoStr[itemEquip.BObjectId] : "正常"
             };
-            level3.zScore = 100 - level3.rybz - level3.cwzl - (level3.zbgzbg ? 0 : 5) - (level3.zbgzzl ? 0 : 5) - (level3.tqbhbg ? 0 : 5) - (level3.tqbhfh ? 0 : 5)-(level3.xfxzq ? 0 : 10);
+            level3.zScore = 100 - level3.rybz - level3.cwzl - (level3.zbgzbg ? 0 : 5) - (level3.zbgzzl ? 0 : 5) - (level3.tqbhbg ? 0 : 5) - (level3.tqbhfh ? 0 : 5) - (level3.xfxzq ? 0 : 10);
             level3s.Add(level3);
         }
 
@@ -664,7 +691,8 @@ public partial class CommanderController
         sender.LogError(JsonConvert.SerializeObject(rfsystem));
         ResultMaterialPersonData rfwd = em.EvalMaterialCompute(cfout, rfsystem, personMinTime, goodsMinTime);
 
-        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), misName + "-效能评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count,personAssData);
+        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), "洪涝灾害救援任务协同指挥训练评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count,
+            personAssData);
     }
 
 

@@ -60,6 +60,7 @@ namespace Enums
         TransferKongguanData, //传递空管信息给UI
         TransferTianqiData, //传递天气信息给UI
         CompleteATrainPoint, //完成了一个训练点
+        OpenMap,//通知打开地图
     }
 
     public enum MessageID

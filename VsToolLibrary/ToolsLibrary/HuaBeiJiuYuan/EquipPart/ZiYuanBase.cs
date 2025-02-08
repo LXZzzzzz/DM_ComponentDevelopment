@@ -28,6 +28,10 @@ namespace ToolsLibrary.EquipPart
 
         public Sprite ZiyuanIcon;
 
+        public bool isNew; //记录是否为新增灾区
+
+        public string rescueEquipId; //记录对此灾区实施救援的装备ID
+
         public void Init(string id, float dr, string colorCode, string chooseColorCode)
         {
             bobjectId = id;
@@ -205,6 +209,7 @@ namespace ToolsLibrary.EquipPart
             strInfo = str;
         }
     }
+
     //展示需要传递字符串信息的页面
     public class ShowStrInputData_Daojiao : ShowViewInfoBase
     {

@@ -1024,7 +1024,7 @@ public class FieldCommanderView : ChangeDataBase
     public override void OnSave()
     {
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHInspectEquipInfo.ToString());
-        if (MyDataInfo.MyLevel == 1)
+        if (MyDataInfo.MyLevel == 2)
         {
             XczhRwqzb xr = new XczhRwqzb() { zbRwqInfo = equipsInfo };
             string jsonData = JsonConvert.SerializeObject(xr);

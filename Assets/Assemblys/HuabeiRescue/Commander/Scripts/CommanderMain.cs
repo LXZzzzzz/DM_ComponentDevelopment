@@ -416,8 +416,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.Receive_TextMsgRecord("前线指挥员下达任务");
                 EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.XCZHSendTask.ToString());
                 MyDataInfo.gameState = GameState.AgreeTaskExecute;
-                if (MyDataInfo.MyLevel == 3)
-                    _commanderController.OnOpenPlanningMode();
+                _commanderController.OnOpenPlanningMode();
                 break;
             case MessageID.SendTaskPlanningCompleted:
                 //前指收到这个通知，存起来，如果每架飞机都收到，那就可以点击开始推演

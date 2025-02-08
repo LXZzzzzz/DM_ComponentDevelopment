@@ -58,7 +58,7 @@ namespace ToolsLibrary.EquipPart
         private int oilWarnNum; //燃油报警次数
         private int landErrorNum; //降落错误次数
         public bool isReportXzq, isReportZbgz, isReportTqbh, isReportXfxzq; //新灾情、装备故障、天气变化报告记录
-        public bool isReturnBack;//是否返航操作
+        public bool isReturnBack; //是否返航操作
         protected bool isArrive => _isArrive;
 
         public Vector3 TargetPos => targetPos;
@@ -138,7 +138,7 @@ namespace ToolsLibrary.EquipPart
         void Update()
         {
             OnUpdate();
-            if (MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop) return;
+            if (MyDataInfo.gameState == GameState.GamePause || MyDataInfo.gameState == GameState.GameStop || isCrash) return;
             MoveLogic();
         }
 

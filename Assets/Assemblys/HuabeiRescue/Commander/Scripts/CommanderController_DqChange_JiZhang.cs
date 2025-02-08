@@ -24,9 +24,14 @@ public partial class CommanderController
 
     public void OnOpenPlanningMode()
     {
-        EventManager.Instance.EventTrigger<string, UnityAction>(Enums.EventType.ShowTipUIAndCb.ToString(), "接到任务信息和开始任务规划的命令",
-            () => OnSendSkillInfo((int)MessageID.SendTrainPointSucInfo, TrainsPintType.JZSureTaskInfo.ToString()));
-        EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
+        if (MyDataInfo.MyLevel == -1)
+            EventManager.Instance.EventTrigger(Enums.EventType.OpenMap.ToString());
+        if (MyDataInfo.MyLevel == 3)
+        {
+            EventManager.Instance.EventTrigger<string, UnityAction>(Enums.EventType.ShowTipUIAndCb.ToString(), "接到任务信息和开始任务规划的命令",
+                () => OnSendSkillInfo((int)MessageID.SendTrainPointSucInfo, TrainsPintType.JZSureTaskInfo.ToString()));
+            EventManager.Instance.EventTrigger(Enums.EventType.SwitchMapModel.ToString(), 2);
+        }
     }
 
     public void OnFerryFlights()

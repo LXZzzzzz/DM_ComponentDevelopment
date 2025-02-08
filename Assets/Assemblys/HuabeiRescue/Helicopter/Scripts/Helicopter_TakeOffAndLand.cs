@@ -109,7 +109,10 @@ public partial class HelicopterController
         }
 
         mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
+        myass.ForEach(x => x.gameObject.SetActive(false));
 
+        if (currentBindingZy == null) return;
+        
         for (int i = 0; i < sceneAllZiyuan.Count; i++)
         {
             Vector3 zyPos = new Vector3(sceneAllZiyuan[i].transform.position.x, transform.position.y, sceneAllZiyuan[i].transform.position.z);

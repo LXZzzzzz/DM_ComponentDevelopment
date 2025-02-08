@@ -356,6 +356,12 @@ public partial class CommanderController
             (item as IDqChangePart)?.ChangeCurrentState(int.Parse(itemData[1]));
             if (MyDataInfo.MyLevel == 3 && string.Equals(myEquip.BObjectId, itemData[0]))
                 ShowMyEquipState(int.Parse(itemData[1]));
+            if(MyDataInfo.MyLevel==1)
+            {
+                if (!guzhangInfoStr.ContainsKey(itemData[0]))
+                    guzhangInfoStr.Add(itemData[0], guzhangInfo[int.Parse(itemData[1])]);
+                guzhangInfoStr[itemData[0]] = guzhangInfo[int.Parse(itemData[1])];
+            }
         }
     }
 
@@ -377,7 +383,7 @@ public partial class CommanderController
     public void Receive_CompleteBgSet()
     {
         if (MyDataInfo.MyLevel == 1)
-            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务设置完成，接到制定任务方案的命令");
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "接到制定任务方案的命令");
     }
 
     #endregion

@@ -36,7 +36,7 @@ public partial class HelicopterController
                 personType = disPersonType;
                 // float itemgoods = myAttributeInfo.zdyxzh - amountOfPerson * myAttributeInfo.cnrpjtz - amountOfGoods;
                 // int itemperson = Mathf.Min(myAttributeInfo.zdzkl, (int)Mathf.Floor(itemgoods / myAttributeInfo.cnrpjtz));
-                itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl - amountOfPerson);
+                itemPersonNum = (items[i] as IDisasterArea).rescuePerson(Mathf.Min(myAttributeInfo.zdzkl, (int)(actualAddLoadMass / 70)) - amountOfPerson);
                 Debug.LogError(myAttributeInfo.ldzzrysj * 3600f);
                 openTimer(myAttributeInfo.ldzzrysj * 3600f * itemPersonNum, OnZZRYSuc);
 
@@ -119,7 +119,7 @@ public partial class HelicopterController
                 personType = disPersonType;
                 // float itemgoods = myAttributeInfo.zdyxzh - amountOfPerson - amountOfGoods;
                 // int itemperson = Mathf.Min(myAttributeInfo.zdzkl, (int)Mathf.Floor(itemgoods / myAttributeInfo.cnrpjtz));
-                itemPersonNum = (items[i] as IDisasterArea).rescuePerson(myAttributeInfo.zdzkl - amountOfPerson);
+                itemPersonNum = (items[i] as IDisasterArea).rescuePerson(Mathf.Min(myAttributeInfo.zdzkl, (int)(actualAddLoadMass / 70)) - amountOfPerson);
                 // Debug.LogError(itemPersonNum / myAttributeInfo.sjjrsl * 60);
                 //索降救援、伤情评估与地面人员配合救援
                 openTimer(myAttributeInfo.sjjrsj * 3600f * itemPersonNum, OnZZRYSuc, 3, OnCDRStageComplete);

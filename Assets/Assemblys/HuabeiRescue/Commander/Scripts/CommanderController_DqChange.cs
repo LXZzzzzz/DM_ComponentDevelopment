@@ -189,6 +189,7 @@ public partial class CommanderController
         string[] infos = param.Split('_');
         int tqInfo = int.Parse(infos[0]);
         int flInfo = int.Parse(infos[1]);
+        if (MyDataInfo.MyLevel == 1) tianqiInfoStr = $"{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}";
         if (MyDataInfo.MyLevel == 3)
             EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(),
                 $"当前天气：{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
