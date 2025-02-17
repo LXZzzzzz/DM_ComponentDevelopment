@@ -600,6 +600,8 @@ namespace ReportGenerate
     {
         public string zhlx; //灾害类型
         public string zqgm; //灾区规模
+        public string wztfzl; //物资投放重量
+        public string dzyrs; //待转运人数
         public string hxgh; //航线规划
         public TaskElements rwystj; //任务要素统计
         public List<UnitInfo> jzxx; //机组信息

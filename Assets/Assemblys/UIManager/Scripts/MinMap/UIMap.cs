@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using EventType = Enums.EventType;
+using System.Collections;
 
 public enum OperatorState
 {
@@ -43,6 +44,8 @@ public class UIMap : BasePanel, IPointerClickHandler
 
     private string personData, misDescriptionData, kongguanData, tianqiData;
 
+    private GameObject leftPart, rightPart;
+
     public override void Init()
     {
         base.Init();
@@ -53,6 +56,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         ziYuanIconPrefab = transform.Find("prefabs/ziyuanCell").GetComponent<ZiYuanIconCell>();
         markPointPrefab = transform.Find("prefabs/markPoint").gameObject;
         TempIcon = transform.Find("maxMap/TempIcon").GetComponent<RectTransform>();
+        leftPart = transform.Find("LeftUpPart").gameObject;
+        rightPart = transform.Find("RightUpPart").gameObject;
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
         GetControl<Button>("Btn_CreatFirePoint").onClick.AddListener(() => OnOpenCreatZaiqu(1));
         GetControl<Button>("Btn_CreatDisaster").onClick.AddListener(() => OnOpenCreatZaiqu(2));
@@ -126,13 +131,13 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.AddEventListener<string>(EventType.TransferKongguanData.ToString(), OnGetKongGuanData);
         EventManager.Instance.AddEventListener<string>(EventType.TransferTianqiData.ToString(), OnGetTianqiData);
         EventManager.Instance.AddEventListener(EventType.OpenMap.ToString(), OnOpenMap);
+        EventManager.Instance.AddEventListener(EventType.captureMap.ToString(), OnCaptureMap);
         // 当前UI对象的局部Y轴
         localYAxis = middlePoint.transform.up;
 
         GetAllZaiquTemplate();
         GetControl<Toggle>("xxqrTog").gameObject.SetActive(MyDataInfo.MyLevel == 1);
         GetControl<Toggle>("jzOperatorTog").gameObject.SetActive(MyDataInfo.MyLevel == 3);
-        if (MyDataInfo.MyLevel == -1) GetControl<Toggle>("tog_Scene").isOn = true;
     }
 
     private void GetAllZaiquTemplate()
@@ -196,6 +201,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         EventManager.Instance.RemoveEventListener<string>(EventType.TransferKongguanData.ToString(), OnGetKongGuanData);
         EventManager.Instance.RemoveEventListener<string>(EventType.TransferTianqiData.ToString(), OnGetTianqiData);
         EventManager.Instance.RemoveEventListener(EventType.OpenMap.ToString(), OnOpenMap);
+        EventManager.Instance.RemoveEventListener(EventType.captureMap.ToString(), OnCaptureMap);
     }
 
     private void SwithMode(int mode)
@@ -642,6 +648,47 @@ public class UIMap : BasePanel, IPointerClickHandler
     {
         Vector2 point = new Vector2(pos.x, pos.y) - new Vector2(uiCameraSize.x / 2, uiCameraSize.y / 2);
         return point;
+    }
+
+    private void OnCaptureMap()
+    {
+        StartCoroutine(getScreenTexture(mapView));
+    }
+
+    private IEnumerator getScreenTexture(RectTransform rectT)
+    {
+        yield return 1;
+        UIManager.Instance.GetUIPanel<UITopMenuView>(UIName.UITopMenuView).gameObject.SetActive(false);
+        if (MyDataInfo.MyLevel != -1)
+            UIManager.Instance.GetUIPanel<UICommanderView>(UIName.UICommanderView).gameObject.SetActive(false);
+        else
+            UIManager.Instance.GetUIPanel<UIDirectorView>(UIName.UIDirectorView).gameObject.SetActive(false);
+        leftPart.SetActive(false);
+        rightPart.SetActive(false);
+        yield return new WaitForEndOfFrame();
+
+        Texture2D texture2ds = new Texture2D((int)rectT.rect.width, (int)rectT.rect.height, TextureFormat.RGB24, true);
+        float x = rectT.localPosition.x + (Screen.width - rectT.rect.width) / 2;
+        float y = rectT.localPosition.y + (Screen.height - rectT.rect.height) / 2;
+        Rect position = new Rect(x, y, rectT.rect.width, rectT.rect.height);
+        texture2ds.ReadPixels(position, 0, 0, true); //按照设定区域读取像素；注意是以左下角为原点读取
+        texture2ds.Apply();
+        //保存到streamingAssets
+        byte[] bytes = texture2ds.EncodeToJPG();
+        if (!Directory.Exists(Path.Combine(Application.dataPath, "MapLib", "Images")))
+            Directory.CreateDirectory(Path.Combine(Application.dataPath, "MapLib", "Images"));
+        string filename = Path.Combine(Application.dataPath, "MapLib", "Images", "Screenshot.png");
+        File.WriteAllBytes(filename, bytes);
+
+        yield return 1;
+        leftPart.SetActive(true);
+        rightPart.SetActive(true);
+        if (MyDataInfo.MyLevel == -1) GetControl<Toggle>("tog_Scene").isOn = true;
+        UIManager.Instance.GetUIPanel<UITopMenuView>(UIName.UITopMenuView).gameObject.SetActive(true);
+        if (MyDataInfo.MyLevel != -1)
+            UIManager.Instance.GetUIPanel<UICommanderView>(UIName.UICommanderView).gameObject.SetActive(true);
+        else
+            UIManager.Instance.GetUIPanel<UIDirectorView>(UIName.UIDirectorView).gameObject.SetActive(true);
     }
 }
 

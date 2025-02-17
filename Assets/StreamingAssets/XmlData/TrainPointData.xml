@@ -3,61 +3,66 @@
     <train id="tp001">
         <title>确认灾情信息</title>
         <type>ZBLDSureDisasterInfo</type>
+        <score>1</score>
     </train>
     <train id="tp002">
         <title>出动装备信息确认</title>
         <type>ZBLDSureEquipInfo</type>
+        <score>1</score>
     </train>
     <train id="tp003">
         <title>出动人员信息确认</title>
         <type>ZBLDSurePersonInfo</type>
+        <score>1</score>
     </train>
     <train id="tp004">
         <title>转场航线申报</title>
         <type>ZBLDRouteDeclaration</type>
+        <score>1</score>
     </train>
     <train id="tp005">
         <title>值班领导下达任务</title>
         <type>ZBLDSendTask</type>
+        <score>1</score>
     </train>
     <train id="tp006">
         <title>现场指挥员领受任务</title>
         <type>XCZHGetTask</type>
+        <score>1</score>
     </train>
     <train id="tp007">
-        <title>确认装备装在设备、载油量、状态信息</title>
+        <title>确认装备装载设备、载油量、状态信息</title>
         <type>XCZHInspectEquipInfo</type>
+        <score>1</score>
     </train>
     <train id="tp008">
         <title>完成任务分配并下达任务</title>
         <type>XCZHSendTask</type>
+        <score>1</score>
     </train>
     <train id="tp009">
         <title>确认机长的特情处置申请</title>
         <type>XCZHSureTqInfo</type>
+        <score>1</score>
     </train>
     <train id="tp010">
         <title>确认任务分配信息</title>
         <type>JZSureTaskInfo</type>
+        <score>0</score>
     </train>
     <train id="tp011">
         <title>确认载油量和载重信息</title>
         <type>JZSureOilAndLoad</type>
+        <score>1</score>
     </train>
     <train id="tp012">
         <title>完成任务区航线规划</title>
         <type>JZCompletePlan</type>
+        <score>1</score>
     </train>
     <train id="tp013">
-        <title>燃油不足警告</title>
-        <type>JZOilInsufficient</type>
-    </train>
-    <train id="tp014">
-        <title>着陆区域错误告警</title>
-        <type>JZLandingError</type>
-    </train>
-    <train id="tp015">
         <title>向现场指挥报告特情</title>
         <type>JZSendTqInfo</type>
+        <score>1</score>
     </train>
 </catalog>

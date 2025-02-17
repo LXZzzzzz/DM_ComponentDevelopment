@@ -24,6 +24,8 @@ namespace DataTranfsers
         public string titleInfo;
         public string typeStr;
         public string scaleStr;
+        public string wztfzlStr;
+        public string dzyrsStr;
     }
 
     public class ZbldZbqr

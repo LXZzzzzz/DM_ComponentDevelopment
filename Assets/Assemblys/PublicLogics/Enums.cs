@@ -61,6 +61,7 @@ namespace Enums
         TransferTianqiData, //传递天气信息给UI
         CompleteATrainPoint, //完成了一个训练点
         OpenMap,//通知打开地图
+        captureMap,//通知截取地图
     }
 
     public enum MessageID
@@ -176,4 +177,5 @@ namespace Enums
         JZLandingError, //机长着陆区域错误
         JZSendTqInfo, //机长发送特情信息
     }
+    
 }

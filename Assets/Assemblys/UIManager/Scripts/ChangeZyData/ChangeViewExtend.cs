@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using DataTranfsers;
 using Enums;
 using Newtonsoft.Json;
@@ -570,14 +571,18 @@ public class DisasterSituationView : ChangeDataBase
 {
     private GameObject view;
     private Text disInfo;
-    private InputField zhlx, zhgm;
+    private InputField zhlx, zhgm, wztfzl, dzyrs;
+    private Transform textPart;
 
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/disasterSituationPart").gameObject;
         disInfo = view.transform.Find("text_disInfo").GetComponent<Text>();
-        zhlx = view.transform.Find("InputF_zhlx").GetComponent<InputField>();
-        zhgm = view.transform.Find("InputF_zhgm").GetComponent<InputField>();
+        zhlx = view.transform.Find("inputFPart/InputF_zhlx").GetComponent<InputField>();
+        zhgm = view.transform.Find("inputFPart/InputF_zhgm").GetComponent<InputField>();
+        wztfzl = view.transform.Find("inputFPart/InputF_wztfzl").GetComponent<InputField>();
+        dzyrs = view.transform.Find("inputFPart/InputF_dzyrs").GetComponent<InputField>();
+        textPart = view.transform.Find("textPart");
     }
 
     public override void OnShow(object data)
@@ -585,12 +590,18 @@ public class DisasterSituationView : ChangeDataBase
         mainView.ChangeTitleInfo("灾害信息");
         mainView.ChangeViewSize(1);
         view.SetActive(true);
+        wztfzl.gameObject.SetActive(MyDataInfo.gameScene == 2);
+        dzyrs.gameObject.SetActive(MyDataInfo.gameScene == 2);
+        textPart.GetChild(2).gameObject.SetActive(MyDataInfo.gameScene == 2);
+        textPart.GetChild(3).gameObject.SetActive(MyDataInfo.gameScene == 2);
         if (data is ShowStrInputData)
         {
             ShowStrInputData sdsi = data as ShowStrInputData;
             disInfo.text = sdsi.strInfo;
             zhlx.interactable = true;
             zhgm.interactable = true;
+            wztfzl.interactable = true;
+            dzyrs.interactable = true;
         }
         else if (data is ShowStrInputData_Daojiao)
         {
@@ -599,8 +610,16 @@ public class DisasterSituationView : ChangeDataBase
             disInfo.text = strinfo.titleInfo;
             zhlx.text = strinfo.typeStr;
             zhgm.text = strinfo.scaleStr;
+            if (MyDataInfo.gameScene == 2)
+            {
+                wztfzl.text = strinfo.wztfzlStr;
+                dzyrs.text = strinfo.dzyrsStr;
+            }
+
             zhlx.interactable = false;
             zhgm.interactable = false;
+            wztfzl.interactable = false;
+            dzyrs.interactable = false;
         }
     }
 
@@ -614,7 +633,7 @@ public class DisasterSituationView : ChangeDataBase
         if (MyDataInfo.MyLevel == -1) return;
         //存到cc中的数据结构中，用于报告显示
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureDisasterInfo.ToString());
-        ZbldZqqr zz = new ZbldZqqr() { titleInfo = disInfo.text, typeStr = zhlx.text, scaleStr = zhgm.text };
+        ZbldZqqr zz = new ZbldZqqr() { titleInfo = disInfo.text, typeStr = zhlx.text, scaleStr = zhgm.text, wztfzlStr = wztfzl.text, dzyrsStr = dzyrs.text };
         string jsonData = JsonConvert.SerializeObject(zz);
         ShowInfoClass sic = new ShowInfoClass() { szdt = ShowZyDataType.zqxxShow, dataStr = jsonData };
         string jsonData2 = JsonConvert.SerializeObject(sic);
@@ -865,8 +884,7 @@ public class TaskInfoView : ChangeDataBase
         mainView.ChangeTitleInfo("任务信息");
         mainView.ChangeViewSize(3);
         view.SetActive(true);
-        hz.SetActive(MyDataInfo.gameScene == 1);
-        sz.SetActive(MyDataInfo.gameScene == 2);
+        LoadMap(Path.Combine(Application.dataPath, "MapLib", "Images", "Screenshot.png"));
         if (data is ShowStrInputData)
             text_tq.text = "任务区气象条件：" + (data as ShowStrInputData).strInfo;
         else if (data is ShowStrInputData_Daojiao)
@@ -889,6 +907,35 @@ public class TaskInfoView : ChangeDataBase
             InputField_qj.interactable = false;
             InputField_hc.interactable = false;
         }
+    }
+
+    private void LoadMap(string path)
+    {
+        Texture2D m_Tex = new Texture2D(1, 1);
+        //读取图片字节流
+        m_Tex.LoadImage(ReadPNG(path));
+
+        //变换格式
+        Sprite tempSprite = Sprite.Create(m_Tex, new Rect(0, 0, m_Tex.width, m_Tex.height), new Vector2(10, 10));
+        hz.GetComponent<Image>().sprite = tempSprite; //赋值 
+        hz.GetComponent<Image>().SetNativeSize();
+        hz.transform.localScale = Vector3.one * 0.55f;
+    }
+
+    private byte[] ReadPNG(string path)
+    {
+        Debug.Log(path);
+        FileStream fileStream = new FileStream(path, FileMode.Open, System.IO.FileAccess.Read);
+
+        fileStream.Seek(0, SeekOrigin.Begin);
+        //创建文件长度的buffer
+        byte[] binary = new byte[fileStream.Length];
+        fileStream.Read(binary, 0, (int)fileStream.Length);
+        fileStream.Close();
+        fileStream.Dispose();
+        fileStream = null;
+
+        return binary;
     }
 
     public override void OnHide()

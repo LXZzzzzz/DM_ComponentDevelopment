@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+    <train id="tp001">
+        <GameScene>1_2</GameScene><!--哪个场景显示，用'_'隔开，1灭火、2救援-->
+        <TrainingRole>值班领导</TrainingRole><!--训练角色-->
+        <RoleId>1</RoleId><!--角色ID-->
+        <TrainingPoint>确认灾情信息</TrainingPoint><!--所属一级训练点-->
+        <AssociationType>ZBLDSureDisasterInfo</AssociationType> <!--关联训练点类型-->
+        <SecondaryTrainingPoint>灾害类型</SecondaryTrainingPoint><!--二级训练点描述-->
+        <ScoringCriteria>缺一项或填错扣10分</ScoringCriteria><!--评分规则-->
+    </train>
+    <train id="tp002">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>确认灾情信息</TrainingPoint>
+        <AssociationType>ZBLDSureDisasterInfo</AssociationType>
+        <SecondaryTrainingPoint>灾情规模</SecondaryTrainingPoint>
+        <ScoringCriteria>缺一项或填错扣10分</ScoringCriteria>
+    </train>
+    <train id="tp003">
+        <GameScene>2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>确认灾情信息</TrainingPoint>
+        <AssociationType>ZBLDSureDisasterInfo</AssociationType>
+        <SecondaryTrainingPoint>物资投放重量</SecondaryTrainingPoint>
+        <ScoringCriteria>缺一项或填错扣10分</ScoringCriteria>
+    </train>
+    <train id="tp004">
+        <GameScene>2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>确认灾情信息</TrainingPoint>
+        <AssociationType>ZBLDSureDisasterInfo</AssociationType>
+        <SecondaryTrainingPoint>待转运人数</SecondaryTrainingPoint>
+        <ScoringCriteria>缺一项或填错扣10分</ScoringCriteria>
+    </train>
+    <train id="tp005">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>出动装备信息确认</TrainingPoint>
+        <AssociationType>ZBLDSureEquipInfo</AssociationType>
+        <SecondaryTrainingPoint>出动装备型号</SecondaryTrainingPoint>
+        <ScoringCriteria>任务需求与出动机型不匹配，扣10分</ScoringCriteria>
+    </train>
+    <train id="tp006">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>出动装备信息确认</TrainingPoint>
+        <AssociationType>ZBLDSureEquipInfo</AssociationType>
+        <SecondaryTrainingPoint>出动装备数量</SecondaryTrainingPoint>
+        <ScoringCriteria>任务需求与出动机型数量不匹配，扣10分</ScoringCriteria>
+    </train>
+    <train id="tp007">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>出动人员信息确认</TrainingPoint>
+        <AssociationType>ZBLDSurePersonInfo</AssociationType>
+        <SecondaryTrainingPoint>分配机组</SecondaryTrainingPoint>
+        <ScoringCriteria>出动机型与机组不匹配或者漏项，扣分，漏掉一项扣10分</ScoringCriteria>
+    </train>
+    <train id="tp008">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>出动人员信息确认</TrainingPoint>
+        <AssociationType>ZBLDSurePersonInfo</AssociationType>
+        <SecondaryTrainingPoint>分配保障组</SecondaryTrainingPoint>
+        <ScoringCriteria>出动机型与保障组不匹配或者漏项，扣分，漏掉一项扣10分</ScoringCriteria>
+    </train>
+    <train id="tp009">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>转场航线申报</TrainingPoint>
+        <AssociationType>ZBLDRouteDeclaration</AssociationType>
+        <SecondaryTrainingPoint>航线规划</SecondaryTrainingPoint>
+        <ScoringCriteria>航线规划不合理，酌情扣分，上限不超过10分</ScoringCriteria>
+    </train>
+    <train id="tp010">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>转场航线申报</TrainingPoint>
+        <AssociationType>ZBLDRouteDeclaration</AssociationType>
+        <SecondaryTrainingPoint>航路点信息</SecondaryTrainingPoint>
+        <ScoringCriteria>漏掉一处航路点，扣5分，上限不超过10分</ScoringCriteria>
+    </train>
+    <train id="tp011">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>值班领导</TrainingRole>
+        <RoleId>1</RoleId>
+        <TrainingPoint>下达任务</TrainingPoint>
+        <AssociationType>ZBLDSendTask</AssociationType>
+        <SecondaryTrainingPoint>下达任务</SecondaryTrainingPoint>
+        <ScoringCriteria>未下达任务不得分</ScoringCriteria>
+    </train>
+    <train id="tp012">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>现场指挥员</TrainingRole>
+        <RoleId>2</RoleId>
+        <TrainingPoint>领受任务</TrainingPoint>
+        <AssociationType>XCZHGetTask</AssociationType>
+        <SecondaryTrainingPoint>任务领受</SecondaryTrainingPoint>
+        <ScoringCriteria>未领受任务不得分</ScoringCriteria>
+    </train>
+    <train id="tp013">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>现场指挥员</TrainingRole>
+        <RoleId>2</RoleId>
+        <TrainingPoint>确认装备状态信息</TrainingPoint>
+        <AssociationType>XCZHInspectEquipInfo</AssociationType>
+        <SecondaryTrainingPoint>装载设备确认</SecondaryTrainingPoint>
+        <ScoringCriteria>装在设备不合理扣2分，上限10分</ScoringCriteria>
+    </train>
+    <train id="tp014">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>现场指挥员</TrainingRole>
+        <RoleId>2</RoleId>
+        <TrainingPoint>确认装备状态信息</TrainingPoint>
+        <AssociationType>XCZHInspectEquipInfo</AssociationType>
+        <SecondaryTrainingPoint>载油量确认</SecondaryTrainingPoint>
+        <ScoringCriteria>载油量不合理扣2分，上限10分</ScoringCriteria>
+    </train>
+    <train id="tp015">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>现场指挥员</TrainingRole>
+        <RoleId>2</RoleId>
+        <TrainingPoint>确认装备状态信息</TrainingPoint>
+        <AssociationType>XCZHInspectEquipInfo</AssociationType>
+        <SecondaryTrainingPoint>装备状态确认</SecondaryTrainingPoint>
+        <ScoringCriteria>装备状态不合理扣1分，上限5分</ScoringCriteria>
+    </train>
+    <train id="tp016">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>现场指挥员</TrainingRole>
+        <RoleId>2</RoleId>
+        <TrainingPoint>确认特情处置报告</TrainingPoint>
+        <AssociationType>XCZHSureTqInfo</AssociationType>
+        <SecondaryTrainingPoint>确认特情处置报告次数</SecondaryTrainingPoint>
+        <ScoringCriteria>根据特情处置报告次数加分</ScoringCriteria>
+    </train>
+    <train id="tp017">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>机长</TrainingRole>
+        <RoleId>3</RoleId>
+        <TrainingPoint>确认载油量/载重信息</TrainingPoint>
+        <AssociationType>JZSureOilAndLoad</AssociationType>
+        <SecondaryTrainingPoint>确认载油量信息</SecondaryTrainingPoint>
+        <ScoringCriteria>确认并设置载油量信息满分，未完成竹青扣分，上限不超过15分</ScoringCriteria>
+    </train>
+    <train id="tp018">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>机长</TrainingRole>
+        <RoleId>3</RoleId>
+        <TrainingPoint>确认载油量/载重信息</TrainingPoint>
+        <AssociationType>JZSureOilAndLoad</AssociationType>
+        <SecondaryTrainingPoint>确认载重量信息</SecondaryTrainingPoint>
+        <ScoringCriteria>确认并设置载重量信息满分，未完成竹青扣分，上限不超过15分</ScoringCriteria>
+    </train>
+    <train id="tp019">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>机长</TrainingRole>
+        <RoleId>3</RoleId>
+        <TrainingPoint>任务区域航线规划</TrainingPoint>
+        <AssociationType>JZCompletePlan</AssociationType>
+        <SecondaryTrainingPoint>单机任务完成度</SecondaryTrainingPoint>
+        <ScoringCriteria>酌情减分，上限不超过10分</ScoringCriteria>
+    </train>
+    <train id="tp020">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>机长</TrainingRole>
+        <RoleId>3</RoleId>
+        <TrainingPoint>任务区域航线规划</TrainingPoint>
+        <AssociationType>JZCompletePlan</AssociationType>
+        <SecondaryTrainingPoint>单机任务时间效率</SecondaryTrainingPoint>
+        <ScoringCriteria>酌情减分，上限不超过10分</ScoringCriteria>
+    </train>
+    <train id="tp021">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>机长</TrainingRole>
+        <RoleId>3</RoleId>
+        <TrainingPoint>任务区域航线规划</TrainingPoint>
+        <AssociationType>JZCompletePlan</AssociationType>
+        <SecondaryTrainingPoint>燃油不足告警</SecondaryTrainingPoint>
+        <ScoringCriteria>没报警一次扣2分，上限不超过10分</ScoringCriteria>
+    </train>
+    <train id="tp022">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>机长</TrainingRole>
+        <RoleId>3</RoleId>
+        <TrainingPoint>任务区域航线规划</TrainingPoint>
+        <AssociationType>JZCompletePlan</AssociationType>
+        <SecondaryTrainingPoint>着陆区域错误告警</SecondaryTrainingPoint>
+        <ScoringCriteria>每报警一次扣2分，上限不超过10分</ScoringCriteria>
+    </train>
+    <train id="tp023">
+        <GameScene>1_2</GameScene>
+        <TrainingRole>机长</TrainingRole>
+        <RoleId>3</RoleId>
+        <TrainingPoint>向现场指挥员报告特情</TrainingPoint>
+        <AssociationType>JZSendTqInfo</AssociationType>
+        <SecondaryTrainingPoint>向现场指挥员报告特情</SecondaryTrainingPoint>
+        <ScoringCriteria>根据特情处置报告次数加分</ScoringCriteria>
+    </train>
+</catalog>

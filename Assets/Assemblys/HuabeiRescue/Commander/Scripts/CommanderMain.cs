@@ -385,7 +385,10 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendAskForAirLine:
                 //如果是导教端，就弹出航线申报消息，让他选择是否同意
                 if (MyDataInfo.MyLevel == -1)
+                {
                     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AirLineInfoShow", param);
+                    _commanderController.OnGetHxgh(param);
+                }
                 if (MyDataInfo.MyLevel == 1)
                     _commanderController.OnGetHxgh(param);
 
@@ -485,6 +488,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 if (MyDataInfo.MyLevel == -1)
                 {
                     EventManager.Instance.EventTrigger(EventType.ShowAMsgInfoWithData.ToString(), datas[0], datas[1]);
+                    _commanderController.OnGetPdfData(datas[1]);
                 }
 
                 if (MyDataInfo.MyLevel == 1) _commanderController.OnGetPdfData(datas[1]);

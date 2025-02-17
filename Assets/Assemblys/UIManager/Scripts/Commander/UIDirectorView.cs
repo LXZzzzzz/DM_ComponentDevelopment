@@ -228,9 +228,11 @@ public class UIDirectorView : BasePanel
 
             string title = bookNode["title"]?.InnerText;
             string type = bookNode["type"]?.InnerText;
+            string score = bookNode["score"]?.InnerText;
+            if (string.IsNullOrEmpty(score) || int.Parse(score) == 0) continue;
 
             TrainCell itemCell = Instantiate(trainPrefab, trainParent);
-            itemCell.Init(id, title, type);
+            itemCell.Init(id, title, type, score);
             itemCell.gameObject.SetActive(true);
             allTrainCells.Add(itemCell);
         }

@@ -81,7 +81,7 @@ public class UITopMenuView : BasePanel
         GetControl<Toggle>("Tog_Fazd").isOn = false;
         menuView.Find("PlanFormulation").gameObject.SetActive(mainLevel == 1);
         menuView.Find("CommandDeduction").gameObject.SetActive(mainLevel == 2);
-        menuView.Find("ComprehensiveEvaluation").gameObject.SetActive(mainLevel == 1);
+        menuView.Find("ComprehensiveEvaluation").gameObject.SetActive(mainLevel == -1);
         speedChangePart.SetActive(mainLevel == 1);
         // EventManager.Instance.AddEventListener<string>(EventType.ShowProgrammeName.ToString(), ShowName);
         EventManager.Instance.AddEventListener<string>(EventType.ReceiveTask.ToString(), ReceiveTask);

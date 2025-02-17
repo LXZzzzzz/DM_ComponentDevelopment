@@ -169,7 +169,7 @@ public class UIChangeZyData : BasePanel
                 bgImage.sizeDelta = new Vector2(442, 256 + 46);
                 break;
             case 3:
-                bgImage.sizeDelta = new Vector2(950, 820);
+                bgImage.sizeDelta = new Vector2(950, 920);
                 break;
         }
     }

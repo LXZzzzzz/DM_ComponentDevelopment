@@ -30,6 +30,8 @@ public partial class CommanderController
                 var datazq = JsonConvert.DeserializeObject<ZbldZqqr>(data.dataStr);
                 _personAssessmentTxtData.zhlx = datazq.typeStr;
                 _personAssessmentTxtData.zqgm = datazq.scaleStr;
+                _personAssessmentTxtData.wztfzl = datazq.wztfzlStr;
+                _personAssessmentTxtData.dzyrs = datazq.dzyrsStr;
                 break;
             case ShowZyDataType.rwxxShow:
                 var datarw = JsonConvert.DeserializeObject<ZbldRwystj>(data.dataStr);
@@ -584,8 +586,8 @@ public partial class CommanderController
 
         parfw_level1 level1 = new parfw_level1()
         {
-            zhlx = _personAssessmentTxtData.zhlx, zqgm = _personAssessmentTxtData.zqgm, dzyrs = (int)zqxzyzrs, cdjyll = itemRescueForcesList,
-            hxgh = _personAssessmentTxtData.hxgh, rwystj = _personAssessmentTxtData.rwystj
+            zhlx = _personAssessmentTxtData.zhlx, zqgm = _personAssessmentTxtData.zqgm, wztfzl = float.Parse(string.IsNullOrEmpty(_personAssessmentTxtData.wztfzl) ? "0" : _personAssessmentTxtData.wztfzl),
+            dzyrs = int.Parse(string.IsNullOrEmpty(_personAssessmentTxtData.dzyrs) ? "0" : _personAssessmentTxtData.dzyrs), cdjyll = itemRescueForcesList, hxgh = _personAssessmentTxtData.hxgh, rwystj = _personAssessmentTxtData.rwystj
         };
         _personAssessmentTxtData.rwys = new TaskElements2();
         _personAssessmentTxtData.rwys.sdz = new List<string>();
