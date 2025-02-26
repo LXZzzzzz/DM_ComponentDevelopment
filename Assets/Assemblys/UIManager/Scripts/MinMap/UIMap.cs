@@ -593,6 +593,7 @@ public class UIMap : BasePanel, IPointerClickHandler
             return;
         }
 
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "上报成功");
         if (type == 1) EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendReportTianQi, myEquip.BObjectId);
         if (type == 2) EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendReportZbgz, myEquip.BObjectId);
     }

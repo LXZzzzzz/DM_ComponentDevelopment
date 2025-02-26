@@ -101,9 +101,9 @@ namespace ReportGenerate
             #region 灭火任务效率计算
 
             data.过火面积控制率 = outdata.任务结束时过火总面积 / outdata.任务初始燃烧面积;
-            data.总体任务效率 = 0.5 * data.灭火任务效率 + 0.3 * data.灭火任务总时间效率 + 0.2 * data.任务总成本效率;
+            data.总体任务效率 = 0.5 * data.灭火任务效率 + 0.5 * data.灭火任务总时间效率;
             data.单机任务效率 = ZongWaterWeightValCount < 1 ? 0 : ZongWaterWeightVal / ZongWaterWeightValCount;
-            data.协同指挥效能 = 100 * (0.5 * data.总体任务效率 + 0.5 * data.单机任务效率);
+            data.协同指挥效能 = 100 * data.总体任务效率;
 
             #endregion
 
@@ -146,6 +146,11 @@ namespace ReportGenerate
 
                     ZongMaterialWeight += item.MaterialWeight;
                 }
+            }
+
+            foreach (var item in outData.任务结束时各灾区数据)
+            {
+                item.PersonDegree = (double)item.zyrs / item.personCount;
             }
 
             data.物资任务完成度 = valAwZong / data.任务结束时对应的物资投放总需求;
@@ -265,12 +270,12 @@ namespace ReportGenerate
 
             #region 救援任务效率计算
 
-            data.人员转运总体任务效率 = 0.5 * data.人员转运效率 + 0.3 * data.人员转运任务时间效率 + 0.2 * data.人员转运任务总成本效率;
-            data.物资投放总体任务效率 = 0.5 * data.物资任务效率 + 0.3 * data.物资投放任务时间效率 + 0.2 * data.物资投放任务总成本效率;
+            data.人员转运总体任务效率 = 0.5 * data.人员转运效率 + 0.5 * data.人员转运任务时间效率;
+            data.物资投放总体任务效率 = 0.5 * data.物资任务效率 + 0.5 * data.物资投放任务时间效率;
             data.人员转运单机任务效率 = ZongPersonWeightValCount < 1 ? 0 : ZongPersonWeightVal / ZongPersonWeightValCount;
             data.物资投放单机任务效率 = ZongMaterialWeightValCount < 1 ? 0 : ZongMaterialWeightVal / ZongMaterialWeightValCount;
-            data.人员转运任务协同指挥效能 = 100 * (0.5 * data.人员转运总体任务效率 + 0.5 * data.人员转运单机任务效率);
-            data.物资投放任务协同指挥效能 = 100 * (0.5 * data.物资投放总体任务效率 + 0.5 * data.物资投放单机任务效率);
+            data.人员转运任务协同指挥效能 = 100 * data.人员转运总体任务效率;
+            data.物资投放任务协同指挥效能 = 100 * data.物资投放总体任务效率;
             data.协同指挥效能 = 0.6 * data.人员转运任务协同指挥效能 + 0.4 * data.物资投放任务协同指挥效能;
 
             #endregion

@@ -98,6 +98,11 @@ public class UIDirectorView : BasePanel
         {
             allEquipCells[i].gameObject.SetActive(allEquipCells[i].equipGoIsShow);
         }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            Debug.Log("看卡卡可能喀什地方你卡上饭卡函数的返回");
+        }
     }
 
     private string currentSelectComId = "";

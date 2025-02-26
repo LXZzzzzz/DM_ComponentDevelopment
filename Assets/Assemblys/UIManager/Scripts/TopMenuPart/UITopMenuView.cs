@@ -50,6 +50,11 @@ public class UITopMenuView : BasePanel
             putAwayMenu();
             EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
         });
+        GetControl<Button>("btn_zgdf").onClick.AddListener(() =>
+        {
+            putAwayMenu();
+            UIManager.Instance.ShowPanel<UISubjectiveRatingView>(UIName.UISubjectiveRatingView, null);
+        });
 
         GetControl<Button>("btn_FaStart").onClick.AddListener(OnFaStart);
         GetControl<Button>("btn_FaTurnBack").onClick.AddListener(OnFaTurnBack);
@@ -210,8 +215,7 @@ public class UITopMenuView : BasePanel
         putAwayMenu();
         // string packedData = ProgrammeDataManager.Instance.PackedData();
 
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendProgramme, "");
-        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务已下达");
+        UIManager.Instance.ShowPanel<UISendTaskInfoShow>(UIName.UISendTaskInfoShow, null);
     }
 
     private void standAlone()

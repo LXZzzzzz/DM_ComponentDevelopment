@@ -55,11 +55,14 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.AddEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.AddEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
+        EventManager.Instance.AddEventListener<string>(EventType.scorseToCc.ToString(), OnGetScore);
         EventManager.Instance.AddEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnCreatZaiQuZy);
         EventManager.Instance.AddEventListener<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), OnSendCreatZaiQuZy);
         EventManager.Instance.AddEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.AddEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
         EventManager.Instance.AddEventListener<int>(EventType.AskForReturnTrigger.ToString(), OnAskForReturn);
+        EventManager.Instance.AddEventListener<string>(EventType.requestTrainingPointData.ToString(), OnGetTrainsPointData);
+        EventManager.Instance.AddEventListener<int>(EventType.requestPeculiarData.ToString(), OnGetPeculiarData);
     }
 
     public void Terminate()
@@ -75,11 +78,14 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<int, Transform>(EventType.CameraControl.ToString(), OnCameraContral);
         EventManager.Instance.RemoveEventListener(EventType.ClearProgramme.ToString(), OnClearScene);
         EventManager.Instance.RemoveEventListener(EventType.GeneratePDF.ToString(), OnGeneratePdf);
+        EventManager.Instance.RemoveEventListener<string>(EventType.scorseToCc.ToString(), OnGetScore);
         EventManager.Instance.RemoveEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnCreatZaiQuZy);
         EventManager.Instance.RemoveEventListener<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), OnSendCreatZaiQuZy);
         EventManager.Instance.RemoveEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
         EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
         EventManager.Instance.RemoveEventListener<int>(EventType.AskForReturnTrigger.ToString(), OnAskForReturn);
+        EventManager.Instance.RemoveEventListener<string>(EventType.requestTrainingPointData.ToString(), OnGetTrainsPointData);
+        EventManager.Instance.RemoveEventListener<int>(EventType.requestPeculiarData.ToString(), OnGetPeculiarData);
     }
 
     private void InitZiyuan()

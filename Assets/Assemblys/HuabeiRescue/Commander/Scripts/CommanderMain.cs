@@ -199,6 +199,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
         MyDataInfo.SkillsToBeConfirmed = new List<string>();
         MyDataInfo.TaskPlanningCompletedPersons = new List<string>();
+        MyDataInfo.CompletedTrainingPoints = new List<string>();
         gameStartTimePoint = -1;
         if (playback) OnInitPlayBackPlayerInfos();
         float mapLength = float.Parse(mDMLonLat.HGetField("TerLength").ToString());
@@ -325,7 +326,7 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         {
             for (int i = 0; i < MyDataInfo.playerInfos.Count; i++)
             {
-                sender.LogError(MyDataInfo.playerInfos.Count + "发送给" + MyDataInfo.playerInfos[i].PlayerName);
+                // sender.LogError(MyDataInfo.playerInfos.Count + $"发送{(MessageID)eventType}给" + MyDataInfo.playerInfos[i].PlayerName);
                 sender.RunSend(SendType.MainToAll, MyDataInfo.playerInfos[i].RoleId, eventType, param);
             }
 
@@ -340,7 +341,14 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 MyDataInfo.gameState = GameState.ReleaseProgramme;
                 _commanderController.Receive_ProgrammeData(param);
                 _commanderController.Receive_TextMsgRecord("值班领导下达了任务");
-                EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.ZBLDSendTask.ToString());
+                if (MyDataInfo.MyLevel == -1)
+                {
+                    _commanderController.OnGetPdfData_TrainsPintType(TrainsPintType.ZBLDSendTask, param);
+                    EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.ZBLDSendTask.ToString());
+                    MyDataInfo.CompletedTrainingPoints.Add(TrainsPintType.ZBLDSendTask.ToString());
+                    _commanderController.OnSaveTrainsPointData(TrainsPintType.ZBLDSendTask.ToString(), param);
+                }
+
                 break;
             case MessageID.SendGameStart:
                 Debug.LogError("收到了开始");
@@ -387,13 +395,16 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 if (MyDataInfo.MyLevel == -1)
                 {
                     EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AirLineInfoShow", param);
-                    _commanderController.OnGetHxgh(param);
+                    _commanderController.OnGetPdfData_TrainsPintType(TrainsPintType.ZBLDRouteDeclaration, param);
+                    EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.ZBLDRouteDeclaration.ToString());
+                    MyDataInfo.CompletedTrainingPoints.Add(TrainsPintType.ZBLDRouteDeclaration.ToString());
+                    _commanderController.OnSaveTrainsPointData(TrainsPintType.ZBLDRouteDeclaration.ToString(), param);
                 }
-                if (MyDataInfo.MyLevel == 1)
-                    _commanderController.OnGetHxgh(param);
+
+                // if (MyDataInfo.MyLevel == 1)
+                //     _commanderController.OnGetHxgh(param);
 
                 _commanderController.Receive_TextMsgRecord("值班领导进行航线申报");
-                EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.ZBLDRouteDeclaration.ToString());
                 break;
             case MessageID.SendAgreeAirLine:
                 //这里如果是总指挥，就弹提示窗，告知航线申请反馈，如果同意就进入下一阶段
@@ -417,7 +428,12 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
             case MessageID.SendAgreeTaskExecute:
                 //如果是机长，就让他的地图模式改为Plane模式，并弹窗提示可以开始任务规划
                 _commanderController.Receive_TextMsgRecord("前线指挥员下达任务");
-                EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.XCZHSendTask.ToString());
+                if (MyDataInfo.MyLevel == -1)
+                {
+                    EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), TrainsPintType.XCZHSendTask.ToString());
+                    MyDataInfo.CompletedTrainingPoints.Add(TrainsPintType.XCZHSendTask.ToString());
+                }
+
                 MyDataInfo.gameState = GameState.AgreeTaskExecute;
                 _commanderController.OnOpenPlanningMode();
                 break;
@@ -473,6 +489,13 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 break;
             case MessageID.SendAgreeDiscoverNewDisaster:
                 if (MyDataInfo.MyLevel != 3) EventManager.Instance.EventTrigger(EventType.HideGoIcon.ToString(), string.Empty);
+                _commanderController.OnAgreePeculiar(1);
+                break;
+            case MessageID.SendAgreeTianQi:
+                _commanderController.OnAgreePeculiar(2);
+                break;
+            case MessageID.SendAgreeZbgz:
+                _commanderController.OnAgreePeculiar(3);
                 break;
             case MessageID.SendChangeEquipOilAndLoad:
                 _commanderController.OnChangeEquipInfo(param);
@@ -481,23 +504,34 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 _commanderController.OnChangeZiyuanInfo(param);
                 break;
             case MessageID.SendTrainPointSucInfo:
-                if (MyDataInfo.MyLevel == -1) EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), param);
+                if (MyDataInfo.MyLevel == -1)
+                {
+                    EventManager.Instance.EventTrigger(EventType.CompleteATrainPoint.ToString(), param);
+                    MyDataInfo.CompletedTrainingPoints.Add(param);
+                }
+
                 break;
             case MessageID.SendShowAMsgWithData:
                 var datas = param.Split('_');
                 if (MyDataInfo.MyLevel == -1)
                 {
                     EventManager.Instance.EventTrigger(EventType.ShowAMsgInfoWithData.ToString(), datas[0], datas[1]);
-                    _commanderController.OnGetPdfData(datas[1]);
+                    _commanderController.OnGetPdfData_ShowZyDataType(datas[1]);
+                    //这里把数据按照训练点类型存到数据中
+                    if (!string.IsNullOrEmpty(datas[2])) _commanderController.OnSaveTrainsPointData(datas[2], datas[1]);
                 }
 
-                if (MyDataInfo.MyLevel == 1) _commanderController.OnGetPdfData(datas[1]);
+                // if (MyDataInfo.MyLevel == 1) _commanderController.OnGetPdfData(datas[1]);
                 break;
             case MessageID.SendReportTianQi:
-                MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param)).isReportTqbh = true;
+                var itema = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param));
+                itema.isReportTqbh = true;
+                _commanderController.OnReportTianQi(itema);
                 break;
             case MessageID.SendReportZbgz:
-                MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param)).isReportZbgz = true;
+                var item = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, param));
+                item.isReportZbgz = true;
+                _commanderController.OnReportZbgz(item);
                 break;
 
 

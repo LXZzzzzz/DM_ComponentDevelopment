@@ -189,14 +189,20 @@ namespace ReportGenerate
         public double MaterialDegree;
 
         /// <summary>
-        /// 人员总完成度
-        /// </summary>
-        public double PersonDegree;
-
-        /// <summary>
         /// 总完成度
         /// </summary>
         public double ZongDegree;
+    }
+
+    public class DisasterAreaData
+    {
+        public string Id;
+        public int zyrs; //转运人数
+        public int personCount; //总人数
+        /// <summary>
+        /// 人员总完成度
+        /// </summary>
+        public double PersonDegree;
     }
 
     /// <summary>
@@ -422,6 +428,8 @@ namespace ReportGenerate
         public Dictionary<HeliData, List<HeliSortieData>> HeliSortieMaterialPersonDataList = new Dictionary<HeliData, List<HeliSortieData>>();
 
         public List<MaterialData> 任务结束时各安置点数据 = new List<MaterialData>();
+
+        public List<DisasterAreaData> 任务结束时各灾区数据 = new List<DisasterAreaData>();
     }
 
     /// <summary>
@@ -479,120 +487,133 @@ namespace ReportGenerate
     //灭火能力评估
     public class PersonAssessment_ResultFireWater
     {
-        public parfw_level1 yjzhy;//一级指挥员
-        public parfw_level2 ejzhy;//二级指挥员
-        public List<parfw_level3> sjzhy;//三级指挥员
+        public parfw_level1 yjzhy; //一级指挥员
+        public parfw_level2 ejzhy; //二级指挥员
+        public List<parfw_level3> sjzhy; //三级指挥员
     }
 
     public class parfw_level1
     {
         //灾害类型
         public string zhlx;
+
         //灾情规模
         public string zqgm;
+
         //火场面积
         public string hcmj;
+
         //出动救援力量
         public List<RescueForces> cdjyll;
+
         //航线规划信息
         public string hxgh;
+
         //任务要素统计
         public TaskElements rwystj;
-        
-        
+
+        //任务简令
+        public string rwjl;
+
+
         //物资投放重量
         public float wztfzl;
+
         //待转运人数
         public int dzyrs;
     }
 
     public class RescueForces
     {
-        public string jx;//机型
-        public string bh;//编号
-        public string jz;//机长
-        public string jzrs;//机组人数
-        public string zz;//组长
-        public string nun;//数量
+        public string jx; //机型
+        public string bh; //编号
+        public string jz; //机组
+        public string jzrs; //机组人数
+        public string bzz; //保障组
+        public string nun; //数量
     }
 
     public class TaskElements
     {
-        public int jc;//机场
-        public int lsqjd;//临时起降点
-        public int bjd;//补给点
-        public int qsd;//取水点
-        public int yy;//医院
-        public int azd;//安置点
+        public int jc; //机场
+        public int lsqjd; //临时起降点
+        public int bjd; //补给点
+        public int qsd; //取水点
+        public int yy; //医院
+        public int azd; //安置点
     }
 
     public class parfw_level2
     {
         //机组信息
         public List<UnitInfo> jzxx;
+
         //任务要素确认
         public TaskElements2 rwys;
+
         //任务分配
         public List<TaskAllocation> rwfp;
     }
 
     public class UnitInfo
     {
-        public string jzName;//机组名
-        public string jx;//机型
-        public List<string> zzsb;//装载设备
-        public float zyl;//载油量
-        public float zzl;//载重量
-        public float dmwhTime;//地面维护时间
+        public string jzName; //机组名
+        public string jx; //机型
+        public List<string> zzsb; //装载设备
+        public float zyl; //载油量
+        public float zzl; //载重量
+        public float dmwhTime; //地面维护时间
     }
 
     public class TaskElements2
     {
-        public List<string> sdz;//受灾点
-        public List<float> hcmj;//火场面积
-        public List<string> qsd;//取水点
-        public List<string> bjd;//补给点
-        public List<string> bjc;//备降场
-        
-        public List<string> dzyry;//待转运人员
-        public List<string> azd;//安置点
-        public List<string> yy;//医院
+        public List<string> sdz; //受灾点
+        public List<float> hcmj; //火场面积
+        public List<string> qsd; //取水点
+        public List<string> bjd; //补给点
+        public List<string> bjc; //备降场
+
+        public List<string> dzyry; //待转运人员
+        public List<string> azd; //安置点
+        public List<string> yy; //医院
     }
 
     public class TaskAllocation
     {
-        public string jzName;//机组名、
-        public List<string> szd;//受灾点
-        public List<string> qsd;//取水点
-        public List<string> bjd;//补给点
-        public List<string> bjc;//备降场
-        
-        public List<string> azd;//安置点
-        public List<string> yy;//医院
+        public string jzName; //机组名、
+        public List<string> szd; //受灾点
+        public List<string> qsd; //取水点
+        public List<string> bjd; //补给点
+        public List<string> bjc; //备降场
+
+        public List<string> azd; //安置点
+        public List<string> yy; //医院
     }
 
     public class parfw_level3
     {
         public string guzhangStr;
         public string tianqiStr;
+        public string jzId;
         public string jzname;
-        public int zScore;//总得分
-       
-        
-        public float zyl;//载油量
-        public float zzl;//载重量
-        public int rybz;//燃油不足报警次数
-        public int cwzl;//错误着陆报警次数
-        public bool zbgzbg;//装备故障是否报告
-        public bool zbgzzl;//装备故障是否着陆
-        public bool tqbhbg;//天气变化是否报告
-        public bool tqbhfh;//天气变化是否返航
+        public int zScore; //总得分
 
-        public bool xfxzq;//新发现灾区是否报告
+
+        public float zyl; //载油量
+        public float zzl; //载重量
+        public int rybz; //燃油不足报警次数
+        public int cwzl; //错误着陆报警次数
+        public List<string> bindingZy; //记录飞机绑定的资源，作为机组任务
+        public bool zbgzbg; //装备故障是否报告
+        public bool zbgzzl; //装备故障是否着陆
+        public bool tqbhbg; //天气变化是否报告
+        public bool tqbhfh; //天气变化是否返航
+
+        public bool xfxzq; //新发现灾区是否报告
     }
 
     #endregion
-    
+
 
     #region 能力评估_文本数据
 
@@ -600,9 +621,11 @@ namespace ReportGenerate
     {
         public string zhlx; //灾害类型
         public string zqgm; //灾区规模
+        public string hcmj; //火场面积
         public string wztfzl; //物资投放重量
         public string dzyrs; //待转运人数
         public string hxgh; //航线规划
+        public string rwjl; //任务简令
         public TaskElements rwystj; //任务要素统计
         public List<UnitInfo> jzxx; //机组信息
         public TaskElements2 rwys; //任务要素确认

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using EventType = Enums.EventType;
 
-public class UIAirLineInfoShow : BasePanel
+public class UISendTaskInfoShow : BasePanel
 {
     private InputField airLineInfo;
 
@@ -24,15 +24,15 @@ public class UIAirLineInfoShow : BasePanel
             airLineInfo.text = (string)userData;
             airLineInfo.interactable = false;
 
-            GetControl<Button>("sure").onClick.AddListener(OnAgree);
-            GetControl<Button>("cancel").onClick.AddListener(OnRefuse);
+            GetControl<Button>("sure").onClick.AddListener(OnAccept);
+            GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UISendTaskInfoShow));
         }
         else
         {
             airLineInfo.interactable = true;
             airLineInfo.text = String.Empty;
             GetControl<Button>("sure").onClick.AddListener(OnSure);
-            GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UIAirLineInfoShow));
+            GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UISendTaskInfoShow));
         }
     }
 
@@ -45,21 +45,16 @@ public class UIAirLineInfoShow : BasePanel
 
     private void OnSure()
     {
-        Close(UIName.UIAirLineInfoShow);
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendAskForAirLine, airLineInfo.text);
+        Close(UIName.UISendTaskInfoShow);
+
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendProgramme, airLineInfo.text);
+        EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务已下达");
     }
 
-    private void OnAgree()
+    private void OnAccept()
     {
-        Close(UIName.UIAirLineInfoShow);
+        Close(UIName.UISendTaskInfoShow);
         if(MyDataInfo.gameState>= GameState.GameStart) return;
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendAgreeAirLine, "1");
-    }
-
-    private void OnRefuse()
-    {
-        Close(UIName.UIAirLineInfoShow);
-        if(MyDataInfo.gameState>= GameState.GameStart) return;
-        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendAgreeAirLine, "0");
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHGetTask.ToString());
     }
 }

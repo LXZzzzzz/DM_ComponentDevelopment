@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,11 @@ public class ChangeData_cellZyItem : DMonoBehaviour
         GetComponentInChildren<Text>(true).text = name;
         tog = GetComponentInChildren<Toggle>(true);
         tog.isOn = isChoose;
+    }
+
+    public void OnchangeChoose(List<string> bindingZy)
+    {
+        tog.isOn = bindingZy != null && bindingZy.Contains(zyId);
     }
 
     public bool GetIsChoose()

@@ -13,6 +13,8 @@ public partial class CommanderController
 {
     private object currentChooseGo;
     private string[] tianqiInfo, fengliInfo;
+    private Dictionary<string, string> TrainsPintDatas; //各个训练点携带的数据存储
+    private Dictionary<int, List<string>> PeculiarDatas; //记录特情数据，1：发出的特情，2：上报的特情，3：确认的特情
 
     public void Init()
     {
@@ -43,6 +45,8 @@ public partial class CommanderController
         //地形实际是 0=> 晴天，1=> 多云，2=> 阴天，3=> 雨天，4=> 雪天，5=> 浓雾，6=> 薄雾
         tianqiInfo = new[] { "晴天", "多云", "阴", "雾", "雷阵雨", "小雨", "中雨", "大雨", "暴雨" };
         fengliInfo = new[] { "无方向微风", "风力1-2级", "风力3-4级", "风力5-6级", "风力7-8级", "狂风9-10级", "狂风10级以上" };
+        TrainsPintDatas = new Dictionary<string, string>();
+        PeculiarDatas = new Dictionary<int, List<string>>();
     }
 
     private void OnChooseAGo(string id)
@@ -196,6 +200,10 @@ public partial class CommanderController
 
         Receive_TextMsgRecord($"特情信息：天气发生变化 {tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
 
+
+        if (MyDataInfo.MyLevel == -1)
+            OnSavePeculiarData(1, $"天气发生变化 {tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
+
         GetWeathersByIndex(tqInfo);
 
         EventManager.Instance.EventTrigger(EventType.TransferTianqiData.ToString(), $"{tianqiInfo[tqInfo]}，{fengliInfo[flInfo]}");
@@ -235,12 +243,66 @@ public partial class CommanderController
 
         if (MyDataInfo.MyLevel == 2)
         {
-            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长发现新灾情，是否处理",
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长发现新灾情，是否确认",
                 () =>
                 {
                     OnSendSkillInfo((int)MessageID.SendAgreeDiscoverNewDisaster, "");
                     OnSendSkillInfo((int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHSureTqInfo.ToString());
                 });
+        }
+
+        if (MyDataInfo.MyLevel == -1)
+            OnSavePeculiarData(2, $"{equip.name}机长上报新灾情_{equip.BeLongToCommanderId}");
+    }
+
+    public void OnReportTianQi(EquipBase equip)
+    {
+        if (MyDataInfo.MyLevel == -1)
+            OnSavePeculiarData(2, $"{equip.name}机长上报天气变化_{equip.BeLongToCommanderId}");
+        //如果是前指，就显示是否处理
+        if (MyDataInfo.MyLevel==2)
+        {
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长上报天气变化，是否确认",
+                () =>
+                {
+                    OnSendSkillInfo((int)MessageID.SendAgreeTianQi, "");
+                });
+        }
+    }
+
+    public void OnReportZbgz(EquipBase equip)
+    {
+        if (MyDataInfo.MyLevel == -1)
+            OnSavePeculiarData(2, $"{equip.name}机长上报装备故障_{equip.BeLongToCommanderId}");
+        
+        if (MyDataInfo.MyLevel==2)
+        {
+            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长上报装备故障，是否确认",
+                () =>
+                {
+                    OnSendSkillInfo((int)MessageID.SendAgreeZbgz, "");
+                });
+        }
+    }
+
+    //前指确认特情 1：新发现灾情，2：天气变化，3：装备故障
+    public void OnAgreePeculiar(int type)
+    {
+        if (MyDataInfo.MyLevel != -1) return;
+        switch (type)
+        {
+            case 1:
+                if (MyDataInfo.MyLevel == -1)
+                    OnSavePeculiarData(3, "前线指挥端确认了新发现灾情特情");
+                break;
+            case 2:
+                if (MyDataInfo.MyLevel == -1)
+                    OnSavePeculiarData(3, "前线指挥端确认了天气变化特情");
+                break;
+            case 3:
+                if (MyDataInfo.MyLevel == -1)
+                    OnSavePeculiarData(3, "前线指挥端确认了装备故障特情");
+                break;
         }
     }
 
@@ -324,5 +386,32 @@ public partial class CommanderController
         }
 
         item.SetVariableData(itemData);
+    }
+
+    public void OnSaveTrainsPointData(string type, string data)
+    {
+        TrainsPintDatas[type] = data;
+    }
+
+    private void OnGetTrainsPointData(string type)
+    {
+        if (TrainsPintDatas.ContainsKey(type))
+            EventManager.Instance.EventTrigger(EventType.getTrainingPointData.ToString(), TrainsPintDatas[type]);
+        else
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前无数据");
+    }
+
+    private void OnSavePeculiarData(int type, string info)
+    {
+        if (!PeculiarDatas.ContainsKey(type)) PeculiarDatas.Add(type, new List<string>());
+        PeculiarDatas[type].Add(info);
+    }
+
+    private void OnGetPeculiarData(int type)
+    {
+        if (PeculiarDatas.ContainsKey(type))
+            EventManager.Instance.EventTrigger(EventType.getPeculiarData.ToString(), PeculiarDatas[type]);
+        else
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前无数据");
     }
 }

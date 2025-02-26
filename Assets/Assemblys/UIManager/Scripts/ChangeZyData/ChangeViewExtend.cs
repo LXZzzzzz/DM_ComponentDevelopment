@@ -89,13 +89,19 @@ public class ZYFPPartView : ChangeDataBase
     private GameObject view;
     private RectTransform zyParent;
     private ChangeData_cellZyItem zyTemplate;
+    private List<ChangeData_cellZyItem> zys;
     private ZyfpInfo info;
+    private Dropdown dpSwitchE;
+    private List<EquipBase> equips;
 
     protected override void OnInit()
     {
         view = mainView.transform.Find("View/infos/zyfpPart").gameObject;
         zyParent = view.transform.GetComponentInChildren<ScrollRect>(true).content;
         zyTemplate = view.transform.GetComponentInChildren<ChangeData_cellZyItem>(true);
+        dpSwitchE = view.transform.GetComponentInChildren<Dropdown>(true);
+        zys = new List<ChangeData_cellZyItem>();
+        equips = new List<EquipBase>();
     }
 
     public override void OnShow(object data)
@@ -108,17 +114,45 @@ public class ZYFPPartView : ChangeDataBase
             if (info.type == 1)
                 if (MyDataInfo.sceneAllZiYuan[i] is ITaskProgress && MyDataInfo.sceneAllZiYuan[i].ZiYuanType != ZiYuanType.Hospital)
                     continue;
-            if (info.type == 2)
+            if (info.type == 2 || info.type == 3)
                 if (!(MyDataInfo.sceneAllZiYuan[i] is ITaskProgress) || MyDataInfo.sceneAllZiYuan[i].ZiYuanType == ZiYuanType.Hospital)
                     continue;
 
             var zyItem = GameObject.Instantiate(zyTemplate, zyParent);
             var zy = MyDataInfo.sceneAllZiYuan[i];
-            zyItem.Init(zy.ziYuanName, zy.BobjectId, info.currentInfo != null && info.currentInfo.Contains(zy.BobjectId));
+            if (info.type == 3) zyItem.Init(zy.ziYuanName, zy.BobjectId, false);
+            else zyItem.Init(zy.ziYuanName, zy.BobjectId, info.currentInfo != null && info.currentInfo.Contains(zy.BobjectId));
             zyItem.gameObject.SetActive(true);
+            zys.Add(zyItem);
         }
 
+        dpSwitchE.onValueChanged.AddListener(onchangeView);
+        dpSwitchE.gameObject.SetActive(info.type == 3);
         view.SetActive(true);
+
+        if (info.type == 3)
+        {
+            dpSwitchE.options.Clear();
+            equips.Clear();
+            for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+            {
+                if (MyDataInfo.sceneAllEquips[i].gameObject.activeSelf)
+                {
+                    dpSwitchE.options.Add(new Dropdown.OptionData(MyDataInfo.sceneAllEquips[i].name));
+                    equips.Add(MyDataInfo.sceneAllEquips[i]);
+                }
+            }
+
+            if (equips.Count > 0) onchangeView(0);
+        }
+    }
+
+    private void onchangeView(int index)
+    {
+        for (int i = 0; i < zys.Count; i++)
+        {
+            zys[i].OnchangeChoose(equips[index].currentBindingZy);
+        }
     }
 
     public override void OnHide()
@@ -127,7 +161,7 @@ public class ZYFPPartView : ChangeDataBase
         {
             GameObject.Destroy(zyParent.GetChild(i).gameObject);
         }
-
+        dpSwitchE.onValueChanged.RemoveAllListeners();
         view.SetActive(false);
     }
 
@@ -484,6 +518,7 @@ public class PersonSetView : ChangeDataBase
 
     public override void OnSave()
     {
+        if (MyDataInfo.gameState >= GameState.GameStart) return;
         //只有导教端才有修改机组人员状态的权限，一级指挥只是查看
         //机组人员显示状态 发送
         string choosePersons = "";
@@ -510,7 +545,7 @@ public class PersonSetView : ChangeDataBase
 
             ShowInfoClass sib = new ShowInfoClass() { szdt = ShowZyDataType.ryxxShow };
             string jsonData = JsonConvert.SerializeObject(sib);
-            string dataStr = "值班领导确认了出动人员信息_" + AESUtils.Encrypt(jsonData);
+            string dataStr = "值班领导确认了出动人员信息_" + AESUtils.Encrypt(jsonData) + $"_{TrainsPintType.ZBLDSurePersonInfo.ToString()}";
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
         }
     }
@@ -571,7 +606,7 @@ public class DisasterSituationView : ChangeDataBase
 {
     private GameObject view;
     private Text disInfo;
-    private InputField zhlx, zhgm, wztfzl, dzyrs;
+    private InputField zhlx, zhgm, hcmj, wztfzl, dzyrs;
     private Transform textPart;
 
     protected override void OnInit()
@@ -580,6 +615,7 @@ public class DisasterSituationView : ChangeDataBase
         disInfo = view.transform.Find("text_disInfo").GetComponent<Text>();
         zhlx = view.transform.Find("inputFPart/InputF_zhlx").GetComponent<InputField>();
         zhgm = view.transform.Find("inputFPart/InputF_zhgm").GetComponent<InputField>();
+        hcmj = view.transform.Find("inputFPart/InputF_hcmj").GetComponent<InputField>();
         wztfzl = view.transform.Find("inputFPart/InputF_wztfzl").GetComponent<InputField>();
         dzyrs = view.transform.Find("inputFPart/InputF_dzyrs").GetComponent<InputField>();
         textPart = view.transform.Find("textPart");
@@ -590,16 +626,19 @@ public class DisasterSituationView : ChangeDataBase
         mainView.ChangeTitleInfo("灾害信息");
         mainView.ChangeViewSize(1);
         view.SetActive(true);
+        hcmj.gameObject.SetActive(MyDataInfo.gameScene == 1);
         wztfzl.gameObject.SetActive(MyDataInfo.gameScene == 2);
         dzyrs.gameObject.SetActive(MyDataInfo.gameScene == 2);
-        textPart.GetChild(2).gameObject.SetActive(MyDataInfo.gameScene == 2);
+        textPart.GetChild(2).gameObject.SetActive(MyDataInfo.gameScene == 1);
         textPart.GetChild(3).gameObject.SetActive(MyDataInfo.gameScene == 2);
+        textPart.GetChild(4).gameObject.SetActive(MyDataInfo.gameScene == 2);
         if (data is ShowStrInputData)
         {
             ShowStrInputData sdsi = data as ShowStrInputData;
             disInfo.text = sdsi.strInfo;
             zhlx.interactable = true;
             zhgm.interactable = true;
+            hcmj.interactable = true;
             wztfzl.interactable = true;
             dzyrs.interactable = true;
         }
@@ -610,7 +649,11 @@ public class DisasterSituationView : ChangeDataBase
             disInfo.text = strinfo.titleInfo;
             zhlx.text = strinfo.typeStr;
             zhgm.text = strinfo.scaleStr;
-            if (MyDataInfo.gameScene == 2)
+            if (MyDataInfo.gameScene == 1)
+            {
+                hcmj.text = strinfo.hcmjStr;
+            }
+            else if (MyDataInfo.gameScene == 2)
             {
                 wztfzl.text = strinfo.wztfzlStr;
                 dzyrs.text = strinfo.dzyrsStr;
@@ -618,6 +661,7 @@ public class DisasterSituationView : ChangeDataBase
 
             zhlx.interactable = false;
             zhgm.interactable = false;
+            hcmj.interactable = false;
             wztfzl.interactable = false;
             dzyrs.interactable = false;
         }
@@ -633,11 +677,11 @@ public class DisasterSituationView : ChangeDataBase
         if (MyDataInfo.MyLevel == -1) return;
         //存到cc中的数据结构中，用于报告显示
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureDisasterInfo.ToString());
-        ZbldZqqr zz = new ZbldZqqr() { titleInfo = disInfo.text, typeStr = zhlx.text, scaleStr = zhgm.text, wztfzlStr = wztfzl.text, dzyrsStr = dzyrs.text };
+        ZbldZqqr zz = new ZbldZqqr() { titleInfo = disInfo.text, typeStr = zhlx.text, scaleStr = zhgm.text, hcmjStr = hcmj.text, wztfzlStr = wztfzl.text, dzyrsStr = dzyrs.text };
         string jsonData = JsonConvert.SerializeObject(zz);
         ShowInfoClass sic = new ShowInfoClass() { szdt = ShowZyDataType.zqxxShow, dataStr = jsonData };
         string jsonData2 = JsonConvert.SerializeObject(sic);
-        string dataStr = "值班领导确认了灾情_" + AESUtils.Encrypt(jsonData2);
+        string dataStr = "值班领导确认了灾情_" + AESUtils.Encrypt(jsonData2) + $"_{TrainsPintType.ZBLDSureDisasterInfo.ToString()}";
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
     }
 }
@@ -731,7 +775,7 @@ public class EquipmentInfoView : ChangeDataBase
             string jsonData = JsonConvert.SerializeObject(zz);
             ShowInfoClass sic = new ShowInfoClass { szdt = ShowZyDataType.zbxxShow, dataStr = jsonData };
             string jsonData2 = JsonConvert.SerializeObject(sic);
-            string dataStr = "值班领导确认了出动装备信息_" + AESUtils.Encrypt(jsonData2);
+            string dataStr = "值班领导确认了出动装备信息_" + AESUtils.Encrypt(jsonData2) + $"_{TrainsPintType.ZBLDSureEquipInfo.ToString()}";
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
         }
     }
@@ -955,7 +999,7 @@ public class TaskInfoView : ChangeDataBase
             string jsonData = JsonConvert.SerializeObject(zr);
             ShowInfoClass sic = new ShowInfoClass { szdt = ShowZyDataType.rwxxShow, dataStr = jsonData };
             string jsonData2 = JsonConvert.SerializeObject(sic);
-            string dataStr = "值班领导完成了任务区域要素统计_" + AESUtils.Encrypt(jsonData2);
+            string dataStr = "值班领导完成了任务区域要素统计_" + AESUtils.Encrypt(jsonData2) + $"_";
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
         }
     }
@@ -1004,6 +1048,12 @@ public class FieldCommanderView : ChangeDataBase
             for (int i = 0; i < equipsInfo.Count; i++)
             {
                 checkEquip.options.Add(new Dropdown.OptionData(equipsInfo[i].jx));
+            }
+
+            var togs=view.transform.GetComponentsInChildren<Toggle>();
+            for (int i = 0; i < togs.Length; i++)
+            {
+                togs[i].isOn = true;
             }
 
             zyl.interactable = false;
@@ -1070,6 +1120,7 @@ public class FieldCommanderView : ChangeDataBase
 
     public override void OnSave()
     {
+        if (MyDataInfo.gameState >= GameState.GameStart) return;
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHInspectEquipInfo.ToString());
         if (MyDataInfo.MyLevel == 2)
         {
@@ -1077,7 +1128,7 @@ public class FieldCommanderView : ChangeDataBase
             string jsonData = JsonConvert.SerializeObject(xr);
             ShowInfoClass sic = new ShowInfoClass { szdt = ShowZyDataType.rwqzbShow, dataStr = jsonData };
             string jsonData2 = JsonConvert.SerializeObject(sic);
-            string dataStr = "现场指挥完成了任务前准备_" + AESUtils.Encrypt(jsonData2);
+            string dataStr = "现场指挥完成了任务前准备_" + AESUtils.Encrypt(jsonData2) + $"_{TrainsPintType.XCZHInspectEquipInfo.ToString()}";
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
         }
     }
@@ -1122,19 +1173,46 @@ public class CaptainView : ChangeDataBase
         mainView.ChangeTitleInfo("地面准备信息");
         mainView.ChangeViewSize(1);
         view.SetActive(true);
-        _equip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BeLongToCommanderId, MyDataInfo.leadId));
-        if (_equip == null)
+        if (data is ShowStrInputData_Daojiao)
         {
-            Debug.LogError("找不到我自己的飞机");
-            return;
-        }
+            var djshow = data as ShowStrInputData_Daojiao;
+            var strinfo = JsonConvert.DeserializeObject<zbcellInfo2>(djshow.strInfo);
+            var _equip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, strinfo.id));
+            jixing.text = bianhao.text = _equip.name;
+            Debug.LogError("装备名："+_equip.name);
+            (_equip as IDqChangePart).GetOilAndLoad(out float oil, out float load);
+            oilMax.text = oil.ToString();
+            Debug.LogError("装备最大油量："+oil);
+            loadMax.text = load.ToString();
+            Debug.LogError("装备最大载重："+load);
+            zyl.value = float.Parse(strinfo.zyl);
+            Debug.LogError("装备载油量比例："+strinfo.zyl);
+            zzl.value = float.Parse(strinfo.zzl);
+            Debug.LogError("装备载重比例："+strinfo.zzl);
 
-        (_equip as IDqChangePart).GetOilAndLoad(out float oil, out float load);
-        jixing.text = bianhao.text = _equip.name;
-        oilMax.text = oil.ToString();
-        loadMax.text = load.ToString();
-        maxOil = oil;
-        maxZzl = load;
+            zyl.interactable = false;
+            zzl.interactable = false;
+        }
+        else
+        {
+            Debug.LogError("不是导教端触发的");
+            _equip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BeLongToCommanderId, MyDataInfo.leadId));
+            if (_equip == null)
+            {
+                Debug.LogError("找不到我自己的飞机");
+                return;
+            }
+
+            (_equip as IDqChangePart).GetOilAndLoad(out float oil, out float load);
+            jixing.text = bianhao.text = _equip.name;
+            oilMax.text = oil.ToString();
+            loadMax.text = load.ToString();
+            maxOil = oil;
+            maxZzl = load;
+
+            zyl.interactable = true;
+            zzl.interactable = true;
+        }
     }
 
     public override void OnHide()
@@ -1144,8 +1222,16 @@ public class CaptainView : ChangeDataBase
 
     public override void OnSave()
     {
+        if (MyDataInfo.MyLevel != 3) return;
         string info = _equip.BObjectId + '_' + zyl.value.ToString() + '_' + zzl.value.ToString();
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendChangeEquipOilAndLoad, info);
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.JZSureOilAndLoad.ToString());
+
+        zbcellInfo2 zb = new zbcellInfo2() { id = _equip.BObjectId, zyl = zyl.value.ToString(), zzl = zzl.value.ToString() };
+        string jsonData = JsonConvert.SerializeObject(zb);
+        ShowInfoClass sic = new ShowInfoClass { szdt = ShowZyDataType.dmzbShow, dataStr = jsonData };
+        string jsonData2 = JsonConvert.SerializeObject(sic);
+        string dataStr = $"{_equip.name}机长确认了载油量和载重信息_" + AESUtils.Encrypt(jsonData2) + $"_{TrainsPintType.JZSureOilAndLoad.ToString()}";
+        EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendShowAMsgWithData, dataStr);
     }
 }

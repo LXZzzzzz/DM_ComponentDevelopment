@@ -28,6 +28,9 @@ public class UIManagerMain : ScriptManager, IMesRec
     public UIPathPointsShow UIPathPointsShow;
     public UIChangeZyData UIChangeZyData;
     public UIAirLineInfoShow UIAirLineInfoShow;
+    public UISendTaskInfoShow UISendTaskInfoShow;
+    public UISubjectiveRatingView UISubjectiveRatingView;
+    public UIPeculiarInfoShow UIPeculiarInfoShow;
 
     private UIItem_IconShow itemIcon;
 
@@ -103,6 +106,9 @@ public class UIManagerMain : ScriptManager, IMesRec
         UIPathPointsShow = transform.Find("UiPrefab/UIPathPointsShow").gameObject.GetComponent<UIPathPointsShow>();
         UIChangeZyData = transform.Find("UiPrefab/UIChangeZyData").gameObject.GetComponent<UIChangeZyData>();
         UIAirLineInfoShow = transform.Find("UiPrefab/UIAirLineInfoShow").gameObject.GetComponent<UIAirLineInfoShow>();
+        UISendTaskInfoShow = transform.Find("UiPrefab/UISendTaskInfoShow").gameObject.GetComponent<UISendTaskInfoShow>();
+        UISubjectiveRatingView = transform.Find("UiPrefab/UISubjectiveRatingView").gameObject.GetComponent<UISubjectiveRatingView>();
+        UIPeculiarInfoShow = transform.Find("UiPrefab/UIPeculiarInfoShow").gameObject.GetComponent<UIPeculiarInfoShow>();
 
         //todo: 作为某个UI用到的组件，可以放到该UI节点下，加载代码在UI里完成，这里只进行所有UIPanel的加载
         itemIcon = transform.Find("UiPrefab/IconItemPart/IconItem").gameObject.AddComponent<UIItem_IconShow>();
@@ -163,6 +169,9 @@ public class UIManagerMain : ScriptManager, IMesRec
                 break;
             case "AirLineInfoShow":
                 UIManager.Instance.ShowPanel<UIAirLineInfoShow>(UIName.UIAirLineInfoShow, dataInfo);
+                break;
+            case "SendTaskInfoShow":
+                UIManager.Instance.ShowPanel<UISendTaskInfoShow>(UIName.UISendTaskInfoShow, dataInfo);
                 break;
             default:
                 break;

@@ -47,8 +47,7 @@ public partial class CommanderController
         // var programmeData = ProgrammeDataManager.Instance.UnPackingData(data);
         // OnLoadProgrammeDataSuc(programmeData);
         if (MyDataInfo.MyLevel == 2)
-            EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), "接到现场任务分配命令",
-                () => OnSendSkillInfo((int)MessageID.SendTrainPointSucInfo, TrainsPintType.XCZHGetTask.ToString()));
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "SendTaskInfoShow", data);
     }
 
 
@@ -298,6 +297,10 @@ public partial class CommanderController
     {
         var itemdata = MsgReceive_CreatZaiqu(data);
         OnChangeZaiqu(itemdata);
+            
+        //记录一次特情，并记录特情描述信息
+        if(MyDataInfo.MyLevel==-1)
+            OnSavePeculiarData(1,"新发现灾情");
 
         //创建完后，如果不是机长，就先隐藏掉
         if (MyDataInfo.MyLevel != 3 && MyDataInfo.MyLevel != -1)
@@ -363,6 +366,9 @@ public partial class CommanderController
                 guzhangInfoStr[itemData[0]] = guzhangInfo[int.Parse(itemData[1])];
             }
         }
+        
+        if(MyDataInfo.MyLevel==-1)
+            OnSavePeculiarData(1,"装备发生故障");
     }
 
     public void Receive_SetTaskBg(string data)

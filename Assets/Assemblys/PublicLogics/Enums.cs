@@ -60,8 +60,13 @@ namespace Enums
         TransferKongguanData, //传递空管信息给UI
         TransferTianqiData, //传递天气信息给UI
         CompleteATrainPoint, //完成了一个训练点
-        OpenMap,//通知打开地图
-        captureMap,//通知截取地图
+        OpenMap, //通知打开地图
+        captureMap, //通知截取地图
+        requestTrainingPointData, //请求训练点数据
+        getTrainingPointData, //得到训练点数据
+        requestPeculiarData, //请求特情数据
+        getPeculiarData, //得到特情数据
+        scorseToCc, //把分数发给控制者
     }
 
     public enum MessageID
@@ -109,6 +114,8 @@ namespace Enums
         SendShowAMsgWithData = 1042, //发送某端带数据的实时信息
         SendReportTianQi = 1043, //发送上报天气变化
         SendReportZbgz = 1044, //发送上报装备故障
+        SendAgreeTianQi = 1045, //确认天气变化
+        SendAgreeZbgz = 1046, //确认装备故障
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作
@@ -177,5 +184,4 @@ namespace Enums
         JZLandingError, //机长着陆区域错误
         JZSendTqInfo, //机长发送特情信息
     }
-    
 }

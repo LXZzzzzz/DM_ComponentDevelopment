@@ -61,6 +61,7 @@ namespace UiManager
             uiPanelWhereLayer.Add(UIName.UIPathPointsShow, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIChangeZyData, BasePanel.UIType.upper);
             uiPanelWhereLayer.Add(UIName.UIAirLineInfoShow, BasePanel.UIType.upper);
+            uiPanelWhereLayer.Add(UIName.UIPeculiarInfoShow, BasePanel.UIType.upper);
         }
 
         /// <summary>
@@ -201,6 +202,15 @@ namespace UiManager
                 case UIName.UIAirLineInfoShow:
                     itemUI = Instantiate((main as UIManagerMain).UIAirLineInfoShow, canvansTran);
                     break;
+                case UIName.UISendTaskInfoShow:
+                    itemUI = Instantiate((main as UIManagerMain).UISendTaskInfoShow, canvansTran);
+                    break;
+                case UIName.UISubjectiveRatingView:
+                    itemUI = Instantiate((main as UIManagerMain).UISubjectiveRatingView, canvansTran);
+                    break;
+                case UIName.UIPeculiarInfoShow:
+                    itemUI = Instantiate((main as UIManagerMain).UIPeculiarInfoShow, canvansTran);
+                    break;
             }
 
             itemUI.gameObject.SetActive(true);
@@ -257,6 +267,9 @@ namespace UiManager
         UIChangePointDataInfo,
         UIPathPointsShow,
         UIChangeZyData,
-        UIAirLineInfoShow
+        UIAirLineInfoShow,
+        UISendTaskInfoShow,
+        UISubjectiveRatingView,
+        UIPeculiarInfoShow
     }
 }

@@ -4,6 +4,7 @@ using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using DataTranfsers;
 using ToolsLibrary;
 using UnityEngine;
 
@@ -32,7 +33,8 @@ namespace ReportGenerate
         /// 灭火任务报告
         /// </summary>
         public void CreateWaterMissionReport(string reportId, string reportName, string userName, string Id, string Abstract, ResultFireWaterData resultData, ResultFireWaterOutData resultOutData, List<string> trainData,
-            Dictionary<string, List<WaterMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports,PersonAssessment_ResultFireWater personAss)
+            Dictionary<string, List<WaterMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports, PersonAssessment_ResultFireWater personAss, ScoreStatistics scores,
+            Dictionary<int, List<string>> tqData)
         {
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
@@ -120,7 +122,209 @@ namespace ReportGenerate
 
             #endregion
 
-            Paragraph messageEval = new Paragraph("一、任务效能评估", fontSub);
+            Paragraph messagePersonAssessment = new Paragraph("一、岗位职责能力评估", fontSub);
+            doc.Add(messagePersonAssessment);
+            doc.Add(nullString);
+            Paragraph paLevel1;
+            if (scores == null) paLevel1 = new Paragraph("1.一级指挥员    ", fontSub);
+            else paLevel1 = new Paragraph($"1.一级指挥员    得分{scores.firstZhyTotalScore}", fontSub);
+            paLevel1.IndentationLeft = 20f;
+            doc.Add(paLevel1);
+            doc.Add(nullString);
+            //数据：personAss
+
+            //一级指挥员
+            PdfPTable commander1 = new PdfPTable(6);
+
+            commander1.AddCell(MyCell("评分规则：每项训练点满分10分，未完成：0分，较差：1~3分，一般：4~6分，较好：7~9分", 6, 1));
+            if (scores == null) commander1.AddCell(MyCell($"确认灾情信息", 6, 1));
+            else commander1.AddCell(MyCell($"确认灾情信息: {scores.qrzqxx}分", 6, 1));
+            commander1.AddCell(MyCell("灾害类型", 1, 1));
+            commander1.AddCell(MyCell("灾情规模", 1, 1));
+            commander1.AddCell(MyCell("火场面积（平方米）", 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+            //值
+            commander1.AddCell(MyCell(personAss.yjzhy.zhlx, 1, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.zqgm, 1, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.hcmj, 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+
+            if (scores == null) commander1.AddCell(MyCell($"确认出动装备信息", 6, 1));
+            else commander1.AddCell(MyCell($"确认出动装备信息： {scores.cdzbxxqr}分", 6, 1));
+            commander1.AddCell(MyCell("机型", 2, 1));
+            commander1.AddCell(MyCell("编号", 2, 1));
+            commander1.AddCell(MyCell("数量", 2, 1));
+            //值
+            for (int i = 0; i < personAss.yjzhy.cdjyll.Count; i++)
+            {
+                int index = i;
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jx, 2, 1));
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].bh, 2, 1));
+                commander1.AddCell(MyCell("1", 2, 1));
+            }
+
+            if (scores == null) commander1.AddCell(MyCell($"确认出动人员信息", 6, 1));
+            else commander1.AddCell(MyCell($"确认出动人员信息： {scores.cdryxxqr}分", 6, 1));
+            commander1.AddCell(MyCell("机型编号", 2, 1));
+            commander1.AddCell(MyCell("机组", 2, 1));
+            commander1.AddCell(MyCell("保障组", 2, 1));
+            //值
+            for (int i = 0; i < personAss.yjzhy.cdjyll.Count; i++)
+            {
+                int index = i;
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jx, 2, 1));
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jz, 2, 1));
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].bzz, 2, 1));
+            }
+
+            if (scores == null) commander1.AddCell(MyCell($"申报转场航线", 6, 1));
+            else commander1.AddCell(MyCell($"申报转场航线： {scores.zchxsb}分", 6, 1));
+            commander1.AddCell(MyCell("航线信息", 1, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.hxgh, 5, 1));
+
+            if (scores == null) commander1.AddCell(MyCell($"下达任务", 6, 1));
+            else commander1.AddCell(MyCell($"下达任务： {scores.xdrw}分", 6, 1));
+            commander1.AddCell(MyCell("任务简令", 6, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.rwjl, 6, 2));
+
+            #region 任务要素统计，不用了
+
+            // commander1.AddCell(MyCell("任务要素统计", 6, 1));
+            // commander1.AddCell(MyCell("机场", 1, 1));
+            // commander1.AddCell(MyCell("临时起降点", 1, 1));
+            // commander1.AddCell(MyCell("补给点", 1, 1));
+            //
+            // commander1.AddCell(MyCell("取水点", 1, 1));
+            // commander1.AddCell(MyCell("", 1, 1));
+            // commander1.AddCell(MyCell("", 1, 1));
+            //
+            // commander1.AddCell(MyCell(personAss.yjzhy.rwystj.jc.ToString(), 1, 1));
+            // commander1.AddCell(MyCell(personAss.yjzhy.rwystj.lsqjd.ToString(), 1, 1));
+            //
+            // commander1.AddCell(MyCell(personAss.yjzhy.rwystj.bjd.ToString(), 1, 1));
+            //
+            //
+            // commander1.AddCell(MyCell(personAss.yjzhy.rwystj.qsd.ToString(), 1, 1));
+            // commander1.AddCell(MyCell("", 1, 1));
+            // commander1.AddCell(MyCell("", 1, 1));
+
+            #endregion
+
+            doc.Add(commander1);
+            doc.Add(nullString);
+
+            Paragraph paLevel2;
+            if (scores == null) paLevel2 = new Paragraph($"2.二级指挥员", fontSub);
+            else paLevel2 = new Paragraph($"2.二级指挥员    得分:{scores.secondZhyTotalScore}", fontSub);
+            paLevel2.IndentationLeft = 20f;
+            doc.Add(paLevel2);
+            doc.Add(nullString);
+
+            PdfPTable commander2 = new PdfPTable(6);
+            commander2.AddCell(MyCell("评分规则：每项训练点满分10分，未完成：0分，较差：1~3分，一般：4~6分，较好：7~9分", 6, 1));
+            if (scores == null) commander2.AddCell(MyCell($"领受任务", 6, 1));
+            else commander2.AddCell(MyCell($"领受任务： {scores.lsrw}分", 6, 1));
+            if (scores == null) commander2.AddCell(MyCell($"确认出动装备信息", 6, 1));
+            else commander2.AddCell(MyCell($"确认出动装备信息： {scores.qrzbztxx}分", 6, 1));
+            commander2.AddCell(MyCell("机组信息", 6, 1));
+            commander2.AddCell(MyCell("机组", 1, 1));
+            commander2.AddCell(MyCell("机型", 1, 1));
+            commander2.AddCell(MyCell("装载设备", 1, 1));
+            commander2.AddCell(MyCell("载油量（千克）", 1, 1));
+            commander2.AddCell(MyCell("可用载重（千克）", 1, 1));
+            commander2.AddCell(MyCell("地面维护时间间隔（小 时）", 1, 1));
+
+            for (int i = 0; i < personAss.ejzhy.jzxx.Count; i++)
+            {
+                int index = i;
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jzName, 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jx, 1, 1));
+                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.jzxx[index].zzsb), 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zyl.ToString(), 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zzl.ToString(), 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].dmwhTime.ToString(), 1, 1));
+            }
+
+            if (scores == null) commander2.AddCell(MyCell($"完成任务分配并下达任务", 6, 1));
+            else commander2.AddCell(MyCell($"完成任务分配并下达任务： {scores.fprwbxdrw}分", 6, 1));
+            commander2.AddCell(MyCell("机组", 1, 1));
+            commander2.AddCell(MyCell("受灾点", 1, 1));
+            commander2.AddCell(MyCell("取水点", 1, 1));
+            commander2.AddCell(MyCell("补给站", 1, 1));
+            commander2.AddCell(MyCell("备降场", 1, 1));
+            commander2.AddCell(MyCell("", 1, 1));
+            for (int i = 0; i < personAss.ejzhy.rwfp.Count; i++)
+            {
+                int index = i;
+                commander2.AddCell(MyCell(personAss.ejzhy.rwfp[index].jzName, 1, 1));
+                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 1));
+                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].qsd), 1, 1));
+                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 1));
+                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjc), 1, 1));
+                commander2.AddCell(MyCell("", 1, 1));
+            }
+
+            if (scores == null) commander2.AddCell(MyCell($"确认机长的特情处置报告", 6, 1));
+            else commander2.AddCell(MyCell($"确认机长的特情处置报告： {scores.qrtqczbg}分", 6, 1));
+            commander2.AddCell(MyCell("报告次数", 3, 1));
+            commander2.AddCell(MyCell($"{(tqData.ContainsKey(2) ? tqData[2].Count : 0).ToString()}", 3, 1));
+            commander2.AddCell(MyCell("确认次数", 3, 1));
+            commander2.AddCell(MyCell($"{(tqData.ContainsKey(3) ? tqData[3].Count : 0).ToString()}", 3, 1));
+
+            doc.Add(commander2);
+            doc.Add(nullString);
+
+            Paragraph paLevel3 = new Paragraph($"3.三级指挥员", fontSub);
+            paLevel3.IndentationLeft = 20f;
+            doc.Add(paLevel3);
+            doc.Add(nullString);
+
+            for (int i = 0; i < personAss.sjzhy.Count; i++)
+            {
+                int index = i;
+                var jzScore = scores?.thirdZhyScores?.Find(a => string.Equals(a.roleId, personAss.sjzhy[index].jzId));
+                Paragraph paLevel3i;
+                if (jzScore == null) paLevel3i = new Paragraph("  (" + (index + 1) + ") " + personAss.sjzhy[i].jzname, fontSub);
+                else paLevel3i = new Paragraph("  (" + (index + 1) + ") " + personAss.sjzhy[i].jzname + "   得分：" + jzScore.jzZhyTotalScore, fontSub);
+                paLevel3i.IndentationLeft = 20f;
+                doc.Add(paLevel3i);
+                doc.Add(nullString);
+
+                PdfPTable commander3 = new PdfPTable(3);
+                commander3.AddCell(MyCell("评分规则：每项训练点满分10分，未完成：0分，较差：1~3分，一般：4~6分，较好：7~9分", 3, 1));
+                if (jzScore == null) commander3.AddCell(MyCell($"确认载油量和载重信息", 3, 1));
+                else commander3.AddCell(MyCell($"确认载油量和载重信息： {jzScore.qrzyl}分", 3, 1));
+                commander3.AddCell(MyCell("燃油重量（千克）", 1, 1));
+                commander3.AddCell(MyCell(personAss.sjzhy[index].zyl.ToString(), 2, 1));
+                commander3.AddCell(MyCell("可用载重（千克）", 1, 1));
+                commander3.AddCell(MyCell(personAss.sjzhy[index].zzl.ToString(), 2, 1));
+
+                int aqfxnl = 60;
+                int tqcznl = 40;
+
+                if (jzScore == null) commander3.AddCell(MyCell($"完成任务区航线规划", 3, 1));
+                else commander3.AddCell(MyCell($"完成任务区航线规划： {jzScore.rwqyhxgh}分", 3, 1));
+                commander3.AddCell(MyCell("燃油不足报警次数（剩余燃油重量低于最大油量的 10% 千克）", 2, 1));
+                commander3.AddCell(MyCell(personAss.sjzhy[index].rybz.ToString(), 1, 1));
+                commander3.AddCell(MyCell("错误着陆次数（着陆在未分配的补给点、备降点）", 2, 1));
+                commander3.AddCell(MyCell(personAss.sjzhy[index].cwzl.ToString(), 1, 1));
+
+                if (jzScore == null) commander3.AddCell(MyCell($"向现场指挥员报告特情", 3, 1));
+                else commander3.AddCell(MyCell($"向现场指挥员报告特情： {jzScore.xxczhybg}分", 3, 1));
+                commander3.AddCell(MyCell("特情次数", 1, 1));
+                commander3.AddCell(MyCell($"{(tqData.ContainsKey(1) ? tqData[1].Count : 0).ToString()}", 2, 1));
+                commander3.AddCell(MyCell("报告次数", 1, 1));
+                commander3.AddCell(MyCell($"{(tqData.ContainsKey(2) ? tqData[2].Count : 0).ToString()}", 2, 1));
+                doc.Add(commander3);
+                doc.Add(nullString);
+            }
+
+
+            Paragraph messageEval = new Paragraph("二、任务效能评估", fontSub);
             doc.Add(messageEval);
             doc.Add(nullString);
 
@@ -134,22 +338,24 @@ namespace ReportGenerate
             if (Double.IsNaN(ZongMisson) || Double.IsInfinity(ZongMisson)) ZongMisson = 0;
 
             PdfPTable tableResult = new PdfPTable(4);
-            tableResult.AddCell(MyCell("任务完成度", 2, 1));
+            tableResult.AddCell(MyCell($"任务效能总分 {WaterEval.ToString("0.00000")}", 4, 1));
+            tableResult.AddCell(MyCell("灭火任务完成度", 2, 1));
             tableResult.AddCell(MyCell(WaterMissonDegree.ToString("0.00000") + " %", 2, 1));
-            tableResult.AddCell(MyCell("协同指挥训练得分", 2, 1));
-            tableResult.AddCell(MyCell(WaterEval.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("总体任务效率", 2, 1));
-            tableResult.AddCell(MyCell(ZongMisson.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("单机任务效率", 2, 1));
-            tableResult.AddCell(MyCell(resultData.单机任务效率.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("灭火任务效率", 2, 1));
-            tableResult.AddCell(MyCell(resultData.灭火任务效率.ToString("0.00000"), 2, 1));
             tableResult.AddCell(MyCell("灭火任务总时间效率", 2, 1));
             tableResult.AddCell(MyCell(resultData.灭火任务总时间效率.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("任务总成本效率", 2, 1));
-            tableResult.AddCell(MyCell(resultData.任务总成本效率.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("过火面积控制率", 2, 1));
-            tableResult.AddCell(MyCell(resultData.过火面积控制率.ToString("0.00"), 2, 1));
+            tableResult.AddCell(MyCell($"机组任务完成度", 4, 1));
+            for (int i = 0; i < personAss.sjzhy.Count; i++)
+            {
+                tableResult.AddCell(MyCell(personAss.sjzhy[i].jzname, 2, 1));
+                var rws = resultData.任务结束时各火场数据.FindAll(a => personAss.sjzhy[i].bindingZy.Contains(a.Id));
+                double zongWcd = 0;
+                rws.ForEach(a => zongWcd += a.Degree);
+                tableResult.AddCell(MyCell((zongWcd / rws.Count * 100).ToString("0.00000") + "%", 2, 1));
+            }
+
+            tableResult.AddCell(MyCell($"任务信息", 4, 1));
+            tableResult.AddCell(MyCell("灭火任务总时间(小时)", 2, 1));
+            tableResult.AddCell(MyCell("总时间", 2, 1));
             tableResult.AddCell(MyCell("开始投水时刻", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.开始投水时刻, 2, 1));
             tableResult.AddCell(MyCell("投水总需求（千克）", 2, 1));
@@ -159,317 +365,54 @@ namespace ReportGenerate
             tableResult.AddCell(MyCell("总航程（公里）", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.总航程.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("飞行架次", 2, 1));
-            tableResult.AddCell(MyCell(resultOutData.直升机总架次.ToString("0.00"), 2, 1));
+
+            tableResult.AddCell(MyCell($"火场数据", 4, 1));
+            tableResult.AddCell(MyCell("过火面积控制率", 2, 1));
+            tableResult.AddCell(MyCell(resultData.过火面积控制率.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("初始总燃烧面积（平方米）", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务初始燃烧面积.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("任务结束时总过火面积（平方米）", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务结束时过火总面积.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("任务结束时燃烧面积（平方米）", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务结束时燃烧面积.ToString("0.00"), 2, 1));
+
+            #region 以前的任务效能，不用了
+
+            // tableResult.AddCell(MyCell("协同指挥训练得分", 2, 1));
+            // tableResult.AddCell(MyCell(WaterEval.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("总体任务效率", 2, 1));
+            // tableResult.AddCell(MyCell(ZongMisson.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("单机任务效率", 2, 1));
+            // tableResult.AddCell(MyCell(resultData.单机任务效率.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("灭火任务效率", 2, 1));
+            // tableResult.AddCell(MyCell(resultData.灭火任务效率.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("任务总成本效率", 2, 1));
+            // tableResult.AddCell(MyCell(resultData.任务总成本效率.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("过火面积控制率", 2, 1));
+            // tableResult.AddCell(MyCell(resultData.过火面积控制率.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("开始投水时刻", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.开始投水时刻, 2, 1));
+            // tableResult.AddCell(MyCell("投水总需求（千克）", 2, 1));
+            // tableResult.AddCell(MyCell(resultData.任务结束时过火面积对应的投水总需求.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时投水总量（千克）", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.任务结束时投水总量.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("总航程（公里）", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.总航程.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("飞行架次", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.直升机总架次.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("初始总燃烧面积（平方米）", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.任务初始燃烧面积.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时总过火面积（平方米）", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.任务结束时过火总面积.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时燃烧面积（平方米）", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.任务结束时燃烧面积.ToString("0.00"), 2, 1));
+
+            #endregion
+
             doc.Add(tableResult);
             doc.Add(nullString);
 
-            Paragraph messagePersonAssessment = new Paragraph("二、岗位职责能力评估", fontSub);
-            doc.Add(messagePersonAssessment);
-            doc.Add(nullString);
-            Paragraph paLevel1 = new Paragraph($"1.一级指挥员    ", fontSub);
-            paLevel1.IndentationLeft = 20f;
-            doc.Add(paLevel1);
-            doc.Add(nullString);
-            //数据：personAss
-            
-            //一级指挥员
-            PdfPTable commander1 = new PdfPTable(6);
-            commander1.AddCell(MyCell("灾情信息评估", 6, 1));
-            commander1.AddCell(MyCell("灾害类型", 1, 1));
-            commander1.AddCell(MyCell("灾情规模", 1, 1));
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander1.AddCell(MyCell("火场面积（平方米）", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander1.AddCell(MyCell("物资投放重量（千克）", 1, 1));
-                commander1.AddCell(MyCell("待转运人数", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
 
-            
-            commander1.AddCell(MyCell(personAss.yjzhy.zhlx, 1, 1));
-            commander1.AddCell(MyCell(personAss.yjzhy.zqgm, 1, 1));
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander1.AddCell(MyCell(personAss.yjzhy.hcmj, 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander1.AddCell(MyCell(personAss.yjzhy.wztfzl.ToString(), 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.dzyrs.ToString(), 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            
-            commander1.AddCell(MyCell("出动救援力量统计", 6, 1));
-            commander1.AddCell(MyCell("装备", 2, 1));
-            commander1.AddCell(MyCell("空勤机组", 2, 1));
-            commander1.AddCell(MyCell("保障组", 2, 1));
-            commander1.AddCell(MyCell("机型", 1, 1));
-            commander1.AddCell(MyCell("编号", 1, 1));
-            commander1.AddCell(MyCell("机组名", 1, 1));
-            commander1.AddCell(MyCell("机组人数", 1, 1));
-            commander1.AddCell(MyCell("保障组名", 1, 1));
-            commander1.AddCell(MyCell("数量", 1, 1));
-            for (int i = 0; i < personAss.yjzhy.cdjyll.Count; i++)
-            {
-                int index = i;
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jx, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].bh, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jz, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jzrs, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].zz, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].nun, 1, 1));
-            }
-
-            commander1.AddCell(MyCell("航线规划申报", 6, 1));
-            commander1.AddCell(MyCell("航线信息", 1, 1));
-            commander1.AddCell(MyCell(personAss.yjzhy.hxgh, 5, 1));
-
-            commander1.AddCell(MyCell("任务要素统计", 6, 1));
-            commander1.AddCell(MyCell("机场", 1, 1));
-            commander1.AddCell(MyCell("临时起降点", 1, 1));
-            commander1.AddCell(MyCell("补给点", 1, 1));
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander1.AddCell(MyCell("取水点", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander1.AddCell(MyCell("医院", 1, 1));
-                commander1.AddCell(MyCell("救助点/安置点", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            
-            commander1.AddCell(MyCell(personAss.yjzhy.rwystj.jc.ToString(), 1, 1));
-            commander1.AddCell(MyCell(personAss.yjzhy.rwystj.lsqjd.ToString(), 1, 1));
-
-            commander1.AddCell(MyCell(personAss.yjzhy.rwystj.bjd.ToString(), 1, 1));
-            
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander1.AddCell(MyCell(personAss.yjzhy.rwystj.qsd.ToString(), 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander1.AddCell(MyCell(personAss.yjzhy.rwystj.yy.ToString(), 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.rwystj.azd.ToString(), 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            doc.Add(commander1);
-            doc.Add(nullString);
-            
-            
-            Paragraph paLevel2 = new Paragraph($"2.二级指挥员    ", fontSub);
-            paLevel2.IndentationLeft = 20f;
-            doc.Add(paLevel2);
-            doc.Add(nullString);
-            
-            PdfPTable commander2 = new PdfPTable(6);
-            commander2.AddCell(MyCell("地面（预先）准备", 6, 1));
-            commander2.AddCell(MyCell("机组信息", 6, 1));
-            commander2.AddCell(MyCell("机组", 1, 1));
-            commander2.AddCell(MyCell("机型", 1, 1));
-            commander2.AddCell(MyCell("装载设备", 1, 1));
-            commander2.AddCell(MyCell("载油量（千克）", 1, 1));
-            commander2.AddCell(MyCell("可用载重（千克）", 1, 1));
-            commander2.AddCell(MyCell("地面维护时间间隔（小 时）", 1, 1));
-            
-            for (int i = 0; i < personAss.ejzhy.jzxx.Count; i++)
-            {
-                int index = i;
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jzName, 1, 1));
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jx, 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.jzxx[index].zzsb), 1, 1));
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zyl.ToString(), 1, 1));
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zzl.ToString(), 1, 1));
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].dmwhTime.ToString(), 1, 1));
-
-            }
-
-            commander2.AddCell(MyCell("直接（现场）准备", 6, 1));
-            commander2.AddCell(MyCell("任务要素确认", 6, 1));
-            commander2.AddCell(MyCell("受灾点", 1, 1));
-            commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.sdz), 5, 1));
-            
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander2.AddCell(MyCell("火场面积", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.hcmj), 5, 1));
-                commander2.AddCell(MyCell("取水点", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.qsd), 5, 1));
-                commander2.AddCell(MyCell("补给站", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.bjd), 5, 1));
-                commander2.AddCell(MyCell("备降站", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.bjc), 5, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander2.AddCell(MyCell("待转运人数/伤员", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.dzyry), 5, 1));
-                commander2.AddCell(MyCell("安置（救助）点", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.azd), 5, 1));
-                commander2.AddCell(MyCell("医院", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.yy), 5, 1));
-                commander2.AddCell(MyCell("补给站", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.bjd), 5, 1));
-                commander2.AddCell(MyCell("备降站", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.bjc), 5, 1));
-            }
-            
-            
-            
-          
-            commander2.AddCell(MyCell("任务分配", 6, 1));
-
-            commander2.AddCell(MyCell("机组", 1, 1));
-            commander2.AddCell(MyCell("受灾点", 1, 1));
-            if (MyDataInfo.gameScene == 1)
-            {
-                
-                commander2.AddCell(MyCell("取水点", 1, 1));
-                commander2.AddCell(MyCell("补给站", 1, 1));
-                commander2.AddCell(MyCell("备降场", 1, 1));
-                commander2.AddCell(MyCell("", 1, 1));
-                
-                for (int i = 0; i < personAss.ejzhy.rwfp.Count; i++)
-                {
-                    int index = i;
-                    commander2.AddCell(MyCell(personAss.ejzhy.rwfp[index].jzName, 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].qsd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjc), 1, 1));
-                    commander2.AddCell(MyCell("", 1, 1));
-                }
-            }
-            else if (MyDataInfo.gameScene == 2)
-            {
-                commander2.AddCell(MyCell("安置点", 1, 1));
-                commander2.AddCell(MyCell("医院", 1, 1));
-                commander2.AddCell(MyCell("补给站", 1, 1));
-                commander2.AddCell(MyCell("", 1, 1));
-                
-                for (int i = 0; i < personAss.ejzhy.rwfp.Count; i++)
-                {
-                    int index = i;
-                    commander2.AddCell(MyCell(personAss.ejzhy.rwfp[index].jzName, 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].azd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].yy), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 1));
-                    commander2.AddCell(MyCell("", 1, 1));
-                }
-            }
-
-            
-            
-
-            doc.Add(commander2);
-            doc.Add(nullString);
-            
-            
-            Paragraph paLevel3 = new Paragraph($"3.三级指挥员", fontSub);
-            paLevel3.IndentationLeft = 20f;
-            doc.Add(paLevel3);
-            doc.Add(nullString);
-
-            for (int i = 0; i < personAss.sjzhy.Count; i++)
-            {
-                int index = i;
-                Paragraph paLevel3i =
-                    new Paragraph("(" + (index+1) + ") " + personAss.sjzhy[i].jzname + "  得分：" + personAss.sjzhy[i].zScore,
-                        fontSub);
-                
-                paLevel3i.IndentationLeft = 20f;
-                doc.Add(paLevel3i);
-                doc.Add(nullString);
-
-                PdfPTable commander3 = new PdfPTable(3);
-                commander3.AddCell(MyCell("燃油重量（千克）", 1, 1));
-                commander3.AddCell(MyCell(personAss.sjzhy[index].zyl.ToString(), 2, 1));
-                commander3.AddCell(MyCell("可用载重（千克）", 1, 1));
-                commander3.AddCell(MyCell(personAss.sjzhy[index].zzl.ToString(), 2, 1));
-
-                int aqfxnl = 60;
-                int tqcznl = 40;
-                
-                commander3.AddCell(MyCell("安全飞行能力" + "(" + aqfxnl + "分)", 3, 1));
-                commander3.AddCell(MyCell("燃油不足报警次数（剩余燃油重量低于最大油量的 10% 千克）", 1, 1));
-                commander3.AddCell(MyCell("错误着陆次数（着陆在未分配的灾区、安置点、补给点、医院、备降点）", 1, 1));
-                commander3.AddCell(MyCell("", 1, 1));
-                commander3.AddCell(MyCell(personAss.sjzhy[index].rybz.ToString(), 1, 1));
-                commander3.AddCell(MyCell(personAss.sjzhy[index].cwzl.ToString(), 1, 1));
-                commander3.AddCell(MyCell("", 1, 1));
-
-                commander3.AddCell(MyCell(
-                    "得分：" + aqfxnl + "-" + personAss.sjzhy[index].rybz + "-" +
-                    personAss.sjzhy[index].cwzl + "=" + (aqfxnl -
-                                                         personAss.sjzhy[index].rybz -
-                                                         personAss.sjzhy[index].cwzl) + "分", 3, 1));
-                
-                commander3.AddCell(MyCell("特情处置能力" + "(" + tqcznl + "分)", 3, 1));
-                
-                {
-                    commander3.AddCell(MyCell($"1. 装备故障({personAss.sjzhy[index].guzhangStr})", 3, 1));
-                    commander3.AddCell(MyCell("是否报告", 1, 1));
-                    commander3.AddCell(MyCell("是否安全着陆", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].zbgzbg ? "10(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].zbgzzl ? "10(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                
-                    commander3.AddCell(MyCell($"2. 天气条件变化({personAss.sjzhy[index].tianqiStr})", 3, 1));
-                    commander3.AddCell(MyCell("是否报告", 1, 1));
-                    commander3.AddCell(MyCell("是否返回机场/备降场", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].tqbhbg ? "10(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].tqbhfh ? "10(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-
-                    float zbgzbg = personAss.sjzhy[index].zbgzbg ? 10 : 0;
-                    float zbgzzl = personAss.sjzhy[index].zbgzzl ? 10 : 0;
-                    float tqbhbg = personAss.sjzhy[index].tqbhbg ? 10 : 0;
-                    float tqbhfh = personAss.sjzhy[index].tqbhfh ? 10 : 0;
-
-                    float score = zbgzbg + zbgzzl + tqbhbg + tqbhfh;
-
-                    commander3.AddCell(MyCell("得分：" + score + "分", 3, 1));
-                }
-                
-                doc.Add(commander3);
-                doc.Add(nullString);
-            }
-            
             Paragraph xlsj = new Paragraph("三、训练数据", fontSub);
             doc.Add(xlsj);
             doc.Add(nullString);
@@ -573,7 +516,8 @@ namespace ReportGenerate
         /// 物资和人员任务报告
         /// </summary>
         public void CreateRescueMissionReport(string reportId, string reportName, string userName, string Id, string Abstract, ResultMaterialPersonData resultData, ResultMaterialPersonOutData resultOutData,
-            ResultRescueSystemData resultSysData, List<string> trainData, Dictionary<string, List<MaterialPersonMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports,PersonAssessment_ResultFireWater personAss)
+            ResultRescueSystemData resultSysData, List<string> trainData, Dictionary<string, List<MaterialPersonMegData>> heliMegList, Dictionary<string, List<string>> usersEquips, Dictionary<string, List<string>> usersZiyuans, int reports,
+            PersonAssessment_ResultFireWater personAss, ScoreStatistics scores,Dictionary<int, List<string>> tqData)
         {
             if (!Directory.Exists(dirPath))
                 Directory.CreateDirectory(dirPath);
@@ -660,7 +604,188 @@ namespace ReportGenerate
 
             #endregion
 
-            Paragraph messageEval = new Paragraph("一、任务效能评估", fontSub);
+            Paragraph messagePersonAssessment = new Paragraph("一、岗位职责能力评估", fontSub);
+            doc.Add(messagePersonAssessment);
+            doc.Add(nullString);
+            Paragraph paLevel1;
+            if (scores == null) paLevel1 = new Paragraph($"1.一级指挥员", fontSub);
+            else paLevel1 = new Paragraph($"1.一级指挥员    得分{scores.firstZhyTotalScore}", fontSub);
+            paLevel1.IndentationLeft = 20f;
+            doc.Add(paLevel1);
+            doc.Add(nullString);
+            //数据：personAss
+
+            //一级指挥员
+            PdfPTable commander1 = new PdfPTable(6);
+
+            commander1.AddCell(MyCell("评分规则：每项训练点满分10分，未完成：0分，较差：1~3分，一般：4~6分，较好：7~9分", 6, 1));
+            if (scores == null) commander1.AddCell(MyCell($"确认灾情信息", 6, 1));
+            else commander1.AddCell(MyCell($"确认灾情信息: {scores.qrzqxx}分", 6, 1));
+            commander1.AddCell(MyCell("灾害类型", 1, 1));
+            commander1.AddCell(MyCell("灾情规模", 1, 1));
+            commander1.AddCell(MyCell("物资投放重量（千克）", 1, 1));
+            commander1.AddCell(MyCell("待转运人数", 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+            //值
+            commander1.AddCell(MyCell(personAss.yjzhy.zhlx, 1, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.zqgm, 1, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.wztfzl.ToString(), 1, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.dzyrs.ToString(), 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+            commander1.AddCell(MyCell("", 1, 1));
+
+            if (scores == null) commander1.AddCell(MyCell($"确认出动装备信息", 6, 1));
+            else commander1.AddCell(MyCell($"确认出动装备信息： {scores.cdzbxxqr}分", 6, 1));
+            commander1.AddCell(MyCell("机型", 2, 1));
+            commander1.AddCell(MyCell("编号", 2, 1));
+            commander1.AddCell(MyCell("数量", 2, 1));
+            //值
+            for (int i = 0; i < personAss.yjzhy.cdjyll.Count; i++)
+            {
+                int index = i;
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jx, 2, 1));
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].bh, 2, 1));
+                commander1.AddCell(MyCell("1", 2, 1));
+            }
+
+            if (scores == null) commander1.AddCell(MyCell($"确认出动人员信息", 6, 1));
+            else commander1.AddCell(MyCell($"确认出动人员信息： {scores.cdryxxqr}分", 6, 1));
+            commander1.AddCell(MyCell("机型编号", 2, 1));
+            commander1.AddCell(MyCell("机组", 2, 1));
+            commander1.AddCell(MyCell("保障组", 2, 1));
+            //值
+            for (int i = 0; i < personAss.yjzhy.cdjyll.Count; i++)
+            {
+                int index = i;
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jx, 2, 1));
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jz, 2, 1));
+                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].bzz, 2, 1));
+            }
+
+            if (scores == null) commander1.AddCell(MyCell($"申报转场航线", 6, 1));
+            else commander1.AddCell(MyCell($"申报转场航线： {scores.zchxsb}分", 6, 1));
+            commander1.AddCell(MyCell("航线信息", 1, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.hxgh, 5, 1));
+
+            if (scores == null) commander1.AddCell(MyCell($"下达任务", 6, 1));
+            else commander1.AddCell(MyCell($"下达任务： {scores.xdrw}分", 6, 1));
+            commander1.AddCell(MyCell("任务简令", 6, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy.rwjl, 6, 2));
+
+            doc.Add(commander1);
+            doc.Add(nullString);
+
+
+            Paragraph paLevel2;
+            if (scores == null) paLevel2 = new Paragraph($"2.二级指挥员", fontSub);
+            else paLevel2 = new Paragraph($"2.二级指挥员    得分:{scores.secondZhyTotalScore}", fontSub);
+            paLevel2.IndentationLeft = 20f;
+            doc.Add(paLevel2);
+            doc.Add(nullString);
+
+            PdfPTable commander2 = new PdfPTable(6);
+            commander2.AddCell(MyCell("评分规则：每项训练点满分10分，未完成：0分，较差：1~3分，一般：4~6分，较好：7~9分", 6, 1));
+            if (scores == null) commander2.AddCell(MyCell($"领受任务", 6, 1));
+            else commander2.AddCell(MyCell($"领受任务： {scores.lsrw}分", 6, 1));
+            if (scores == null) commander2.AddCell(MyCell($"确认出动装备信息", 6, 1));
+            else commander2.AddCell(MyCell($"确认出动装备信息： {scores.qrzbztxx}分", 6, 1));
+            commander2.AddCell(MyCell("机组信息", 6, 1));
+            commander2.AddCell(MyCell("机组", 1, 1));
+            commander2.AddCell(MyCell("机型", 1, 1));
+            commander2.AddCell(MyCell("装载设备", 1, 1));
+            commander2.AddCell(MyCell("载油量（千克）", 1, 1));
+            commander2.AddCell(MyCell("可用载重（千克）", 1, 1));
+            commander2.AddCell(MyCell("地面维护时间间隔（小 时）", 1, 1));
+
+            for (int i = 0; i < personAss.ejzhy.jzxx.Count; i++)
+            {
+                int index = i;
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jzName, 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jx, 1, 1));
+                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.jzxx[index].zzsb), 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zyl.ToString(), 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zzl.ToString(), 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].dmwhTime.ToString(), 1, 1));
+            }
+
+            if (scores == null) commander2.AddCell(MyCell($"完成任务分配并下达任务", 6, 1));
+            else commander2.AddCell(MyCell($"完成任务分配并下达任务： {scores.fprwbxdrw}分", 6, 1));
+            commander2.AddCell(MyCell("机组", 1, 1));
+            commander2.AddCell(MyCell("受灾点", 1, 1));
+            commander2.AddCell(MyCell("安置点", 1, 1));
+            commander2.AddCell(MyCell("医院", 1, 1));
+            commander2.AddCell(MyCell("补给站", 1, 1));
+            commander2.AddCell(MyCell("", 1, 1));
+
+            for (int i = 0; i < personAss.ejzhy.rwfp.Count; i++)
+            {
+                int index = i;
+                commander2.AddCell(MyCell(personAss.ejzhy.rwfp[index].jzName, 1, 1));
+                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 1));
+                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].azd), 1, 1));
+                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].yy), 1, 1));
+                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 1));
+                commander2.AddCell(MyCell("", 1, 1));
+            }
+
+            if (scores == null) commander2.AddCell(MyCell($"确认机长的特情处置报告", 6, 1));
+            else commander2.AddCell(MyCell($"确认机长的特情处置报告： {scores.qrtqczbg}分", 6, 1));
+            commander2.AddCell(MyCell("报告次数", 3, 1));
+            commander2.AddCell(MyCell($"{(tqData.ContainsKey(2) ? tqData[2].Count : 0).ToString()}", 3, 1));
+            commander2.AddCell(MyCell("确认次数", 3, 1));
+            commander2.AddCell(MyCell($"{(tqData.ContainsKey(3) ? tqData[3].Count : 0).ToString()}", 3, 1));
+
+            doc.Add(commander2);
+            doc.Add(nullString);
+
+            Paragraph paLevel3 = new Paragraph($"3.三级指挥员", fontSub);
+            paLevel3.IndentationLeft = 20f;
+            doc.Add(paLevel3);
+            doc.Add(nullString);
+
+            for (int i = 0; i < personAss.sjzhy.Count; i++)
+            {
+                int index = i;
+                var jzScore = scores?.thirdZhyScores?.Find(a => string.Equals(a.roleId, personAss.sjzhy[index].jzId));
+                Paragraph paLevel3i;
+                if (jzScore == null) paLevel3i = new Paragraph("  (" + (index + 1) + ") " + personAss.sjzhy[i].jzname, fontSub);
+                else paLevel3i = new Paragraph("  (" + (index + 1) + ") " + personAss.sjzhy[i].jzname + "   得分：" + jzScore.jzZhyTotalScore, fontSub);
+
+                paLevel3i.IndentationLeft = 20f;
+                doc.Add(paLevel3i);
+                doc.Add(nullString);
+
+                PdfPTable commander3 = new PdfPTable(3);
+                commander3.AddCell(MyCell("评分规则：每项训练点满分10分，未完成：0分，较差：1~3分，一般：4~6分，较好：7~9分", 3, 1));
+                if(jzScore==null)commander3.AddCell(MyCell($"确认载油量和载重信息", 3, 1));
+                else commander3.AddCell(MyCell($"确认载油量和载重信息： {jzScore.qrzyl}分", 3, 1));
+                commander3.AddCell(MyCell("燃油重量（千克）", 1, 1));
+                commander3.AddCell(MyCell(personAss.sjzhy[index].zyl.ToString(), 2, 1));
+                commander3.AddCell(MyCell("可用载重（千克）", 1, 1));
+                commander3.AddCell(MyCell(personAss.sjzhy[index].zzl.ToString(), 2, 1));
+
+                int aqfxnl = 60;
+                int tqcznl = 40;
+
+                if(jzScore==null)commander3.AddCell(MyCell($"完成任务区航线规划", 3, 1));
+                else commander3.AddCell(MyCell($"完成任务区航线规划： {jzScore.rwqyhxgh}分", 3, 1));
+                commander3.AddCell(MyCell("燃油不足报警次数（剩余燃油重量低于最大油量的 10% 千克）", 2, 1));
+                commander3.AddCell(MyCell(personAss.sjzhy[index].rybz.ToString(), 1, 1));
+                commander3.AddCell(MyCell("错误着陆次数（着陆在未分配的补给点、备降点）", 2, 1));
+                commander3.AddCell(MyCell(personAss.sjzhy[index].cwzl.ToString(), 1, 1));
+
+                if(jzScore==null)commander3.AddCell(MyCell($"向现场指挥员报告特情", 3, 1));
+                else commander3.AddCell(MyCell($"向现场指挥员报告特情： {jzScore.xxczhybg}分", 3, 1));
+                commander3.AddCell(MyCell("特情次数", 1, 1));
+                commander3.AddCell(MyCell($"{(tqData.ContainsKey(1) ? tqData[1].Count : 0).ToString()}", 2, 1));
+                commander3.AddCell(MyCell("报告次数", 1, 1));
+                commander3.AddCell(MyCell($"{(tqData.ContainsKey(2) ? tqData[1].Count : 0).ToString()}", 2, 1));
+                doc.Add(commander3);
+                doc.Add(nullString);
+            }
+
+            Paragraph messageEval = new Paragraph("二、任务效能评估", fontSub);
             doc.Add(messageEval);
             doc.Add(nullString);
 
@@ -695,12 +820,36 @@ namespace ReportGenerate
             if (Double.IsNaN(MaterialTotalCostEfficiency) || Double.IsInfinity(MaterialTotalCostEfficiency)) MaterialTotalCostEfficiency = 0;
 
             PdfPTable tableResult = new PdfPTable(4);
-            tableResult.AddCell(MyCell("协同指挥训练得分", 2, 1));
-            tableResult.AddCell(MyCell(RescueEval.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell($"任务效能总分 {RescueEval.ToString("0.00000")}", 4, 1));
+            tableResult.AddCell(MyCell($"人员转运总体任务效率    {PersonZongEfficiency.ToString("0.00000")}", 2, 1));
+            tableResult.AddCell(MyCell($"物资投放总体任务效率    {MaterialZongEfficiency.ToString("0.00000")}", 2, 1));
+            tableResult.AddCell(MyCell($"人员转运总体任务效率", 4, 1));
             tableResult.AddCell(MyCell("人员转运任务完成度", 2, 1));
             tableResult.AddCell(MyCell(PersonDegree.ToString("0.00000") + " %", 2, 1));
+            tableResult.AddCell(MyCell("人员转运任务时间效率", 2, 1));
+            tableResult.AddCell(MyCell(PersonTimeEfficiency.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("物资投放总体任务效率", 4, 1));
             tableResult.AddCell(MyCell("物资投放任务完成度", 2, 1));
             tableResult.AddCell(MyCell(MaterialDegree.ToString("0.00000") + " %", 2, 1));
+            tableResult.AddCell(MyCell("物资投放任务时间效率", 2, 1));
+            tableResult.AddCell(MyCell(MaterialTimeEfficiency.ToString("0.00000"), 2, 1));
+            tableResult.AddCell(MyCell("机组任务完成度", 4, 1));
+            for (int i = 0; i < personAss.sjzhy.Count; i++)
+            {
+                tableResult.AddCell(MyCell(personAss.sjzhy[i].jzname, 4, 1));
+                tableResult.AddCell(MyCell("物资投放", 2, 1));
+                var rws = resultOutData.任务结束时各安置点数据.FindAll(a => personAss.sjzhy[i].bindingZy.Contains(a.Id));
+                double zongWcd = 0;
+                rws.ForEach(a => zongWcd += a.MaterialDegree);
+                tableResult.AddCell(MyCell((zongWcd / rws.Count * 100).ToString("0.00000") + "%", 2, 1));
+                tableResult.AddCell(MyCell("人员转运", 2, 1));
+                var rws2 = resultOutData.任务结束时各灾区数据.FindAll(a => personAss.sjzhy[i].bindingZy.Contains(a.Id));
+                double zongWcd2 = 0;
+                rws2.ForEach(a => zongWcd2 += a.PersonDegree);
+                tableResult.AddCell(MyCell((zongWcd2 / rws2.Count * 100).ToString("0.00000") + "%", 2, 1));
+            }
+
+            tableResult.AddCell(MyCell("任务信息", 4, 1));
             tableResult.AddCell(MyCell("首批救援物资到达安置点时刻", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.首批救援物资到达安置点时刻, 2, 1));
             tableResult.AddCell(MyCell("受灾需转运总人数", 2, 1));
@@ -713,344 +862,55 @@ namespace ReportGenerate
             tableResult.AddCell(MyCell(resultOutData.总航程.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("所有飞机总架次", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.所有飞机总架次.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("人员转运单机任务效率", 2, 1));
-            tableResult.AddCell(MyCell(PersonEfficiency.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("物资投放单机任务效率", 2, 1));
-            tableResult.AddCell(MyCell(MaterialEfficiency.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("人员转运总体任务效率", 2, 1));
-            tableResult.AddCell(MyCell(PersonZongEfficiency.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("物资投放总体任务效率", 2, 1));
-            tableResult.AddCell(MyCell(MaterialZongEfficiency.ToString("0.00000"), 2, 1));
 
-            tableResult.AddCell(MyCell("人员转运任务时间效率", 2, 1));
-            tableResult.AddCell(MyCell(PersonTimeEfficiency.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("物资投放任务时间效率", 2, 1));
-            tableResult.AddCell(MyCell(MaterialTimeEfficiency.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("人员转运任务总成本效率", 2, 1));
-            tableResult.AddCell(MyCell(PersonTotalCostEfficiency.ToString("0.00000"), 2, 1));
-            tableResult.AddCell(MyCell("物资投放任务总成本效率", 2, 1));
-            tableResult.AddCell(MyCell(MaterialTotalCostEfficiency.ToString("0.00000"), 2, 1));
+            #region 老效能模板，不用了
+
+            // tableResult.AddCell(MyCell("协同指挥训练得分", 2, 1));
+            // tableResult.AddCell(MyCell(RescueEval.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("人员转运任务完成度", 2, 1));
+            // tableResult.AddCell(MyCell(PersonDegree.ToString("0.00000") + " %", 2, 1));
+            // tableResult.AddCell(MyCell("物资投放任务完成度", 2, 1));
+            // tableResult.AddCell(MyCell(MaterialDegree.ToString("0.00000") + " %", 2, 1));
+            // tableResult.AddCell(MyCell("首批救援物资到达安置点时刻", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.首批救援物资到达安置点时刻, 2, 1));
+            // tableResult.AddCell(MyCell("受灾需转运总人数", 2, 1));
+            // tableResult.AddCell(MyCell(resultSysData.受灾需转运总人数.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时转运总人数", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.任务结束时转运总人数.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时对应的物资投放总需求（千克）", 2, 1));
+            // tableResult.AddCell(MyCell(resultData.任务结束时对应的物资投放总需求.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("总航程（公里）", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.总航程.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("所有飞机总架次", 2, 1));
+            // tableResult.AddCell(MyCell(resultOutData.所有飞机总架次.ToString("0.00"), 2, 1));
+            // tableResult.AddCell(MyCell("人员转运单机任务效率", 2, 1));
+            // tableResult.AddCell(MyCell(PersonEfficiency.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("物资投放单机任务效率", 2, 1));
+            // tableResult.AddCell(MyCell(MaterialEfficiency.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("人员转运总体任务效率", 2, 1));
+            // tableResult.AddCell(MyCell(PersonZongEfficiency.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("物资投放总体任务效率", 2, 1));
+            // tableResult.AddCell(MyCell(MaterialZongEfficiency.ToString("0.00000"), 2, 1));
+            //
+            // tableResult.AddCell(MyCell("人员转运任务时间效率", 2, 1));
+            // tableResult.AddCell(MyCell(PersonTimeEfficiency.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("物资投放任务时间效率", 2, 1));
+            // tableResult.AddCell(MyCell(MaterialTimeEfficiency.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("人员转运任务总成本效率", 2, 1));
+            // tableResult.AddCell(MyCell(PersonTotalCostEfficiency.ToString("0.00000"), 2, 1));
+            // tableResult.AddCell(MyCell("物资投放任务总成本效率", 2, 1));
+            // tableResult.AddCell(MyCell(MaterialTotalCostEfficiency.ToString("0.00000"), 2, 1));
+
+            #endregion
 
             doc.Add(tableResult);
             doc.Add(nullString);
 
-            
-            Paragraph messagePersonAssessment = new Paragraph("二、岗位职责能力评估", fontSub);
-            doc.Add(messagePersonAssessment);
-            doc.Add(nullString);
-            Paragraph paLevel1 = new Paragraph($"1.一级指挥员    ", fontSub);
-            paLevel1.IndentationLeft = 20f;
-            doc.Add(paLevel1);
-            doc.Add(nullString);
-            //数据：personAss
-            
-            //一级指挥员
-            PdfPTable commander1 = new PdfPTable(6);
-            commander1.AddCell(MyCell("灾情信息评估", 6, 1));
-            commander1.AddCell(MyCell("灾害类型", 1, 1));
-            commander1.AddCell(MyCell("灾情规模", 1, 1));
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander1.AddCell(MyCell("火场面积（平方米）", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander1.AddCell(MyCell("物资投放重量（千克）", 1, 1));
-                commander1.AddCell(MyCell("待转运人数", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
 
-            
-            commander1.AddCell(MyCell(personAss.yjzhy.zhlx, 1, 1));
-            commander1.AddCell(MyCell(personAss.yjzhy.zqgm, 1, 1));
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander1.AddCell(MyCell(personAss.yjzhy.hcmj, 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander1.AddCell(MyCell(personAss.yjzhy.wztfzl.ToString(), 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.dzyrs.ToString(), 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            
-            commander1.AddCell(MyCell("出动救援力量统计", 6, 1));
-            commander1.AddCell(MyCell("装备", 2, 1));
-            commander1.AddCell(MyCell("空勤机组", 2, 1));
-            commander1.AddCell(MyCell("保障组", 2, 1));
-            commander1.AddCell(MyCell("机型", 1, 1));
-            commander1.AddCell(MyCell("编号", 1, 1));
-            commander1.AddCell(MyCell("机组名", 1, 1));
-            commander1.AddCell(MyCell("机组人数", 1, 1));
-            commander1.AddCell(MyCell("保障组名", 1, 1));
-            commander1.AddCell(MyCell("数量", 1, 1));
-            for (int i = 0; i < personAss.yjzhy.cdjyll.Count; i++)
-            {
-                int index = i;
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jx, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].bh, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jz, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].jzrs, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].zz, 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].nun, 1, 1));
-            }
-
-            commander1.AddCell(MyCell("航线规划申报", 6, 1));
-            commander1.AddCell(MyCell("航线信息", 1, 1));
-            commander1.AddCell(MyCell(personAss.yjzhy.hxgh, 5, 1));
-
-            commander1.AddCell(MyCell("任务要素统计", 6, 1));
-            commander1.AddCell(MyCell("机场", 1, 1));
-            commander1.AddCell(MyCell("临时起降点", 1, 1));
-            commander1.AddCell(MyCell("补给点", 1, 1));
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander1.AddCell(MyCell("取水点", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander1.AddCell(MyCell("医院", 1, 1));
-                commander1.AddCell(MyCell("救助点/安置点", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            
-            commander1.AddCell(MyCell(personAss.yjzhy.rwystj.jc.ToString(), 1, 1));
-            commander1.AddCell(MyCell(personAss.yjzhy.rwystj.lsqjd.ToString(), 1, 1));
-            commander1.AddCell(MyCell(personAss.yjzhy.rwystj.bjd.ToString(), 1, 1));
-            
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander1.AddCell(MyCell(personAss.yjzhy.rwystj.qsd.ToString(), 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander1.AddCell(MyCell(personAss.yjzhy.rwystj.yy.ToString(), 1, 1));
-                commander1.AddCell(MyCell(personAss.yjzhy.rwystj.azd.ToString(), 1, 1));
-                commander1.AddCell(MyCell("", 1, 1));
-            }
-            doc.Add(commander1);
-            doc.Add(nullString);
-            
-            
-            Paragraph paLevel2 = new Paragraph($"2.二级指挥员    ", fontSub);
-            paLevel2.IndentationLeft = 20f;
-            doc.Add(paLevel2);
-            doc.Add(nullString);
-            
-            PdfPTable commander2 = new PdfPTable(6);
-            commander2.AddCell(MyCell("地面（预先）准备", 6, 1));
-            commander2.AddCell(MyCell("机组信息", 6, 1));
-            commander2.AddCell(MyCell("机组", 1, 1));
-            commander2.AddCell(MyCell("机型", 1, 1));
-            commander2.AddCell(MyCell("装载设备", 1, 1));
-            commander2.AddCell(MyCell("载油量（千克）", 1, 1));
-            commander2.AddCell(MyCell("可用载重（千克）", 1, 1));
-            commander2.AddCell(MyCell("地面维护时间间隔（小 时）", 1, 1));
-            
-            for (int i = 0; i < personAss.ejzhy.jzxx.Count; i++)
-            {
-                int index = i;
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jzName, 1, 1));
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jx, 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.jzxx[index].zzsb), 1, 1));
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zyl.ToString(), 1, 1));
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zzl.ToString(), 1, 1));
-                commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].dmwhTime.ToString(), 1, 1));
-
-            }
-
-            commander2.AddCell(MyCell("直接（现场）准备", 6, 1));
-            commander2.AddCell(MyCell("任务要素确认", 6, 1));
-            commander2.AddCell(MyCell("受灾点", 1, 1));
-            commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.sdz), 5, 1));
-            
-            if (MyDataInfo.gameScene == 1)
-            {
-                //火灾
-                commander2.AddCell(MyCell("火场面积", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.hcmj), 5, 1));
-                commander2.AddCell(MyCell("取水点", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.qsd), 5, 1));
-                commander2.AddCell(MyCell("补给站", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.bjd), 5, 1));
-                commander2.AddCell(MyCell("备降站", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.bjc), 5, 1));
-            }
-            else if(MyDataInfo.gameScene == 2)
-            {
-                //水灾
-                commander2.AddCell(MyCell("待转运人数/伤员", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.dzyry), 5, 1));
-                commander2.AddCell(MyCell("安置（救助）点", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.azd), 5, 1));
-                commander2.AddCell(MyCell("医院", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.yy), 5, 1));
-                commander2.AddCell(MyCell("补给站", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.bjd), 5, 1));
-                commander2.AddCell(MyCell("备降站", 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.rwys.bjc), 5, 1));
-            }
-            
-            
-            
-          
-            commander2.AddCell(MyCell("任务分配", 6, 1));
-
-            commander2.AddCell(MyCell("机组", 1, 1));
-            commander2.AddCell(MyCell("受灾点", 1, 1));
-            if (MyDataInfo.gameScene == 1)
-            {
-                
-                commander2.AddCell(MyCell("取水点", 1, 1));
-                commander2.AddCell(MyCell("补给站", 1, 1));
-                commander2.AddCell(MyCell("备降场", 1, 1));
-                commander2.AddCell(MyCell("", 1, 1));
-                
-                for (int i = 0; i < personAss.ejzhy.rwfp.Count; i++)
-                {
-                    int index = i;
-                    commander2.AddCell(MyCell(personAss.ejzhy.rwfp[index].jzName, 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].qsd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjc), 1, 1));
-                    commander2.AddCell(MyCell("", 1, 1));
-                }
-            }
-            else if (MyDataInfo.gameScene == 2)
-            {
-                commander2.AddCell(MyCell("安置点", 1, 1));
-                commander2.AddCell(MyCell("医院", 1, 1));
-                commander2.AddCell(MyCell("补给站", 1, 1));
-                commander2.AddCell(MyCell("", 1, 1));
-                
-                for (int i = 0; i < personAss.ejzhy.rwfp.Count; i++)
-                {
-                    int index = i;
-                    commander2.AddCell(MyCell(personAss.ejzhy.rwfp[index].jzName, 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].azd), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].yy), 1, 1));
-                    commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 1));
-                    commander2.AddCell(MyCell("", 1, 1));
-                }
-            }
-
-            
-            
-
-            doc.Add(commander2);
-            doc.Add(nullString);
-            
-            
-            Paragraph paLevel3 = new Paragraph($"3.三级指挥员", fontSub);
-            paLevel3.IndentationLeft = 20f;
-            doc.Add(paLevel3);
-            doc.Add(nullString);
-
-            for (int i = 0; i < personAss.sjzhy.Count; i++)
-            {
-                int index = i;
-                Paragraph paLevel3i =
-                    new Paragraph("(" + (index+1) + ") " + personAss.sjzhy[i].jzname + "  得分：" + personAss.sjzhy[i].zScore,
-                        fontSub);
-                
-                paLevel3i.IndentationLeft = 20f;
-                doc.Add(paLevel3i);
-                doc.Add(nullString);
-
-                PdfPTable commander3 = new PdfPTable(3);
-                commander3.AddCell(MyCell("燃油重量（千克）", 1, 1));
-                commander3.AddCell(MyCell(personAss.sjzhy[index].zyl.ToString(), 2, 1));
-                commander3.AddCell(MyCell("可用载重（千克）", 1, 1));
-                commander3.AddCell(MyCell(personAss.sjzhy[index].zzl.ToString(), 2, 1));
-
-                int aqfxnl = 70;
-                int tqcznl = 30;
-                
-                commander3.AddCell(MyCell("安全飞行能力" + "(" + aqfxnl + "分)", 3, 1));
-                commander3.AddCell(MyCell("燃油不足报警次数（剩余燃油重量低于最大油量的 10% 千克）", 1, 1));
-                commander3.AddCell(MyCell("错误着陆次数（着陆在未分配的灾区、安置点、补给点、医院、备降点）", 1, 1));
-                commander3.AddCell(MyCell("", 1, 1));
-                commander3.AddCell(MyCell(personAss.sjzhy[index].rybz.ToString(), 1, 1));
-                commander3.AddCell(MyCell(personAss.sjzhy[index].cwzl.ToString(), 1, 1));
-                commander3.AddCell(MyCell("", 1, 1));
-
-                commander3.AddCell(MyCell(
-                    "得分：" + aqfxnl + "-" + personAss.sjzhy[index].rybz + "-" +
-                    personAss.sjzhy[index].cwzl + "=" + (aqfxnl -
-                                                         personAss.sjzhy[index].rybz -
-                                                         personAss.sjzhy[index].cwzl) + "分", 3, 1));
-                
-                commander3.AddCell(MyCell("特情处置能力" + "(" + tqcznl + "分)", 3, 1));
-                
-                {
-                    commander3.AddCell(MyCell("1. 新发现救灾目标", 3, 1));
-                    commander3.AddCell(MyCell("是否报告", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].xfxzq ? "10(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                
-                    commander3.AddCell(MyCell($"2. 装备故障({personAss.sjzhy[index].guzhangStr})", 3, 1));
-                    commander3.AddCell(MyCell("是否报告", 1, 1));
-                    commander3.AddCell(MyCell("是否安全着陆", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].zbgzbg ? "5(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].zbgzzl ? "5(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                    
-                    commander3.AddCell(MyCell($"3. 天气条件变化（{personAss.sjzhy[index].tianqiStr}）", 3, 1));
-                    commander3.AddCell(MyCell("是否报告", 1, 1));
-                    commander3.AddCell(MyCell("是否返回机场/备降场", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].tqbhbg ? "5(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell(personAss.sjzhy[index].tqbhfh ? "5(是)" : "0(否)", 1, 1));
-                    commander3.AddCell(MyCell("", 1, 1));
-
-                    float xfxzq = personAss.sjzhy[index].xfxzq ? 10 : 0;
-                    float zbgzbg = personAss.sjzhy[index].zbgzbg ? 5 : 0;
-                    float zbgzzl = personAss.sjzhy[index].zbgzzl ? 5 : 0;
-                    float tqbhbg = personAss.sjzhy[index].tqbhbg ? 5 : 0;
-                    float tqbhfh = personAss.sjzhy[index].tqbhfh ? 5 : 0;
-
-                    float score = zbgzbg + zbgzzl + tqbhbg + tqbhfh + xfxzq;
-
-                    commander3.AddCell(MyCell("得分：" + score + "分", 3, 1));
-                }
-                
-                doc.Add(commander3);
-                doc.Add(nullString);
-            }
-            
-            
-            
-            
             Paragraph xlsj = new Paragraph("三、训练数据", fontSub);
             doc.Add(xlsj);
             doc.Add(nullString);
-            
+
             Paragraph mesFire = new Paragraph("1.任务结束时各安置点数据", fontSub);
             mesFire.IndentationLeft = 20f;
             doc.Add(mesFire);

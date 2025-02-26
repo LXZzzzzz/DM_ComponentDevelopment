@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using DG.Tweening;
+using Enums;
 using Newtonsoft.Json;
 using ReportGenerate;
 using ToolsLibrary;
@@ -243,6 +244,8 @@ public class TestLogic : MonoBehaviour
     {
         Debug.LogError(Enums.TrainsPintType.JZCompletePlan);
         Debug.LogError(Enums.TrainsPintType.JZCompletePlan.ToString());
+        if (TrainsPintType.TryParse(TrainsPintType.JZCompletePlan.ToString(), out TrainsPintType item))
+            Debug.LogError("转换成功"+item);
         string filePath = Path.Combine(Application.streamingAssetsPath, "XmlData", "TrainPointData.xml");
 
         // 检查文件是否存在
