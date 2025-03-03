@@ -30,7 +30,6 @@ public class UISendTaskInfoShow : BasePanel
         else
         {
             airLineInfo.interactable = true;
-            airLineInfo.text = String.Empty;
             GetControl<Button>("sure").onClick.AddListener(OnSure);
             GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UISendTaskInfoShow));
         }

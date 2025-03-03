@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using ToolsLibrary.PathPart;
 using UiManager;
@@ -12,6 +13,7 @@ public class UIChangePointDataInfo : BasePanel
     private Transform tasksParent;
 
     private string pointId;
+    private Dictionary<string, SkillType> skillTypes;
 
     public override void Init()
     {
@@ -21,6 +23,38 @@ public class UIChangePointDataInfo : BasePanel
         GetControl<Button>("sure").onClick.AddListener(OnSure);
         GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UIChangePointDataInfo));
         GetControl<Button>("addTaskBtn").onClick.AddListener(OnAddTask);
+        skillTypes = new Dictionary<string, SkillType>();
+        skillTypes.Add("起飞", SkillType.TakeOff);
+        skillTypes.Add("补给", SkillType.Supply);
+        skillTypes.Add("降落", SkillType.Landing);
+        skillTypes.Add("取水", SkillType.WaterIntaking);
+        skillTypes.Add("投水", SkillType.WaterPour);
+        skillTypes.Add("装载物资", SkillType.LadeGoods);
+        skillTypes.Add("卸载物资", SkillType.UnLadeGoods);
+        skillTypes.Add("空投物资", SkillType.AirdropGoods);
+        skillTypes.Add("装载人员", SkillType.Manned);
+        skillTypes.Add("安置人员", SkillType.PlacementOfPersonnel);
+        skillTypes.Add("索降救援", SkillType.CableDescentRescue);
+        var dd = taskCell.GetComponentInChildren<Dropdown>();
+        dd.options.Clear();
+        dd.options.Add(new Dropdown.OptionData("起飞"));
+        dd.options.Add(new Dropdown.OptionData("降落"));
+        dd.options.Add(new Dropdown.OptionData("补给"));
+        if (MyDataInfo.gameScene == 1)
+        {
+            dd.options.Add(new Dropdown.OptionData("取水"));
+            dd.options.Add(new Dropdown.OptionData("投水"));
+        }
+
+        if (MyDataInfo.gameScene == 2)
+        {
+            dd.options.Add(new Dropdown.OptionData("装载物资"));
+            dd.options.Add(new Dropdown.OptionData("卸载物资"));
+            dd.options.Add(new Dropdown.OptionData("空投物资"));
+            dd.options.Add(new Dropdown.OptionData("装载人员"));
+            dd.options.Add(new Dropdown.OptionData("安置人员"));
+            dd.options.Add(new Dropdown.OptionData("索降救援"));
+        }
     }
 
     private void OnAddTask()
@@ -36,7 +70,8 @@ public class UIChangePointDataInfo : BasePanel
     {
         for (int i = 0; i < currentTasks.Count; i++)
         {
-            currentTasks[i].runSkillType = (SkillType)tasksParent.GetChild(currentTasks[i].orderNumber).GetComponentInChildren<Dropdown>().value;
+            Dropdown dp = tasksParent.GetChild(currentTasks[i].orderNumber).GetComponentInChildren<Dropdown>();
+            currentTasks[i].runSkillType = skillTypes[dp.options[dp.value].text];
         }
 
         PathPointManager.Instance.ChangePointDataInfo(pointId, currentTasks);

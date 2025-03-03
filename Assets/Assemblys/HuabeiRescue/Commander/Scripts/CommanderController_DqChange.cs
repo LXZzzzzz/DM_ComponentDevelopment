@@ -252,36 +252,39 @@ public partial class CommanderController
         }
 
         if (MyDataInfo.MyLevel == -1)
+        {
             OnSavePeculiarData(2, $"{equip.name}机长上报新灾情_{equip.BeLongToCommanderId}");
+            MyDataInfo.CompletedTrainingPoints.Add(TrainsPintType.JZSendTqInfo.ToString());
+        }
     }
 
     public void OnReportTianQi(EquipBase equip)
     {
         if (MyDataInfo.MyLevel == -1)
+        {
             OnSavePeculiarData(2, $"{equip.name}机长上报天气变化_{equip.BeLongToCommanderId}");
+            MyDataInfo.CompletedTrainingPoints.Add(TrainsPintType.JZSendTqInfo.ToString());
+        }
         //如果是前指，就显示是否处理
-        if (MyDataInfo.MyLevel==2)
+        if (MyDataInfo.MyLevel == 2)
         {
             EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长上报天气变化，是否确认",
-                () =>
-                {
-                    OnSendSkillInfo((int)MessageID.SendAgreeTianQi, "");
-                });
+                () => { OnSendSkillInfo((int)MessageID.SendAgreeTianQi, ""); });
         }
     }
 
     public void OnReportZbgz(EquipBase equip)
     {
         if (MyDataInfo.MyLevel == -1)
+        {
             OnSavePeculiarData(2, $"{equip.name}机长上报装备故障_{equip.BeLongToCommanderId}");
-        
-        if (MyDataInfo.MyLevel==2)
+            MyDataInfo.CompletedTrainingPoints.Add(TrainsPintType.JZSendTqInfo.ToString());
+        }
+
+        if (MyDataInfo.MyLevel == 2)
         {
             EventManager.Instance.EventTrigger<string, UnityAction>(EventType.ShowTipUIAndCb.ToString(), $"机长上报装备故障，是否确认",
-                () =>
-                {
-                    OnSendSkillInfo((int)MessageID.SendAgreeZbgz, "");
-                });
+                () => { OnSendSkillInfo((int)MessageID.SendAgreeZbgz, ""); });
         }
     }
 
@@ -289,6 +292,7 @@ public partial class CommanderController
     public void OnAgreePeculiar(int type)
     {
         if (MyDataInfo.MyLevel != -1) return;
+        MyDataInfo.CompletedTrainingPoints.Add(TrainsPintType.XCZHSureTqInfo.ToString());
         switch (type)
         {
             case 1:
@@ -410,7 +414,13 @@ public partial class CommanderController
     private void OnGetPeculiarData(int type)
     {
         if (PeculiarDatas.ContainsKey(type))
-            EventManager.Instance.EventTrigger(EventType.getPeculiarData.ToString(), PeculiarDatas[type]);
+        {
+            List<string> pdata = new List<string>();
+            if (type == 2) pdata.Add($"导教端发出特情：{PeculiarDatas[1]?.Count}次");
+            if (type == 3) pdata.Add($"机长上报特情：{PeculiarDatas[2]?.Count}次");
+            pdata.AddRange(PeculiarDatas[type]);
+            EventManager.Instance.EventTrigger(EventType.getPeculiarData.ToString(), pdata);
+        }
         else
             EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "当前无数据");
     }

@@ -60,6 +60,8 @@ public class TestLogic : MonoBehaviour
         // mywms = fj.transform.GetComponentsInChildren<WingMark>(true).ToList();
 
         // ttl.Init(4949);
+        
+        Debug.LogError("测试v2:"+new Vector3(1.12121212f,2.356455454f));
     }
 
     public FirePointLogic fp;
@@ -219,7 +221,11 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log(FloatToDMS(45.56f));
+            Debug.LogError(45.34234f);
+            var dfm = FloatToDMS(45.34523f);
+            Debug.Log($"({dfm.x:F5},{dfm.y:F5},{dfm.z:F5})");
+            var aa=DMSToFloat(dfm.x,dfm.y,dfm.z);
+            Debug.LogError(aa);
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -301,14 +307,20 @@ public class TestLogic : MonoBehaviour
 
         // 获取分数（剩余的小数部分 * 60）
         float minutesDecimal = (Mathf.Abs(coordinate) - Mathf.Abs(degrees)) * 60;
-        int minutes = Mathf.FloorToInt(minutesDecimal);
+        // int minutes = Mathf.FloorToInt(minutesDecimal);
 
         // 获取秒数（剩余的小数部分 * 60）
-        float secondsDecimal = (minutesDecimal - minutes) * 60;
-        int seconds = Mathf.FloorToInt(secondsDecimal);
+        float secondsDecimal = (minutesDecimal - minutesDecimal) * 60;
+        // int seconds = Mathf.FloorToInt(secondsDecimal);
 
         // 返回格式化的度分秒字符串
-        return new Vector3(degrees, minutes, seconds);
+        return new Vector3(degrees, minutesDecimal, secondsDecimal);
+    }
+    
+    public float DMSToFloat(float degrees, float minutes, float seconds)
+    {
+        // 计算并返回十进制度表示
+        return degrees + minutes / 60 + seconds / 3600;
     }
 
     public float speedd, weightt;

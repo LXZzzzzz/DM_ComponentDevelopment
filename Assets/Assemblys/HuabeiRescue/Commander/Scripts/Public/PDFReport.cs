@@ -183,8 +183,10 @@ namespace ReportGenerate
 
             if (scores == null) commander1.AddCell(MyCell($"申报转场航线", 6, 1));
             else commander1.AddCell(MyCell($"申报转场航线： {scores.zchxsb}分", 6, 1));
-            commander1.AddCell(MyCell("航线信息", 1, 1));
+            commander1.AddCell(MyCell("航线名称", 1, 1));
             commander1.AddCell(MyCell(personAss.yjzhy.hxgh, 5, 1));
+            commander1.AddCell(MyCell("航路点", 1, 1));
+            commander1.AddCell(MyCell(string.Join("、", personAss.yjzhy.hlds), 5, 1));
 
             if (scores == null) commander1.AddCell(MyCell($"下达任务", 6, 1));
             else commander1.AddCell(MyCell($"下达任务： {scores.xdrw}分", 6, 1));
@@ -665,8 +667,10 @@ namespace ReportGenerate
 
             if (scores == null) commander1.AddCell(MyCell($"申报转场航线", 6, 1));
             else commander1.AddCell(MyCell($"申报转场航线： {scores.zchxsb}分", 6, 1));
-            commander1.AddCell(MyCell("航线信息", 1, 1));
+            commander1.AddCell(MyCell("航线名称", 1, 1));
             commander1.AddCell(MyCell(personAss.yjzhy.hxgh, 5, 1));
+            commander1.AddCell(MyCell("航路点", 1, 1));
+            commander1.AddCell(MyCell(string.Join("、", personAss.yjzhy.hlds), 5, 1));
 
             if (scores == null) commander1.AddCell(MyCell($"下达任务", 6, 1));
             else commander1.AddCell(MyCell($"下达任务： {scores.xdrw}分", 6, 1));

@@ -81,6 +81,7 @@ public class RatingCell : DMonoBehaviour
                 break;
             case TrainsPintType.XCZHSureTqInfo:
                 scoreData.qrtqczbg = aa;
+                Debug.LogError("现场指挥特情分数："+scoreData.qrtqczbg);
                 break;
             case TrainsPintType.JZSureTaskInfo:
                 break;
@@ -167,7 +168,11 @@ public class RatingCell : DMonoBehaviour
                 for (int i = 0; i < pData.Count; i++)
                 {
                     var data = pData[i].Split('_');
-                    if (data.Length != 2) continue;
+                    if (data.Length != 2)
+                    {
+                        myTq.Add(pData[i]);
+                        continue;
+                    }
                     if (string.Equals(jzId, data[1])) myTq.Add(data[0]);
                 }
 

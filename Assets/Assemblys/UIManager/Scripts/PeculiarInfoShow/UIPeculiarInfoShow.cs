@@ -26,7 +26,7 @@ public class UIPeculiarInfoShow : BasePanel
         for (int i = 0; i < itemData.Count; i++)
         {
             var item = Instantiate(peculiarCell, peculiarInfosParent);
-            item.GetComponentInChildren<Text>().text = $"{i + 1}." + itemData[i];
+            item.GetComponentInChildren<Text>().text = $"{i}." + itemData[i];
             item.SetActive(true);
             peculiars.Add(item);
         }

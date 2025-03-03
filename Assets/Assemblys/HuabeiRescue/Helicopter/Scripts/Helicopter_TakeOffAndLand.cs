@@ -45,7 +45,7 @@ public partial class HelicopterController
             anis[i].Play();
         }
 
-        myass.ForEach(x => x.gameObject.SetActive(true));
+        myass.ForEach(x => x.gameObject.SetActive(MyDataInfo.MyLevel == 3));
     }
 
     private void OnTOSuc()

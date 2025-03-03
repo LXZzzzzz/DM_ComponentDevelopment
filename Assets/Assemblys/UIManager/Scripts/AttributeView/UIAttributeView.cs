@@ -413,7 +413,8 @@ public class UIAttributeView : BasePanel
         ziyuanObj.Find("ziyuanNameView/AirTypeBg").GetComponent<Image>().color = ziyuan.MyColor;
         changeIcon(ziyuan.ZiYuanType);
         ziyuanObj.Find("ziyuanInfo/ziyuanInfo").GetComponent<Text>().text = getZiyuanInfo(ziyuan);
-        ziyuanObj.Find("ziyuanJWD").GetComponent<Text>().text = ziyuan.latAndLon.ToString();
+        string savedData = $"({ziyuan.latAndLon.x:F4},{ziyuan.latAndLon.y:F4})";
+        ziyuanObj.Find("ziyuanJWD").GetComponent<Text>().text = savedData;
     }
 
     private void changeIcon(ZiYuanType type)

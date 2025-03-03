@@ -53,11 +53,11 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
         //组装数据并发出
 
 
-        float lon = DMSToFloat(int.Parse(LonSet.InputField_D.text), int.Parse(LonSet.InputField_M.text),
-            int.Parse(LonSet.InputField_S.text));
+        float lon = DMSToFloat(float.Parse(LonSet.InputField_D.text), float.Parse(LonSet.InputField_M.text),
+            float.Parse(LonSet.InputField_S.text));
 
-        float lat = DMSToFloat(int.Parse(LatSet.InputField_D.text), int.Parse(LatSet.InputField_M.text),
-            int.Parse(LatSet.InputField_S.text));
+        float lat = DMSToFloat(float.Parse(LatSet.InputField_D.text), float.Parse(LatSet.InputField_M.text),
+            float.Parse(LatSet.InputField_S.text));
 
         Vector2 newPos = new Vector2(lon, lat);
 
@@ -93,14 +93,14 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
 
         // 获取分数（剩余的小数部分 * 60）
         float minutesDecimal = (Mathf.Abs(coordinate) - Mathf.Abs(degrees)) * 60;
-        int minutes = Mathf.FloorToInt(minutesDecimal);
+        // int minutes = Mathf.FloorToInt(minutesDecimal);
 
         // 获取秒数（剩余的小数部分 * 60）
-        float secondsDecimal = (minutesDecimal - minutes) * 60;
-        int seconds = Mathf.FloorToInt(secondsDecimal);
+        float secondsDecimal = (minutesDecimal - minutesDecimal) * 60;
+        // int seconds = Mathf.FloorToInt(secondsDecimal);
 
         // 返回格式化的度分秒字符串
-        return new Vector3(degrees, minutes, seconds);
+        return new Vector3(degrees, minutesDecimal, secondsDecimal);
     }
 
     /// <summary>
@@ -110,9 +110,9 @@ public class ChangeData_cellGroundZySet : DMonoBehaviour
     /// <param name="minutes"></param>
     /// <param name="seconds"></param>
     /// <returns></returns>
-    public float DMSToFloat(int degrees, int minutes, int seconds)
+    public float DMSToFloat(float degrees, float minutes, float seconds)
     {
         // 计算并返回十进制度表示
-        return degrees + (float)minutes / 60 + (float)seconds / 3600;
+        return degrees + minutes / 60 + seconds / 3600;
     }
 }

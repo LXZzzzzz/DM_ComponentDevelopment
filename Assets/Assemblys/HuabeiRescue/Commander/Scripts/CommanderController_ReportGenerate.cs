@@ -65,7 +65,14 @@ public partial class CommanderController
         switch (type)
         {
             case TrainsPintType.ZBLDRouteDeclaration:
-                _personAssessmentTxtData.hxgh = data;
+                var airLineDatas = data.Split('_');
+                _personAssessmentTxtData.hxgh = airLineDatas[0];
+                _personAssessmentTxtData.hlds = new List<string>();
+                for (int i = 1; i < airLineDatas.Length; i++)
+                {
+                    _personAssessmentTxtData.hlds.Add(airLineDatas[i]);
+                }
+
                 break;
             case TrainsPintType.ZBLDSendTask:
                 _personAssessmentTxtData.rwjl = data;
@@ -266,7 +273,7 @@ public partial class CommanderController
         parfw_level1 level1 = new parfw_level1()
         {
             zhlx = _personAssessmentTxtData.zhlx, zqgm = _personAssessmentTxtData.zqgm, hcmj = _personAssessmentTxtData.hcmj, cdjyll = itemRescueForcesList,
-            hxgh = _personAssessmentTxtData.hxgh, rwystj = _personAssessmentTxtData.rwystj, rwjl = _personAssessmentTxtData.rwjl
+            hxgh = _personAssessmentTxtData.hxgh, hlds = _personAssessmentTxtData.hlds, rwystj = _personAssessmentTxtData.rwystj, rwjl = _personAssessmentTxtData.rwjl
         };
         _personAssessmentTxtData.rwys.qsd = new List<string>();
         _personAssessmentTxtData.rwys.bjd = new List<string>();
@@ -365,7 +372,7 @@ public partial class CommanderController
         if (playerEquips == null) Debug.LogError("playerEquips");
         if (playerZiyuans == null) Debug.LogError("playerZiyuans");
         report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), "火灾航空救援任务协同指挥训练评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, personAssData,
-            scoreData,PeculiarDatas);
+            scoreData, PeculiarDatas);
     }
 
     private void GenerateRescueReport()
@@ -516,7 +523,7 @@ public partial class CommanderController
 
             if (sceneAllzy[i] is IDisasterArea)
             {
-                (sceneAllzy[i] as IDisasterArea).getTaskProgress(out int currentNum,out int maxNum);
+                (sceneAllzy[i] as IDisasterArea).getTaskProgress(out int currentNum, out int maxNum);
                 DisasterAreaData dad = new DisasterAreaData()
                 {
                     Id = sceneAllzy[i].BobjectId, zyrs = maxNum - currentNum, personCount = maxNum
@@ -622,8 +629,8 @@ public partial class CommanderController
         parfw_level1 level1 = new parfw_level1()
         {
             zhlx = _personAssessmentTxtData.zhlx, zqgm = _personAssessmentTxtData.zqgm, wztfzl = float.Parse(string.IsNullOrEmpty(_personAssessmentTxtData.wztfzl) ? "0" : _personAssessmentTxtData.wztfzl),
-            dzyrs = int.Parse(string.IsNullOrEmpty(_personAssessmentTxtData.dzyrs) ? "0" : _personAssessmentTxtData.dzyrs), cdjyll = itemRescueForcesList, hxgh = _personAssessmentTxtData.hxgh, rwystj = _personAssessmentTxtData.rwystj,
-            rwjl = _personAssessmentTxtData.rwjl
+            dzyrs = int.Parse(string.IsNullOrEmpty(_personAssessmentTxtData.dzyrs) ? "0" : _personAssessmentTxtData.dzyrs), cdjyll = itemRescueForcesList, hxgh = _personAssessmentTxtData.hxgh, 
+            hlds = _personAssessmentTxtData.hlds, rwystj = _personAssessmentTxtData.rwystj, rwjl = _personAssessmentTxtData.rwjl
         };
         _personAssessmentTxtData.rwys = new TaskElements2();
         _personAssessmentTxtData.rwys.sdz = new List<string>();
@@ -714,7 +721,7 @@ public partial class CommanderController
             {
                 jzname = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], jzId = itemEquip.BeLongToCommanderId, zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
                 zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq, tianqiStr = tianqiInfoStr,
-                guzhangStr = guzhangInfoStr.ContainsKey(itemEquip.BObjectId) ? guzhangInfoStr[itemEquip.BObjectId] : "正常",bindingZy = itemEquip.currentBindingZy
+                guzhangStr = guzhangInfoStr.ContainsKey(itemEquip.BObjectId) ? guzhangInfoStr[itemEquip.BObjectId] : "正常", bindingZy = itemEquip.currentBindingZy
             };
             level3.zScore = 100 - level3.rybz - level3.cwzl - (level3.zbgzbg ? 0 : 5) - (level3.zbgzzl ? 0 : 5) - (level3.tqbhbg ? 0 : 5) - (level3.tqbhfh ? 0 : 5) - (level3.xfxzq ? 0 : 10);
             level3s.Add(level3);
@@ -730,7 +737,7 @@ public partial class CommanderController
         ResultMaterialPersonData rfwd = em.EvalMaterialCompute(cfout, rfsystem, personMinTime, goodsMinTime);
 
         report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), "洪涝灾害救援任务协同指挥训练评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count,
-            personAssData, scoreData,PeculiarDatas);
+            personAssData, scoreData, PeculiarDatas);
     }
 
 

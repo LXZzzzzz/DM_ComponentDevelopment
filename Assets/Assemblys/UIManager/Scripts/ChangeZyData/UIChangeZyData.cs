@@ -31,7 +31,7 @@ public class UIChangeZyData : BasePanel
     {
         base.Init();
         title = GetControl<Text>("title");
-        bgImage = transform.GetChild(0).GetComponent<RectTransform>();
+        bgImage = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
         _fireDataView = new FireDataView();
         _fireDataView.Init(this);
         _disasterDataView = new DisasterDataView();
@@ -151,6 +151,7 @@ public class UIChangeZyData : BasePanel
 
 
         _currentView?.OnShow(userData);
+        _currentView?.Reset();
     }
 
     public void ChangeTitleInfo(string infoStr)
@@ -190,6 +191,11 @@ public abstract class ChangeDataBase
     {
         mainView = mv;
         OnInit();
+    }
+
+    public void Reset()
+    {
+        mainView.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition=Vector2.zero;
     }
 
     protected abstract void OnInit();

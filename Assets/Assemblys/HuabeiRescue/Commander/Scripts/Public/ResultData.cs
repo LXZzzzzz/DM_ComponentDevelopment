@@ -509,6 +509,9 @@ namespace ReportGenerate
         //航线规划信息
         public string hxgh;
 
+        //航路点
+        public List<string> hlds;
+
         //任务要素统计
         public TaskElements rwystj;
 
@@ -625,6 +628,7 @@ namespace ReportGenerate
         public string wztfzl; //物资投放重量
         public string dzyrs; //待转运人数
         public string hxgh; //航线规划
+        public List<string> hlds; //航路点
         public string rwjl; //任务简令
         public TaskElements rwystj; //任务要素统计
         public List<UnitInfo> jzxx; //机组信息

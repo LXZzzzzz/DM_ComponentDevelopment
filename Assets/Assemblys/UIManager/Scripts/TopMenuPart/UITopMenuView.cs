@@ -199,9 +199,21 @@ public class UITopMenuView : BasePanel
 
     private void release()
     {
+        if (MyDataInfo.gameState < GameState.AgreeAirLine)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "还未到下达任务阶段");
+            return;
+        }
+
         if (MyDataInfo.gameState != GameState.AgreeAirLine)
         {
             EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "申报航线后才可下达任务");
+            return;
+        }
+
+        if (MyDataInfo.gameState > GameState.AgreeAirLine)
+        {
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "任务已下达");
             return;
         }
 

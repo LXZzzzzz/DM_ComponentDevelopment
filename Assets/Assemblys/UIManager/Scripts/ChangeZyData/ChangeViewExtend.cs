@@ -19,7 +19,7 @@ public class FireDataView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/firePart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/firePart").gameObject;
         zyName = view.transform.Find("name/inputF_name").GetComponent<InputField>();
         fs = view.transform.Find("fs/inputF_fs").GetComponent<InputField>();
         pd = view.transform.Find("pd/inputF_pd").GetComponent<InputField>();
@@ -58,7 +58,7 @@ public class DisasterDataView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/disasterPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/disasterPart").gameObject;
         zyName = view.transform.Find("name/inputF_name").GetComponent<InputField>();
         num = view.transform.Find("num/inputF_num").GetComponent<InputField>();
         type = view.transform.Find("type/dp_Type").GetComponent<Dropdown>();
@@ -96,7 +96,7 @@ public class ZYFPPartView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/zyfpPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/zyfpPart").gameObject;
         zyParent = view.transform.GetComponentInChildren<ScrollRect>(true).content;
         zyTemplate = view.transform.GetComponentInChildren<ChangeData_cellZyItem>(true);
         dpSwitchE = view.transform.GetComponentInChildren<Dropdown>(true);
@@ -161,6 +161,7 @@ public class ZYFPPartView : ChangeDataBase
         {
             GameObject.Destroy(zyParent.GetChild(i).gameObject);
         }
+
         dpSwitchE.onValueChanged.RemoveAllListeners();
         view.SetActive(false);
     }
@@ -208,7 +209,7 @@ public class TianQiSetView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/tianQiSetPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/tianQiSetPart").gameObject;
         dptq = view.transform.Find("dp_tqSetting").GetComponent<Dropdown>();
         dpfl = view.transform.Find("dp_flSetting").GetComponent<Dropdown>();
     }
@@ -242,7 +243,7 @@ public class MalfunctionView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/malfunctionPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/malfunctionPart").gameObject;
         equipParent = view.transform.GetComponentInChildren<ScrollRect>(true).content;
         equipItem = view.transform.GetComponentInChildren<ChangeData_cellEquipItem>(true);
     }
@@ -296,7 +297,7 @@ public class SupplyOrGoodsView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/supplyOrGoodsPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/supplyOrGoodsPart").gameObject;
         _text = view.GetComponentInChildren<Text>(true);
         _inputField = view.GetComponentInChildren<InputField>(true);
     }
@@ -352,7 +353,7 @@ public class TaskBgSettingView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/taskBgSettingPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/taskBgSettingPart").gameObject;
         taskTarget = view.transform.Find("InputF_taskTarget").GetComponent<InputField>();
         disInfo = view.transform.Find("InputF_disInfo").GetComponent<InputField>();
         kongGuan = view.transform.Find("InputF_kongGuan").GetComponent<InputField>();
@@ -393,7 +394,7 @@ public class GroundSupportDataView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/groundSupportDataPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/groundSupportDataPart").gameObject;
         _cellGroundZySet = view.GetComponentInChildren<ChangeData_cellGroundZySet>(true);
         zyParent = view.GetComponentInChildren<ScrollRect>(true).content;
     }
@@ -463,7 +464,7 @@ public class PersonSetView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/personSetPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/personSetPart").gameObject;
         jizuParent = view.transform.Find("ScrollR_Jizuu").GetComponent<ScrollRect>().content;
         baozhangParent = view.transform.Find("ScrollR_Baozhang").GetComponent<ScrollRect>().content;
     }
@@ -560,7 +561,7 @@ public class ShowTaskBgDataView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/showTaskBgDataPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/showTaskBgDataPart").gameObject;
         taskTarget = view.transform.Find("InputF_taskTarget").GetComponent<InputField>();
         disInfo = view.transform.Find("InputF_disInfo").GetComponent<InputField>();
         kongGuan = view.transform.Find("InputF_kongGuan").GetComponent<InputField>();
@@ -611,7 +612,7 @@ public class DisasterSituationView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/disasterSituationPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/disasterSituationPart").gameObject;
         disInfo = view.transform.Find("text_disInfo").GetComponent<Text>();
         zhlx = view.transform.Find("inputFPart/InputF_zhlx").GetComponent<InputField>();
         zhgm = view.transform.Find("inputFPart/InputF_zhgm").GetComponent<InputField>();
@@ -698,7 +699,7 @@ public class EquipmentInfoView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/equipmentInfoPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/equipmentInfoPart").gameObject;
         equipParent = view.transform.Find("SR_equipParent").GetComponentInChildren<ScrollRect>().content;
         cell = view.transform.Find("equipCell").GetComponent<ChangeData_cellEquipInfoItem>();
         equips = new List<ChangeData_cellEquipInfoItem>();
@@ -754,13 +755,21 @@ public class EquipmentInfoView : ChangeDataBase
         }
         else if (MyDataInfo.MyLevel == 1)
         {
+            string equipUses = "";
+            for (int i = 0; i < equips.Count; i++)
+            {
+                equipUses += equips[i].GetUsedEquipId + ':';
+            }
+
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendEquipUsedInfo, equipUses);
+            
             string equipDatas = "";
             for (int i = 0; i < equips.Count; i++)
             {
-                equipDatas += equips[i].GetUsedEquipId + ':';
+                equipDatas += equips[i].getData() + ':';
             }
 
-            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendEquipUsedInfo, equipDatas);
+            EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendEquipsInfo, equipDatas);
 
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendTrainPointSucInfo, TrainsPintType.ZBLDSureEquipInfo.ToString());
             //
@@ -804,7 +813,7 @@ public class PersonnelInfoView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/personnelInfoPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/personnelInfoPart").gameObject;
         aircrewParent = view.transform.Find("Aircrew/SR_Parent").GetComponentInChildren<ScrollRect>().content;
         arcraftCrewParent = view.transform.Find("AircraftCrew/SR_Parent").GetComponentInChildren<ScrollRect>().content;
 
@@ -840,7 +849,7 @@ public class AirTrafficControlInfoView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/airTrafficControlInfoPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/airTrafficControlInfoPart").gameObject;
         kg = view.transform.Find("InputF_fairway").GetComponent<InputField>();
         cell = view.transform.Find("fairway").GetComponent<ChangeData_cellFairWayInfoItem>();
     }
@@ -910,7 +919,7 @@ public class TaskInfoView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/taskInfoPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/taskInfoPart").gameObject;
         text_tq = view.transform.Find("text_tq").GetComponent<Text>();
         InputField_sz = view.transform.Find("grid/inputpoints/input").GetComponent<InputField>();
         InputField_yy = view.transform.Find("grid/inputpoints (1)/input").GetComponent<InputField>();
@@ -930,7 +939,16 @@ public class TaskInfoView : ChangeDataBase
         view.SetActive(true);
         LoadMap(Path.Combine(Application.dataPath, "MapLib", "Images", "Screenshot.png"));
         if (data is ShowStrInputData)
+        {
             text_tq.text = "任务区气象条件：" + (data as ShowStrInputData).strInfo;
+            InputField_sz.text = "0";
+            InputField_yy.text = "0";
+            InputField_bj.text = "0";
+            InputField_qs.text = "0";
+            InputField_az.text = "0";
+            InputField_qj.text = "0";
+            InputField_hc.text = "0";
+        }
         else if (data is ShowStrInputData_Daojiao)
         {
             var djshow = data as ShowStrInputData_Daojiao;
@@ -951,6 +969,13 @@ public class TaskInfoView : ChangeDataBase
             InputField_qj.interactable = false;
             InputField_hc.interactable = false;
         }
+
+        InputField_sz.transform.parent.gameObject.SetActive(MyDataInfo.gameScene == 2);
+        InputField_yy.transform.parent.gameObject.SetActive(MyDataInfo.gameScene == 2);
+        InputField_qs.transform.parent.gameObject.SetActive(MyDataInfo.gameScene == 1);
+        InputField_az.transform.parent.gameObject.SetActive(MyDataInfo.gameScene == 2);
+        InputField_qj.transform.parent.gameObject.SetActive(MyDataInfo.gameScene == 1);
+        InputField_hc.transform.parent.gameObject.SetActive(MyDataInfo.gameScene == 1);
     }
 
     private void LoadMap(string path)
@@ -963,7 +988,7 @@ public class TaskInfoView : ChangeDataBase
         Sprite tempSprite = Sprite.Create(m_Tex, new Rect(0, 0, m_Tex.width, m_Tex.height), new Vector2(10, 10));
         hz.GetComponent<Image>().sprite = tempSprite; //赋值 
         hz.GetComponent<Image>().SetNativeSize();
-        hz.transform.localScale = Vector3.one * 0.55f;
+        hz.transform.localScale = Vector3.one * 0.6f;
     }
 
     private byte[] ReadPNG(string path)
@@ -1020,7 +1045,7 @@ public class FieldCommanderView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/fieldCommanderPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/fieldCommanderPart").gameObject;
         checkEquip = view.transform.Find("dp_checkEquip").GetComponent<Dropdown>();
         zyl = view.transform.Find("fuelSlider").GetChild(0).GetComponent<Slider>();
         zzl = view.transform.Find("loadSlider").GetChild(0).GetComponent<Slider>();
@@ -1050,7 +1075,7 @@ public class FieldCommanderView : ChangeDataBase
                 checkEquip.options.Add(new Dropdown.OptionData(equipsInfo[i].jx));
             }
 
-            var togs=view.transform.GetComponentsInChildren<Toggle>();
+            var togs = view.transform.GetComponentsInChildren<Toggle>();
             for (int i = 0; i < togs.Length; i++)
             {
                 togs[i].isOn = true;
@@ -1094,11 +1119,14 @@ public class FieldCommanderView : ChangeDataBase
         {
             zyl.value = float.Parse(equipsInfo[index].zyl) / oil;
             zzl.value = float.Parse(equipsInfo[index].zzl) / load;
-            return;
+            OnChangeOilNum(zyl.value);
+            OnChangeZzlNum(zzl.value);
         }
-
-        OnChangeOilNum(zyl.value);
-        OnChangeZzlNum(zzl.value);
+        else
+        {
+            zyl.value = 0;
+            zzl.value = 0;
+        }
     }
 
     private void OnChangeOilNum(float num)
@@ -1147,7 +1175,7 @@ public class CaptainView : ChangeDataBase
 
     protected override void OnInit()
     {
-        view = mainView.transform.Find("View/infos/captainPart").gameObject;
+        view = mainView.transform.Find("OverallView/View/infos/captainPart").gameObject;
         jixing = view.transform.Find("modeldes").GetComponent<Text>();
         bianhao = view.transform.Find("numberdes").GetComponent<Text>();
         zyl = view.transform.Find("fuelSlider").GetChild(0).GetComponent<Slider>();
@@ -1179,16 +1207,16 @@ public class CaptainView : ChangeDataBase
             var strinfo = JsonConvert.DeserializeObject<zbcellInfo2>(djshow.strInfo);
             var _equip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, strinfo.id));
             jixing.text = bianhao.text = _equip.name;
-            Debug.LogError("装备名："+_equip.name);
+            Debug.LogError("装备名：" + _equip.name);
             (_equip as IDqChangePart).GetOilAndLoad(out float oil, out float load);
             oilMax.text = oil.ToString();
-            Debug.LogError("装备最大油量："+oil);
+            Debug.LogError("装备最大油量：" + oil);
             loadMax.text = load.ToString();
-            Debug.LogError("装备最大载重："+load);
+            Debug.LogError("装备最大载重：" + load);
             zyl.value = float.Parse(strinfo.zyl);
-            Debug.LogError("装备载油量比例："+strinfo.zyl);
+            Debug.LogError("装备载油量比例：" + strinfo.zyl);
             zzl.value = float.Parse(strinfo.zzl);
-            Debug.LogError("装备载重比例："+strinfo.zzl);
+            Debug.LogError("装备载重比例：" + strinfo.zzl);
 
             zyl.interactable = false;
             zzl.interactable = false;

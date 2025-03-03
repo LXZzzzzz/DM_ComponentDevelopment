@@ -117,6 +117,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         flyLine.endColor = Color.blue;
         positions = new Vector3[2];
         initialScale = transform.localScale;
+        myass.ForEach(a => a.volume = 0.3f);
     }
 
     private void InitData()
