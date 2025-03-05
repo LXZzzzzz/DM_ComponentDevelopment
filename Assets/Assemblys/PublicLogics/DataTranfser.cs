@@ -75,17 +75,26 @@ namespace DataTranfsers
     {
         //一级指挥分数
         public int qrzqxx;
+        public int qrzqxx_zg;
         public int cdzbxxqr;
+        public int cdzbxxqr_zg;
         public int cdryxxqr;
+        public int cdryxxqr_zg;
         public int zchxsb;
+        public int zchxsb_zg;
         public int xdrw;
+        public int xdrw_zg;
         public float firstZhyTotalScore;
 
         //二级指挥分数
         public int lsrw;
+        public int lsrw_zg;
         public int qrzbztxx;
+        public int qrzbztxx_zg;
         public int fprwbxdrw;
+        public int fprwbxdrw_zg;
         public int qrtqczbg;
+        public int qrtqczbg_zg;
         public float secondZhyTotalScore;
 
         public List<SecondZhyScore> thirdZhyScores;
@@ -95,8 +104,11 @@ namespace DataTranfsers
     {
         public string roleId;
         public int qrzyl;
+        public int qrzyl_zg;
         public int rwqyhxgh;
+        public int rwqyhxgh_zg;
         public int xxczhybg;
+        public int xxczhybg_zg;
         public float jzZhyTotalScore;
     }
 

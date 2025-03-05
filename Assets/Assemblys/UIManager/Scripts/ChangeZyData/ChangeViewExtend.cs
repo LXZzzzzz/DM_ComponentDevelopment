@@ -366,6 +366,16 @@ public class TaskBgSettingView : ChangeDataBase
         mainView.ChangeViewSize(1);
         mainView.ChangeTitleInfo("任务背景设置");
         view.SetActive(true);
+        if (MyDataInfo.gameScene == 1)
+        {
+            taskTarget.text = "完成XX地区火灾扑救";
+            disInfo.text = "XX日XX时XX分X地（经度XX，纬度XX，海拔XX）发生重大火灾，目前过火面积已达XX平方米，当地风力XX级偏X风，火势蔓延迅速，严重威胁到人民生命财产安全";
+        }
+        else if (MyDataInfo.gameScene == 2)
+        {
+            taskTarget.text = "完成XX地区受灾群众救援";
+            disInfo.text = "因连续强降雨引起洪涝灾害，XX日XX时XX分X地（经度XX，纬度XX，海拔XX）多处群众受困，情况危在旦夕";
+        }
     }
 
     public override void OnHide()
@@ -637,6 +647,8 @@ public class DisasterSituationView : ChangeDataBase
         {
             ShowStrInputData sdsi = data as ShowStrInputData;
             disInfo.text = sdsi.strInfo;
+            if (MyDataInfo.gameScene == 1) zhlx.text = "森林火灾";
+            else if (MyDataInfo.gameScene == 2) zhlx.text = "洪涝灾害";
             zhlx.interactable = true;
             zhgm.interactable = true;
             hcmj.interactable = true;
@@ -762,7 +774,7 @@ public class EquipmentInfoView : ChangeDataBase
             }
 
             EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendEquipUsedInfo, equipUses);
-            
+
             string equipDatas = "";
             for (int i = 0; i < equips.Count; i++)
             {
@@ -1031,7 +1043,7 @@ public class TaskInfoView : ChangeDataBase
 }
 
 /// <summary>
-/// 二级指挥员
+/// 二级指挥员,任务前准备
 /// </summary>
 public class FieldCommanderView : ChangeDataBase
 {
@@ -1099,6 +1111,7 @@ public class FieldCommanderView : ChangeDataBase
                 }
             }
 
+            if (checkEquip.options.Count > 0) OnChangEquip(0);
             zyl.interactable = true;
             zzl.interactable = true;
         }
@@ -1115,17 +1128,12 @@ public class FieldCommanderView : ChangeDataBase
         loadMax.text = load.ToString();
         maxOil = oil;
         maxZzl = load;
+        zyl.value = float.Parse(equipsInfo[index].zyl) / oil;
+        zzl.value = float.Parse(equipsInfo[index].zzl) / load;
         if (isDaojiaoShow)
         {
-            zyl.value = float.Parse(equipsInfo[index].zyl) / oil;
-            zzl.value = float.Parse(equipsInfo[index].zzl) / load;
             OnChangeOilNum(zyl.value);
             OnChangeZzlNum(zzl.value);
-        }
-        else
-        {
-            zyl.value = 0;
-            zzl.value = 0;
         }
     }
 

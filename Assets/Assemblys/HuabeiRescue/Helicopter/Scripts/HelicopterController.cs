@@ -117,6 +117,14 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         flyLine.endColor = Color.blue;
         positions = new Vector3[2];
         initialScale = transform.localScale;
+        if (myass.Count == 0)
+        {
+            var ass = transform.GetComponentsInChildren<AudioSource>();
+            for (int i = 0; i < ass.Length; i++)
+            {
+                if (ass[i].enabled) myass.Add(ass[i]);
+            }
+        }
         myass.ForEach(a => a.volume = 0.3f);
     }
 

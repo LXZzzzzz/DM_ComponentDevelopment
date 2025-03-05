@@ -57,42 +57,53 @@ public class RatingCell : DMonoBehaviour
         {
             case TrainsPintType.ZBLDSureDisasterInfo:
                 scoreData.qrzqxx = aa;
+                scoreData.qrzqxx_zg = s;
                 break;
             case TrainsPintType.ZBLDSureEquipInfo:
                 scoreData.cdzbxxqr = aa;
+                scoreData.cdzbxxqr_zg = s;
                 break;
             case TrainsPintType.ZBLDSurePersonInfo:
                 scoreData.cdryxxqr = aa;
+                scoreData.cdryxxqr_zg = s;
                 break;
             case TrainsPintType.ZBLDRouteDeclaration:
                 scoreData.zchxsb = aa;
+                scoreData.zchxsb_zg = s;
                 break;
             case TrainsPintType.ZBLDSendTask:
                 scoreData.xdrw = aa;
+                scoreData.xdrw_zg = s;
                 break;
             case TrainsPintType.XCZHGetTask:
                 scoreData.lsrw = aa;
+                scoreData.lsrw_zg = s;
                 break;
             case TrainsPintType.XCZHInspectEquipInfo:
                 scoreData.qrzbztxx = aa;
+                scoreData.qrzbztxx_zg = s;
                 break;
             case TrainsPintType.XCZHSendTask:
                 scoreData.fprwbxdrw = aa;
+                scoreData.fprwbxdrw_zg = s;
                 break;
             case TrainsPintType.XCZHSureTqInfo:
                 scoreData.qrtqczbg = aa;
-                Debug.LogError("现场指挥特情分数："+scoreData.qrtqczbg);
+                scoreData.qrtqczbg_zg = s;
                 break;
             case TrainsPintType.JZSureTaskInfo:
                 break;
             case TrainsPintType.JZSureOilAndLoad:
                 scoreData.thirdZhyScores.Find(a => string.Equals(a.roleId, jzId)).qrzyl = aa;
+                scoreData.thirdZhyScores.Find(a => string.Equals(a.roleId, jzId)).qrzyl_zg = s;
                 break;
             case TrainsPintType.JZCompletePlan:
                 scoreData.thirdZhyScores.Find(a => string.Equals(a.roleId, jzId)).rwqyhxgh = aa;
+                scoreData.thirdZhyScores.Find(a => string.Equals(a.roleId, jzId)).rwqyhxgh_zg = s;
                 break;
             case TrainsPintType.JZSendTqInfo:
                 scoreData.thirdZhyScores.Find(a => string.Equals(a.roleId, jzId)).xxczhybg = aa;
+                scoreData.thirdZhyScores.Find(a => string.Equals(a.roleId, jzId)).xxczhybg_zg = s;
                 break;
         }
     }

@@ -178,8 +178,6 @@ namespace ToolsLibrary.ProgrammePart
         {
             string openPath = folderPath.Replace('/', '\\');
 
-            Debug.LogError($"打开的路径：{openPath}");
-
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "JSON Files (*.json)|*.json",
@@ -193,8 +191,6 @@ namespace ToolsLibrary.ProgrammePart
                 string jsonData = File.ReadAllText(filePath);
                 return JsonConvert.DeserializeObject<T>(jsonData);
             }
-
-            Debug.LogError($"检查路径：{openFileDialog.InitialDirectory}");
 
             return default(T);
         }

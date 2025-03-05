@@ -44,8 +44,16 @@ public partial class HelicopterController
         {
             anis[i].Play();
         }
-
+        if (myass.Count == 0)
+        {
+            var ass = transform.GetComponentsInChildren<AudioSource>();
+            for (int i = 0; i < ass.Length; i++)
+            {
+                if (ass[i].enabled) myass.Add(ass[i]);
+            }
+        }
         myass.ForEach(x => x.gameObject.SetActive(MyDataInfo.MyLevel == 3));
+        myass.ForEach(a => a.volume = 0.3f);
     }
 
     private void OnTOSuc()

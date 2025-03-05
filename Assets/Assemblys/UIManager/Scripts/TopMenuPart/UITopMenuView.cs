@@ -283,16 +283,16 @@ public class UITopMenuView : BasePanel
     {
         putAwayMenu();
         //开始推演指令
-        // for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
-        // {
-        //     bool isOut = ProgrammeDataManager.Instance.GetEquipDataById(MyDataInfo.sceneAllEquips[i].BObjectId)?.isSetOut == 1;
-        //     if (isOut && !MyDataInfo.TaskPlanningCompletedPersons.Contains(MyDataInfo.sceneAllEquips[i].BObjectId))
-        //     {
-        //         ConfirmatonInfo ci = new ConfirmatonInfo() { showStrInfo = "需等到所有出动直升机都完成任务规划才能开始", type = showType.tipView };
-        //         UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, ci);
-        //         return;
-        //     }
-        // }
+        for (int i = 0; i < MyDataInfo.sceneAllEquips.Count; i++)
+        {
+            bool isOut = MyDataInfo.sceneAllEquips[i].gameObject.activeSelf;
+            if (isOut && !MyDataInfo.TaskPlanningCompletedPersons.Contains(MyDataInfo.sceneAllEquips[i].BObjectId))
+            {
+                ConfirmatonInfo ci = new ConfirmatonInfo() { showStrInfo = "需等到所有出动直升机都完成任务规划才能开始", type = showType.tipView };
+                UIManager.Instance.ShowPanel<UIConfirmation>(UIName.UIConfirmation, ci);
+                return;
+            }
+        }
 
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)Enums.MessageID.SendGameStart, ((int)(MyDataInfo.gameStartTime * 1000)).ToString());
     }
@@ -349,6 +349,13 @@ public class UITopMenuView : BasePanel
 
     private void OnGeneratePdf()
     {
+        if (MyDataInfo.sceneAllEquips.Find(x => !x.isCrash && !x.isDockingAtTheAirport) != null)
+        {
+
+            EventManager.Instance.EventTrigger<string, UnityAction<bool>>(EventType.ShowConfirmUI.ToString(), "当前有直升机未返航，将无法生成报告，是否主动结束任务？",
+                (a) => OnFaTurnBack());
+            return;
+        }
         EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
     }
 
