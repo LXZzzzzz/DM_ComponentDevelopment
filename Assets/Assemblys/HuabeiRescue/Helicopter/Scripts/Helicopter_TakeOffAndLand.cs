@@ -40,10 +40,17 @@ public partial class HelicopterController
             }
         }
 
+        playanim(true);
+    }
+
+    public virtual void playanim(bool isPlay)
+    {
         for (int i = 0; i < anis.Length; i++)
         {
-            anis[i].Play();
+            if (isPlay) anis[i].Play();
+            else anis[i].Stop();
         }
+
         if (myass.Count == 0)
         {
             var ass = transform.GetComponentsInChildren<AudioSource>();
@@ -52,8 +59,17 @@ public partial class HelicopterController
                 if (ass[i].enabled) myass.Add(ass[i]);
             }
         }
-        myass.ForEach(x => x.gameObject.SetActive(MyDataInfo.MyLevel == 3));
-        myass.ForEach(a => a.volume = 0.3f);
+
+        if (isPlay)
+        {
+            myass.ForEach(x => x.gameObject.SetActive(MyDataInfo.MyLevel == 3));
+            myass.ForEach(a => a.volume = 0.3f);
+        }
+        else
+        {
+            mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0)); //这里之所以不用在play的时候调用，是因为动画会自动打开
+            myass.ForEach(x => x.gameObject.SetActive(false));
+        }
     }
 
     private void OnTOSuc()
@@ -85,17 +101,6 @@ public partial class HelicopterController
         if (isHit) correctGroundHight = itemHight;
         currentFlyHight = (isHit ? itemHight : correctGroundHight) + myAttributeInfo.zsjxhgd / 5;
         updateEvent += OnRunLand;
-
-        if (myass.Count == 0)
-        {
-            var ass = transform.GetComponentsInChildren<AudioSource>();
-            for (int i = 0; i < ass.Length; i++)
-            {
-                if (ass[i].enabled) myass.Add(ass[i]);
-            }
-        }
-
-        myass.ForEach(x => x.gameObject.SetActive(false));
     }
 
     private void OnLandSuc()
@@ -111,16 +116,10 @@ public partial class HelicopterController
         itemPosition = new Vector3(itemPosition.x, isHit ? toHight : correctGroundHight, itemPosition.z);
         transform.position = itemPosition;
 
-        for (int i = 0; i < anis.Length; i++)
-        {
-            anis[i].Stop();
-        }
-
-        mywms.ForEach(x => x.gameObject.SetActive(x.mark == 0));
-        myass.ForEach(x => x.gameObject.SetActive(false));
+        playanim(false);
 
         if (currentBindingZy == null) return;
-        
+
         for (int i = 0; i < sceneAllZiyuan.Count; i++)
         {
             Vector3 zyPos = new Vector3(sceneAllZiyuan[i].transform.position.x, transform.position.y, sceneAllZiyuan[i].transform.position.z);
@@ -132,6 +131,7 @@ public partial class HelicopterController
                 return;
             }
         }
+
         //证明飞机没有降落在任何场景资源上，记录为错误降落
         TriggerLandError();
     }

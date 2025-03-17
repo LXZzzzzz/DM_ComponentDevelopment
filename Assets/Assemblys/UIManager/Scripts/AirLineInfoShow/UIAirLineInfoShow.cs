@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Enums;
 using ToolsLibrary;
 using UiManager;
@@ -59,6 +60,14 @@ public class UIAirLineInfoShow : BasePanel
             GetControl<Button>("sure").onClick.AddListener(OnSure);
             GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UIAirLineInfoShow));
         }
+
+        if (MyDataInfo.isPlayBack) StartCoroutine(closeMe());
+    }
+
+    IEnumerator closeMe()
+    {
+        yield return new WaitForSeconds(3);
+        Close(UIName.UIAirLineInfoShow);
     }
 
     public override void HideMe()
@@ -78,14 +87,14 @@ public class UIAirLineInfoShow : BasePanel
     private void OnAgree()
     {
         Close(UIName.UIAirLineInfoShow);
-        if(MyDataInfo.gameState>= GameState.GameStart) return;
+        if (MyDataInfo.gameState >= GameState.GameStart) return;
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendAgreeAirLine, "1");
     }
 
     private void OnRefuse()
     {
         Close(UIName.UIAirLineInfoShow);
-        if(MyDataInfo.gameState>= GameState.GameStart) return;
+        if (MyDataInfo.gameState >= GameState.GameStart) return;
         EventManager.Instance.EventTrigger(EventType.SendSkillInfoForControler.ToString(), (int)MessageID.SendAgreeAirLine, "0");
     }
 }

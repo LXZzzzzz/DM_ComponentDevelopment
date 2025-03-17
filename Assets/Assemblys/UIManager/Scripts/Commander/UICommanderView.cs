@@ -232,6 +232,16 @@ public class UICommanderView : BasePanel
                 break;
             }
         }
+        for (int i = 0; i < allTaskCells.Count; i++)
+        {
+            if (string.Equals(allTaskCells[i].myEntityId, deleId))
+            {
+                //这里应该得检测资源下有没有任务，如果有要删除
+                Destroy(allTaskCells[i].gameObject);
+                allTaskCells.RemoveAt(i);
+                break;
+            }
+        }
     }
 
     private void OnInitEquipData(AEquipData aeData)

@@ -1,4 +1,6 @@
+using System.Collections;
 using Enums;
+using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UiManager;
 using UnityEngine;
@@ -24,6 +26,7 @@ public class UIChangeZyData : BasePanel
     private TaskInfoView _taskInfoView;
     private FieldCommanderView _fieldCommanderView;
     private CaptainView _captainView;
+    private DeleteDisView _deleteDisView;
 
     private ChangeDataBase _currentView;
 
@@ -64,6 +67,8 @@ public class UIChangeZyData : BasePanel
         _fieldCommanderView.Init(this);
         _captainView = new CaptainView();
         _captainView.Init(this);
+        _deleteDisView = new DeleteDisView();
+        _deleteDisView.Init(this);
         GetControl<Button>("close").onClick.AddListener(() => Close(UIName.UIChangeZyData));
         GetControl<Button>("sure").onClick.AddListener(() =>
         {
@@ -116,6 +121,9 @@ public class UIChangeZyData : BasePanel
                 case ShowZyDataType.dmzbShow:
                     _currentView = _captainView;
                     break;
+                case ShowZyDataType.deleteDisShow:
+                    _currentView = _deleteDisView;
+                    break;
             }
         }
 
@@ -152,6 +160,13 @@ public class UIChangeZyData : BasePanel
 
         _currentView?.OnShow(userData);
         _currentView?.Reset();
+        if (MyDataInfo.isPlayBack) StartCoroutine(closeMe());
+    }
+
+    IEnumerator closeMe()
+    {
+        yield return new WaitForSeconds(3);
+        Close(UIName.UIChangeZyData);
     }
 
     public void ChangeTitleInfo(string infoStr)
@@ -195,7 +210,7 @@ public abstract class ChangeDataBase
 
     public void Reset()
     {
-        mainView.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition=Vector2.zero;
+        mainView.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
     }
 
     protected abstract void OnInit();

@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using DM.Entity;
 using DM.IFS;
+using Enums;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
 
@@ -63,7 +63,27 @@ public class HelicopterMain : ScriptManager
     public override void RunModeInitialized(bool isRoomCreator, SceneInfo info)
     {
         base.RunModeInitialized(isRoomCreator, info);
-        var logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController>();
+        HelicopterController logic;
+        var hType = GetComponentInChildren<HelicopterTypeMark>()?.type;
+        switch (hType)
+        {
+            case HelicopterType.Z8A:
+                logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_Z8A>();
+                break;
+            case HelicopterType.AC313A:
+                logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_AC313A>();
+                break;
+            default:
+                logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController>();
+                break;
+        }
+
+        if (logic == null)
+        {
+            Debug.LogError($"直升机{name}初始化错误");
+            return;
+        }
+
         //进入运行模式后，将一些基础属性通过控制器传给飞机，
         logic.EquipIcon = info.PicBObjects[BObjectId];
         logic.isTS = (Properties[0] as ToggleProperty).Value;

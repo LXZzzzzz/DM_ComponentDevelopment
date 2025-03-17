@@ -7,6 +7,7 @@ using ToolsLibrary.PathPart;
 using UiManager;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using Vectrosity;
 using Object = UnityEngine.Object;
 using EventType = Enums.EventType;
@@ -31,16 +32,24 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
     private int insertIndex;
     public GameObject chooseEquipIconGo;
 
+    private bool clickPointType;
+    private bool isDrawLine;
+    private List<Vector2> linePoints;
+    private VectorLine disLine;
+    private Vector3 startPos;
+
     public override void OnEnter()
     {
         isCreatPathPoint = false;
         isWaitCreat = false;
         attachedObjectId = String.Empty;
+        linePoints = new List<Vector2>();
         if (equipPathLines == null) equipPathLines = new Dictionary<string, VectorLine>();
         if (equipPathDatas == null) equipPathDatas = new Dictionary<string, List<Vector2>>();
         EventManager.Instance.AddEventListener<string>(EventType.LoadPathPlanningData.ToString(), OnLoadPathPlanningData);
         EventManager.Instance.AddEventListener<string>(EventType.ClearPathPlanningData.ToString(), OnClearPathPlanningData);
         EventManager.Instance.AddEventListener<Vector2>(EventType.CloseEditorModel.ToString(), OnRightClickMap);
+        mainLogic.distanceMeasurementTog.gameObject.SetActive(true);
     }
 
     private void OnLoadPathPlanningData(string data)
@@ -174,26 +183,36 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
 
     public override void OnUpdate()
     {
-        if (!isCreatPathPoint) return;
-
-        var mousePos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
-        switch (currentCreatModel)
+        if (isCreatPathPoint)
         {
-            case CreatModel.AddPoint:
-                int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
-                //实时设置鼠标位置为线段终点，并刷新线段显示
-                equipPathDatas[currentChooseEquip.BObjectId][itemCount] = mainLogic.mousePos2UI(mousePos);
-                equipPathLines[currentChooseEquip.BObjectId].Draw();
-                break;
-            case CreatModel.InsertPoint:
-                equipPathDatas[currentChooseEquip.BObjectId][insertIndex] = mainLogic.mousePos2UI(mousePos);
-                equipPathLines[currentChooseEquip.BObjectId].Draw();
-                break;
+            var mousePos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
+            switch (currentCreatModel)
+            {
+                case CreatModel.AddPoint:
+                    int itemCount = equipPathDatas[currentChooseEquip.BObjectId].Count - 1;
+                    //实时设置鼠标位置为线段终点，并刷新线段显示
+                    equipPathDatas[currentChooseEquip.BObjectId][itemCount] = mainLogic.mousePos2UI(mousePos);
+                    equipPathLines[currentChooseEquip.BObjectId].Draw();
+                    break;
+                case CreatModel.InsertPoint:
+                    equipPathDatas[currentChooseEquip.BObjectId][insertIndex] = mainLogic.mousePos2UI(mousePos);
+                    equipPathLines[currentChooseEquip.BObjectId].Draw();
+                    break;
+            }
+        }
+
+        if (isDrawLine)
+        {
+            var mousePos = mainLogic.resolutionRatioNormalized(Input.mousePosition);
+            linePoints[1] = mainLogic.mousePos2UI(mousePos);
+            disLine.Draw();
         }
     }
 
     public override void OnLeftClickMap(Vector2 pos)
     {
+        if (clickPointType) ClickMap(pos);
+
         if (!isCreatPathPoint) return;
 
         if (isWaitCreat) return;
@@ -238,6 +257,7 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         EventManager.Instance.RemoveEventListener<string>(EventType.LoadPathPlanningData.ToString(), OnLoadPathPlanningData);
         EventManager.Instance.RemoveEventListener<string>(EventType.ClearPathPlanningData.ToString(), OnClearPathPlanningData);
         EventManager.Instance.RemoveEventListener<Vector2>(EventType.CloseEditorModel.ToString(), OnRightClickMap);
+        mainLogic.distanceMeasurementTog.gameObject.SetActive(false);
     }
 
     private void OnAddPointSuc(PathPoint pointData)
@@ -342,9 +362,62 @@ public class MapOperate_PlanningPath : MapOperateLogicBase
         mainLogic.allIconCells[belongToPointCellId].RefreshView();
     }
 
+    private void OnMeasDis(bool a)
+    {
+        clickPointType = a;
+        if (a)
+        {
+            if (disLine == null)
+            {
+                disLine = new VectorLine("disLine", linePoints, 1, LineType.Discrete);
+#if UNITY_EDITOR
+                disLine.SetCanvas(mainLogic.gameObject.GetComponentInParent<Canvas>());
+#else
+                disLine.SetCanvas(UIManager.Instance.CurrentCanvans);
+#endif
+                disLine.rectTransform.SetParent(mainLogic.meaDisMask);
+                disLine.rectTransform.localPosition = Vector3.zero;
+                disLine.rectTransform.localScale = Vector3.one;
+            }
+
+            disLine.active = true;
+            mainLogic.meaDisMask.gameObject.SetActive(true);
+        }
+        else
+        {
+            linePoints.Clear();
+            disLine.Draw();
+            disLine.active = false;
+            isDrawLine = false;
+            mainLogic.meaDisMask.gameObject.SetActive(false);
+        }
+    }
+
+    public void ClickMap(Vector2 point)
+    {
+        if (linePoints.Count == 0)
+        {
+            startPos = uiPos2WorldPos(point);
+            Debug.LogError(startPos);
+            isDrawLine = true;
+            linePoints.Add(worldPos2UiPos(startPos));
+            linePoints.Add(worldPos2UiPos(startPos));
+            disLine.Draw();
+        }
+        else if (linePoints.Count == 2 && isDrawLine)
+        {
+            isDrawLine = false;
+            //这里测距
+            Vector3 targetPos = uiPos2WorldPos(point);
+            Debug.LogError(targetPos);
+            EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "两点距离:" + Vector3.Distance(startPos, targetPos) + "米");
+            mainLogic.distanceMeasurementTog.isOn = false;
+        }
+    }
 
     public MapOperate_PlanningPath(UIMap mainLogic) : base(mainLogic)
     {
+        mainLogic.distanceMeasurementTog.onValueChanged.AddListener(OnMeasDis);
     }
 }
 

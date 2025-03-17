@@ -1,0 +1,573 @@
+fileFormatVersion: 2
+guid: 4e7af87cd37ce2c4a827a45c5188d12a
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: AC313_cegan
+    100002: AC313_cegan001
+    100004: AC313_jiaota_003
+    100006: AC313_jiaota_004
+    100008: AC313_jiaota_005
+    100010: AC313_jiaota_006
+    100012: AC313_jiaota_01
+    100014: AC313_jiaota_02
+    100016: AC313_jiashicang
+    100018: AC313_jiashicang_01
+    100020: AC313_yaogan
+    100022: AC313_yaogan001
+    100024: AC313_yibiaopan_01
+    100026: AC313_yuanbiao
+    100028: AC313_zuoyii_002
+    100030: AC313_zuoyii_1
+    100032: biaopan_4
+    100034: biaopan_5
+    100036: Bone001
+    100038: Bone002
+    100040: Bone003
+    100042: Bone004
+    100044: Bone005
+    100046: Bone006
+    100048: Bone007
+    100050: Bone008
+    100052: Bone009
+    100054: Bone010
+    100056: Bone011
+    100058: Bone012
+    100060: Bone019
+    100062: Bone020
+    100064: Bone021
+    100066: Bone022
+    100068: Bone023
+    100070: Bone024
+    100072: Bone025
+    100074: Bone026
+    100076: Bone027
+    100078: Bone028
+    100080: Box001
+    100082: Group002
+    100084: houcang
+    100086: jiashicangmen
+    100088: L_AC313_boli001
+    100090: L_AC313_jishen001
+    100092: L_AC313_luntai001
+    100094: L_AC313_weiyi001
+    100096: L_AC313_xuanyi001
+    100098: L_AC313_yinqing001
+    100100: //RootNode
+    100102: L_boli_02
+    100104: L_boli_04
+    100106: L_houmen
+    100108: L_lingjian
+    100110: L_you_LM
+    100112: L_you_QM
+    100114: L_zuo_LM
+    100116: L_zuo_QM
+    100118: M171_bl
+    100120: M171_jiashicang_01_01
+    100122: menqiang
+    100124: Object003
+    100126: Object006
+    100128: Object018
+    100130: Object13348
+    100132: Object13354
+    100134: Object13357
+    100136: Object13364
+    100138: zhizhen_01
+    100140: zhizhen_02
+    100142: zhizhen_03
+    100144: zhizhen_04
+    100146: zhizhen_05
+    100148: jiashicang
+    100150: jitou
+    100152: L_boli_01
+    100154: L_boli_03
+    100156: AC313_jiaota_007
+    100158: AC313_jiaota_008
+    100160: zhogkong
+    100162: L_ac313
+    100164: "\u5F00\u53E3"
+    100166: "\u5F00\u53E3 \u5185\u90E8"
+    100168: "\u5F00\u53E3 \u5916\u90E8"
+    100170: "\u5BF9\u8C61001"
+    100172: "\u5BF9\u8C61002"
+    100174: "\u5BF9\u8C61003"
+    400000: AC313_cegan
+    400002: AC313_cegan001
+    400004: AC313_jiaota_003
+    400006: AC313_jiaota_004
+    400008: AC313_jiaota_005
+    400010: AC313_jiaota_006
+    400012: AC313_jiaota_01
+    400014: AC313_jiaota_02
+    400016: AC313_jiashicang
+    400018: AC313_jiashicang_01
+    400020: AC313_yaogan
+    400022: AC313_yaogan001
+    400024: AC313_yibiaopan_01
+    400026: AC313_yuanbiao
+    400028: AC313_zuoyii_002
+    400030: AC313_zuoyii_1
+    400032: biaopan_4
+    400034: biaopan_5
+    400036: Bone001
+    400038: Bone002
+    400040: Bone003
+    400042: Bone004
+    400044: Bone005
+    400046: Bone006
+    400048: Bone007
+    400050: Bone008
+    400052: Bone009
+    400054: Bone010
+    400056: Bone011
+    400058: Bone012
+    400060: Bone019
+    400062: Bone020
+    400064: Bone021
+    400066: Bone022
+    400068: Bone023
+    400070: Bone024
+    400072: Bone025
+    400074: Bone026
+    400076: Bone027
+    400078: Bone028
+    400080: Box001
+    400082: Group002
+    400084: houcang
+    400086: jiashicangmen
+    400088: L_AC313_boli001
+    400090: L_AC313_jishen001
+    400092: L_AC313_luntai001
+    400094: L_AC313_weiyi001
+    400096: L_AC313_xuanyi001
+    400098: L_AC313_yinqing001
+    400100: //RootNode
+    400102: L_boli_02
+    400104: L_boli_04
+    400106: L_houmen
+    400108: L_lingjian
+    400110: L_you_LM
+    400112: L_you_QM
+    400114: L_zuo_LM
+    400116: L_zuo_QM
+    400118: M171_bl
+    400120: M171_jiashicang_01_01
+    400122: menqiang
+    400124: Object003
+    400126: Object006
+    400128: Object018
+    400130: Object13348
+    400132: Object13354
+    400134: Object13357
+    400136: Object13364
+    400138: zhizhen_01
+    400140: zhizhen_02
+    400142: zhizhen_03
+    400144: zhizhen_04
+    400146: zhizhen_05
+    400148: jiashicang
+    400150: jitou
+    400152: L_boli_01
+    400154: L_boli_03
+    400156: AC313_jiaota_007
+    400158: AC313_jiaota_008
+    400160: zhogkong
+    400162: L_ac313
+    400164: "\u5F00\u53E3"
+    400166: "\u5F00\u53E3 \u5185\u90E8"
+    400168: "\u5F00\u53E3 \u5916\u90E8"
+    400170: "\u5BF9\u8C61001"
+    400172: "\u5BF9\u8C61002"
+    400174: "\u5BF9\u8C61003"
+    2100000: AC313_jiashicang_01
+    2100002: AC313_yibiaopan_01
+    2100004: AC313_yuanbiao
+    2100006: biaopan_4
+    2100008: biaopan_5
+    2100010: AC313_jiaota
+    2100012: AC313_cegan
+    2100014: AC313_yaogan
+    2100016: AC313_zuoyii_1
+    2100018: houcang
+    2100020: jiashicangmen
+    2100022: menqiang
+    2100024: No Name
+    2100026: L_AC313_lingjian
+    2100028: AC313_menneibu
+    2100030: L_AC313_boli
+    2100032: 'Material #374'
+    2100034: L_AC313_yinqing
+    2100036: L_AC313_xuanyi
+    2300000: AC313_jiaota_004
+    2300002: AC313_jiaota_02
+    2300004: AC313_jiashicang_01
+    2300006: AC313_yibiaopan_01
+    2300008: AC313_yuanbiao
+    2300010: AC313_zuoyii_002
+    2300012: AC313_zuoyii_1
+    2300014: biaopan_4
+    2300016: biaopan_5
+    2300018: houcang
+    2300020: jiashicangmen
+    2300022: L_AC313_boli001
+    2300024: L_AC313_jishen001
+    2300026: L_AC313_luntai001
+    2300028: L_AC313_weiyi001
+    2300030: L_AC313_xuanyi001
+    2300032: L_AC313_yinqing001
+    2300034: L_boli_02
+    2300036: L_boli_04
+    2300038: L_houmen
+    2300040: L_lingjian
+    2300042: L_you_LM
+    2300044: L_you_QM
+    2300046: L_zuo_LM
+    2300048: L_zuo_QM
+    2300050: M171_bl
+    2300052: M171_jiashicang_01_01
+    2300054: menqiang
+    2300056: Object003
+    2300058: Object006
+    2300060: Object13348
+    2300062: Object13354
+    2300064: Object13357
+    2300066: Object13364
+    2300068: zhizhen_01
+    2300070: zhizhen_02
+    2300072: zhizhen_03
+    2300074: zhizhen_04
+    2300076: zhizhen_05
+    2300078: jiashicang
+    2300080: jitou
+    2300082: L_boli_01
+    2300084: L_boli_03
+    2300086: AC313_jiaota_003
+    2300088: AC313_jiaota_005
+    2300090: AC313_jiaota_006
+    2300092: AC313_jiaota_01
+    2300094: AC313_yaogan
+    2300096: AC313_yaogan001
+    2300098: AC313_cegan
+    2300100: AC313_cegan001
+    2300102: AC313_jiaota_007
+    2300104: AC313_jiaota_008
+    2300106: "\u5F00\u53E3"
+    2300108: "\u5F00\u53E3 \u5185\u90E8"
+    2300110: "\u5F00\u53E3 \u5916\u90E8"
+    2300112: "\u5BF9\u8C61001"
+    2300114: "\u5BF9\u8C61002"
+    2300116: "\u5BF9\u8C61003"
+    3300000: AC313_jiaota_004
+    3300002: AC313_jiaota_02
+    3300004: AC313_jiashicang_01
+    3300006: AC313_yibiaopan_01
+    3300008: AC313_yuanbiao
+    3300010: AC313_zuoyii_002
+    3300012: AC313_zuoyii_1
+    3300014: biaopan_4
+    3300016: biaopan_5
+    3300018: houcang
+    3300020: jiashicangmen
+    3300022: L_AC313_boli001
+    3300024: L_AC313_jishen001
+    3300026: L_AC313_luntai001
+    3300028: L_AC313_weiyi001
+    3300030: L_AC313_xuanyi001
+    3300032: L_AC313_yinqing001
+    3300034: L_boli_02
+    3300036: L_boli_04
+    3300038: L_houmen
+    3300040: L_lingjian
+    3300042: L_you_LM
+    3300044: L_you_QM
+    3300046: L_zuo_LM
+    3300048: L_zuo_QM
+    3300050: M171_bl
+    3300052: M171_jiashicang_01_01
+    3300054: menqiang
+    3300056: Object003
+    3300058: Object006
+    3300060: Object13348
+    3300062: Object13354
+    3300064: Object13357
+    3300066: Object13364
+    3300068: zhizhen_01
+    3300070: zhizhen_02
+    3300072: zhizhen_03
+    3300074: zhizhen_04
+    3300076: zhizhen_05
+    3300078: jiashicang
+    3300080: jitou
+    3300082: L_boli_01
+    3300084: L_boli_03
+    3300086: AC313_jiaota_003
+    3300088: AC313_jiaota_005
+    3300090: AC313_jiaota_006
+    3300092: AC313_jiaota_01
+    3300094: AC313_yaogan
+    3300096: AC313_yaogan001
+    3300098: AC313_cegan
+    3300100: AC313_cegan001
+    3300102: AC313_jiaota_007
+    3300104: AC313_jiaota_008
+    3300106: "\u5F00\u53E3"
+    3300108: "\u5F00\u53E3 \u5185\u90E8"
+    3300110: "\u5F00\u53E3 \u5916\u90E8"
+    3300112: "\u5BF9\u8C61001"
+    3300114: "\u5BF9\u8C61002"
+    3300116: "\u5BF9\u8C61003"
+    4300000: AC313_jiashicang_01
+    4300002: AC313_yibiaopan_01
+    4300004: AC313_yuanbiao
+    4300006: zhizhen_01
+    4300008: zhizhen_02
+    4300010: zhizhen_03
+    4300012: zhizhen_04
+    4300014: zhizhen_05
+    4300016: biaopan_4
+    4300018: biaopan_5
+    4300020: AC313_jiaota_003
+    4300022: AC313_jiaota_01
+    4300024: AC313_jiaota_02
+    4300026: AC313_cegan
+    4300028: AC313_yaogan
+    4300030: AC313_zuoyii_1
+    4300032: AC313_yaogan001
+    4300034: AC313_zuoyii_002
+    4300036: AC313_cegan001
+    4300038: Object13354
+    4300040: Object13357
+    4300042: Object13364
+    4300044: houcang
+    4300046: jiashicangmen
+    4300048: menqiang
+    4300050: M171_jiashicang_01_01
+    4300052: M171_bl
+    4300054: Object13348
+    4300056: L_houmen
+    4300058: L_AC313_boli001
+    4300060: L_AC313_jishen001
+    4300062: L_AC313_yinqing001
+    4300064: L_AC313_luntai001
+    4300066: Object003
+    4300068: L_lingjian
+    4300070: Object006
+    4300072: L_zuo_QM
+    4300074: L_boli_02
+    4300076: L_you_QM
+    4300078: L_you_LM
+    4300080: L_zuo_LM
+    4300082: AC313_jiaota_004
+    4300084: AC313_jiaota_005
+    4300086: AC313_jiaota_006
+    4300088: L_AC313_weiyi001
+    4300090: L_AC313_xuanyi001
+    4300092: L_boli_04
+    4300094: L_boli_01
+    4300096: L_boli_03
+    4300098: jiashicang
+    4300100: jitou
+    4300102: AC313_jiaota_007
+    4300104: AC313_jiaota_008
+    4300106: "\u5F00\u53E3"
+    4300108: "\u5F00\u53E3 \u5185\u90E8"
+    4300110: "\u5F00\u53E3 \u5916\u90E8"
+    4300112: "\u5BF9\u8C61001"
+    4300114: "\u5BF9\u8C61002"
+    4300116: "\u5BF9\u8C61003"
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: AC313_cegan
+    13700002: AC313_cegan001
+    13700004: AC313_jiaota_003
+    13700006: AC313_jiaota_005
+    13700008: AC313_jiaota_006
+    13700010: AC313_jiaota_01
+    13700012: AC313_yaogan
+    13700014: AC313_yaogan001
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AC313_cegan
+    second: {fileID: 2100000, guid: 11029cc6b07c94f458633a420816820f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AC313_jiaota
+    second: {fileID: 2100000, guid: 45d7cccb8af4ed441a82896a513a6b7a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AC313_jiashicang_01
+    second: {fileID: 2100000, guid: f5e7d921f9203294bb5187629d696f98, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AC313_menneibu
+    second: {fileID: 2100000, guid: 15609acf68309fd44ae524cf08b31dc4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AC313_yaogan
+    second: {fileID: 2100000, guid: 3c53b56b982f02449b0ad560d38ae34e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AC313_yibiaopan_01
+    second: {fileID: 2100000, guid: cda6207cc07f3104ab58f73f0f73b0dd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AC313_yuanbiao
+    second: {fileID: 2100000, guid: 1abb983f0edf23b40aafe3f9c2b3596c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AC313_zuoyii_1
+    second: {fileID: 2100000, guid: 6e156e74eeccfba4391ae9800f5de02f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L_AC313_boli
+    second: {fileID: 2100000, guid: 89f011815afad06438696b289c65f14d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L_AC313_jishen
+    second: {fileID: 2100000, guid: 638d5c5bf62100c4a8cc3a98a4612b0d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L_AC313_lingjian
+    second: {fileID: 2100000, guid: d1b4fdc2329fc654091c983ccd068f9c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L_AC313_xuanyi
+    second: {fileID: 2100000, guid: 15886d41a68e96040ba79f482c5b78f7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: L_AC313_yinqing
+    second: {fileID: 2100000, guid: 0cbd8fbb69d4e3442bae825893fddb30, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #374'
+    second: {fileID: 2100000, guid: 638d5c5bf62100c4a8cc3a98a4612b0d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: 9c286ce1b7e8f2344be0716b22ecce48, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: biaopan_4
+    second: {fileID: 2100000, guid: 8eb2f8ef00f39554ab21ef683818ff23, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: biaopan_5
+    second: {fileID: 2100000, guid: ac6987a567df320459362ab70aca5ecd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: houcang
+    second: {fileID: 2100000, guid: 23981b5ea2e8d144aa3f8a08e48bae64, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: jiashicangmen
+    second: {fileID: 2100000, guid: b1c301a0d066be24491c5379fd66995d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: menqiang
+    second: {fileID: 2100000, guid: 10189751274fe8045a9153d201c055ce, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

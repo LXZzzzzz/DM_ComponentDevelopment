@@ -80,13 +80,13 @@ public class TestLogic : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            MyDataInfo.gameState = GameState.GameStart;
-            EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "IconShow", null);
+            // MyDataInfo.gameState = GameState.GameStart;
+            // EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "IconShow", null);
             UIManager.Instance.ShowPanel<UIMap>(UIName.UIMap, new Vector2(18000, 18000));
-            UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
-            UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
+            // UIManager.Instance.ShowPanel<UITopMenuView>(UIName.UITopMenuView, 1);
+            // UIManager.Instance.ShowPanel<UICommanderView>(UIName.UICommanderView, 1);
             // UIManager.Instance.ShowPanel<UICommanderDirector>(UIName.UICommanderDirector, null);
-            EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "AttributeView", null);
+            // EventManager.Instance.EventTrigger<string, object>(Enums.EventType.ShowUI.ToString(), "AttributeView", null);
             // initLine();
         }
 

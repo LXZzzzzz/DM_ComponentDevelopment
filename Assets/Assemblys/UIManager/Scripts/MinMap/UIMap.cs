@@ -45,12 +45,16 @@ public class UIMap : BasePanel, IPointerClickHandler
     private string personData, misDescriptionData, kongguanData, tianqiData;
 
     private GameObject leftPart, rightPart;
+    public List<RectTransform> beRefreshView;
+    [HideInInspector] public Toggle distanceMeasurementTog;
+    [HideInInspector] public Transform meaDisMask;
 
     public override void Init()
     {
         base.Init();
         mapView = transform.Find("maxMap/map").GetComponent<RectTransform>();
         iconCellParent = transform.Find("maxMap/objects").GetComponent<RectTransform>();
+        meaDisMask = transform.Find("maxMap/meaDisMask").GetComponent<RectTransform>();
         airIconPrefab = transform.Find("prefabs/airCell").GetComponent<AirIconCell>();
         pointIconPrefab = transform.Find("prefabs/pointCell").GetComponent<PointIconCell>();
         ziYuanIconPrefab = transform.Find("prefabs/ziyuanCell").GetComponent<ZiYuanIconCell>();
@@ -61,6 +65,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Toggle>("tog_Map").onValueChanged.AddListener(OnCloseMap);
         GetControl<Button>("Btn_CreatFirePoint").onClick.AddListener(() => OnOpenCreatZaiqu(1));
         GetControl<Button>("Btn_CreatDisaster").onClick.AddListener(() => OnOpenCreatZaiqu(2));
+        GetControl<Button>("Btn_DeleteDis").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.deleteDisShow)));
         GetControl<Button>("Btn_ChangeTQ").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.TqChange)));
         GetControl<Button>("Btn_Malfunction").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.zbgzChange)));
         GetControl<Button>("Btn_Zqxx").onClick.AddListener(() => OnClickZqxx(1));
@@ -93,7 +98,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_GroundDisaster").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.GroundDisaster)));
         GetControl<Button>("Btn_Equips").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.EquipsShow)));
         GetControl<Button>("Btn_Person").onClick.AddListener(() => UIManager.Instance.ShowPanel<UIChangeZyData>(UIName.UIChangeZyData, new ShowNoInputData((int)ShowZyDataType.PersonShow)));
-
+        distanceMeasurementTog = GetControl<Toggle>("distanceMeasurementTog");
+        
         routeDecorateGo = transform.Find("maxMap/objects/routeDecorate").gameObject;
         startPoint = transform.Find("maxMap/objects/routeDecorate/startPoint").GetComponent<RectTransform>();
         middlePoint = transform.Find("maxMap/objects/routeDecorate/middlePoint").GetComponent<RectTransform>();
@@ -138,6 +144,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetAllZaiquTemplate();
         GetControl<Toggle>("xxqrTog").gameObject.SetActive(MyDataInfo.MyLevel == 1);
         GetControl<Toggle>("jzOperatorTog").gameObject.SetActive(MyDataInfo.MyLevel == 3);
+        GetControl<Button>("Btn_CreatFirePoint").gameObject.SetActive(MyDataInfo.gameScene == 1);
+        GetControl<Button>("Btn_CreatDisaster").gameObject.SetActive(MyDataInfo.gameScene == 2);
     }
 
     private void GetAllZaiquTemplate()
@@ -301,7 +309,6 @@ public class UIMap : BasePanel, IPointerClickHandler
     private void Start()
     {
 #if UNITY_EDITOR
-        mapBLx = 3600f / mapView.sizeDelta.x;
         MyDataInfo.sceneAllEquips = new List<EquipBase>();
         // uiCameraSize = GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
         Debug.Log("uiCameraSize：" + uiCameraSize);
@@ -317,7 +324,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         allIconCells = new Dictionary<string, IconCellBase>();
         mapLogics = new Dictionary<OperatorState, MapOperateLogicBase>();
 
-        SwitchMapLogic(OperatorState.CreatAndEditor);
+        SwitchMapLogic(OperatorState.PlanningPath);
         EventManager.Instance.EventTrigger<object>(EventType.TransferEditingInfo.ToString(), MyDataInfo.sceneAllEquips);
 #endif
     }
@@ -368,13 +375,9 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_NewDisaster").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_Tqbhsb").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_Zbgzsb").gameObject.SetActive(MyDataInfo.MyLevel == 3 && MyDataInfo.gameState >= GameState.GameStart);
-
+        beRefreshView.ForEach(LayoutRebuilder.ForceRebuildLayoutImmediate);
         currentMapLogic?.OnUpdate();
         routeDecorateGo.transform.SetAsLastSibling();
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Debug.LogError(Screen.width + "=" + Screen.height);
-        }
     }
 
     public void OnPointerClick(PointerEventData eventData)

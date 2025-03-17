@@ -59,7 +59,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.AddEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnCreatZaiQuZy);
         EventManager.Instance.AddEventListener<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), OnSendCreatZaiQuZy);
         EventManager.Instance.AddEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
-        EventManager.Instance.AddEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
+        EventManager.Instance.AddEventListener<List<string>>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
         EventManager.Instance.AddEventListener<int>(EventType.AskForReturnTrigger.ToString(), OnAskForReturn);
         EventManager.Instance.AddEventListener<string>(EventType.requestTrainingPointData.ToString(), OnGetTrainsPointData);
         EventManager.Instance.AddEventListener<int>(EventType.requestPeculiarData.ToString(), OnGetPeculiarData);
@@ -82,7 +82,7 @@ public partial class CommanderController : DMonoBehaviour
         EventManager.Instance.RemoveEventListener<string, Vector3>(EventType.CreatZaiQuZy.ToString(), OnCreatZaiQuZy);
         EventManager.Instance.RemoveEventListener<ZyVariableDataBase>(EventType.CreatZaiQuZyRun.ToString(), OnSendCreatZaiQuZy);
         EventManager.Instance.RemoveEventListener<Vector2>(EventType.MarkMapPoints.ToString(), OnSendMarkMapPoint);
-        EventManager.Instance.RemoveEventListener<string>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
+        EventManager.Instance.RemoveEventListener<List<string>>(EventType.DestoryZaiQuzy.ToString(), OnSendDeleZaiQuzy);
         EventManager.Instance.RemoveEventListener<int>(EventType.AskForReturnTrigger.ToString(), OnAskForReturn);
         EventManager.Instance.RemoveEventListener<string>(EventType.requestTrainingPointData.ToString(), OnGetTrainsPointData);
         EventManager.Instance.RemoveEventListener<int>(EventType.requestPeculiarData.ToString(), OnGetPeculiarData);
@@ -466,16 +466,12 @@ public partial class CommanderController : DMonoBehaviour
         OnSendSkillInfo((int)MessageID.SendChangeZaiqu, creatDataStr);
     }
 
-    private void OnSendDeleZaiQuzy(string zyid)
+    private void OnSendDeleZaiQuzy(List<string> zysid)
     {
         if (MyDataInfo.MyLevel > 0) return;
 
-        CreatZaiquData data = new CreatZaiquData()
-        {
-            zaiquId = zyid, isDele = 1
-        };
-        var creatDataStr = MsgSend_CreatZaiqu(data);
-        OnSendSkillInfo((int)MessageID.SendChangeZaiqu, creatDataStr);
+        Debug.LogError("需要删除的" + string.Join('_', zysid));
+        OnSendSkillInfo((int)MessageID.SendDeleZaiqu, string.Join('_', zysid));
     }
 
     private void OnSendMarkMapPoint(Vector2 mapPoint)

@@ -1031,6 +1031,7 @@ MonoBehaviour:
   UIAirLineInfoShow: {fileID: 0}
   UISendTaskInfoShow: {fileID: 0}
   UISubjectiveRatingView: {fileID: 0}
+  UIPeculiarInfoShow: {fileID: 0}
 --- !u!1001 &783700336
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1187,7 +1188,7 @@ PrefabInstance:
     - target: {fileID: 8056713718229582192, guid: 7ce94dfc2103d5741b6288bba89f1160,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1781,7 +1782,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1537503641
 Transform:
   m_ObjectHideFlags: 0
@@ -2364,6 +2365,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UiManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742606968271135191, guid: 13861a70b510f7e448a80feca267c02e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4383816551348043210, guid: 13861a70b510f7e448a80feca267c02e,
         type: 3}

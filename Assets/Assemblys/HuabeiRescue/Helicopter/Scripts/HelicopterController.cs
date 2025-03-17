@@ -101,11 +101,6 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         float itemGroundHight = GetCurrentGroundHeight(out bool isHit);
         position = new Vector3(position.x, isHit ? itemGroundHight : defaultFlyHight, position.z);
         transform.position = position;
-        anis = transform.GetComponentsInChildren<Animation>();
-        for (int i = 0; i < anis.Length; i++)
-        {
-            anis[i].Stop();
-        }
 
         flyLine = gameObject.AddComponent<LineRenderer>();
         flyLine.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
@@ -117,15 +112,6 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         flyLine.endColor = Color.blue;
         positions = new Vector3[2];
         initialScale = transform.localScale;
-        if (myass.Count == 0)
-        {
-            var ass = transform.GetComponentsInChildren<AudioSource>();
-            for (int i = 0; i < ass.Length; i++)
-            {
-                if (ass[i].enabled) myass.Add(ass[i]);
-            }
-        }
-        myass.ForEach(a => a.volume = 0.3f);
     }
 
     private void InitData()
@@ -148,6 +134,17 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         mywms = new List<WingMark>();
         isStartAutoRun = false;
 
+        anis = transform.GetComponentsInChildren<Animation>();
+        playanim(false);
+        if (myass.Count == 0)
+        {
+            var ass = transform.GetComponentsInChildren<AudioSource>();
+            for (int i = 0; i < ass.Length; i++)
+            {
+                if (ass[i].enabled) myass.Add(ass[i]);
+            }
+        }
+        myass.ForEach(a => a.volume = 0.3f);
         mywms.AddRange(transform.GetComponentsInChildren<WingMark>(true));
     }
 

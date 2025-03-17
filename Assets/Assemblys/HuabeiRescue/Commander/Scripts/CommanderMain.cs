@@ -373,6 +373,9 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
                 sender.LogError("收到创建灾区的消息");
                 _commanderController.Receive_CreatZaiqu(param);
                 break;
+            case MessageID.SendDeleZaiqu:
+                _commanderController.Receive_DeleZaiqu(param);
+                break;
             case MessageID.SendPathPlanningData:
                 //收到规划数据，展示到界面上，
                 _commanderController.Receive_PathPlanningData(param);

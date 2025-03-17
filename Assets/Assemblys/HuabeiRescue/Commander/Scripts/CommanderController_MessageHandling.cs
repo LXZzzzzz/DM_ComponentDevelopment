@@ -297,10 +297,11 @@ public partial class CommanderController
     {
         var itemdata = MsgReceive_CreatZaiqu(data);
         OnChangeZaiqu(itemdata);
-            
+        if (itemdata.isDele == 1) return;
+
         //记录一次特情，并记录特情描述信息
-        if(MyDataInfo.MyLevel==-1)
-            OnSavePeculiarData(1,"新发现灾情");
+        if (MyDataInfo.MyLevel == -1)
+            OnSavePeculiarData(1, "新发现灾情");
 
         //创建完后，如果不是机长，就先隐藏掉
         if (MyDataInfo.MyLevel != 3 && MyDataInfo.MyLevel != -1)
@@ -308,6 +309,27 @@ public partial class CommanderController
 
         if (MyDataInfo.MyLevel == 3)
             EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "有新发现灾情");
+    }
+
+    public void Receive_DeleZaiqu(string data)
+    {
+        var datas = data.Split('_');
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 1);
+        for (int j = 0; j < datas.Length; j++)
+        {
+            for (int i = 0; i < sceneAllzy.Count; i++)
+            {
+                if (string.Equals(sceneAllzy[i].BobjectId, datas[j]))
+                {
+                    EventManager.Instance.EventTrigger(EventType.DestoryZiyuanIcon.ToString(), datas[j]);
+                    Destroy(sceneAllzy[i].gameObject);
+                    sceneAllzy.RemoveAt(i);
+                    MyDataInfo.sceneAllZiYuan.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
     }
 
     public void Receive_ShowMarkPoint(string data)
@@ -359,16 +381,16 @@ public partial class CommanderController
             (item as IDqChangePart)?.ChangeCurrentState(int.Parse(itemData[1]));
             if (MyDataInfo.MyLevel == 3 && string.Equals(myEquip.BObjectId, itemData[0]))
                 ShowMyEquipState(int.Parse(itemData[1]));
-            if(MyDataInfo.MyLevel==1)
+            if (MyDataInfo.MyLevel == 1)
             {
                 if (!guzhangInfoStr.ContainsKey(itemData[0]))
                     guzhangInfoStr.Add(itemData[0], guzhangInfo[int.Parse(itemData[1])]);
                 guzhangInfoStr[itemData[0]] = guzhangInfo[int.Parse(itemData[1])];
             }
         }
-        
-        if(MyDataInfo.MyLevel==-1)
-            OnSavePeculiarData(1,"装备发生故障");
+
+        if (MyDataInfo.MyLevel == -1)
+            OnSavePeculiarData(1, "装备发生故障");
     }
 
     public void Receive_SetTaskBg(string data)

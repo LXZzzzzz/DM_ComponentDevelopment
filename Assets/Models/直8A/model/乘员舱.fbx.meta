@@ -1,0 +1,313 @@
+fileFormatVersion: 2
+guid: c19379a598dcb254e8a27374f83abd0c
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: houcangmen_ding
+    100002: shangcangdinng
+    100004: Z8-N-yiqi
+    100006: Z8-N_jishen
+    100008: //RootNode
+    100010: "\u5BF9\u8C61173"
+    100012: "\u5E95\u8231\u95E8"
+    100014: "\u5BF9\u8C61476"
+    100016: Cylinder983
+    100018: "\u5BF9\u8C61477"
+    100020: "\u5BF9\u8C61480"
+    100022: Box098
+    100024: "\u5BF9\u8C61481"
+    100026: Cylinder985
+    100028: Z8_menbian
+    100030: Z8_YIZI
+    100032: "\u5BF9\u8C61483"
+    100034: Box652
+    100036: fan
+    100038: fan001
+    100040: fan002
+    100042: fanBlaed
+    100044: fanBlaed001
+    100046: fanBlaed002
+    100048: fanBody
+    100050: fanBody001
+    100052: fanBody002
+    400000: houcangmen_ding
+    400002: shangcangdinng
+    400004: Z8-N-yiqi
+    400006: Z8-N_jishen
+    400008: //RootNode
+    400010: "\u5BF9\u8C61173"
+    400012: "\u5E95\u8231\u95E8"
+    400014: "\u5BF9\u8C61476"
+    400016: Cylinder983
+    400018: "\u5BF9\u8C61477"
+    400020: "\u5BF9\u8C61480"
+    400022: Box098
+    400024: "\u5BF9\u8C61481"
+    400026: Cylinder985
+    400028: Z8_menbian
+    400030: Z8_YIZI
+    400032: "\u5BF9\u8C61483"
+    400034: Box652
+    400036: fan
+    400038: fan001
+    400040: fan002
+    400042: fanBlaed
+    400044: fanBlaed001
+    400046: fanBlaed002
+    400048: fanBody
+    400050: fanBody001
+    400052: fanBody002
+    2100000: Z8-Nyiqi
+    2100002: Z8-N-yiqi
+    2100004: Z8-N_jishen
+    2100006: Z8-N_ce
+    2100008: Z8-N_ding
+    2100010: zi
+    2100012: touming
+    2300000: houcangmen_ding
+    2300002: shangcangdinng
+    2300004: Z8-N-yiqi
+    2300006: Z8-N_jishen
+    2300008: "\u5BF9\u8C61173"
+    2300010: "\u5E95\u8231\u95E8"
+    2300012: "\u5BF9\u8C61476"
+    2300014: Cylinder983
+    2300016: "\u5BF9\u8C61477"
+    2300018: "\u5BF9\u8C61480"
+    2300020: Box098
+    2300022: "\u5BF9\u8C61481"
+    2300024: Cylinder985
+    2300026: Z8_menbian
+    2300028: Z8_YIZI
+    2300030: "\u5BF9\u8C61483"
+    2300032: Box652
+    2300034: fanBlaed
+    2300036: fanBlaed001
+    2300038: fanBlaed002
+    2300040: fanBody
+    2300042: fanBody001
+    2300044: fanBody002
+    3300000: houcangmen_ding
+    3300002: shangcangdinng
+    3300004: Z8-N-yiqi
+    3300006: Z8-N_jishen
+    3300008: "\u5BF9\u8C61173"
+    3300010: "\u5E95\u8231\u95E8"
+    3300012: "\u5BF9\u8C61476"
+    3300014: Cylinder983
+    3300016: "\u5BF9\u8C61477"
+    3300018: "\u5BF9\u8C61480"
+    3300020: Box098
+    3300022: "\u5BF9\u8C61481"
+    3300024: Cylinder985
+    3300026: Z8_menbian
+    3300028: Z8_YIZI
+    3300030: "\u5BF9\u8C61483"
+    3300032: Box652
+    3300034: fanBlaed
+    3300036: fanBlaed001
+    3300038: fanBlaed002
+    3300040: fanBody
+    3300042: fanBody001
+    3300044: fanBody002
+    4300000: Z8-N-yiqi
+    4300002: Z8-N_jishen
+    4300004: "\u5E95\u8231\u95E8"
+    4300006: "\u5BF9\u8C61173"
+    4300008: shangcangdinng
+    4300010: houcangmen_ding
+    4300012: "\u5BF9\u8C61476"
+    4300014: Cylinder983
+    4300016: "\u5BF9\u8C61477"
+    4300018: "\u5BF9\u8C61480"
+    4300020: Box098
+    4300022: "\u5BF9\u8C61481"
+    4300024: Z8_YIZI
+    4300026: Z8_menbian
+    4300028: Cylinder985
+    4300030: "\u5BF9\u8C61483"
+    4300032: fanBody
+    4300034: fanBlaed
+    4300036: fanBlaed001
+    4300038: fanBody001
+    4300040: fanBlaed002
+    4300042: fanBody002
+    4300044: Box652
+    7400000: Take 001
+    9500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MENBIAN
+    second: {fileID: 2100000, guid: 238d2d6b30acf914abb8fdb104fde247, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #1097'
+    second: {fileID: 2100000, guid: 5d155042bd536dd43b8bc6e79e874491, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #1330'
+    second: {fileID: 2100000, guid: b16f0168d5e47864a9276467f1c09bd4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #1359'
+    second: {fileID: 2100000, guid: 8db8f9602ba567c438636434bfce9be8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #1384'
+    second: {fileID: 2100000, guid: 9adf185786493fa40be561b1bdaac76f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #1385'
+    second: {fileID: 2100000, guid: 9adf185786493fa40be561b1bdaac76f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #667'
+    second: {fileID: 2100000, guid: 17969e832e1ad684dacc5a3dc341f784, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'PEIJIAN Slot #7'
+    second: {fileID: 2100000, guid: 675b6e9c758b69a4084adf04de22e51f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: YIQI
+    second: {fileID: 2100000, guid: 62e47653940a04e49b786fd662436eea, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: YIZI
+    second: {fileID: 2100000, guid: 387b31d8108663a468df1663685cd41a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Z8-N-yiqi
+    second: {fileID: 2100000, guid: 62e47653940a04e49b786fd662436eea, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Z8-N_ce
+    second: {fileID: 2100000, guid: e1cae24109ff41746a62355c29961ebb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Z8-N_ding
+    second: {fileID: 2100000, guid: 4e64ed0a60f3e15438cfe10b7477b1a6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Z8-N_jishen
+    second: {fileID: 2100000, guid: 0cf0e0399f10507439bca3bf1f3b08e0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Z8-Nyiqi
+    second: {fileID: 2100000, guid: 8fe24c18f9fe3924fa1ca276d075983b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: chair
+    second: {fileID: 2100000, guid: 1118bca5d474f2640b49d8004328b701, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: touming
+    second: {fileID: 2100000, guid: 53fde2e4bba2d3b4bade13ed3fbfffd0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: zi
+    second: {fileID: 2100000, guid: 8fe24c18f9fe3924fa1ca276d075983b, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -45,11 +45,7 @@ public class UITopMenuView : BasePanel
         GetControl<Button>("btn_Release").onClick.AddListener(release);
         GetControl<Button>("btn_StandAlone").onClick.AddListener(standAlone);
         GetControl<Button>("btn_Online").onClick.AddListener(onLine);
-        GetControl<Button>("btn_scbg").onClick.AddListener(() =>
-        {
-            putAwayMenu();
-            EventManager.Instance.EventTrigger(EventType.GeneratePDF.ToString());
-        });
+        GetControl<Button>("btn_scbg").onClick.AddListener(OnGeneratePdf);
         GetControl<Button>("btn_zgdf").onClick.AddListener(() =>
         {
             putAwayMenu();

@@ -13,6 +13,7 @@ namespace UiManager
         private Canvas upper;
         private Canvas middle;
         private Canvas below;
+        private Canvas playBack;
 
         //public Camera UICamera;
         public Dictionary<string, List<BasePanel>> panelDic;
@@ -37,6 +38,7 @@ namespace UiManager
                 upper = transform.Find("Canvas_Upper").GetComponent<Canvas>();
                 middle = transform.Find("Canvas_Middle").GetComponent<Canvas>();
                 below = transform.Find("Canvas_Below").GetComponent<Canvas>();
+                playBack = transform.Find("Canvas_PlayBack").GetComponent<Canvas>();
             }
             catch (Exception e)
             {
@@ -142,6 +144,9 @@ namespace UiManager
                         break;
                     case BasePanel.UIType.below:
                         canvansTran = below.transform;
+                        break;
+                    case BasePanel.UIType.playBack:
+                        canvansTran = playBack.transform;
                         break;
                 }
             }

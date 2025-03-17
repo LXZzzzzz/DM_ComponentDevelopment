@@ -116,6 +116,7 @@ namespace Enums
         SendReportZbgz = 1044, //发送上报装备故障
         SendAgreeTianQi = 1045, //确认天气变化
         SendAgreeZbgz = 1046, //确认装备故障
+        SendDeleZaiqu = 1047, //导教端删除灾区
 
 
         TriggerGroundReady = 1101, //触发起飞前准备操作
@@ -156,6 +157,7 @@ namespace Enums
         PersonShow, //导教端人员信息展示
         TqChange, //导教端天气变化设置界面
         zbgzChange, //导教端装备故障设置界面
+        deleteDisShow, //导教端删除灾区页面
 
         zqxxShow, //一级展示灾情信息
         zbxxShow, //展示装备信息
@@ -183,5 +185,11 @@ namespace Enums
         JZOilInsufficient, //机长发生燃油不足告警
         JZLandingError, //机长着陆区域错误
         JZSendTqInfo, //机长发送特情信息
+    }
+
+    public enum HelicopterType
+    {
+        Z8A,
+        AC313A
     }
 }

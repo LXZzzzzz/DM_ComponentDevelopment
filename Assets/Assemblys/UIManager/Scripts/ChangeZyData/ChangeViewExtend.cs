@@ -83,6 +83,66 @@ public class DisasterDataView : ChangeDataBase
     }
 }
 
+//删除灾区功能
+public class DeleteDisView : ChangeDataBase
+{
+    private GameObject view;
+    private RectTransform disParent;
+    private ChangeData_cellZyItem disTemplate;
+    private List<ChangeData_cellZyItem> dises;
+
+    protected override void OnInit()
+    {
+        view = mainView.transform.Find("OverallView/View/infos/deletedisPart").gameObject;
+        disTemplate = view.transform.GetComponentInChildren<ChangeData_cellZyItem>(true);
+        disParent = view.transform.GetComponentInChildren<ScrollRect>(true).content;
+        dises = new List<ChangeData_cellZyItem>();
+    }
+
+    public override void OnShow(object data)
+    {
+        view.SetActive(true);
+        mainView.ChangeViewSize(1);
+        mainView.ChangeTitleInfo("删除灾区");
+        for (int i = 0; i < MyDataInfo.sceneAllZiYuan.Count; i++)
+        {
+            var itemDis = MyDataInfo.sceneAllZiYuan[i];
+            if (itemDis.ZiYuanType == ZiYuanType.SourceOfAFire || itemDis.ZiYuanType == ZiYuanType.DisasterArea)
+            {
+                var disItem = GameObject.Instantiate(disTemplate, disParent);
+                disItem.Init(itemDis.ziYuanName, itemDis.BobjectId, false);
+                disItem.gameObject.SetActive(true);
+                dises.Add(disItem);
+            }
+        }
+    }
+
+    public override void OnHide()
+    {
+        for (int i = 0; i < dises.Count; i++)
+        {
+            GameObject.Destroy(dises[i].gameObject);
+        }
+
+        dises.Clear();
+        view.SetActive(false);
+    }
+
+    public override void OnSave()
+    {
+        List<string> chooseZy = new List<string>();
+        for (int i = 0; i < dises.Count; i++)
+        {
+            if (dises[i].GetIsChoose())
+            {
+                chooseZy.Add(dises[i].zyId);
+            }
+        }
+
+        EventManager.Instance.EventTrigger(EventType.DestoryZaiQuzy.ToString(), chooseZy);
+    }
+}
+
 //资源分配
 public class ZYFPPartView : ChangeDataBase
 {
@@ -157,10 +217,12 @@ public class ZYFPPartView : ChangeDataBase
 
     public override void OnHide()
     {
-        for (int i = 0; i < zyParent.childCount; i++)
+        for (int i = 0; i < zys.Count; i++)
         {
-            GameObject.Destroy(zyParent.GetChild(i).gameObject);
+            GameObject.Destroy(zys[i].gameObject);
         }
+
+        zys.Clear();
 
         dpSwitchE.onValueChanged.RemoveAllListeners();
         view.SetActive(false);
@@ -1128,8 +1190,8 @@ public class FieldCommanderView : ChangeDataBase
         loadMax.text = load.ToString();
         maxOil = oil;
         maxZzl = load;
-        zyl.value = float.Parse(equipsInfo[index].zyl) / oil;
-        zzl.value = float.Parse(equipsInfo[index].zzl) / load;
+        zyl.value = string.IsNullOrEmpty(equipsInfo[index].zyl) ? 0 : float.Parse(equipsInfo[index].zyl) / oil;
+        zzl.value = string.IsNullOrEmpty(equipsInfo[index].zzl) ? 0 : float.Parse(equipsInfo[index].zzl) / load;
         if (isDaojiaoShow)
         {
             OnChangeOilNum(zyl.value);
