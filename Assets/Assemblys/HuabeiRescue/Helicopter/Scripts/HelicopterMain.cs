@@ -65,18 +65,30 @@ public class HelicopterMain : ScriptManager
         base.RunModeInitialized(isRoomCreator, info);
         HelicopterController logic;
         var hType = GetComponentInChildren<HelicopterTypeMark>()?.type;
-        switch (hType)
-        {
-            case HelicopterType.Z8A:
-                logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_Z8A>();
-                break;
-            case HelicopterType.AC313A:
-                logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_AC313A>();
-                break;
-            default:
-                logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController>();
-                break;
-        }
+        if (hType != null)
+            switch ((HelicopterType)hType)
+            {
+                case HelicopterType.Z8A:
+                    logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_Z8A>();
+                    break;
+                case HelicopterType.AC313A:
+                    logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_AC313A>();
+                    break;
+                case HelicopterType.Mi171:
+                    logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_Mi171>();
+                    break;
+                case HelicopterType.Ka32:
+                    logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_Ka32>();
+                    break;
+                case HelicopterType.S76:
+                    logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController_S76>();
+                    break;
+                case HelicopterType.Ac352:
+                default:
+                    logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController>();
+                    break;
+            }
+        else logic = gameObject.transform.GetChild(0).gameObject.AddComponent<HelicopterController>();
 
         if (logic == null)
         {

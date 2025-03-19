@@ -1,7 +1,8 @@
+using System;
 using Enums;
 using UnityEngine;
 
 public class HelicopterTypeMark : DMonoBehaviour
 {
-    public HelicopterType type;
+    public int type;
 }

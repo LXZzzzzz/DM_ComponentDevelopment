@@ -10,7 +10,6 @@ public class HelicopterController_Z8A : HelicopterController
 
     public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
     {
-        base.Init(baseData, sceneAllZiyuan);
         zhuan = GetComponentInChildren<Animation>(true);
         audios = new List<AudioSource>();
         var ass = transform.GetComponentsInChildren<AudioSource>(true);
@@ -19,7 +18,7 @@ public class HelicopterController_Z8A : HelicopterController
             audios.Add(ass[i]);
         }
 
-        playanim(false);
+        base.Init(baseData, sceneAllZiyuan);
     }
 
     public override void playanim(bool isPlay)
@@ -36,10 +35,16 @@ public class HelicopterController_Z8A : HelicopterController
             }
 
 
+            Debug.LogError(audios.Count);
+            for (int i = 0; i < audios.Count; i++)
+            {
+                Debug.LogError(audios[i].clip.name);
+            }
+
             audios.ForEach(a => a.volume = 0.3f);
             audios.ForEach(a => a.pitch = 1);
             audios.ForEach(a => a.Play());
-            audios.ForEach(x => x.gameObject.SetActive(MyDataInfo.MyLevel == 3));
+            audios.ForEach(x => x.gameObject.SetActive(true));
             zhuan.Play();
         }
         else

@@ -48,7 +48,7 @@ public class AirPortPointLogic : ZiYuanBase, IAirPort
         {
             GameObject itemEquip = MyDataInfo.sceneAllEquips.Find(x => string.Equals(x.BObjectId, allDockingAircraft[i])).gameObject;
             itemEquip.transform.rotation = transform.rotation;
-            itemEquip.transform.position = prestorePoints[i];
+            itemEquip.transform.position = new Vector3(prestorePoints[i].x, itemEquip.transform.position.y, prestorePoints[i].z);
         }
     }
 

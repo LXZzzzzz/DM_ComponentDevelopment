@@ -9,7 +9,6 @@ public class HelicopterController_AC313A : HelicopterController
     private List<AudioSource> audios;
     public override void Init(EquipBase baseData, List<ZiYuanBase> sceneAllZiyuan)
     {
-        base.Init(baseData, sceneAllZiyuan);
         
         zhuan = GetComponentInChildren<Animation>(true);
         audios = new List<AudioSource>();
@@ -19,7 +18,7 @@ public class HelicopterController_AC313A : HelicopterController
             audios.Add(ass[i]);
         }
 
-        playanim(false);
+        base.Init(baseData, sceneAllZiyuan);
     }
 
     public override void playanim(bool isPlay)
@@ -28,7 +27,7 @@ public class HelicopterController_AC313A : HelicopterController
         {
             foreach (AnimationState state in zhuan)
             {
-                if (string.Equals(state.clip.name, "rotorLoop"))
+                if (string.Equals(state.clip.name, "AC313A rotorLoop"))
                 {
                     zhuan.clip = state.clip;
                     break;
@@ -46,7 +45,7 @@ public class HelicopterController_AC313A : HelicopterController
         {
             foreach (AnimationState state in zhuan)
             {
-                if (string.Equals(state.clip.name, "rotorStop"))
+                if (string.Equals(state.clip.name, "AC313A rotorStop"))
                 {
                     zhuan.clip = state.clip;
                     break;
@@ -54,7 +53,7 @@ public class HelicopterController_AC313A : HelicopterController
             }
 
             zhuan.Play();
-            zhuan["rotorStop"].normalizedTime = 1;
+            zhuan["AC313A rotorStop"].normalizedTime = 1;
             audios.ForEach(x => x.gameObject.SetActive(false));
         }
     }

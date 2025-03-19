@@ -1,0 +1,1454 @@
+fileFormatVersion: 2
+guid: 026a0cf94bb65564c89783b8f3dc167b
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Box008
+    100004: Box009
+    100006: Box015
+    100008: Box026
+    100010: Box027
+    100012: Box058
+    100014: Box090
+    100016: Box091
+    100018: Box094
+    100020: Box111
+    100022: Cylinder012
+    100024: Cylinder020
+    100026: Cylinder022
+    100028: Cylinder023
+    100030: Cylinder024
+    100032: Cylinder032
+    100034: Cylinder037
+    100036: Cylinder040
+    100038: Cylinder067
+    100040: Cylinder071
+    100042: Cylinder072
+    100044: Cylinder073
+    100046: Cylinder074
+    100048: Cylinder075
+    100050: Cylinder076
+    100052: Cylinder077
+    100054: Cylinder078
+    100056: Cylinder079
+    100058: Cylinder080
+    100060: Cylinder081
+    100062: Cylinder082
+    100064: Cylinder083
+    100066: Cylinder084
+    100068: Cylinder085
+    100070: Cylinder086
+    100072: Cylinder087
+    100074: Cylinder088
+    100076: Cylinder089
+    100078: Cylinder090
+    100080: Cylinder091
+    100082: Cylinder092
+    100084: Cylinder093
+    100086: Cylinder094
+    100088: Cylinder095
+    100090: Cylinder096
+    100092: Cylinder097
+    100094: Cylinder098
+    100096: Cylinder099
+    100098: Cylinder100
+    100100: Cylinder104
+    100102: Cylinder105
+    100104: Cylinder106
+    100106: Cylinder107
+    100108: Cylinder116
+    100110: Cylinder117
+    100112: Cylinder118
+    100114: Cylinder119
+    100116: Cylinder120
+    100118: Cylinder121
+    100120: Cylinder122
+    100122: Cylinder124
+    100124: Cylinder125
+    100126: Cylinder126
+    100128: Cylinder127
+    100130: Cylinder128
+    100132: Cylinder129
+    100134: Cylinder131
+    100136: Cylinder132
+    100138: doors
+    100140: engine
+    100142: enjian
+    100144: frontgear
+    100146: inside
+    100148: jiaoshichang
+    100150: Joystick_right
+    100152: landgears
+    100154: maingearL
+    100156: maingearR
+    100158: pingmu
+    100160: pingmu_1_1
+    100162: pingmu_2_1
+    100164: pingmu_3_1
+    100166: pingmu_4_1
+    100168: pingmu_5_1
+    100170: propeller
+    100172: propeller001
+    100174: propeller002
+    100176: propeller003
+    100178: wenzi 01
+    100180: wings
+    100182: zuoyi
+    100184: "\u526F\u7FFCL"
+    100186: "\u526F\u7FFCR"
+    100188: "\u5347\u964D\u8235L"
+    100190: "\u5347\u964D\u8235R"
+    100192: "\u5BF9\u8C61273"
+    100194: "\u5BF9\u8C61296"
+    100196: "\u5BF9\u8C61318"
+    100198: "\u5BF9\u8C61335"
+    100200: "\u5BF9\u8C61366"
+    100202: "\u5BF9\u8C61395"
+    100204: "\u5BF9\u8C61397"
+    100206: "\u5BF9\u8C61404"
+    100208: "\u5BF9\u8C61405"
+    100210: "\u5BF9\u8C61433"
+    100212: "\u5BF9\u8C61466"
+    100214: "\u5BF9\u8C61467"
+    100216: "\u5BF9\u8C61471"
+    100218: "\u5BF9\u8C61476"
+    100220: "\u5BF9\u8C61482"
+    100222: "\u5C3E\u8235"
+    100224: "\u6270\u6D41\u677F"
+    100226: "\u6270\u6D41\u677F 1"
+    100228: "\u6270\u6D41\u677F 2"
+    100230: "\u6270\u6D41\u677F 3"
+    100232: "\u6270\u6D41\u677F 4"
+    100234: "\u6270\u6D41\u677F 5"
+    100236: "\u6C34\u4ED3"
+    100238: "\u7EC4007"
+    100240: "\u7F1D\u7FFC"
+    100242: "\u7F1D\u7FFC 1"
+    100244: "\u7F1D\u7FFC 2"
+    100246: "\u7F1D\u7FFC 3"
+    100248: "\u8235"
+    100250: "\u895F\u7FFCL1"
+    100252: "\u895F\u7FFCL2"
+    100254: "\u895F\u7FFCR1"
+    100256: "\u895F\u7FFCR2"
+    100258: glass
+    100260: Box132
+    100262: Cylinder136
+    100264: Cylinder138
+    100266: Cylinder144
+    100268: inside 1
+    100270: "\u5BF9\u8C61506"
+    100272: "\u5BF9\u8C61522"
+    100274: "\u5BF9\u8C61523"
+    100276: "\u5BF9\u8C61524"
+    100278: "\u7EC4013"
+    100280: "\u7EC4014"
+    100282: "\u6C34\u5BC6\u95E8"
+    100284: "\u5BF9\u8C61525"
+    100286: "\u5BF9\u8C61526"
+    100288: "\u5BF9\u8C61527"
+    100290: "\u5BF9\u8C61528"
+    100292: "\u5BF9\u8C61529"
+    100294: Cylinder145
+    100296: Cylinder146
+    100298: Box134
+    100300: Cylinder153
+    100302: Cylinder160
+    100304: Tape004
+    100306: "\u7EC4012"
+    100308: "\u5BF9\u8C61551"
+    100310: "\u5BF9\u8C61552"
+    100312: "\u5BF9\u8C61553"
+    100314: Box135
+    100316: "\u6574\u6D41\u7F69"
+    100318: "\u6574\u6D41\u7F69 1"
+    100320: "\u6574\u6D41\u7F69 2"
+    100322: "\u6574\u6D41\u7F69 3"
+    100324: Cylinder161
+    100326: Cylinder162
+    100328: enjian001
+    100330: jiaoshichang001
+    100332: Joystick_right001
+    100334: pingmu001
+    100336: pingmu_1_002
+    100338: pingmu_2_002
+    100340: pingmu_3_002
+    100342: pingmu_4_002
+    100344: pingmu_5_002
+    100346: wenzi 002
+    100348: zuoyi001
+    100350: "\u5BF9\u8C61563"
+    100352: "\u5BF9\u8C61564"
+    100354: "\u5BF9\u8C61565"
+    100356: "\u5BF9\u8C61566"
+    100358: "\u5BF9\u8C61567"
+    100360: "\u5BF9\u8C61568"
+    100362: "\u6C34\u5BC6\u95E8001"
+    100364: "\u7EC4015"
+    100366: anniu
+    100368: anniu001
+    100370: CockpitNew
+    100372: dimian001
+    100374: engine 1
+    100376: flightLight
+    100378: jiashi
+    100380: Joystick_L
+    100382: Joystick_R
+    100384: Joystick_R 1
+    100386: Joystick_R 2
+    100388: kongzhigan
+    100390: kongzhigan-01
+    100392: kongzhigan-02
+    100394: kongzhigan-03
+    100396: kongzhigan-04
+    100398: Light2_L
+    100400: Light2_R
+    100402: light2_T
+    100404: pingmu 05
+    100406: pingmu01
+    100408: pingmu02
+    100410: pingmu04
+    100412: pingmu07
+    100414: pingmu1
+    100416: pingmu2
+    100418: pingmu6
+    100420: rudder_L
+    100422: rudder_R
+    100424: shangpaienjian
+    100426: xiamiankongzhiqi
+    100428: yingjian
+    100430: yizi
+    100432: "\u5BF9\u8C61600"
+    100434: "\u7740\u9646\u706F_F"
+    100436: "\u7740\u9646\u706F_L"
+    100438: "\u7740\u9646\u706F_R"
+    100440: "\u8FC7\u9053"
+    100442: "\u5BF9\u8C61601"
+    100444: "\u811A\u8235L"
+    100446: "\u811A\u8235L 1"
+    100448: "\u811A\u8235R"
+    100450: "\u811A\u8235R 1"
+    100452: FlapLever
+    100454: gearLever
+    100456: yizi001
+    400000: //RootNode
+    400002: Box008
+    400004: Box009
+    400006: Box015
+    400008: Box026
+    400010: Box027
+    400012: Box058
+    400014: Box090
+    400016: Box091
+    400018: Box094
+    400020: Box111
+    400022: Cylinder012
+    400024: Cylinder020
+    400026: Cylinder022
+    400028: Cylinder023
+    400030: Cylinder024
+    400032: Cylinder032
+    400034: Cylinder037
+    400036: Cylinder040
+    400038: Cylinder067
+    400040: Cylinder071
+    400042: Cylinder072
+    400044: Cylinder073
+    400046: Cylinder074
+    400048: Cylinder075
+    400050: Cylinder076
+    400052: Cylinder077
+    400054: Cylinder078
+    400056: Cylinder079
+    400058: Cylinder080
+    400060: Cylinder081
+    400062: Cylinder082
+    400064: Cylinder083
+    400066: Cylinder084
+    400068: Cylinder085
+    400070: Cylinder086
+    400072: Cylinder087
+    400074: Cylinder088
+    400076: Cylinder089
+    400078: Cylinder090
+    400080: Cylinder091
+    400082: Cylinder092
+    400084: Cylinder093
+    400086: Cylinder094
+    400088: Cylinder095
+    400090: Cylinder096
+    400092: Cylinder097
+    400094: Cylinder098
+    400096: Cylinder099
+    400098: Cylinder100
+    400100: Cylinder104
+    400102: Cylinder105
+    400104: Cylinder106
+    400106: Cylinder107
+    400108: Cylinder116
+    400110: Cylinder117
+    400112: Cylinder118
+    400114: Cylinder119
+    400116: Cylinder120
+    400118: Cylinder121
+    400120: Cylinder122
+    400122: Cylinder124
+    400124: Cylinder125
+    400126: Cylinder126
+    400128: Cylinder127
+    400130: Cylinder128
+    400132: Cylinder129
+    400134: Cylinder131
+    400136: Cylinder132
+    400138: doors
+    400140: engine
+    400142: enjian
+    400144: frontgear
+    400146: inside
+    400148: jiaoshichang
+    400150: Joystick_right
+    400152: landgears
+    400154: maingearL
+    400156: maingearR
+    400158: pingmu
+    400160: pingmu_1_1
+    400162: pingmu_2_1
+    400164: pingmu_3_1
+    400166: pingmu_4_1
+    400168: pingmu_5_1
+    400170: propeller
+    400172: propeller001
+    400174: propeller002
+    400176: propeller003
+    400178: wenzi 01
+    400180: wings
+    400182: zuoyi
+    400184: "\u526F\u7FFCL"
+    400186: "\u526F\u7FFCR"
+    400188: "\u5347\u964D\u8235L"
+    400190: "\u5347\u964D\u8235R"
+    400192: "\u5BF9\u8C61273"
+    400194: "\u5BF9\u8C61296"
+    400196: "\u5BF9\u8C61318"
+    400198: "\u5BF9\u8C61335"
+    400200: "\u5BF9\u8C61366"
+    400202: "\u5BF9\u8C61395"
+    400204: "\u5BF9\u8C61397"
+    400206: "\u5BF9\u8C61404"
+    400208: "\u5BF9\u8C61405"
+    400210: "\u5BF9\u8C61433"
+    400212: "\u5BF9\u8C61466"
+    400214: "\u5BF9\u8C61467"
+    400216: "\u5BF9\u8C61471"
+    400218: "\u5BF9\u8C61476"
+    400220: "\u5BF9\u8C61482"
+    400222: "\u5C3E\u8235"
+    400224: "\u6270\u6D41\u677F"
+    400226: "\u6270\u6D41\u677F 1"
+    400228: "\u6270\u6D41\u677F 2"
+    400230: "\u6270\u6D41\u677F 3"
+    400232: "\u6270\u6D41\u677F 4"
+    400234: "\u6270\u6D41\u677F 5"
+    400236: "\u6C34\u4ED3"
+    400238: "\u7EC4007"
+    400240: "\u7F1D\u7FFC"
+    400242: "\u7F1D\u7FFC 1"
+    400244: "\u7F1D\u7FFC 2"
+    400246: "\u7F1D\u7FFC 3"
+    400248: "\u8235"
+    400250: "\u895F\u7FFCL1"
+    400252: "\u895F\u7FFCL2"
+    400254: "\u895F\u7FFCR1"
+    400256: "\u895F\u7FFCR2"
+    400258: glass
+    400260: Box132
+    400262: Cylinder136
+    400264: Cylinder138
+    400266: Cylinder144
+    400268: inside 1
+    400270: "\u5BF9\u8C61506"
+    400272: "\u5BF9\u8C61522"
+    400274: "\u5BF9\u8C61523"
+    400276: "\u5BF9\u8C61524"
+    400278: "\u7EC4013"
+    400280: "\u7EC4014"
+    400282: "\u6C34\u5BC6\u95E8"
+    400284: "\u5BF9\u8C61525"
+    400286: "\u5BF9\u8C61526"
+    400288: "\u5BF9\u8C61527"
+    400290: "\u5BF9\u8C61528"
+    400292: "\u5BF9\u8C61529"
+    400294: Cylinder145
+    400296: Cylinder146
+    400298: Box134
+    400300: Cylinder153
+    400302: Cylinder160
+    400304: Tape004
+    400306: "\u7EC4012"
+    400308: "\u5BF9\u8C61551"
+    400310: "\u5BF9\u8C61552"
+    400312: "\u5BF9\u8C61553"
+    400314: Box135
+    400316: "\u6574\u6D41\u7F69"
+    400318: "\u6574\u6D41\u7F69 1"
+    400320: "\u6574\u6D41\u7F69 2"
+    400322: "\u6574\u6D41\u7F69 3"
+    400324: Cylinder161
+    400326: Cylinder162
+    400328: enjian001
+    400330: jiaoshichang001
+    400332: Joystick_right001
+    400334: pingmu001
+    400336: pingmu_1_002
+    400338: pingmu_2_002
+    400340: pingmu_3_002
+    400342: pingmu_4_002
+    400344: pingmu_5_002
+    400346: wenzi 002
+    400348: zuoyi001
+    400350: "\u5BF9\u8C61563"
+    400352: "\u5BF9\u8C61564"
+    400354: "\u5BF9\u8C61565"
+    400356: "\u5BF9\u8C61566"
+    400358: "\u5BF9\u8C61567"
+    400360: "\u5BF9\u8C61568"
+    400362: "\u6C34\u5BC6\u95E8001"
+    400364: "\u7EC4015"
+    400366: anniu
+    400368: anniu001
+    400370: CockpitNew
+    400372: dimian001
+    400374: engine 1
+    400376: flightLight
+    400378: jiashi
+    400380: Joystick_L
+    400382: Joystick_R
+    400384: Joystick_R 1
+    400386: Joystick_R 2
+    400388: kongzhigan
+    400390: kongzhigan-01
+    400392: kongzhigan-02
+    400394: kongzhigan-03
+    400396: kongzhigan-04
+    400398: Light2_L
+    400400: Light2_R
+    400402: light2_T
+    400404: pingmu 05
+    400406: pingmu01
+    400408: pingmu02
+    400410: pingmu04
+    400412: pingmu07
+    400414: pingmu1
+    400416: pingmu2
+    400418: pingmu6
+    400420: rudder_L
+    400422: rudder_R
+    400424: shangpaienjian
+    400426: xiamiankongzhiqi
+    400428: yingjian
+    400430: yizi
+    400432: "\u5BF9\u8C61600"
+    400434: "\u7740\u9646\u706F_F"
+    400436: "\u7740\u9646\u706F_L"
+    400438: "\u7740\u9646\u706F_R"
+    400440: "\u8FC7\u9053"
+    400442: "\u5BF9\u8C61601"
+    400444: "\u811A\u8235L"
+    400446: "\u811A\u8235L 1"
+    400448: "\u811A\u8235R"
+    400450: "\u811A\u8235R 1"
+    400452: FlapLever
+    400454: gearLever
+    400456: yizi001
+    2100000: 'Material #2522'
+    2100002: glass
+    2100004: hull
+    2100006: 'Material #2472'
+    2100008: 'Material #2720'
+    2100010: engine
+    2100012: 'Material #2473'
+    2100014: 03 - Default
+    2100016: door
+    2100018: 'Material #58'
+    2100020: jiashicang
+    2100022: pingmu_6
+    2100024: toushang3
+    2100026: 'Material #1205'
+    2100028: toushang4
+    2100030: toushang2
+    2100032: jiashicang2
+    2100034: 'Material #70'
+    2100036: pingmu_1
+    2100038: pingmu_3
+    2100040: pingmu_2
+    2100042: pingmu_5
+    2100044: pingmu_4
+    2300000: Box008
+    2300002: Box009
+    2300004: Box015
+    2300006: Box026
+    2300008: Box027
+    2300010: Box058
+    2300012: Box090
+    2300014: Box091
+    2300016: Box094
+    2300018: Box111
+    2300020: Cylinder012
+    2300022: Cylinder020
+    2300024: Cylinder022
+    2300026: Cylinder023
+    2300028: Cylinder024
+    2300030: Cylinder032
+    2300032: Cylinder037
+    2300034: Cylinder040
+    2300036: Cylinder067
+    2300038: Cylinder071
+    2300040: Cylinder072
+    2300042: Cylinder073
+    2300044: Cylinder074
+    2300046: Cylinder075
+    2300048: Cylinder076
+    2300050: Cylinder077
+    2300052: Cylinder078
+    2300054: Cylinder079
+    2300056: Cylinder080
+    2300058: Cylinder081
+    2300060: Cylinder082
+    2300062: Cylinder083
+    2300064: Cylinder084
+    2300066: Cylinder085
+    2300068: Cylinder086
+    2300070: Cylinder087
+    2300072: Cylinder088
+    2300074: Cylinder089
+    2300076: Cylinder090
+    2300078: Cylinder091
+    2300080: Cylinder092
+    2300082: Cylinder093
+    2300084: Cylinder094
+    2300086: Cylinder095
+    2300088: Cylinder096
+    2300090: Cylinder097
+    2300092: Cylinder098
+    2300094: Cylinder099
+    2300096: Cylinder100
+    2300098: Cylinder104
+    2300100: Cylinder105
+    2300102: Cylinder106
+    2300104: Cylinder107
+    2300106: Cylinder116
+    2300108: Cylinder117
+    2300110: Cylinder118
+    2300112: Cylinder119
+    2300114: Cylinder120
+    2300116: Cylinder121
+    2300118: Cylinder122
+    2300120: Cylinder124
+    2300122: Cylinder125
+    2300124: Cylinder126
+    2300126: Cylinder127
+    2300128: Cylinder128
+    2300130: Cylinder129
+    2300132: Cylinder131
+    2300134: Cylinder132
+    2300136: enjian
+    2300138: frontgear
+    2300140: jiaoshichang
+    2300142: Joystick_right
+    2300144: maingearL
+    2300146: maingearR
+    2300148: pingmu
+    2300150: pingmu_1_1
+    2300152: pingmu_2_1
+    2300154: pingmu_3_1
+    2300156: pingmu_4_1
+    2300158: pingmu_5_1
+    2300160: wenzi 01
+    2300162: zuoyi
+    2300164: "\u526F\u7FFCL"
+    2300166: "\u526F\u7FFCR"
+    2300168: "\u5347\u964D\u8235L"
+    2300170: "\u5347\u964D\u8235R"
+    2300172: "\u5BF9\u8C61273"
+    2300174: "\u5BF9\u8C61296"
+    2300176: "\u5BF9\u8C61318"
+    2300178: "\u5BF9\u8C61335"
+    2300180: "\u5BF9\u8C61366"
+    2300182: "\u5BF9\u8C61395"
+    2300184: "\u5BF9\u8C61397"
+    2300186: "\u5BF9\u8C61404"
+    2300188: "\u5BF9\u8C61405"
+    2300190: "\u5BF9\u8C61433"
+    2300192: "\u5BF9\u8C61466"
+    2300194: "\u5BF9\u8C61467"
+    2300196: "\u5BF9\u8C61471"
+    2300198: "\u5BF9\u8C61476"
+    2300200: "\u5BF9\u8C61482"
+    2300202: "\u5C3E\u8235"
+    2300204: "\u6270\u6D41\u677F"
+    2300206: "\u6270\u6D41\u677F 1"
+    2300208: "\u6270\u6D41\u677F 2"
+    2300210: "\u6270\u6D41\u677F 3"
+    2300212: "\u6270\u6D41\u677F 4"
+    2300214: "\u6270\u6D41\u677F 5"
+    2300216: "\u7F1D\u7FFC"
+    2300218: "\u7F1D\u7FFC 1"
+    2300220: "\u7F1D\u7FFC 2"
+    2300222: "\u7F1D\u7FFC 3"
+    2300224: "\u8235"
+    2300226: "\u895F\u7FFCL1"
+    2300228: "\u895F\u7FFCL2"
+    2300230: "\u895F\u7FFCR1"
+    2300232: "\u895F\u7FFCR2"
+    2300234: glass
+    2300236: Box132
+    2300238: Cylinder136
+    2300240: Cylinder138
+    2300242: Cylinder144
+    2300244: "\u5BF9\u8C61506"
+    2300246: "\u5BF9\u8C61522"
+    2300248: "\u5BF9\u8C61523"
+    2300250: "\u5BF9\u8C61524"
+    2300252: "\u5BF9\u8C61525"
+    2300254: "\u5BF9\u8C61526"
+    2300256: "\u5BF9\u8C61527"
+    2300258: "\u5BF9\u8C61528"
+    2300260: "\u5BF9\u8C61529"
+    2300262: Cylinder145
+    2300264: Cylinder146
+    2300266: Box134
+    2300268: Cylinder153
+    2300270: Cylinder160
+    2300272: "\u5BF9\u8C61551"
+    2300274: "\u5BF9\u8C61552"
+    2300276: "\u5BF9\u8C61553"
+    2300278: Box135
+    2300280: "\u6574\u6D41\u7F69"
+    2300282: "\u6574\u6D41\u7F69 1"
+    2300284: "\u6574\u6D41\u7F69 2"
+    2300286: "\u6574\u6D41\u7F69 3"
+    2300288: Cylinder161
+    2300290: Cylinder162
+    2300292: enjian001
+    2300294: jiaoshichang001
+    2300296: Joystick_right001
+    2300298: pingmu001
+    2300300: pingmu_1_002
+    2300302: pingmu_2_002
+    2300304: pingmu_3_002
+    2300306: pingmu_4_002
+    2300308: pingmu_5_002
+    2300310: wenzi 002
+    2300312: zuoyi001
+    2300314: "\u5BF9\u8C61563"
+    2300316: "\u5BF9\u8C61564"
+    2300318: "\u5BF9\u8C61565"
+    2300320: "\u5BF9\u8C61566"
+    2300322: "\u5BF9\u8C61567"
+    2300324: "\u5BF9\u8C61568"
+    2300326: anniu
+    2300328: anniu001
+    2300330: dimian001
+    2300332: engine 1
+    2300334: flightLight
+    2300336: jiashi
+    2300338: Joystick_L
+    2300340: Joystick_R
+    2300342: Joystick_R 1
+    2300344: Joystick_R 2
+    2300346: kongzhigan
+    2300348: kongzhigan-01
+    2300350: kongzhigan-02
+    2300352: kongzhigan-03
+    2300354: kongzhigan-04
+    2300356: Light2_L
+    2300358: Light2_R
+    2300360: light2_T
+    2300362: pingmu 05
+    2300364: pingmu01
+    2300366: pingmu02
+    2300368: pingmu04
+    2300370: pingmu07
+    2300372: pingmu1
+    2300374: pingmu2
+    2300376: pingmu6
+    2300378: rudder_L
+    2300380: rudder_R
+    2300382: shangpaienjian
+    2300384: xiamiankongzhiqi
+    2300386: yingjian
+    2300388: yizi
+    2300390: "\u5BF9\u8C61600"
+    2300392: "\u7740\u9646\u706F_F"
+    2300394: "\u7740\u9646\u706F_L"
+    2300396: "\u7740\u9646\u706F_R"
+    2300398: "\u8FC7\u9053"
+    2300400: "\u5BF9\u8C61601"
+    2300402: "\u811A\u8235L"
+    2300404: "\u811A\u8235L 1"
+    2300406: "\u811A\u8235R"
+    2300408: "\u811A\u8235R 1"
+    2300410: FlapLever
+    2300412: gearLever
+    2300414: yizi001
+    3300000: Box008
+    3300002: Box009
+    3300004: Box015
+    3300006: Box026
+    3300008: Box027
+    3300010: Box058
+    3300012: Box090
+    3300014: Box091
+    3300016: Box094
+    3300018: Box111
+    3300020: Cylinder012
+    3300022: Cylinder020
+    3300024: Cylinder022
+    3300026: Cylinder023
+    3300028: Cylinder024
+    3300030: Cylinder032
+    3300032: Cylinder037
+    3300034: Cylinder040
+    3300036: Cylinder067
+    3300038: Cylinder071
+    3300040: Cylinder072
+    3300042: Cylinder073
+    3300044: Cylinder074
+    3300046: Cylinder075
+    3300048: Cylinder076
+    3300050: Cylinder077
+    3300052: Cylinder078
+    3300054: Cylinder079
+    3300056: Cylinder080
+    3300058: Cylinder081
+    3300060: Cylinder082
+    3300062: Cylinder083
+    3300064: Cylinder084
+    3300066: Cylinder085
+    3300068: Cylinder086
+    3300070: Cylinder087
+    3300072: Cylinder088
+    3300074: Cylinder089
+    3300076: Cylinder090
+    3300078: Cylinder091
+    3300080: Cylinder092
+    3300082: Cylinder093
+    3300084: Cylinder094
+    3300086: Cylinder095
+    3300088: Cylinder096
+    3300090: Cylinder097
+    3300092: Cylinder098
+    3300094: Cylinder099
+    3300096: Cylinder100
+    3300098: Cylinder104
+    3300100: Cylinder105
+    3300102: Cylinder106
+    3300104: Cylinder107
+    3300106: Cylinder116
+    3300108: Cylinder117
+    3300110: Cylinder118
+    3300112: Cylinder119
+    3300114: Cylinder120
+    3300116: Cylinder121
+    3300118: Cylinder122
+    3300120: Cylinder124
+    3300122: Cylinder125
+    3300124: Cylinder126
+    3300126: Cylinder127
+    3300128: Cylinder128
+    3300130: Cylinder129
+    3300132: Cylinder131
+    3300134: Cylinder132
+    3300136: enjian
+    3300138: frontgear
+    3300140: jiaoshichang
+    3300142: Joystick_right
+    3300144: maingearL
+    3300146: maingearR
+    3300148: pingmu
+    3300150: pingmu_1_1
+    3300152: pingmu_2_1
+    3300154: pingmu_3_1
+    3300156: pingmu_4_1
+    3300158: pingmu_5_1
+    3300160: wenzi 01
+    3300162: zuoyi
+    3300164: "\u526F\u7FFCL"
+    3300166: "\u526F\u7FFCR"
+    3300168: "\u5347\u964D\u8235L"
+    3300170: "\u5347\u964D\u8235R"
+    3300172: "\u5BF9\u8C61273"
+    3300174: "\u5BF9\u8C61296"
+    3300176: "\u5BF9\u8C61318"
+    3300178: "\u5BF9\u8C61335"
+    3300180: "\u5BF9\u8C61366"
+    3300182: "\u5BF9\u8C61395"
+    3300184: "\u5BF9\u8C61397"
+    3300186: "\u5BF9\u8C61404"
+    3300188: "\u5BF9\u8C61405"
+    3300190: "\u5BF9\u8C61433"
+    3300192: "\u5BF9\u8C61466"
+    3300194: "\u5BF9\u8C61467"
+    3300196: "\u5BF9\u8C61471"
+    3300198: "\u5BF9\u8C61476"
+    3300200: "\u5BF9\u8C61482"
+    3300202: "\u5C3E\u8235"
+    3300204: "\u6270\u6D41\u677F"
+    3300206: "\u6270\u6D41\u677F 1"
+    3300208: "\u6270\u6D41\u677F 2"
+    3300210: "\u6270\u6D41\u677F 3"
+    3300212: "\u6270\u6D41\u677F 4"
+    3300214: "\u6270\u6D41\u677F 5"
+    3300216: "\u7F1D\u7FFC"
+    3300218: "\u7F1D\u7FFC 1"
+    3300220: "\u7F1D\u7FFC 2"
+    3300222: "\u7F1D\u7FFC 3"
+    3300224: "\u8235"
+    3300226: "\u895F\u7FFCL1"
+    3300228: "\u895F\u7FFCL2"
+    3300230: "\u895F\u7FFCR1"
+    3300232: "\u895F\u7FFCR2"
+    3300234: glass
+    3300236: Box132
+    3300238: Cylinder136
+    3300240: Cylinder138
+    3300242: Cylinder144
+    3300244: "\u5BF9\u8C61506"
+    3300246: "\u5BF9\u8C61522"
+    3300248: "\u5BF9\u8C61523"
+    3300250: "\u5BF9\u8C61524"
+    3300252: "\u5BF9\u8C61525"
+    3300254: "\u5BF9\u8C61526"
+    3300256: "\u5BF9\u8C61527"
+    3300258: "\u5BF9\u8C61528"
+    3300260: "\u5BF9\u8C61529"
+    3300262: Cylinder145
+    3300264: Cylinder146
+    3300266: Box134
+    3300268: Cylinder153
+    3300270: Cylinder160
+    3300272: "\u5BF9\u8C61551"
+    3300274: "\u5BF9\u8C61552"
+    3300276: "\u5BF9\u8C61553"
+    3300278: Box135
+    3300280: "\u6574\u6D41\u7F69"
+    3300282: "\u6574\u6D41\u7F69 1"
+    3300284: "\u6574\u6D41\u7F69 2"
+    3300286: "\u6574\u6D41\u7F69 3"
+    3300288: Cylinder161
+    3300290: Cylinder162
+    3300292: enjian001
+    3300294: jiaoshichang001
+    3300296: Joystick_right001
+    3300298: pingmu001
+    3300300: pingmu_1_002
+    3300302: pingmu_2_002
+    3300304: pingmu_3_002
+    3300306: pingmu_4_002
+    3300308: pingmu_5_002
+    3300310: wenzi 002
+    3300312: zuoyi001
+    3300314: "\u5BF9\u8C61563"
+    3300316: "\u5BF9\u8C61564"
+    3300318: "\u5BF9\u8C61565"
+    3300320: "\u5BF9\u8C61566"
+    3300322: "\u5BF9\u8C61567"
+    3300324: "\u5BF9\u8C61568"
+    3300326: anniu
+    3300328: anniu001
+    3300330: dimian001
+    3300332: engine 1
+    3300334: flightLight
+    3300336: jiashi
+    3300338: Joystick_L
+    3300340: Joystick_R
+    3300342: Joystick_R 1
+    3300344: Joystick_R 2
+    3300346: kongzhigan
+    3300348: kongzhigan-01
+    3300350: kongzhigan-02
+    3300352: kongzhigan-03
+    3300354: kongzhigan-04
+    3300356: Light2_L
+    3300358: Light2_R
+    3300360: light2_T
+    3300362: pingmu 05
+    3300364: pingmu01
+    3300366: pingmu02
+    3300368: pingmu04
+    3300370: pingmu07
+    3300372: pingmu1
+    3300374: pingmu2
+    3300376: pingmu6
+    3300378: rudder_L
+    3300380: rudder_R
+    3300382: shangpaienjian
+    3300384: xiamiankongzhiqi
+    3300386: yingjian
+    3300388: yizi
+    3300390: "\u5BF9\u8C61600"
+    3300392: "\u7740\u9646\u706F_F"
+    3300394: "\u7740\u9646\u706F_L"
+    3300396: "\u7740\u9646\u706F_R"
+    3300398: "\u8FC7\u9053"
+    3300400: "\u5BF9\u8C61601"
+    3300402: "\u811A\u8235L"
+    3300404: "\u811A\u8235L 1"
+    3300406: "\u811A\u8235R"
+    3300408: "\u811A\u8235R 1"
+    3300410: FlapLever
+    3300412: gearLever
+    3300414: yizi001
+    4300000: "\u5BF9\u8C61273"
+    4300002: "\u5BF9\u8C61296"
+    4300004: Box015
+    4300006: Box091
+    4300008: Box090
+    4300010: "\u5BF9\u8C61395"
+    4300012: "\u5BF9\u8C61397"
+    4300014: "\u5BF9\u8C61466"
+    4300016: "\u5BF9\u8C61467"
+    4300018: Cylinder076
+    4300020: Cylinder073
+    4300022: Cylinder067
+    4300024: Cylinder072
+    4300026: Cylinder074
+    4300028: Cylinder075
+    4300030: Cylinder071
+    4300032: Cylinder077
+    4300034: Cylinder078
+    4300036: Cylinder079
+    4300038: Cylinder080
+    4300040: Cylinder081
+    4300042: Cylinder082
+    4300044: Cylinder083
+    4300046: Cylinder084
+    4300048: Cylinder085
+    4300050: Cylinder086
+    4300052: Cylinder087
+    4300054: Cylinder088
+    4300056: Cylinder089
+    4300058: Cylinder090
+    4300060: Cylinder091
+    4300062: Cylinder092
+    4300064: Cylinder093
+    4300066: Cylinder094
+    4300068: Cylinder095
+    4300070: Cylinder096
+    4300072: Cylinder097
+    4300074: "\u895F\u7FFCR2"
+    4300076: "\u7F1D\u7FFC"
+    4300078: "\u6270\u6D41\u677F"
+    4300080: "\u6270\u6D41\u677F"
+    4300082: "\u6270\u6D41\u677F"
+    4300084: "\u526F\u7FFCL"
+    4300086: "\u895F\u7FFCL2"
+    4300088: "\u7F1D\u7FFC"
+    4300090: "\u895F\u7FFCL1"
+    4300092: "\u7F1D\u7FFC"
+    4300094: "\u895F\u7FFCR1"
+    4300096: "\u7F1D\u7FFC"
+    4300098: "\u526F\u7FFCR"
+    4300100: "\u6270\u6D41\u677F"
+    4300102: "\u6270\u6D41\u677F"
+    4300104: "\u6270\u6D41\u677F"
+    4300106: "\u5347\u964D\u8235L"
+    4300108: "\u5347\u964D\u8235R"
+    4300110: "\u5C3E\u8235"
+    4300112: "\u8235"
+    4300114: Cylinder024
+    4300116: Cylinder104
+    4300118: frontgear
+    4300120: "\u5BF9\u8C61405"
+    4300122: Box009
+    4300124: "\u5BF9\u8C61404"
+    4300126: Box008
+    4300128: Cylinder118
+    4300130: Cylinder119
+    4300132: maingearL
+    4300134: Cylinder116
+    4300136: Cylinder117
+    4300138: Cylinder122
+    4300140: Cylinder121
+    4300142: Cylinder120
+    4300144: Cylinder124
+    4300146: Cylinder126
+    4300148: Cylinder125
+    4300150: Cylinder127
+    4300152: maingearR
+    4300154: "\u5BF9\u8C61318"
+    4300156: Cylinder022
+    4300158: "\u5BF9\u8C61335"
+    4300160: Box027
+    4300162: Cylinder012
+    4300164: Box026
+    4300166: Cylinder020
+    4300168: Cylinder098
+    4300170: Cylinder099
+    4300172: Cylinder023
+    4300174: Cylinder100
+    4300176: Cylinder040
+    4300178: Cylinder037
+    4300180: Cylinder106
+    4300182: Cylinder105
+    4300184: Box094
+    4300186: Cylinder107
+    4300188: "\u5BF9\u8C61433"
+    4300190: "\u5BF9\u8C61366"
+    4300192: Cylinder032
+    4300194: Cylinder128
+    4300196: "\u5BF9\u8C61482"
+    4300198: Cylinder132
+    4300200: Cylinder131
+    4300202: Joystick_right
+    4300204: jiaoshichang
+    4300206: pingmu
+    4300208: enjian
+    4300210: zuoyi
+    4300212: wenzi 01
+    4300214: pingmu_1_1
+    4300216: pingmu_3_1
+    4300218: pingmu_2_1
+    4300220: pingmu_5_1
+    4300222: pingmu_4_1
+    4300224: Box058
+    4300226: "\u5BF9\u8C61471"
+    4300228: "\u5BF9\u8C61476"
+    4300230: Cylinder129
+    4300232: Box111
+    4300234: glass
+    4300236: Cylinder144
+    4300238: Box132
+    4300240: "\u5BF9\u8C61506"
+    4300242: "\u5BF9\u8C61522"
+    4300244: "\u5BF9\u8C61523"
+    4300246: "\u5BF9\u8C61524"
+    4300248: Cylinder136
+    4300250: Cylinder138
+    4300252: "\u5BF9\u8C61525"
+    4300254: "\u5BF9\u8C61528"
+    4300256: "\u5BF9\u8C61526"
+    4300258: "\u5BF9\u8C61527"
+    4300260: "\u5BF9\u8C61529"
+    4300262: Cylinder145
+    4300264: Cylinder146
+    4300266: Cylinder160
+    4300268: Cylinder153
+    4300270: Box134
+    4300272: "\u5BF9\u8C61551"
+    4300274: "\u5BF9\u8C61552"
+    4300276: "\u5BF9\u8C61553"
+    4300278: Box135
+    4300280: "\u6574\u6D41\u7F69"
+    4300282: "\u6574\u6D41\u7F69"
+    4300284: "\u6574\u6D41\u7F69"
+    4300286: "\u6574\u6D41\u7F69"
+    4300288: "\u5BF9\u8C61563"
+    4300290: "\u5BF9\u8C61564"
+    4300292: "\u5BF9\u8C61565"
+    4300294: "\u5BF9\u8C61566"
+    4300296: "\u5BF9\u8C61567"
+    4300298: Cylinder161
+    4300300: Cylinder162
+    4300302: Joystick_right001
+    4300304: jiaoshichang001
+    4300306: pingmu001
+    4300308: enjian001
+    4300310: zuoyi001
+    4300312: wenzi 002
+    4300314: pingmu_1_002
+    4300316: pingmu_3_002
+    4300318: pingmu_2_002
+    4300320: pingmu_5_002
+    4300322: pingmu_4_002
+    4300324: "\u5BF9\u8C61568"
+    4300326: "\u7740\u9646\u706F_F"
+    4300328: "\u7740\u9646\u706F_R"
+    4300330: "\u7740\u9646\u706F_L"
+    4300332: Joystick_L
+    4300334: Joystick_R
+    4300336: Joystick_R
+    4300338: Joystick_R
+    4300340: rudder_L
+    4300342: rudder_R
+    4300344: engine
+    4300346: flightLight
+    4300348: Light2_R
+    4300350: light2_T
+    4300352: Light2_L
+    4300354: "\u5BF9\u8C61600"
+    4300356: "\u8FC7\u9053"
+    4300358: jiashi
+    4300360: anniu
+    4300362: anniu001
+    4300364: yizi
+    4300366: xiamiankongzhiqi
+    4300368: pingmu07
+    4300370: pingmu6
+    4300372: pingmu04
+    4300374: pingmu02
+    4300376: pingmu01
+    4300378: pingmu 05
+    4300380: pingmu1
+    4300382: kongzhigan
+    4300384: kongzhigan-01
+    4300386: kongzhigan-02
+    4300388: kongzhigan-04
+    4300390: kongzhigan-03
+    4300392: pingmu2
+    4300394: dimian001
+    4300396: shangpaienjian
+    4300398: yingjian
+    4300400: "\u5BF9\u8C61601"
+    4300402: "\u811A\u8235L"
+    4300404: "\u811A\u8235L"
+    4300406: "\u811A\u8235R"
+    4300408: "\u811A\u8235R"
+    4300410: yizi001
+    4300412: FlapLever
+    4300414: gearLever
+    7400000: Take 001
+    9500000: //RootNode
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #1205'
+    second: {fileID: 2100000, guid: fc086b9d195300747b78b1a303d66cf8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2472'
+    second: {fileID: 2100000, guid: 095b330e5e7c5614ab26263e04191a04, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2473'
+    second: {fileID: 2100000, guid: 113a5c26aa626754aa7fbbc7bc9d5cd7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2522'
+    second: {fileID: 2100000, guid: 6e9167f0aa86f1b449d506ac30307d5b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2720'
+    second: {fileID: 2100000, guid: e169749c3e52089428613a18e2cf0eaf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2762'
+    second: {fileID: 2100000, guid: 4efc29e054c24c843804dff8190bfdda, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #2843'
+    second: {fileID: 2100000, guid: 4efc29e054c24c843804dff8190bfdda, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3003'
+    second: {fileID: 2100000, guid: 928b91d1b9623954ebbbd936ccf66ebf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3005'
+    second: {fileID: 2100000, guid: 928b91d1b9623954ebbbd936ccf66ebf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3006'
+    second: {fileID: 2100000, guid: 928b91d1b9623954ebbbd936ccf66ebf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3007'
+    second: {fileID: 2100000, guid: 928b91d1b9623954ebbbd936ccf66ebf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3021'
+    second: {fileID: 2100000, guid: 198a4f70df947a84bbd0249da54be566, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3101'
+    second: {fileID: 2100000, guid: aab3e6cabe747aa489f9c615c3609936, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3120'
+    second: {fileID: 2100000, guid: c7664f671e1153447b862ef805c4b6a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3121'
+    second: {fileID: 2100000, guid: c7664f671e1153447b862ef805c4b6a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3122'
+    second: {fileID: 2100000, guid: c7664f671e1153447b862ef805c4b6a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3164'
+    second: {fileID: 2100000, guid: e169749c3e52089428613a18e2cf0eaf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3177'
+    second: {fileID: 2100000, guid: e169749c3e52089428613a18e2cf0eaf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #3893'
+    second: {fileID: 2100000, guid: e169749c3e52089428613a18e2cf0eaf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #58'
+    second: {fileID: 2100000, guid: 53a7222ce2f148046a6a5ed3c9a28745, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 'Material #70'
+    second: {fileID: 2100000, guid: 3e9c9a7b6bac2a741b1793fbb238984d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: 17a629d87dbab414bae654cf1169bcae, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: dimian
+    second: {fileID: 2100000, guid: ab9c78ff392d9d948923cf2ad57fff31, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: door
+    second: {fileID: 2100000, guid: 69392fb8f22fff34788b31f869164803, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: engine
+    second: {fileID: 2100000, guid: 48d5e5c21aff1ff45b8517fec726c34a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: glass
+    second: {fileID: 2100000, guid: 3b7abe44ffda31a49a2f8a3e456b2130, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: hull
+    second: {fileID: 2100000, guid: 83ffcd7b3cf00ea469cf57b17f8bf46a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: inside
+    second: {fileID: 2100000, guid: 2b6a1794550864b4dabaf43732571a8c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: jiashicang
+    second: {fileID: 2100000, guid: 57a3428973dbd2d489ccb9e1da122846, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: jiashicang2
+    second: {fileID: 2100000, guid: 3e9c9a7b6bac2a741b1793fbb238984d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu-01
+    second: {fileID: 2100000, guid: b679f77885d04db43840bf98daf46dfb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu-02
+    second: {fileID: 2100000, guid: 4698550e98f30204d8f03039e9e6eb28, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu-03
+    second: {fileID: 2100000, guid: 0905f289809f70441bff8c6ea4de8c2f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu4
+    second: {fileID: 2100000, guid: f90bcd98390787c4ba2b0f2fd0319145, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu8
+    second: {fileID: 2100000, guid: 0905f289809f70441bff8c6ea4de8c2f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu_1
+    second: {fileID: 2100000, guid: c86feb690f8d5024f84ab6b11001c804, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu_2
+    second: {fileID: 2100000, guid: 209eae158441bcd46969d6dbc1e67fd5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu_3
+    second: {fileID: 2100000, guid: 8f2eca2102fc4b84d9fb625d2dac5a0a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu_4
+    second: {fileID: 2100000, guid: c7304e773640f2648bb8e1d93a341eba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu_5
+    second: {fileID: 2100000, guid: dbddad5cd6ae2cd42b5a2de7e194bf86, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pingmu_6
+    second: {fileID: 2100000, guid: 5914469154ce1fd4b9245e00447a6cdd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: propeller
+    second: {fileID: 2100000, guid: 113a5c26aa626754aa7fbbc7bc9d5cd7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: shangmian
+    second: {fileID: 2100000, guid: dec175e9987c9d24eaf6476aff9df14a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: touming
+    second: {fileID: 2100000, guid: 3bee0d4beff090a4db17cebd0aa955f3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: touming-hong
+    second: {fileID: 2100000, guid: 52ddf2dee23512b4eb39b46f184dbb5e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: toushang2
+    second: {fileID: 2100000, guid: 436aa03587f2b144cac54fbeb1518ac8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: toushang3
+    second: {fileID: 2100000, guid: ad6def54b5048884e943d64ad0a18eb6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: toushang4
+    second: {fileID: 2100000, guid: 4ac90e072be49bb4e865bb5aa884481a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: xiamiankongzhiqi
+    second: {fileID: 2100000, guid: 4995773af99d20d47bbcd6052f433353, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: yingjian
+    second: {fileID: 2100000, guid: cf34eab91ef9d4546854189446e322d0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: yizi
+    second: {fileID: 2100000, guid: 5df4eb2d053ffcd428a73759c13f5680, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

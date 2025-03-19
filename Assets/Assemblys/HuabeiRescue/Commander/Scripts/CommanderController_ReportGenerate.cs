@@ -313,7 +313,7 @@ public partial class CommanderController
             var itemQsdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
             for (int j = 0; j < itemQsdsData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                if (itemEquip.currentBindingZy.Contains(itemQsdsData[j].BobjectId))
                     qsds.Add(itemQsdsData[j].ziYuanName);
             }
 
@@ -321,7 +321,7 @@ public partial class CommanderController
             var itemBjdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
             for (int j = 0; j < itemBjdsData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                if (itemEquip.currentBindingZy.Contains(itemBjdsData[j].BobjectId))
                     bjds.Add(itemBjdsData[j].ziYuanName);
             }
 
@@ -330,7 +330,7 @@ public partial class CommanderController
             for (int j = 0; j < itemBjcsData.Count; j++)
             {
                 if (itemBjcsData[j].ziYuanName == "机场") continue;
-                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                if (itemEquip.currentBindingZy.Contains(itemBjcsData[j].BobjectId))
                     bjcs.Add(itemBjcsData[j].ziYuanName);
             }
 
@@ -682,7 +682,7 @@ public partial class CommanderController
             var itemAzdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
             for (int j = 0; j < itemAzdsData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                if (itemEquip.currentBindingZy.Contains(itemAzdsData[j].BobjectId))
                     azds.Add(itemAzdsData[j].ziYuanName);
             }
 
@@ -690,7 +690,7 @@ public partial class CommanderController
             var itemyysData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Hospital);
             for (int j = 0; j < itemyysData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                if (itemEquip.currentBindingZy.Contains(itemyysData[j].BobjectId))
                     yys.Add(itemyysData[j].ziYuanName);
             }
 
@@ -698,7 +698,7 @@ public partial class CommanderController
             var itemBjdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
             for (int j = 0; j < itemBjdsData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                if (itemEquip.currentBindingZy.Contains(itemBjdsData[j].BobjectId))
                     bjds.Add(itemBjdsData[j].ziYuanName);
             }
 

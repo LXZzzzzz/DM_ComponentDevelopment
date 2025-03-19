@@ -7,7 +7,7 @@ AnimationClip:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: AC313A rotorLoop
-  serializedVersion: 6
+  serializedVersion: 7
   m_Legacy: 1
   m_Compressed: 0
   m_UseHighQualityCurve: 1
@@ -5641,7 +5641,8 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/dummy top"
   m_ScaleCurves: []
   m_FloatCurves:
-  - curve:
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5660,7 +5661,9 @@ AnimationClip:
     path: L_AC313_weiyi001/xuanyi_2 (1)
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5679,7 +5682,9 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5698,7 +5703,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5717,7 +5724,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5736,7 +5745,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5755,7 +5766,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5774,7 +5787,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5793,7 +5808,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5812,7 +5829,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5831,7 +5850,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5850,7 +5871,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5869,7 +5892,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5888,7 +5913,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5907,7 +5934,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5926,7 +5955,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5945,7 +5976,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5964,7 +5997,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -5983,7 +6018,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6002,7 +6039,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6021,7 +6060,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6040,7 +6081,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6059,7 +6102,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6078,7 +6123,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6097,7 +6144,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6116,7 +6165,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6135,7 +6186,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6154,7 +6207,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6173,7 +6228,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6192,7 +6249,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6211,7 +6270,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6230,7 +6291,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6249,7 +6312,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6268,7 +6333,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6287,7 +6354,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6306,7 +6375,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6325,7 +6396,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6344,7 +6417,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6363,9 +6438,10 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
+    flags: 16
   m_PPtrCurves: []
   m_SampleRate: 60
-  m_WrapMode: 0
+  m_WrapMode: 2
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
@@ -6393,7 +6469,8 @@ AnimationClip:
     m_HeightFromFeet: 0
     m_Mirror: 0
   m_EditorCurves:
-  - curve:
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6412,7 +6489,9 @@ AnimationClip:
     path: L_AC313_weiyi001/xuanyi_2 (1)
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -6431,7 +6510,9 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -9150,7 +9231,9 @@ AnimationClip:
     path: Main
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -11869,7 +11952,9 @@ AnimationClip:
     path: Main
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -14588,7 +14673,9 @@ AnimationClip:
     path: Main
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17307,7 +17394,9 @@ AnimationClip:
     path: Main
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17326,7 +17415,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17345,7 +17436,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17364,7 +17457,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17383,7 +17478,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17402,7 +17499,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17421,7 +17520,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17440,7 +17541,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17459,7 +17562,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17478,7 +17583,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17497,7 +17604,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17516,7 +17625,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17535,7 +17646,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17554,7 +17667,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17573,7 +17688,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17592,7 +17709,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17611,7 +17730,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17630,7 +17751,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17649,7 +17772,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17668,7 +17793,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17687,7 +17814,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17706,7 +17835,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17725,7 +17856,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17744,7 +17877,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17763,7 +17898,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17782,7 +17919,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17801,7 +17940,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17820,7 +17961,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17839,7 +17982,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17858,7 +18003,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 23
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17877,7 +18024,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/\u5BF9\u8C61003"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17896,7 +18045,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17915,7 +18066,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17934,7 +18087,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17953,7 +18108,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17972,7 +18129,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -17991,7 +18150,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18010,7 +18171,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18029,7 +18192,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18048,7 +18213,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18067,7 +18234,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18086,7 +18255,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18105,7 +18276,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18124,7 +18297,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18143,7 +18318,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18162,7 +18339,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18181,7 +18360,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18200,7 +18381,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18219,7 +18402,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18238,7 +18423,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18257,7 +18444,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18276,7 +18465,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18295,7 +18486,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18314,7 +18507,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/dummy top"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18333,7 +18528,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405/\u5BF9\u8C61002/loop"
     classID: 1
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18352,7 +18549,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18371,7 +18570,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18390,7 +18591,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18409,7 +18612,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18428,7 +18633,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18447,7 +18654,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18466,7 +18675,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18485,7 +18696,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18504,7 +18717,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18523,7 +18738,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18542,7 +18759,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18561,7 +18780,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18580,7 +18801,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18599,7 +18822,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18618,7 +18843,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18637,7 +18864,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18656,7 +18885,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18675,7 +18906,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18694,7 +18927,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18713,7 +18948,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18732,7 +18969,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18751,7 +18990,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18770,7 +19011,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -18789,7 +19032,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -21508,7 +21753,9 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -24227,7 +24474,9 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -26946,7 +27195,9 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29665,8 +29916,10 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 4
     script: {fileID: 0}
+    flags: 16
   m_EulerEditorCurves:
-  - curve:
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29694,7 +29947,9 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29713,7 +29968,9 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29741,7 +29998,9 @@ AnimationClip:
     path: L_AC313_weiyi001
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29769,7 +30028,9 @@ AnimationClip:
     path: Main
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29797,7 +30058,9 @@ AnimationClip:
     path: Main
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29825,7 +30088,9 @@ AnimationClip:
     path: Main
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29844,7 +30109,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29863,7 +30130,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29882,7 +30151,9 @@ AnimationClip:
     path: "Main/Rotor01/\u6325\u821E\u8F7400"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29901,7 +30172,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29920,7 +30193,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29939,7 +30214,9 @@ AnimationClip:
     path: "Main/Rotor02/\u6325\u821E\u8F7401"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29958,7 +30235,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29977,7 +30256,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -29996,7 +30277,9 @@ AnimationClip:
     path: "Main/Rotor03/\u6325\u821E\u8F7402"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30015,7 +30298,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30034,7 +30319,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30053,7 +30340,9 @@ AnimationClip:
     path: "Main/Rotor04/\u6325\u821E\u8F7403"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30072,7 +30361,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30091,7 +30382,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30110,7 +30403,9 @@ AnimationClip:
     path: "Main/Rotor05/\u6325\u821E\u8F7404"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30129,7 +30424,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30148,7 +30445,9 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405"
     classID: 4
     script: {fileID: 0}
-  - curve:
+    flags: 16
+  - serializedVersion: 2
+    curve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
@@ -30167,6 +30466,7 @@ AnimationClip:
     path: "Main/Rotor06/\u6325\u821E\u8F7405"
     classID: 4
     script: {fileID: 0}
+    flags: 16
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events: []

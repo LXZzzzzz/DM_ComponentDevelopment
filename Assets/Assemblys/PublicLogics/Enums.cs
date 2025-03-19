@@ -190,6 +190,10 @@ namespace Enums
     public enum HelicopterType
     {
         Z8A,
-        AC313A
+        AC313A,
+        Mi171,
+        Ka32,
+        S76,
+        Ac352
     }
 }
