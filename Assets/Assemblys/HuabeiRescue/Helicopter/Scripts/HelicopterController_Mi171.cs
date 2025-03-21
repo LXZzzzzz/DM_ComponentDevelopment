@@ -33,36 +33,19 @@ public class HelicopterController_Mi171 : HelicopterController
     {
         if (isPlay)
         {
-            foreach (AnimationState state in zhuan)
-            {
-                if (string.Equals(state.clip.name, "rotor loop"))
-                {
-                    zhuan.clip = state.clip;
-                    break;
-                }
-            }
-
-
+            zhuan.clip = zhuan["rotor loop"].clip;
+            audios.ForEach(x => x.gameObject.SetActive(MyDataInfo.MyLevel == 3));
             audios.ForEach(a => a.volume = 0.3f);
             audios.ForEach(a => a.pitch = 1);
             audios.ForEach(a => a.Play());
-            audios.ForEach(x => x.gameObject.SetActive(MyDataInfo.MyLevel == 3));
             zhuan.Play();
             wingmarks.ForEach(a => a.gameObject.SetActive(true));
         }
         else
         {
-            foreach (AnimationState state in zhuan)
-            {
-                if (string.Equals(state.clip.name, "rotor stop"))
-                {
-                    zhuan.clip = state.clip;
-                    break;
-                }
-            }
-
+            zhuan.clip = zhuan["rotor stop"].clip;
             zhuan.Play();
-            zhuan["AC313A rotorStop"].normalizedTime = 1;
+            zhuan["rotor stop"].normalizedTime = 1;
             audios.ForEach(x => x.gameObject.SetActive(false));
         }
     }

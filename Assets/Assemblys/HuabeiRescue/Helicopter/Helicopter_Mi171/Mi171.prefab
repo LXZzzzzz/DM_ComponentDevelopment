@@ -102,7 +102,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7166076188413516255
 Transform:
   m_ObjectHideFlags: 0
@@ -128,8 +128,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: ee4eb3d0955bc404d9eac320da361c2f, type: 3}
-  m_Resource: {fileID: 8300000, guid: ee4eb3d0955bc404d9eac320da361c2f, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 8d14844a2b69c1542898037a6cbbcb4f, type: 3}
+  m_Resource: {fileID: 8300000, guid: 8d14844a2b69c1542898037a6cbbcb4f, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.3
   m_Pitch: 1
@@ -594,7 +594,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Animation
       value: 
-      objectReference: {fileID: 7400000, guid: 6c89e564eca8d984aa0370948be162f8, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 8722553794504362301, guid: b09c0ac47e2a98843b02be98e4eebd00,
         type: 3}
       propertyPath: m_Animations.Array.size

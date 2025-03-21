@@ -371,7 +371,7 @@ public partial class CommanderController
         if (showAllOperatorInfos == null) Debug.LogError("showAllOperatorInfos");
         if (playerEquips == null) Debug.LogError("playerEquips");
         if (playerZiyuans == null) Debug.LogError("playerZiyuans");
-        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), "火灾航空救援任务协同指挥训练评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, personAssData,
+        report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), $"{misName}评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, personAssData,
             scoreData, PeculiarDatas);
     }
 
@@ -736,7 +736,7 @@ public partial class CommanderController
         sender.LogError(JsonConvert.SerializeObject(rfsystem));
         ResultMaterialPersonData rfwd = em.EvalMaterialCompute(cfout, rfsystem, personMinTime, goodsMinTime);
 
-        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), "洪涝灾害救援任务协同指挥训练评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count,
+        report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), $"{misName}评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count,
             personAssData, scoreData, PeculiarDatas);
     }
 

@@ -57,17 +57,23 @@ public class TestZ8aAnimation : MonoBehaviour
             //         break;
             //     }
             // }
-            zhuan.clip = zhuan["S76_xuanyi_loop2"].clip;
-            zhuanWei.clip = zhuanWei["weiyi_loop"].clip;
+            // zhuan.clip = zhuan["S76_xuanyi_loop2"].clip;
+            // zhuanWei.clip = zhuanWei["weiyi_loop"].clip;
 
             // myass.ForEach(a => a.volume = 0.3f);
             // myass.ForEach(a => a.pitch = 1);
             // myass.ForEach(a => a.Play());
             // myass.ForEach(x => x.gameObject.SetActive(true));
-            zhuan.Play();
-            zhuanWei.Play();
+            // zhuan.Play();
+            // zhuanWei.Play();
+            for (int i = 0; i < myass.Count; i++)
+            {
+                Debug.Log(myass[i].name);
+            }
             myass.ForEach(a => a.volume = 0.3f);
-            wingmarks.ForEach(a => a.gameObject.SetActive(true));
+            myass.ForEach(a => a.Play());
+            myass.ForEach(x => x.gameObject.SetActive(true));
+            // wingmarks.ForEach(a => a.gameObject.SetActive(true));
         }
 
         if (Input.GetKeyDown(KeyCode.D))
