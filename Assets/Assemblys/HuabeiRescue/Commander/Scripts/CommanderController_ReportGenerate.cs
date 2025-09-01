@@ -7,6 +7,7 @@ using ReportGenerate;
 using ToolsLibrary;
 using ToolsLibrary.EquipPart;
 using UnityEngine;
+using System.Collections;
 
 public partial class CommanderController
 {
@@ -263,8 +264,8 @@ public partial class CommanderController
                     var strs = itemEquip.textInfo.Split('_');
                     itemRescueForcesList.Add(new RescueForces()
                     {
-                        jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
-                        jzrs = "--", bzz = MyDataInfo.BeUsedBaozhangs[int.Parse(strs[6])], nun = "--"
+                        jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus==null?"--":MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
+                        jzrs = "--", bzz = MyDataInfo.BeUsedJizus==null?"--":MyDataInfo.BeUsedBaozhangs[int.Parse(strs[6])], nun = "--"
                     });
                 }
             }
@@ -305,7 +306,7 @@ public partial class CommanderController
             var itemData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.SourceOfAFire);
             for (int j = 0; j < itemData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                if (itemEquip.currentBindingZy!=null&&itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
                     szds.Add(itemData[j].ziYuanName);
             }
 
@@ -313,7 +314,7 @@ public partial class CommanderController
             var itemQsdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Waters);
             for (int j = 0; j < itemQsdsData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemQsdsData[j].BobjectId))
+                if (itemEquip.currentBindingZy!=null&&itemEquip.currentBindingZy.Contains(itemQsdsData[j].BobjectId))
                     qsds.Add(itemQsdsData[j].ziYuanName);
             }
 
@@ -321,7 +322,7 @@ public partial class CommanderController
             var itemBjdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
             for (int j = 0; j < itemBjdsData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemBjdsData[j].BobjectId))
+                if (itemEquip.currentBindingZy!=null&&itemEquip.currentBindingZy.Contains(itemBjdsData[j].BobjectId))
                     bjds.Add(itemBjdsData[j].ziYuanName);
             }
 
@@ -330,11 +331,11 @@ public partial class CommanderController
             for (int j = 0; j < itemBjcsData.Count; j++)
             {
                 if (itemBjcsData[j].ziYuanName == "机场") continue;
-                if (itemEquip.currentBindingZy.Contains(itemBjcsData[j].BobjectId))
+                if (itemEquip.currentBindingZy!=null&&itemEquip.currentBindingZy.Contains(itemBjcsData[j].BobjectId))
                     bjcs.Add(itemBjcsData[j].ziYuanName);
             }
 
-            rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds, qsd = qsds, bjd = bjds, bjc = bjcs });
+            rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus==null?"--":MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds, qsd = qsds, bjd = bjds, bjc = bjcs });
         }
 
         parfw_level2 level2 = new parfw_level2()
@@ -351,7 +352,7 @@ public partial class CommanderController
             (itemEquip as IDqChangePart).GetUsableOilAndLoad(out float oilNum, out float loadNum);
             parfw_level3 level3 = new parfw_level3()
             {
-                jzname = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], jzId = itemEquip.BeLongToCommanderId, zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
+                jzname =  MyDataInfo.BeUsedJizus==null?"--":MyDataInfo.BeUsedJizus[int.Parse(strs[5])], jzId = itemEquip.BeLongToCommanderId, zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
                 zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq, tianqiStr = tianqiInfoStr,
                 guzhangStr = guzhangInfoStr.ContainsKey(itemEquip.BObjectId) ? guzhangInfoStr[itemEquip.BObjectId] : "正常", bindingZy = itemEquip.currentBindingZy
             };
@@ -368,11 +369,14 @@ public partial class CommanderController
         sender.LogError(JsonConvert.SerializeObject(rfsystem));
         ResultFireWaterData rfwd = em.EvalWaterCompute(rfout, rfsystem);
 
-        if (showAllOperatorInfos == null) Debug.LogError("showAllOperatorInfos");
-        if (playerEquips == null) Debug.LogError("playerEquips");
-        if (playerZiyuans == null) Debug.LogError("playerZiyuans");
         report.CreateWaterMissionReport(DateTime.Now.ToString("HH_mm_ss"), $"{misName}评估报告", mName, mId, mAbstract, rfwd, rfout, showAllOperatorInfos, heliWaterMegList, playerEquips, playerZiyuans, reportPlayers.Count, personAssData,
             scoreData, PeculiarDatas);
+
+        if (rfwd == null) return;
+        string sendData = misName + "-" + Time.time + "-" + 100;
+        string sendDetail = AESUtils.Encrypt(JsonConvert.SerializeObject(rfwd));
+        // SendDataToServer("灭火",sendData,sendDetail,mName,mId);
+        StartCoroutine(SendPDFToServer("协同指挥PDF报告",report.reportPath));
     }
 
     private void GenerateRescueReport()
@@ -619,8 +623,8 @@ public partial class CommanderController
                     var strs = itemEquip.textInfo.Split('_');
                     itemRescueForcesList.Add(new RescueForces()
                     {
-                        jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
-                        jzrs = "--", bzz = MyDataInfo.BeUsedBaozhangs[int.Parse(strs[6])], nun = "--"
+                        jx = itemEquip.name, bh = itemEquip.name, jz = MyDataInfo.BeUsedJizus==null?"--":MyDataInfo.BeUsedJizus[int.Parse(strs[5])],
+                        jzrs = "--", bzz = MyDataInfo.BeUsedBaozhangs==null?"--":MyDataInfo.BeUsedBaozhangs[int.Parse(strs[6])], nun = "--"
                     });
                 }
             }
@@ -674,7 +678,7 @@ public partial class CommanderController
             var itemData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.DisasterArea);
             for (int j = 0; j < itemData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
+                if (itemEquip.currentBindingZy!=null&&itemEquip.currentBindingZy.Contains(itemData[j].BobjectId))
                     szds.Add(itemData[j].ziYuanName);
             }
 
@@ -682,7 +686,7 @@ public partial class CommanderController
             var itemAzdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.RescueStation);
             for (int j = 0; j < itemAzdsData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemAzdsData[j].BobjectId))
+                if (itemEquip.currentBindingZy!=null&&itemEquip.currentBindingZy.Contains(itemAzdsData[j].BobjectId))
                     azds.Add(itemAzdsData[j].ziYuanName);
             }
 
@@ -690,7 +694,7 @@ public partial class CommanderController
             var itemyysData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Hospital);
             for (int j = 0; j < itemyysData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemyysData[j].BobjectId))
+                if (itemEquip.currentBindingZy!=null&&itemEquip.currentBindingZy.Contains(itemyysData[j].BobjectId))
                     yys.Add(itemyysData[j].ziYuanName);
             }
 
@@ -698,11 +702,11 @@ public partial class CommanderController
             var itemBjdsData = sceneAllzy.FindAll(x => x.ZiYuanType == ZiYuanType.Supply);
             for (int j = 0; j < itemBjdsData.Count; j++)
             {
-                if (itemEquip.currentBindingZy.Contains(itemBjdsData[j].BobjectId))
+                if (itemEquip.currentBindingZy!=null&&itemEquip.currentBindingZy.Contains(itemBjdsData[j].BobjectId))
                     bjds.Add(itemBjdsData[j].ziYuanName);
             }
 
-            rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds, azd = azds, yy = yys, bjd = bjds });
+            rwfpData.Add(new TaskAllocation() { jzName = MyDataInfo.BeUsedJizus==null?"--":MyDataInfo.BeUsedJizus[int.Parse(strs[5])], szd = szds, azd = azds, yy = yys, bjd = bjds });
         }
 
         parfw_level2 level2 = new parfw_level2()
@@ -719,7 +723,7 @@ public partial class CommanderController
             (itemEquip as IDqChangePart).GetUsableOilAndLoad(out float oilNum, out float loadNum);
             parfw_level3 level3 = new parfw_level3()
             {
-                jzname = MyDataInfo.BeUsedJizus[int.Parse(strs[5])], jzId = itemEquip.BeLongToCommanderId, zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
+                jzname =  MyDataInfo.BeUsedJizus==null?"--":MyDataInfo.BeUsedJizus[int.Parse(strs[5])], jzId = itemEquip.BeLongToCommanderId, zyl = oilNum, zzl = loadNum, rybz = itemEquip.OilWarnNum, cwzl = itemEquip.LandErrorNum, zbgzbg = itemEquip.isReportZbgz,
                 zbgzzl = itemEquip.isReturnBack, tqbhbg = itemEquip.isReportTqbh, tqbhfh = itemEquip.isReturnBack, xfxzq = itemEquip.isReportXfxzq, tianqiStr = tianqiInfoStr,
                 guzhangStr = guzhangInfoStr.ContainsKey(itemEquip.BObjectId) ? guzhangInfoStr[itemEquip.BObjectId] : "正常", bindingZy = itemEquip.currentBindingZy
             };
@@ -738,6 +742,27 @@ public partial class CommanderController
 
         report.CreateRescueMissionReport(DateTime.Now.ToString("HH_mm_ss"), $"{misName}评估报告", mName, mId, mAbstract, rfwd, cfout, rfsystem, showAllOperatorInfos, heliMegList, playerEquips, playerZiyuans, reportPlayers.Count,
             personAssData, scoreData, PeculiarDatas);
+        
+        if (rfwd == null) return;
+        string sendData = misName + "-" + Time.time + "-" + 100;
+        string sendDetail = AESUtils.Encrypt(JsonConvert.SerializeObject(rfwd));
+        //SendDataToServer("救援",sendData,sendDetail,mName,mId);
+        StartCoroutine(SendPDFToServer("协同指挥PDF报告",report.reportPath));
+        ;
+    }
+
+
+    private void SendDataToServer(string type,string Data,string Detail,string Users,string MyBID)
+    {
+        string mStr=type+"#"+Data+"#"+Detail+"#"+Users+"#"+MyBID;    //(Data格式：MisName + "-" + BatId + "-" + Score)
+        sender.RunSend(DM.IFS.SendType.MainSystem,null, (int)DM.IFS.MainSystemType.UploadDataCurrent, mStr);
+        
+       
+    }
+    private IEnumerator SendPDFToServer(string serverPath,string reportPath)
+    {
+        yield return new WaitForSeconds(1f);
+        sender.RunSend(DM.IFS.SendType.MainSystem,null, (int)DM.IFS.MainSystemType.UploadFileCurrent, $"{serverPath}:{reportPath}");
     }
 
 

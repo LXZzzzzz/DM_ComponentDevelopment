@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Enums;
 using ToolsLibrary;
 using UiManager;
@@ -8,6 +9,7 @@ using EventType = Enums.EventType;
 
 public class UISendTaskInfoShow : BasePanel
 {
+    public string defaultTaskInfo;
     private InputField airLineInfo;
 
     public override void Init()
@@ -29,10 +31,27 @@ public class UISendTaskInfoShow : BasePanel
         }
         else
         {
+            airLineInfo.text = LoadDefaultData();
             airLineInfo.interactable = true;
             GetControl<Button>("sure").onClick.AddListener(OnSure);
             GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UISendTaskInfoShow));
         }
+    }
+
+
+    private string LoadDefaultData()
+    {
+        string filePath = Path.Combine(Application.dataPath, "MapLib", "DefaultData", "TaskInfoData.txt");
+        // 检查文件是否存在
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError("File not found: " + filePath);
+            return defaultTaskInfo;
+        }
+
+        // 读取文件内容
+        string fileContent = File.ReadAllText(filePath);
+        return fileContent;
     }
 
     public override void HideMe()

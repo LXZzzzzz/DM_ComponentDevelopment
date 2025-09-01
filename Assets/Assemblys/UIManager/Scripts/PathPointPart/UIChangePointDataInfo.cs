@@ -89,10 +89,27 @@ public class UIChangePointDataInfo : BasePanel
         for (int i = 0; i < currentTasks.Count; i++)
         {
             var itemTask = Instantiate(taskCell, tasksParent);
-            itemTask.transform.GetComponentInChildren<Text>().text = $"第{currentTasks[i].orderNumber}个操作：";
-            itemTask.GetComponentInChildren<Dropdown>().value = (int)currentTasks[i].runSkillType;
+            itemTask.transform.GetComponentInChildren<Text>().text = $"第{currentTasks[i].orderNumber+1}个操作：";
+            var dp = itemTask.GetComponentInChildren<Dropdown>();
+            dp.value = taskTypeToValue(dp, currentTasks[i].runSkillType);
             itemTask.gameObject.SetActive(true);
         }
+    }
+
+    private int taskTypeToValue(Dropdown view, SkillType type)
+    {
+        foreach (var skillType in skillTypes)
+        {
+            if (skillType.Value == type)
+            {
+                for (int i = 0; i < view.options.Count; i++)
+                {
+                    if(skillType.Key == view.options[i].text) return i;
+                }
+            }
+        }
+
+        return 0;
     }
 
     public override void HideMe()

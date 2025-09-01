@@ -109,6 +109,10 @@ public class TestLogic : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
+            
+            EvalManage em1 = new EvalManage();
+            em1.EvalWaterCompute(JsonConvert.DeserializeObject<ResultFireWaterOutData>(aa), JsonConvert.DeserializeObject<ResultFireWaterSystemData>(bb));
+            return;
             fp.updateBA();
             // Dictionary<HeliData, List<HeliSortieData>> asd = new Dictionary<HeliData, List<HeliSortieData>>();
             // asd.Add(new HeliData() {Consumption = 100}, new List<HeliSortieData>() { new HeliSortieData() { EndMissonTime = 20 } });

@@ -40,7 +40,7 @@ namespace ReportGenerate
                 Directory.CreateDirectory(dirPath);
             //string fileName = DateTime.Now.ToLongDateString() + (Directory.GetFiles(dirPath).Length + 1);
             //string fileDate = DateTime.Now.ToLongDateString()+ DateTime.Now.Hour+"-"+ DateTime.Now.Minute+"-"+DateTime.Now.Second;
-            reportPath = dirPath + "/" + userName + "(" + reportId + ").pdf";
+            reportPath = dirPath + $"/{reportName}({userName}-{reportId}).pdf";
             string fontPath = Application.dataPath + "/Font/wryh.ttf";
             Document doc = new Document();
             FileStream fi = new FileStream(reportPath, FileMode.Create);
@@ -126,8 +126,8 @@ namespace ReportGenerate
             doc.Add(messagePersonAssessment);
             doc.Add(nullString);
             Paragraph paLevel1;
-            if (scores == null) paLevel1 = new Paragraph("1.一级指挥员    ", fontSub);
-            else paLevel1 = new Paragraph($"1.一级指挥员    得分{scores.firstZhyTotalScore:F2}", fontSub);
+            if (scores == null) paLevel1 = new Paragraph("1.总指挥端    ", fontSub);
+            else paLevel1 = new Paragraph($"1.总指挥端    得分{scores.firstZhyTotalScore:F2}", fontSub);
             paLevel1.IndentationLeft = 20f;
             doc.Add(paLevel1);
             doc.Add(nullString);
@@ -195,7 +195,7 @@ namespace ReportGenerate
             commander1.AddCell(MyCell(scores == null ? "--" : $"{scores.zchxsb}分", 1, 2));
             commander1.AddCell(MyCell(scores == null ? "--" : $"{scores.zchxsb_zg}分", 1, 2));
             commander1.AddCell(MyCell("航路点", 2, 1));
-            commander1.AddCell(MyCell(string.Join("、", personAss.yjzhy.hlds), 6, 1));
+            commander1.AddCell(MyCell(personAss?.yjzhy?.hlds == null ? "--" : string.Join("、", personAss.yjzhy.hlds), 6, 1));
 
             commander1.AddCell(MyCell($"下达任务", 2, 2));
             commander1.AddCell(MyCell("任务简令", 8, 1));
@@ -230,8 +230,8 @@ namespace ReportGenerate
             doc.Add(nullString);
 
             Paragraph paLevel2;
-            if (scores == null) paLevel2 = new Paragraph($"2.二级指挥员", fontSub);
-            else paLevel2 = new Paragraph($"2.二级指挥员    得分:{scores.secondZhyTotalScore:F2}", fontSub);
+            if (scores == null) paLevel2 = new Paragraph($"2.前线指挥端", fontSub);
+            else paLevel2 = new Paragraph($"2.前线指挥端    得分:{scores.secondZhyTotalScore:F2}", fontSub);
             paLevel2.IndentationLeft = 20f;
             doc.Add(paLevel2);
             doc.Add(nullString);
@@ -248,22 +248,22 @@ namespace ReportGenerate
             commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.lsrw}分", 1, 1));
             commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.lsrw_zg}分", 1, 1));
 
-            commander2.AddCell(MyCell($"确认出动装备信息", 2, personAss.ejzhy.jzxx.Count + 2));
+            commander2.AddCell(MyCell($"确认出动装备信息", 2, (personAss.ejzhy?.jzxx == null ? 0 : personAss.ejzhy.jzxx.Count) + 2));
             commander2.AddCell(MyCell("机组信息", 6, 1));
-            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.qrzbztxx}分", 1, personAss.ejzhy.jzxx.Count + 2));
-            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.qrzbztxx_zg}分", 1, personAss.ejzhy.jzxx.Count + 2));
+            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.qrzbztxx}分", 1, (personAss.ejzhy?.jzxx == null ? 0 : personAss.ejzhy.jzxx.Count) + 2));
+            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.qrzbztxx_zg}分", 1, (personAss.ejzhy?.jzxx == null ? 0 : personAss.ejzhy.jzxx.Count) + 2));
             commander2.AddCell(MyCell("机组", 1, 1));
             commander2.AddCell(MyCell("机型", 1, 1));
             commander2.AddCell(MyCell("装载设备", 1, 1));
-            commander2.AddCell(MyCell("载油量（千克）", 1, 1));
+            commander2.AddCell(MyCell("载油量(千克)", 1, 1));
             commander2.AddCell(MyCell("可用载重(千克)", 1, 1));
             commander2.AddCell(MyCell("地面维护时间间隔(小时)", 1, 1));
-            for (int i = 0; i < personAss.ejzhy.jzxx.Count; i++)
+            for (int i = 0; i < personAss.ejzhy?.jzxx?.Count; i++)
             {
                 int index = i;
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jzName, 1, 1));
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jx, 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.jzxx[index].zzsb), 1, 1));
+                commander2.AddCell(MyCell(personAss?.ejzhy.jzxx[index]?.zzsb == null ? "--" : string.Join(" ", personAss.ejzhy.jzxx[index].zzsb), 1, 1));
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zyl.ToString("F2"), 1, 1));
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zzl.ToString("F2"), 1, 1));
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].dmwhTime.ToString(), 1, 1));
@@ -276,16 +276,16 @@ namespace ReportGenerate
             commander2.AddCell(MyCell("补给站", 1, 1));
             commander2.AddCell(MyCell("备降场", 1, 1));
             commander2.AddCell(MyCell("", 1, 1));
-            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.fprwbxdrw}分", 1, personAss.ejzhy.rwfp.Count*2 + 1));
-            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.fprwbxdrw_zg}分", 1, personAss.ejzhy.rwfp.Count*2 + 1));
+            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.fprwbxdrw}分", 1, personAss.ejzhy.rwfp.Count * 2 + 1));
+            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.fprwbxdrw_zg}分", 1, personAss.ejzhy.rwfp.Count * 2 + 1));
             for (int i = 0; i < personAss.ejzhy.rwfp.Count; i++)
             {
                 int index = i;
                 commander2.AddCell(MyCell(personAss.ejzhy.rwfp[index].jzName, 1, 2));
-                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 2));
-                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].qsd), 1, 2));
-                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 2));
-                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjc), 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.szd == null ? "--" : string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.qsd == null ? "--" : string.Join("、", personAss.ejzhy.rwfp[index].qsd), 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.bjd == null ? "--" : string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.bjc == null ? "--" : string.Join("、", personAss.ejzhy.rwfp[index].bjc), 1, 2));
                 commander2.AddCell(MyCell("", 1, 2));
             }
 
@@ -300,7 +300,7 @@ namespace ReportGenerate
             doc.Add(commander2);
             doc.Add(nullString);
 
-            Paragraph paLevel3 = new Paragraph($"3.三级指挥员", fontSub);
+            Paragraph paLevel3 = new Paragraph($"3.机长端", fontSub);
             paLevel3.IndentationLeft = 20f;
             doc.Add(paLevel3);
             doc.Add(nullString);
@@ -324,19 +324,19 @@ namespace ReportGenerate
                 commander3.AddCell(MyCell1("主观打分", 1, 1));
                 //表头结束
                 commander3.AddCell(MyCell($"确认载油量和载重信息", 2, 2));
-                commander3.AddCell(MyCell("燃油重量（千克）", 3, 1));
+                commander3.AddCell(MyCell("燃油重量(千克)", 3, 1));
                 commander3.AddCell(MyCell(personAss.sjzhy[index].zyl.ToString("F2"), 3, 1));
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.qrzyl}分", 1, 2));
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.qrzyl_zg}分", 1, 2));
-                commander3.AddCell(MyCell("可用载重（千克）", 3, 1));
+                commander3.AddCell(MyCell("可用载重(千克)", 3, 1));
                 commander3.AddCell(MyCell(personAss.sjzhy[index].zzl.ToString("F2"), 3, 1));
 
                 commander3.AddCell(MyCell($"完成任务区航线规划", 2, 2));
-                commander3.AddCell(MyCell("燃油不足报警次数（剩余燃油重量低于最大油量的 10% 千克）", 3, 1));
+                commander3.AddCell(MyCell("燃油不足报警次数(剩余燃油重量低于最大油量的 10% 千克)", 3, 1));
                 commander3.AddCell(MyCell(personAss.sjzhy[index].rybz.ToString(), 3, 1));
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.rwqyhxgh}分", 1, 2));
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.rwqyhxgh_zg}分", 1, 2));
-                commander3.AddCell(MyCell("错误着陆次数（着陆在未分配的补给点、备降点）", 3, 1));
+                commander3.AddCell(MyCell("错误着陆次数(着陆在未分配的补给点、备降点)", 3, 1));
                 commander3.AddCell(MyCell(personAss.sjzhy[index].cwzl.ToString(), 3, 1));
 
                 commander3.AddCell(MyCell($"向现场指挥员报告特情", 2, 2));
@@ -373,6 +373,7 @@ namespace ReportGenerate
             tableResult.AddCell(MyCell($"机组任务完成度", 4, 1));
             for (int i = 0; i < personAss.sjzhy.Count; i++)
             {
+                if(personAss.sjzhy[i].bindingZy==null) continue;
                 tableResult.AddCell(MyCell(personAss.sjzhy[i].jzname, 2, 1));
                 var rws = resultData.任务结束时各火场数据.FindAll(a => personAss.sjzhy[i].bindingZy.Contains(a.Id));
                 double zongWcd = 0;
@@ -382,25 +383,25 @@ namespace ReportGenerate
 
             tableResult.AddCell(MyCell($"任务信息", 4, 1));
             tableResult.AddCell(MyCell("灭火任务总时间(小时)", 2, 1));
-            tableResult.AddCell(MyCell("总时间", 2, 1));
+            tableResult.AddCell(MyCell(resultOutData.任务结束时刻.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("开始投水时刻", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.开始投水时刻, 2, 1));
-            tableResult.AddCell(MyCell("投水总需求（千克）", 2, 1));
+            tableResult.AddCell(MyCell("投水总需求(千克)", 2, 1));
             tableResult.AddCell(MyCell(resultData.任务结束时过火面积对应的投水总需求.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("任务结束时投水总量（千克）", 2, 1));
+            tableResult.AddCell(MyCell("任务结束时投水总量(千克)", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务结束时投水总量.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("总航程（公里）", 2, 1));
+            tableResult.AddCell(MyCell("总航程(公里)", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.总航程.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("飞行架次", 2, 1));
 
-            tableResult.AddCell(MyCell($"火场数据", 4, 1));
+            tableResult.AddCell(MyCell(resultOutData.直升机总架次.ToString(), 2, 1));
             tableResult.AddCell(MyCell("过火面积控制率", 2, 1));
             tableResult.AddCell(MyCell(resultData.过火面积控制率.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("初始总燃烧面积（平方米）", 2, 1));
+            tableResult.AddCell(MyCell("初始总燃烧面积(平方米)", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务初始燃烧面积.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("任务结束时总过火面积（平方米）", 2, 1));
+            tableResult.AddCell(MyCell("任务结束时总过火面积(平方米)", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务结束时过火总面积.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("任务结束时燃烧面积（平方米）", 2, 1));
+            tableResult.AddCell(MyCell("任务结束时燃烧面积(平方米)", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务结束时燃烧面积.ToString("0.00"), 2, 1));
 
             #region 以前的任务效能，不用了
@@ -419,19 +420,19 @@ namespace ReportGenerate
             // tableResult.AddCell(MyCell(resultData.过火面积控制率.ToString("0.00"), 2, 1));
             // tableResult.AddCell(MyCell("开始投水时刻", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.开始投水时刻, 2, 1));
-            // tableResult.AddCell(MyCell("投水总需求（千克）", 2, 1));
+            // tableResult.AddCell(MyCell("投水总需求(千克)", 2, 1));
             // tableResult.AddCell(MyCell(resultData.任务结束时过火面积对应的投水总需求.ToString("0.00"), 2, 1));
-            // tableResult.AddCell(MyCell("任务结束时投水总量（千克）", 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时投水总量(千克)", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.任务结束时投水总量.ToString("0.00"), 2, 1));
-            // tableResult.AddCell(MyCell("总航程（公里）", 2, 1));
+            // tableResult.AddCell(MyCell("总航程(公里)", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.总航程.ToString("0.00"), 2, 1));
             // tableResult.AddCell(MyCell("飞行架次", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.直升机总架次.ToString("0.00"), 2, 1));
-            // tableResult.AddCell(MyCell("初始总燃烧面积（平方米）", 2, 1));
+            // tableResult.AddCell(MyCell("初始总燃烧面积(平方米)", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.任务初始燃烧面积.ToString("0.00"), 2, 1));
-            // tableResult.AddCell(MyCell("任务结束时总过火面积（平方米）", 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时总过火面积(平方米)", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.任务结束时过火总面积.ToString("0.00"), 2, 1));
-            // tableResult.AddCell(MyCell("任务结束时燃烧面积（平方米）", 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时燃烧面积(平方米)", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.任务结束时燃烧面积.ToString("0.00"), 2, 1));
 
             #endregion
@@ -451,8 +452,8 @@ namespace ReportGenerate
 
             PdfPTable tableFire = new PdfPTable(4);
             tableFire.AddCell(MyCell("火场名称"));
-            tableFire.AddCell(MyCell("投水总重量（千克）"));
-            tableFire.AddCell(MyCell("投水需求（千克）"));
+            tableFire.AddCell(MyCell("投水总重量(千克)"));
+            tableFire.AddCell(MyCell("投水需求(千克)"));
             tableFire.AddCell(MyCell("任务完成度"));
             foreach (FireData item in resultData.任务结束时各火场数据)
             {
@@ -476,17 +477,17 @@ namespace ReportGenerate
                 if (Double.IsNaN(TimeWaterWeight) || Double.IsInfinity(TimeWaterWeight)) TimeWaterWeight = 0;
 
                 PdfPTable tableEffort = new PdfPTable(4);
-                tableEffort.AddCell(MyCell("累计投水重量（千克）", 2, 1));
+                tableEffort.AddCell(MyCell("累计投水重量(千克)", 2, 1));
                 tableEffort.AddCell(MyCell(item.Key.单机投水总重量.ToString("0.00"), 2, 1));
                 tableEffort.AddCell(MyCell("单机任务成本", 2, 1));
                 tableEffort.AddCell(MyCell(item.Key.IsCrash ? "已坠毁" : item.Key.单机任务成本.ToString("0.00"), 2, 1));
-                tableEffort.AddCell(MyCell("单位时间内单机投水重量（千克）", 2, 1));
+                tableEffort.AddCell(MyCell("单位时间内单机投水重量(千克)", 2, 1));
                 tableEffort.AddCell(MyCell(TimeWaterWeight.ToString("0.00"), 2, 1));
                 tableEffort.AddCell(MyCell("飞行架次", 2, 1));
                 tableEffort.AddCell(MyCell(item.Value.Count.ToString(), 2, 1));
-                tableEffort.AddCell(MyCell("单位架次投水重量（千克）", 4, 1));
+                tableEffort.AddCell(MyCell("单位架次投水重量(千克)", 4, 1));
                 tableEffort.AddCell(MyCell("架次", 2, 1));
-                tableEffort.AddCell(MyCell("投水重量（千克）", 2, 1));
+                tableEffort.AddCell(MyCell("投水重量(千克)", 2, 1));
                 int sIndex = 0;
                 foreach (HeliSortieData hsdItem in item.Value)
                 {
@@ -550,7 +551,7 @@ namespace ReportGenerate
                 Directory.CreateDirectory(dirPath);
             //string fileName = DateTime.Now.ToLongDateString() + (Directory.GetFiles(dirPath).Length + 1);
             //string fileDate = DateTime.Now.ToLongDateString()+ DateTime.Now.Hour+"-"+ DateTime.Now.Minute+"-"+DateTime.Now.Second;
-            reportPath = dirPath + "/" + userName + "(" + reportId + ").pdf";
+            reportPath = dirPath + $"/{reportName}({userName}-{reportId}).pdf";
             string fontPath = Application.dataPath + "/Font/wryh.ttf";
             Document doc = new Document();
             FileStream fi = new FileStream(reportPath, FileMode.Create);
@@ -635,8 +636,8 @@ namespace ReportGenerate
             doc.Add(messagePersonAssessment);
             doc.Add(nullString);
             Paragraph paLevel1;
-            if (scores == null) paLevel1 = new Paragraph($"1.一级指挥员", fontSub);
-            else paLevel1 = new Paragraph($"1.一级指挥员    得分{scores.firstZhyTotalScore:F2}", fontSub);
+            if (scores == null) paLevel1 = new Paragraph($"1.总指挥端", fontSub);
+            else paLevel1 = new Paragraph($"1.总指挥端    得分{scores.firstZhyTotalScore:F2}", fontSub);
             paLevel1.IndentationLeft = 20f;
             doc.Add(paLevel1);
             doc.Add(nullString);
@@ -697,14 +698,14 @@ namespace ReportGenerate
                 commander1.AddCell(MyCell(personAss.yjzhy.cdjyll[index].bzz, 2, 1));
                 commander1.AddCell(MyCell("", 2, 1));
             }
-            
+
             commander1.AddCell(MyCell($"申报转场航线", 2, 2));
             commander1.AddCell(MyCell("航线名称", 2, 1));
             commander1.AddCell(MyCell(personAss.yjzhy.hxgh, 6, 1));
             commander1.AddCell(MyCell(scores == null ? "--" : $"{scores.zchxsb}分", 1, 2));
             commander1.AddCell(MyCell(scores == null ? "--" : $"{scores.zchxsb_zg}分", 1, 2));
             commander1.AddCell(MyCell("航路点", 2, 1));
-            commander1.AddCell(MyCell(string.Join("、", personAss.yjzhy.hlds), 6, 1));
+            commander1.AddCell(MyCell(personAss.yjzhy?.hlds == null ? "--" : string.Join("、", personAss.yjzhy.hlds), 6, 1));
 
             commander1.AddCell(MyCell($"下达任务", 2, 2));
             commander1.AddCell(MyCell("任务简令", 8, 1));
@@ -717,8 +718,8 @@ namespace ReportGenerate
 
 
             Paragraph paLevel2;
-            if (scores == null) paLevel2 = new Paragraph($"2.二级指挥员", fontSub);
-            else paLevel2 = new Paragraph($"2.二级指挥员    得分:{scores.secondZhyTotalScore:F2}", fontSub);
+            if (scores == null) paLevel2 = new Paragraph($"2.前线指挥端", fontSub);
+            else paLevel2 = new Paragraph($"2.前线指挥端    得分:{scores.secondZhyTotalScore:F2}", fontSub);
             paLevel2.IndentationLeft = 20f;
             doc.Add(paLevel2);
             doc.Add(nullString);
@@ -734,28 +735,28 @@ namespace ReportGenerate
             commander2.AddCell(MyCell(scores == null ? "未完成该操作" : "完成该操作", 6, 1));
             commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.lsrw}分", 1, 1));
             commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.lsrw_zg}分", 1, 1));
-            
-            commander2.AddCell(MyCell($"确认出动装备信息", 2, personAss.ejzhy.jzxx.Count + 2));
+
+            commander2.AddCell(MyCell($"确认出动装备信息", 2, (personAss.ejzhy?.jzxx == null ? 0 : personAss.ejzhy.jzxx.Count) + 2));
             commander2.AddCell(MyCell("机组信息", 6, 1));
-            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.qrzbztxx}分", 1, personAss.ejzhy.jzxx.Count + 2));
-            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.qrzbztxx_zg}分", 1, personAss.ejzhy.jzxx.Count + 2));
+            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.qrzbztxx}分", 1, (personAss.ejzhy?.jzxx == null ? 0 : personAss.ejzhy.jzxx.Count) + 2));
+            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.qrzbztxx_zg}分", 1, (personAss.ejzhy?.jzxx == null ? 0 : personAss.ejzhy.jzxx.Count) + 2));
             commander2.AddCell(MyCell("机组", 1, 1));
             commander2.AddCell(MyCell("机型", 1, 1));
             commander2.AddCell(MyCell("装载设备", 1, 1));
-            commander2.AddCell(MyCell("载油量（千克）", 1, 1));
+            commander2.AddCell(MyCell("载油量(千克)", 1, 1));
             commander2.AddCell(MyCell("可用载重(千克)", 1, 1));
             commander2.AddCell(MyCell("地面维护时间间隔(小时)", 1, 1));
-            for (int i = 0; i < personAss.ejzhy.jzxx.Count; i++)
+            for (int i = 0; i < personAss.ejzhy?.jzxx?.Count; i++)
             {
                 int index = i;
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jzName, 1, 1));
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].jx, 1, 1));
-                commander2.AddCell(MyCell(string.Join(" ", personAss.ejzhy.jzxx[index].zzsb), 1, 1));
+                commander2.AddCell(MyCell(personAss.ejzhy?.jzxx[index]?.zzsb == null ? "--" : string.Join(" ", personAss.ejzhy.jzxx[index].zzsb), 1, 1));
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zyl.ToString("F2"), 1, 1));
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].zzl.ToString("F2"), 1, 1));
                 commander2.AddCell(MyCell(personAss.ejzhy.jzxx[index].dmwhTime.ToString(), 1, 1));
             }
-            
+
             commander2.AddCell(MyCell($"完成任务分配并下达任务", 2, personAss.ejzhy.rwfp.Count * 2 + 1));
             commander2.AddCell(MyCell("机组", 1, 1));
             commander2.AddCell(MyCell("受灾点", 1, 1));
@@ -763,16 +764,16 @@ namespace ReportGenerate
             commander2.AddCell(MyCell("医院", 1, 1));
             commander2.AddCell(MyCell("补给站", 1, 1));
             commander2.AddCell(MyCell("", 1, 1));
-            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.fprwbxdrw}分", 1, personAss.ejzhy.rwfp.Count*2 + 1));
-            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.fprwbxdrw_zg}分", 1, personAss.ejzhy.rwfp.Count*2 + 1));
+            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.fprwbxdrw}分", 1, personAss.ejzhy.rwfp.Count * 2 + 1));
+            commander2.AddCell(MyCell(scores == null ? "--" : $"{scores.fprwbxdrw_zg}分", 1, personAss.ejzhy.rwfp.Count * 2 + 1));
             for (int i = 0; i < personAss.ejzhy.rwfp.Count; i++)
             {
                 int index = i;
-                commander2.AddCell(MyCell(personAss.ejzhy.rwfp[index].jzName, 1, 2));
-                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 2));
-                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].azd), 1, 2));
-                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].yy), 1, 2));
-                commander2.AddCell(MyCell(string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.jzName, 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.szd == null ? "--" : string.Join("、", personAss.ejzhy.rwfp[index].szd), 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.azd == null ? "--" : string.Join("、", personAss.ejzhy.rwfp[index].azd), 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.yy == null ? "--" : string.Join("、", personAss.ejzhy.rwfp[index].yy), 1, 2));
+                commander2.AddCell(MyCell(personAss.ejzhy?.rwfp[index]?.bjd == null ? "--" : string.Join("、", personAss.ejzhy.rwfp[index].bjd), 1, 2));
                 commander2.AddCell(MyCell("", 1, 2));
             }
 
@@ -787,7 +788,7 @@ namespace ReportGenerate
             doc.Add(commander2);
             doc.Add(nullString);
 
-            Paragraph paLevel3 = new Paragraph($"3.三级指挥员", fontSub);
+            Paragraph paLevel3 = new Paragraph($"3.机长端", fontSub);
             paLevel3.IndentationLeft = 20f;
             doc.Add(paLevel3);
             doc.Add(nullString);
@@ -803,7 +804,7 @@ namespace ReportGenerate
                 paLevel3i.IndentationLeft = 20f;
                 doc.Add(paLevel3i);
                 doc.Add(nullString);
-                
+
                 PdfPTable commander3 = new PdfPTable(10);
                 commander3.AddCell(MyCell("评分规则：每项训练点满分10分，未完成：0分，较差：1~3分，一般：4~6分，较好：7~9分", 10, 1));
                 commander3.AddCell(MyCell1("评分项", 2, 1));
@@ -812,19 +813,19 @@ namespace ReportGenerate
                 commander3.AddCell(MyCell1("主观打分", 1, 1));
                 //表头结束
                 commander3.AddCell(MyCell($"确认载油量和载重信息", 2, 2));
-                commander3.AddCell(MyCell("燃油重量（千克）", 3, 1));
+                commander3.AddCell(MyCell("燃油重量(千克)", 3, 1));
                 commander3.AddCell(MyCell(personAss.sjzhy[index].zyl.ToString("F2"), 3, 1));
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.qrzyl}分", 1, 2));
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.qrzyl_zg}分", 1, 2));
-                commander3.AddCell(MyCell("可用载重（千克）", 3, 1));
+                commander3.AddCell(MyCell("可用载重(千克)", 3, 1));
                 commander3.AddCell(MyCell(personAss.sjzhy[index].zzl.ToString("F2"), 3, 1));
 
                 commander3.AddCell(MyCell($"完成任务区航线规划", 2, 2));
-                commander3.AddCell(MyCell("燃油不足报警次数（剩余燃油重量低于最大油量的 10% 千克）", 3, 1));
+                commander3.AddCell(MyCell("燃油不足报警次数(剩余燃油重量低于最大油量的 10% 千克)", 3, 1));
                 commander3.AddCell(MyCell(personAss.sjzhy[index].rybz.ToString(), 3, 1));
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.rwqyhxgh}分", 1, 2));
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.rwqyhxgh_zg}分", 1, 2));
-                commander3.AddCell(MyCell("错误着陆次数（着陆在未分配的补给点、备降点）", 3, 1));
+                commander3.AddCell(MyCell("错误着陆次数(着陆在未分配的补给点、备降点)", 3, 1));
                 commander3.AddCell(MyCell(personAss.sjzhy[index].cwzl.ToString(), 3, 1));
 
                 commander3.AddCell(MyCell($"向现场指挥员报告特情", 2, 2));
@@ -834,7 +835,7 @@ namespace ReportGenerate
                 commander3.AddCell(MyCell(jzScore == null ? "--" : $"{jzScore.xxczhybg_zg}分", 1, 2));
                 commander3.AddCell(MyCell("报告次数", 3, 1));
                 commander3.AddCell(MyCell($"{(tqData.ContainsKey(2) ? tqData[2].Count : 0).ToString()}", 3, 1));
-                
+
                 doc.Add(commander3);
                 doc.Add(nullString);
             }
@@ -910,9 +911,9 @@ namespace ReportGenerate
             tableResult.AddCell(MyCell(resultSysData.受灾需转运总人数.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("任务结束时转运总人数", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.任务结束时转运总人数.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("任务结束时对应的物资投放总需求（千克）", 2, 1));
+            tableResult.AddCell(MyCell("任务结束时对应的物资投放总需求(千克)", 2, 1));
             tableResult.AddCell(MyCell(resultData.任务结束时对应的物资投放总需求.ToString("0.00"), 2, 1));
-            tableResult.AddCell(MyCell("总航程（公里）", 2, 1));
+            tableResult.AddCell(MyCell("总航程(公里)", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.总航程.ToString("0.00"), 2, 1));
             tableResult.AddCell(MyCell("所有飞机总架次", 2, 1));
             tableResult.AddCell(MyCell(resultOutData.所有飞机总架次.ToString("0.00"), 2, 1));
@@ -931,9 +932,9 @@ namespace ReportGenerate
             // tableResult.AddCell(MyCell(resultSysData.受灾需转运总人数.ToString("0.00"), 2, 1));
             // tableResult.AddCell(MyCell("任务结束时转运总人数", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.任务结束时转运总人数.ToString("0.00"), 2, 1));
-            // tableResult.AddCell(MyCell("任务结束时对应的物资投放总需求（千克）", 2, 1));
+            // tableResult.AddCell(MyCell("任务结束时对应的物资投放总需求(千克)", 2, 1));
             // tableResult.AddCell(MyCell(resultData.任务结束时对应的物资投放总需求.ToString("0.00"), 2, 1));
-            // tableResult.AddCell(MyCell("总航程（公里）", 2, 1));
+            // tableResult.AddCell(MyCell("总航程(公里)", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.总航程.ToString("0.00"), 2, 1));
             // tableResult.AddCell(MyCell("所有飞机总架次", 2, 1));
             // tableResult.AddCell(MyCell(resultOutData.所有飞机总架次.ToString("0.00"), 2, 1));
@@ -973,8 +974,8 @@ namespace ReportGenerate
             PdfPTable tableFire = new PdfPTable(5);
             tableFire.AddCell(MyCell("安置点名称"));
             tableFire.AddCell(MyCell("转运人数"));
-            tableFire.AddCell(MyCell("物资投放需求重量（千克）"));
-            tableFire.AddCell(MyCell("物资投放重量（千克）"));
+            tableFire.AddCell(MyCell("物资投放需求重量(千克)"));
+            tableFire.AddCell(MyCell("物资投放重量(千克)"));
             tableFire.AddCell(MyCell("物资投放任务完成度"));
             foreach (MaterialData item in resultData.任务结束时各安置点数据)
             {
@@ -999,7 +1000,7 @@ namespace ReportGenerate
                 PdfPTable tableEffort = new PdfPTable(6);
                 tableEffort.AddCell(MyCell("累计转运人数", 3, 1));
                 tableEffort.AddCell(MyCell(item.Key.累计转运人数.ToString("0.00"), 3, 1));
-                tableEffort.AddCell(MyCell("累计投放物资重量（千克）", 3, 1));
+                tableEffort.AddCell(MyCell("累计投放物资重量(千克)", 3, 1));
                 tableEffort.AddCell(MyCell(item.Key.累计投放物资重量.ToString("0.00"), 3, 1));
                 tableEffort.AddCell(MyCell("单机任务成本", 3, 1));
                 tableEffort.AddCell(MyCell(item.Key.IsCrash ? "已坠毁" : item.Key.单机任务成本.ToString("0.00"), 3, 1));
@@ -1008,7 +1009,7 @@ namespace ReportGenerate
                 tableEffort.AddCell(MyCell("单位架次数据", 6, 1));
                 tableEffort.AddCell(MyCell("架次", 2, 1));
                 tableEffort.AddCell(MyCell("转运人数", 2, 1));
-                tableEffort.AddCell(MyCell("投放物资重量（千克）", 2, 1));
+                tableEffort.AddCell(MyCell("投放物资重量(千克)", 2, 1));
                 int sIndex = 0;
                 foreach (HeliSortieData hsdItem in item.Value)
                 {

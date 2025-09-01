@@ -78,8 +78,7 @@ public partial class CommanderController
             itemZiyuan.isChooseMe = true;
             currentChooseGo = itemZiyuan;
             OnCameraContral(1, itemZiyuan.transform);
-            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView",
-                itemZiyuan);
+            EventManager.Instance.EventTrigger<string, object>(EventType.ShowUI.ToString(), "AttributeView", itemZiyuan);
         }
     }
 

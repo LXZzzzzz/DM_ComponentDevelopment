@@ -444,6 +444,145 @@ MonoBehaviour:
   m_ObsoleteUseShadowQualitySettings: 0
   m_ObsoleteCustomShadowResolution: 512
   m_ObsoleteContactShadows: 0
+--- !u!1 &297812860
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 297812862}
+  - component: {fileID: 297812861}
+  m_Layer: 0
+  m_Name: Line
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!120 &297812861
+LineRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297812860}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 100}
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 2
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 0, b: 0, a: 1}
+      key1: {r: 0, g: 0.7357366, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 1}
+      key4: {r: 0, g: 0, b: 0, a: 1}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 964
+      atime2: 41249
+      atime3: 63800
+      atime4: 65150
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 2
+      m_ColorSpace: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 5
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
+    textureScale: {x: 1, y: 1}
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_MaskInteraction: 0
+  m_UseWorldSpace: 0
+  m_Loop: 0
+  m_ApplyActiveColorSpace: 1
+--- !u!4 &297812862
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 297812860}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.4597554, y: -3.6178212, z: 10.37727}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &305660328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,7 +1459,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1054386657
 Transform:
   m_ObjectHideFlags: 0
@@ -1467,7 +1606,7 @@ LineRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1471376909}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -1482,7 +1621,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 76ec7237844ce394eb468304ebeeb82a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1505,7 +1644,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 10}
+  - {x: 0, y: 0, z: 119.36}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -1526,40 +1665,40 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
-      key2: {r: 0, g: 0, b: 0, a: 0}
-      key3: {r: 0, g: 0, b: 0, a: 0}
-      key4: {r: 0, g: 0, b: 0, a: 0}
+      key0: {r: 0, g: 0.69129753, b: 1, a: 0}
+      key1: {r: 0, g: 0.47058827, b: 1, a: 1}
+      key2: {r: 0, g: 0.47058827, b: 1, a: 1}
+      key3: {r: 0, g: 0.47058827, b: 1, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 1}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 0
       ctime1: 65535
-      ctime2: 0
-      ctime3: 0
+      ctime2: 65535
+      ctime3: 65535
       ctime4: 0
       ctime5: 0
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 65535
-      atime2: 0
-      atime3: 0
-      atime4: 0
+      atime1: 1157
+      atime2: 65535
+      atime3: 63415
+      atime4: 65535
       atime5: 0
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_ColorSpace: -1
+      m_ColorSpace: 0
       m_NumColorKeys: 2
-      m_NumAlphaKeys: 2
+      m_NumAlphaKeys: 3
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
     textureMode: 0
     textureScale: {x: 1, y: 1}
-    shadowBias: 0.5
+    shadowBias: 0
     generateLightingData: 0
   m_MaskInteraction: 0
   m_UseWorldSpace: 1
@@ -1624,7 +1763,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1537503640}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc2a81970e8b8cf4b9f6c8cb301e1050, type: 3}
   m_Name: 
@@ -1724,8 +1863,8 @@ MonoBehaviour:
   waterTime: 10
   mj: 4200
   fj: {fileID: 0}
-  aa: "{\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u6295\u6C34\u603B\u91CF\":0.0,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u8FC7\u706B\u603B\u9762\u79EF\":170596.15625,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u71C3\u70E7\u9762\u79EF\":39018.078125,\"\u4EFB\u52A1\u521D\u59CB\u8FC7\u706B\u603B\u9762\u79EF\":170506.09375,\"\u4EFB\u52A1\u521D\u59CB\u71C3\u70E7\u9762\u79EF\":39000.0,\"\u5F00\u59CB\u6295\u6C34\u65F6\u523B\":\"00:00:00\",\"\u53D6\u6C34\u70B9\u5230\u6295\u6C34\u70B9\u7684\u6700\u77ED\u8DEF\u5F84\":1.37932861328125,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u523B\":0.0,\"\u603B\u822A\u7A0B\":0.0,\"\u76F4\u5347\u673A\u603B\u67B6\u6B21\":0,\"\u706B\u573A\u6570\u91CF\":3,\"\u53D6\u6C34\u70B9\u6570\u91CF\":3,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u706B\u573A\u6295\u6C34\u603B\u91CD\u91CF\":0.0,\"HeliSortieWaterDataList\":{\"{\\\"Id\\\":\\\"133640551154477175972\\\",\\\"Name\\\":\\\"MI26_002\\\",\\\"Price\\\":13000.0,\\\"Consumption\\\":880.79998779296875,\\\"Speed\\\":255.0,\\\"TakeOffTime\\\":0.0,\\\"EndMissonTime\\\":0.0,\\\"WatersTime\\\":0.041666666666666664,\\\"WatersMaxCoune\\\":8000.0,\\\"PersonTime\\\":0.0,\\\"PersonMaxCount\\\":0.0,\\\"MaterialTime\\\":0.0,\\\"MaterialMaxCount\\\":0.0,\\\"IsCrash\\\":false,\\\"\u5355\u673A\u4EFB\u52A1\u6210\u672C\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u91CD\u91CF\u6548\u7387\\\":[],\\\"\u5355\u4F4D\u65F6\u95F4\u5355\u673A\u6295\u6C34\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u603B\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u7269\u8D44\u6295\u653E\u6548\u7387\\\":[],\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u9700\u6C42\\\":0.0,\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u5355\u673A\u6295\u9001\u7269\u8D44\u603B\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u6295\u653E\u7269\u8D44\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u8F6C\u8FD0\u4EBA\u6570\\\":0.0,\\\"\u5355\u673A\u4EBA\u5458\u8F6C\u8FD0\u6548\u7387\\\":[]}\":[],\"{\\\"Id\\\":\\\"133640550587125600951\\\",\\\"Name\\\":\\\"Z8_001\\\",\\\"Price\\\":13000.0,\\\"Consumption\\\":597.5999755859375,\\\"Speed\\\":232.0,\\\"TakeOffTime\\\":0.0,\\\"EndMissonTime\\\":0.0,\\\"WatersTime\\\":0.025,\\\"WatersMaxCoune\\\":5000.0,\\\"PersonTime\\\":0.0,\\\"PersonMaxCount\\\":0.0,\\\"MaterialTime\\\":0.0,\\\"MaterialMaxCount\\\":0.0,\\\"IsCrash\\\":false,\\\"\u5355\u673A\u4EFB\u52A1\u6210\u672C\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u91CD\u91CF\u6548\u7387\\\":[],\\\"\u5355\u4F4D\u65F6\u95F4\u5355\u673A\u6295\u6C34\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u603B\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u7269\u8D44\u6295\u653E\u6548\u7387\\\":[],\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u9700\u6C42\\\":0.0,\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u5355\u673A\u6295\u9001\u7269\u8D44\u603B\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u6295\u653E\u7269\u8D44\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u8F6C\u8FD0\u4EBA\u6570\\\":0.0,\\\"\u5355\u673A\u4EBA\u5458\u8F6C\u8FD0\u6548\u7387\\\":[]}\":[]},\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u706B\u573A\u6570\u636E\":[{\"Id\":\"13364124699425266298\",\"Name\":\"\u706B\u6E90A\",\"WaterWeight\":0.0,\"initBurnedArea\":71780.25,\"initBurnArea\":16000.0,\"burnArea\":16006.0263671875,\"burnedArea\":71810.2734375,\"WaterNeed\":0.0,\"Degree\":0.0},{\"Id\":\"133641247377979550100\",\"Name\":\"\u706B\u6E90B\",\"WaterWeight\":0.0,\"initBurnedArea\":41890.48046875,\"initBurnArea\":10000.0,\"burnArea\":10006.0263671875,\"burnedArea\":41920.5,\"WaterNeed\":0.0,\"Degree\":0.0},{\"Id\":\"133641247731845467102\",\"Name\":\"\u706B\u6E90C\",\"WaterWeight\":0.0,\"initBurnedArea\":56835.3671875,\"initBurnArea\":13000.0,\"burnArea\":13006.0263671875,\"burnedArea\":56865.38671875,\"WaterNeed\":0.0,\"Degree\":0.0}]}"
-  bb: "{\"\u5355\u4F4D\u71C3\u70E7\u9762\u79EF\u6295\u6C34\u9700\u6C42\":1.0,\"\u6700\u5927\u5DE1\u822A\u901F\u5EA6\":255.0,\"\u5355\u6B21\u53D6\u6C34\u548C\u6295\u6C34\u65F6\u95F4\":0.025,\"\u540A\u6876\u5355\u6B21\u6700\u5927\u88C5\u8F7D\u91CF\":8000.0,\"\u76F4\u5347\u673A\u6BCF\u98DE\u884C\u5C0F\u65F6\u8017\u6CB9\u7387\":0.0,\"\u6700\u4F4E\u5C0F\u65F6\u71C3\u6CB9\u6D88\u8017\u7387\":597.5999755859375,\"\u6700\u4F4E\u76F4\u5347\u673A\u5355\u4EF7\":13000.0}"
+  aa: "{\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u6295\u6C34\u603B\u91CF\":0.0,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u8FC7\u706B\u603B\u9762\u79EF\":51853.73828125,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u71C3\u70E7\u9762\u79EF\":12000.0,\"\u4EFB\u52A1\u521D\u59CB\u8FC7\u706B\u603B\u9762\u79EF\":51853.73828125,\"\u4EFB\u52A1\u521D\u59CB\u71C3\u70E7\u9762\u79EF\":12000.0,\"\u5F00\u59CB\u6295\u6C34\u65F6\u523B\":\"00:00:00\",\"\u53D6\u6C34\u70B9\u5230\u6295\u6C34\u70B9\u7684\u6700\u77ED\u8DEF\u5F84\":75.647109375,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u523B\":0.0,\"\u603B\u822A\u7A0B\":0.0,\"\u76F4\u5347\u673A\u603B\u67B6\u6B21\":0,\"\u706B\u573A\u6570\u91CF\":1,\"\u53D6\u6C34\u70B9\u6570\u91CF\":1,\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u706B\u573A\u6295\u6C34\u603B\u91CD\u91CF\":0.0,\"HeliSortieWaterDataList\":{\"{\\\"Id\\\":\\\"133869335213350802234\\\",\\\"Name\\\":\\\"Z8A\\\",\\\"Price\\\":13000.0,\\\"Consumption\\\":655.9000244140625,\\\"Speed\\\":232.0,\\\"TakeOffTime\\\":0.0,\\\"EndMissonTime\\\":0.0,\\\"WatersTime\\\":0.025,\\\"WatersMaxCoune\\\":5000.0,\\\"PersonTime\\\":0.0,\\\"PersonMaxCount\\\":0.0,\\\"MaterialTime\\\":0.0,\\\"MaterialMaxCount\\\":0.0,\\\"IsCrash\\\":false,\\\"\u5355\u673A\u4EFB\u52A1\u6210\u672C\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u91CD\u91CF\u6548\u7387\\\":[],\\\"\u5355\u4F4D\u65F6\u95F4\u5355\u673A\u6295\u6C34\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u6295\u6C34\u603B\u91CD\u91CF\\\":0.0,\\\"\u5355\u673A\u7269\u8D44\u6295\u653E\u6548\u7387\\\":[],\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u9700\u6C42\\\":0.0,\\\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u5B89\u7F6E\u70B9\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u7269\u8D44\u6295\u653E\u4EFB\u52A1\u5B8C\u6210\u5EA6\\\":0.0,\\\"\u5355\u673A\u6295\u9001\u7269\u8D44\u603B\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u6295\u653E\u7269\u8D44\u91CD\u91CF\\\":0.0,\\\"\u7D2F\u8BA1\u8F6C\u8FD0\u4EBA\u6570\\\":0.0,\\\"\u5355\u673A\u4EBA\u5458\u8F6C\u8FD0\u6548\u7387\\\":[]}\":[]},\"\u4EFB\u52A1\u7ED3\u675F\u65F6\u5404\u706B\u573A\u6570\u636E\":[{\"Id\":\"133869303930376869140\",\"Name\":\"\u706B\u573A\u4F4D\u7F6E\",\"WaterWeight\":0.0,\"initBurnedArea\":51853.73828125,\"initBurnArea\":12000.0,\"burnArea\":12000.0,\"burnedArea\":51853.73828125,\"WaterNeed\":0.0,\"Degree\":0.0}]} "
+  bb: "{\"\u5355\u4F4D\u71C3\u70E7\u9762\u79EF\u6295\u6C34\u9700\u6C42\":1.0,\"\u6700\u5927\u5DE1\u822A\u901F\u5EA6\":232.0,\"\u5355\u6B21\u53D6\u6C34\u548C\u6295\u6C34\u65F6\u95F4\":0.025,\"\u540A\u6876\u5355\u6B21\u6700\u5927\u88C5\u8F7D\u91CF\":5000.0,\"\u76F4\u5347\u673A\u6BCF\u98DE\u884C\u5C0F\u65F6\u8017\u6CB9\u7387\":0.0,\"\u6700\u4F4E\u5C0F\u65F6\u71C3\u6CB9\u6D88\u8017\u7387\":655.9000244140625,\"\u6700\u4F4E\u76F4\u5347\u673A\u5355\u4EF7\":13000.0} "
   speedd: 0
   weightt: 0
   asldfjlsdj: '{"tempId":"13371706246004071893","zaiquId":"133717062460040718932","pos":{"x":-4100.263,"y":0.0,"z":1923.48315},"isDele":0,"vData":{"fs":12.0,"pd":12.0,"csrsmj":12345.0,"ZyType":0}}'
@@ -2571,3 +2710,4 @@ SceneRoots:
   - {fileID: 1079111850}
   - {fileID: 1471376912}
   - {fileID: 1054386657}
+  - {fileID: 297812862}

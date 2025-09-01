@@ -52,7 +52,7 @@ public class FirePointLogic : ZiYuanBase, ISourceOfAFire,ITaskProgress
     {
         // if (isStart)
         //     fm.UpdateBurnArea(MyDataInfo.gameStartTime);
-        ghmj = (float)fm.burnedArea;
+        ghmj = (float)(fm.burnedArea == 0 ? fm.csBurnedArea : fm.burnedArea);
         rsmj = (float)fm.burnArea;
         csghmj = (float)fm.csBurnedArea;
         csrsmj = this.csrsmj;

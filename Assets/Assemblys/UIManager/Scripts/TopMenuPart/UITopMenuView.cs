@@ -381,7 +381,7 @@ public class UITopMenuView : BasePanel
         }
         else
         {
-            if (mainLevel == 1) zongPart.SetActive(true);
+            if (mainLevel == -1) zongPart.SetActive(true);
             else otherPart.SetActive(true);
         }
 

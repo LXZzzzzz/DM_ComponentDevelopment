@@ -121,9 +121,6 @@ public partial class CommanderController : DMonoBehaviour
             }
         }
 
-        //这里在测试完创建删除后要放开，改为导教端控制游戏暂停，修改灾区数据
-        // EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 0);
-
         EventManager.Instance.EventTrigger(EventType.captureMap.ToString());
         clouds = GameObject.Find("Expanse Sky/Cumulus Clouds");
     }

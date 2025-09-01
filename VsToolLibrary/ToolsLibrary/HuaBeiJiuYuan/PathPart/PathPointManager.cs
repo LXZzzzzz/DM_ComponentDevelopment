@@ -189,6 +189,11 @@ namespace ToolsLibrary.PathPart
                 TypeNameHandling = TypeNameHandling.Auto
             });
 
+            allPathPoints.ForEach(a=>
+            {
+                a.tasks.ForEach(b=>b.isRuned = false);
+                a.isRuned = false;
+            });
             allPathPoints.Sort((a, b) => int.Parse(a.pointId) > int.Parse(b.pointId) ? -1 : 1);
             testID = int.Parse(allPathPoints[0].pointId) + 1;
             return allPathPoints;

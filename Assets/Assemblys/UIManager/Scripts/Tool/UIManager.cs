@@ -150,6 +150,7 @@ namespace UiManager
                         break;
                 }
             }
+            if(MyDataInfo.isPlayBack) canvansTran = playBack.transform;
 
             switch (uiName)
             {

@@ -120,6 +120,7 @@ public class UIMap : BasePanel, IPointerClickHandler
 
         LoadMap(Application.dataPath + $"/LibRes/TerrainLib/{UIManager.Instance.terrainName}/{UIManager.Instance.terrainName}.png");
 
+        Debug.LogError("地图大小："+(Vector2)userData);
         mapBLx = ((Vector2)userData).x / mapView.sizeDelta.x;
         mapBLz = ((Vector2)userData).y / mapView.sizeDelta.y;
 
@@ -146,6 +147,8 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Toggle>("jzOperatorTog").gameObject.SetActive(MyDataInfo.MyLevel == 3);
         GetControl<Button>("Btn_CreatFirePoint").gameObject.SetActive(MyDataInfo.gameScene == 1);
         GetControl<Button>("Btn_CreatDisaster").gameObject.SetActive(MyDataInfo.gameScene == 2);
+        
+        rightPart.SetActive(!MyDataInfo.isPlayBack);
     }
 
     private void GetAllZaiquTemplate()
@@ -361,6 +364,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         GetControl<Button>("Btn_CompleteBgSet").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState == GameState.None);
         GetControl<Button>("Btn_PeculiarSetting").gameObject.SetActive(MyDataInfo.MyLevel == -1 && MyDataInfo.gameState >= GameState.GameStart);
         GetControl<Button>("Btn_Hxsb").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet);
+        if (!(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet)) GetControl<Toggle>("xxqrTog").isOn = false;
         GetControl<Toggle>("xxqrTog").gameObject.SetActive(MyDataInfo.MyLevel == 1 && MyDataInfo.gameState == GameState.CompleteTaskBgSet);
         GetControl<Button>("Btn_Rwqzb").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
         GetControl<Button>("Btn_Zcfx").gameObject.SetActive(MyDataInfo.MyLevel == 2 && MyDataInfo.gameState == GameState.ReleaseProgramme);
@@ -687,6 +691,7 @@ public class UIMap : BasePanel, IPointerClickHandler
         yield return 1;
         leftPart.SetActive(true);
         rightPart.SetActive(true);
+        rightPart.SetActive(!MyDataInfo.isPlayBack);
         if (MyDataInfo.MyLevel == -1) GetControl<Toggle>("tog_Scene").isOn = true;
         UIManager.Instance.GetUIPanel<UITopMenuView>(UIName.UITopMenuView).gameObject.SetActive(true);
         if (MyDataInfo.MyLevel != -1)

@@ -30,6 +30,10 @@ public class MapOperate_DqNormal : MapOperateLogicBase
             else
                 EventManager.Instance.EventTrigger(EventType.ShowTipUI.ToString(), "机长只能查看自己所控直升机");
         }
+        else if (clickIcon is ZiYuanIconCell)
+        {
+            EventManager.Instance.EventTrigger(EventType.DqChooseGo.ToString(), clickIcon.belongToId);
+        }
     }
 
     public override void OnRightClickIcon(IconCellBase clickIcon)

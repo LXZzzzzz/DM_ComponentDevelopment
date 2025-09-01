@@ -241,6 +241,8 @@ public class CommanderMain : ScriptManager, IControl, IMesRec
         if (myLevel == 3)
             _commanderController.Init(BObjectId);
         yield return new WaitForSeconds(1);
+        //初始化完成后，切换默认模式
+        EventManager.Instance.EventTrigger(EventType.SwitchMapModel.ToString(), 3);
         // if (myLevel == 1)
         //     _commanderController.SendTaskSureMsg();
     }

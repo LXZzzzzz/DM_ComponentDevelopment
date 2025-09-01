@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using Enums;
 using ToolsLibrary;
 using UiManager;
@@ -52,16 +53,44 @@ public class UIAirLineInfoShow : BasePanel
             airPoint2.interactable = true;
             airPoint3.interactable = true;
             airPoint4.interactable = true;
-            airLineInfo.text = String.Empty;
-            airPoint1.text = String.Empty;
-            airPoint2.text = String.Empty;
-            airPoint3.text = String.Empty;
-            airPoint4.text = String.Empty;
+            LoadDefaultData(out string lineStr, out string linePoints);
+            airLineInfo.text = lineStr;
+            var points = linePoints.Split('_');
+            airPoint1.text = points.Length > 0 ? points[0] : String.Empty;
+            airPoint2.text = points.Length > 1 ? points[1] : String.Empty;
+            airPoint3.text = points.Length > 2 ? points[2] : String.Empty;
+            airPoint4.text = points.Length > 3 ? points[3] : String.Empty;
             GetControl<Button>("sure").onClick.AddListener(OnSure);
             GetControl<Button>("cancel").onClick.AddListener(() => Close(UIName.UIAirLineInfoShow));
         }
 
         if (MyDataInfo.isPlayBack) StartCoroutine(closeMe());
+    }
+
+    private void LoadDefaultData(out string lineStr, out string linePoints)
+    {
+        string filePath = Path.Combine(Application.dataPath, "MapLib", "DefaultData", "AirLineData.txt");
+        // 检查文件是否存在
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError("File not found: " + filePath);
+            lineStr = linePoints = String.Empty;
+            return;
+        }
+
+        // 读取文件内容
+        string fileContent = File.ReadAllText(filePath);
+        var dataSplit = fileContent.Split(':');
+        if (dataSplit.Length < 2)
+        {
+            lineStr = fileContent;
+            linePoints = string.Empty;
+        }
+        else
+        {
+            lineStr = dataSplit[0];
+            linePoints = dataSplit[1];
+        }
     }
 
     IEnumerator closeMe()

@@ -17,10 +17,9 @@ public partial class HelicopterController
         // if (myState != HelicopterState.Landing) return;
         isAtAirport = false;
         currentSkill = SkillType.TakeOff;
-        openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnTOSuc);
-        float itemHight = GetCurrentGroundHeight(out bool isHit);
-        if (isHit) correctGroundHight = itemHight;
-        currentFlyHight = isHit ? itemHight : correctGroundHight;
+        openTimer(myAttributeInfo.zsjxhgd/5 / (myAttributeInfo.psl / 3.6f), OnTOSuc);
+        //起飞时候地面高度就等于飞机当前高度
+        correctGroundHight = currentFlyHight = transform.position.y;
         updateEvent += OnRunTakeOff;
 
         if (MyDataInfo.gameState >= GameState.GameStart)
@@ -77,10 +76,12 @@ public partial class HelicopterController
         updateEvent -= OnRunTakeOff;
         myState = HelicopterState.hover;
         Vector3 startPos = new Vector3(transform.position.x, 0, transform.position.z);
-        Vector3 endPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd, transform.position.z);
-        amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, myAttributeInfo.psyh);
+        Vector3 endPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd/5, transform.position.z);
+        amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, GetOilConsumption(myAttributeInfo.psl / 3.6f));
         var itemPosition = transform.position;
         float toHight = GetCurrentGroundHeight(out bool isHit);
+        Debug.LogError(isHit+"地面高度"+toHight+transform.name);
+        //飞行高度除以5，是因为按照实际数据，场景中的表现过高，这里就在表现上限制一下高度
         itemPosition = new Vector3(itemPosition.x, (isHit ? toHight : correctGroundHight) + myAttributeInfo.zsjxhgd / 5, itemPosition.z);
         transform.position = itemPosition;
     }
@@ -88,7 +89,7 @@ public partial class HelicopterController
     private void OnRunTakeOff()
     {
         var itemPosition = transform.position;
-        itemPosition = new Vector3(itemPosition.x, currentFlyHight += (myAttributeInfo.psl * 3.6f / 5) * Time.deltaTime * MyDataInfo.speedMultiplier, itemPosition.z);
+        itemPosition = new Vector3(itemPosition.x, currentFlyHight += (myAttributeInfo.psl / 3.6f) * Time.deltaTime * MyDataInfo.speedMultiplier, itemPosition.z);
         transform.position = itemPosition;
     }
 
@@ -96,7 +97,7 @@ public partial class HelicopterController
     {
         // if (myState != HelicopterState.hover) return;
         currentSkill = SkillType.Landing;
-        openTimer(myAttributeInfo.zsjxhgd / (myAttributeInfo.psl * 3.6f), OnLandSuc);
+        openTimer(myAttributeInfo.zsjxhgd/5 / (myAttributeInfo.psl / 3.6f), OnLandSuc);
         float itemHight = GetCurrentGroundHeight(out bool isHit);
         if (isHit) correctGroundHight = itemHight;
         currentFlyHight = (isHit ? itemHight : correctGroundHight) + myAttributeInfo.zsjxhgd / 5;
@@ -107,13 +108,11 @@ public partial class HelicopterController
     {
         updateEvent -= OnRunLand;
         myState = HelicopterState.Landing;
-        //降落就不用耗油了吧
-        Vector3 startPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd, transform.position.z);
+        Vector3 startPos = new Vector3(transform.position.x, myAttributeInfo.zsjxhgd/5, transform.position.z);
         Vector3 endPos = new Vector3(transform.position.x, 0, transform.position.z);
         // amountOfOil -= HeliPointFuel(startPos, endPos, myAttributeInfo.psl / 3.6f, myAttributeInfo.psyh);
         var itemPosition = transform.position;
-        float toHight = GetCurrentGroundHeight(out bool isHit);
-        itemPosition = new Vector3(itemPosition.x, isHit ? toHight : correctGroundHight, itemPosition.z);
+        itemPosition = new Vector3(itemPosition.x, correctGroundHight, itemPosition.z);
         transform.position = itemPosition;
 
         playanim(false);
@@ -139,7 +138,7 @@ public partial class HelicopterController
     private void OnRunLand()
     {
         var itemPosition = transform.position;
-        itemPosition = new Vector3(itemPosition.x, currentFlyHight -= (myAttributeInfo.psl * 3.6f / 5) * Time.deltaTime * MyDataInfo.speedMultiplier, itemPosition.z);
+        itemPosition = new Vector3(itemPosition.x, currentFlyHight -= (myAttributeInfo.psl / 3.6f) * Time.deltaTime * MyDataInfo.speedMultiplier, itemPosition.z);
         transform.position = itemPosition;
     }
 
@@ -176,7 +175,7 @@ public partial class HelicopterController
     private float GetCurrentGroundHeight(out bool isHit)
     {
         // 射线的起点是当前物体的位置
-        Ray ray = new Ray(transform.position + transform.up, Vector3.down);
+        Ray ray = new Ray(transform.position - transform.up, Vector3.down);
 
         // 存储射线碰撞信息的变量
         RaycastHit hit;

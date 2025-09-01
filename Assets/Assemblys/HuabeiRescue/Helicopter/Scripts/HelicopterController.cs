@@ -426,7 +426,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
             myRecordedData.allDistanceTravelled += speed * Time.deltaTime * MyDataInfo.speedMultiplier;
             if (lastPos != Vector3.zero)
             {
-                float ifc = HeliPointFuel(transform.position, lastPos, speed * MyDataInfo.speedMultiplier, GetOilConsumption(speed));
+                float ifc = HeliPointFuel(transform.position, lastPos, speed, GetOilConsumption(speed));
                 amountOfOil -= ifc;
             }
 
@@ -483,7 +483,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
     /// </summary>
     /// <param name="StartVect">起点的位置</param>
     /// <param name="TargetVect">目标点的位置</param>
-    /// <param name="HeliVelocity">直升机速度（巡航，爬升，下降）</param>
+    /// <param name="HeliVelocity">直升机速度（巡航，爬升，下降）米每秒</param>
     /// <param name="SegmentFlightFuelConsumption">耗油率</param>
     /// <returns></returns>
     private float HeliPointFuel(Vector3 StartVect, Vector3 TargetVect, float HeliVelocity, float SegmentFlightFuelConsumption)
@@ -493,7 +493,7 @@ public partial class HelicopterController : EquipBase, IWatersOperation, IGround
         float distanceab = Vector3.Distance(StartVect, TargetVect);
         if (distanceab > 0)
         {
-            SegmentFlightTime = distanceab / (HeliVelocity / 3.6f); //千米每小时转换成米每秒
+            SegmentFlightTime = distanceab / (HeliVelocity); 
             RemainingFuel = SegmentFlightTime / 3600.0f * SegmentFlightFuelConsumption;
         }
 
